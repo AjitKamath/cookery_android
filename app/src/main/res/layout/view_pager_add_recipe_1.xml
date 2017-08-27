@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_color_light">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="10dp"
+        android:layout_gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:text="What's your secret recipe name ?"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edit_text_height"
+            android:layout_marginTop="15dp"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:hint="Chicken Tandoori, Palak Paneer etc"
+            android:background="@drawable/edit_text_border_light"
+            android:textColorHint="@color/LightGrey"
+            />
+
+    </LinearLayout>
+</LinearLayout>

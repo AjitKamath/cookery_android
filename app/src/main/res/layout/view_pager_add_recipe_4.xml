@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_color_light"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="What all goes into your recipe ?"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <AutoCompleteTextView
+            android:id="@+id/view_pager_add_recipe_ingredients_av"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edit_text_height"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/edit_text_border_light"
+            android:gravity="center"
+            android:hint="Sugar, Spice &amp; everything nice .."
+            android:textColor="@color/white"
+            android:textColorHint="@color/LightGrey"
+            android:textSize="15sp" />
+
+        <GridView
+            android:id="@+id/view_pager_add_recipe_4_ingedients_gv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:numColumns="2"
+            android:verticalSpacing="10dp"
+            tools:listitem="@layout/ingredient" />
+
+    </LinearLayout>
+</LinearLayout>

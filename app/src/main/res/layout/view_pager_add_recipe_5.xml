@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_color_light"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tell us your recipe"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <EditText
+            android:layout_marginTop="25dp"
+            android:textSize="15sp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/LightGrey"
+            android:hint="Your recipe .."
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:background="@drawable/edit_text_border_light"
+            android:layout_height="@dimen/edit_text_height"/>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
