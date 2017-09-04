@@ -37,7 +37,7 @@ public class IngredientFilter extends Filter {
 
             // Your filtering logic goes in here
             for (final IngredientMO ingredient : originalList) {
-                if (ingredient.getBreed().toLowerCase().contains(filterPattern)) {
+                if (ingredient.getING_NAME().toLowerCase().contains(filterPattern)) {
                     filteredList.add(ingredient);
                 }
             }

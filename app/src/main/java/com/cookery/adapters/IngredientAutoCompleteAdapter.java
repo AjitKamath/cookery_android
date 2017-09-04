@@ -60,8 +60,8 @@ public class IngredientAutoCompleteAdapter extends ArrayAdapter<IngredientMO> {
         TextView autocomplete_ingredient_tv = convertView.findViewById(R.id.autocomplete_ingredient_tv);
         ImageView autocomplete_ingredient_iv = convertView.findViewById(R.id.autocomplete_ingredient_iv);
 
-        autocomplete_ingredient_tv.setText(ingredient.getBreed());
-        autocomplete_ingredient_iv.setImageResource(ingredient.getDrawable());
+        autocomplete_ingredient_tv.setText(ingredient.getING_NAME());
+        autocomplete_ingredient_iv.setImageResource(R.drawable.food);
 
         convertView.setTag(ingredient);
 

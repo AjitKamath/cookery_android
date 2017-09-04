@@ -1,2 +1,8 @@
 27 aug 2017
 1. Add Recipe
+
+-- git checkin on 27 aug 2017 --
+
+4 sep 2017
+1. fetching food types from the database instead of hardcode in add recipe fragment.
+2. implemented custom waiting fragment.

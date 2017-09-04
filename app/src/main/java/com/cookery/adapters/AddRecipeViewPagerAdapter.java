@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,9 +25,11 @@ import com.cookery.fragments.SelectionFragment;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.FoodTypeMO;
+import com.cookery.models.MasterDataMO;
 import com.cookery.utils.TestData;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.cookery.utils.Constants.AFFIRMATIVE;
@@ -44,14 +47,19 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
 
     private LinearLayout view_pager_add_recipe_2_food_type_ll;
     private LinearLayout view_pager_add_recipe_3_cuisine_ll;
+    private GridView view_pager_add_recipe_4_ingedients_gv;
+    private ImageView view_pager_add_recipe_user_ingredients_iv;
+
 
     private View.OnClickListener clickListener;
+    private MasterDataMO masterData;
 
-    public AddRecipeViewPagerAdapter(Context context, FragmentManager fragmentManager, List<Integer> layoutsList, View.OnClickListener clickListener) {
+    public AddRecipeViewPagerAdapter(Context context, FragmentManager fragmentManager, List<Integer> layoutsList, MasterDataMO masterData, View.OnClickListener clickListener) {
         this.mContext = context;
         this.fragmentManager = fragmentManager;
         this.layoutsList = layoutsList;
         this.clickListener = clickListener;
+        this.masterData = masterData;
     }
 
     @Override
@@ -75,7 +83,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     }
 
     private void setupAddRecipe3(ViewGroup layout) {
-        //TODO: get it from the db
+        //TODO: get from master data
         final List<CuisineMO> cuisines = TestData.cuisines;
 
         view_pager_add_recipe_3_cuisine_ll = layout.findViewById(R.id.view_pager_add_recipe_3_cuisine_ll);
@@ -94,14 +102,39 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         //TODO: get this from db
         final List<IngredientMO> dogsList = TestData.ingredients;
 
-        final   AutoCompleteTextView autoCompleteTV = (AutoCompleteTextView) layout.findViewById(R.id.view_pager_add_recipe_ingredients_av);
+        final   AutoCompleteTextView autoCompleteTV = layout.findViewById(R.id.view_pager_add_recipe_ingredients_av);
         IngredientAutoCompleteAdapter adapter = new IngredientAutoCompleteAdapter(mContext, dogsList);
         autoCompleteTV.setAdapter(adapter);
+
+        view_pager_add_recipe_4_ingedients_gv = layout.findViewById(R.id.view_pager_add_recipe_4_ingedients_gv);
+        final IngredientsGridViewAdapter ingAdapter = new IngredientsGridViewAdapter(mContext, new ArrayList<IngredientMO>());
+        view_pager_add_recipe_4_ingedients_gv.setAdapter(ingAdapter);
+
+        view_pager_add_recipe_user_ingredients_iv = layout.findViewById(R.id.view_pager_add_recipe_user_ingredients_iv);
+        view_pager_add_recipe_user_ingredients_iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(autoCompleteTV.getText().length() == 0){
+                    return;
+                }
+
+                //TODO:implement way to get quantity and measurement from the user for user added ingredient
+                IngredientMO ingredient = new IngredientMO();
+                ingredient.setING_NAME(String.valueOf(autoCompleteTV.getText()));
+                ingredient.setMSR_NAME("CUPS");
+                ingredient.setMSR_ID(33);
+
+                ingAdapter.updateDatalist(ingredient);
+
+                autoCompleteTV.setText("");
+            }
+        });
 
         autoCompleteTV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                autoCompleteTV.setText(((IngredientMO)view.getTag()).getBreed());
+                ingAdapter.updateDatalist((IngredientMO)view.getTag());
+                autoCompleteTV.setText("");
             }
         });
     }
@@ -113,8 +146,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     }
 
     private void setupAddRecipe2(ViewGroup layout) {
-        //TODO: get it from the db
-        final List<FoodTypeMO> foodTypes = TestData.foodTypes;
+        final List<FoodTypeMO> foodTypes = masterData.getFoodTypes();
 
         view_pager_add_recipe_2_food_type_ll = layout.findViewById(R.id.view_pager_add_recipe_2_food_type_ll);
 
@@ -188,7 +220,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         ImageView image = view_pager_add_recipe_3_cuisine_ll.findViewById(R.id.view_pager_add_recipe_3_cuisine_iv);
         TextView text = view_pager_add_recipe_3_cuisine_ll.findViewById(R.id.view_pager_add_recipe_3_cuisine_tv);
 
-        text.setText(defaultCuisine.getFood_csn_name());
+        text.setText(defaultCuisine.getFOOD_CSN_NAME());
 
         view_pager_add_recipe_3_cuisine_ll.setTag(defaultCuisine);
     }
@@ -198,7 +230,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         ImageView image = view_pager_add_recipe_2_food_type_ll.findViewById(R.id.view_pager_add_recipe_2_food_type_iv);
         TextView text = view_pager_add_recipe_2_food_type_ll.findViewById(R.id.view_pager_add_recipe_2_food_type_tv);
 
-        text.setText(foodType.getFood_typ_name());
+        text.setText(foodType.getFOOD_TYP_NAME());
 
         view_pager_add_recipe_2_food_type_ll.setTag(foodType);
     }
@@ -209,7 +241,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
 
     private CuisineMO getDefaultCuisine(List<CuisineMO> cuisines) {
         for(CuisineMO cuisine : cuisines){
-            if(AFFIRMATIVE.equalsIgnoreCase(cuisine.getIs_def())){
+            if(AFFIRMATIVE.equalsIgnoreCase(cuisine.getIS_DEF())){
                 return cuisine;
             }
         }
@@ -220,7 +252,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
 
     private FoodTypeMO getDefaultFoodType(List<FoodTypeMO> foodTypes){
         for(FoodTypeMO foodType : foodTypes){
-            if(AFFIRMATIVE.equalsIgnoreCase(foodType.getIs_def())){
+            if(AFFIRMATIVE.equalsIgnoreCase(foodType.getIS_DEF())){
                 return foodType;
             }
         }

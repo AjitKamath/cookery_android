@@ -58,7 +58,7 @@ public class CuisinesGridViewAdapter extends BaseAdapter {
 
         CuisineMO cuisine = (CuisineMO) dataList.get(position);
 
-        mHolder.cuisine_gv_item_tv.setText(cuisine.getFood_csn_name());
+        mHolder.cuisine_gv_item_tv.setText(cuisine.getFOOD_CSN_NAME());
 
         mHolder.cuisine_gv_item_ll.setTag(cuisine);
         mHolder.cuisine_gv_item_ll.setOnClickListener(clickListener);

@@ -21,19 +21,37 @@
             android:textColor="@color/white"
             android:textSize="20sp" />
 
-        <AutoCompleteTextView
-            android:id="@+id/view_pager_add_recipe_ingredients_av"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/edit_text_height"
+        <RelativeLayout
             android:layout_marginTop="25dp"
-            android:background="@drawable/edit_text_border_light"
-            android:gravity="center"
-            android:hint="Sugar, Spice &amp; everything nice .."
-            android:textColor="@color/white"
-            android:textColorHint="@color/LightGrey"
-            android:textSize="15sp" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <AutoCompleteTextView
+                android:id="@+id/view_pager_add_recipe_ingredients_av"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edit_text_height"
+                android:background="@drawable/edit_text_border_light"
+                android:gravity="center"
+                android:hint="Sugar, Spice &amp; everything nice .."
+                android:textColor="@color/white"
+                android:textColorHint="@color/LightGrey"
+                android:textSize="15sp" />
+
+            <ImageView
+                android:id="@+id/view_pager_add_recipe_user_ingredients_iv"
+                android:layout_marginRight="5dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_width="@dimen/header_buttons_dimen"
+                android:layout_height="@dimen/header_buttons_dimen"
+                android:src="@drawable/plus_white"/>
+
+        </RelativeLayout>
 
         <GridView
+            android:horizontalSpacing="10dp"
             android:id="@+id/view_pager_add_recipe_4_ingedients_gv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +59,7 @@
             android:gravity="center"
             android:numColumns="2"
             android:verticalSpacing="10dp"
-            tools:listitem="@layout/ingredient" />
+            tools:listitem="@layout/ingredient_quantity" />
 
     </LinearLayout>
 </LinearLayout>

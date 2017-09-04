@@ -58,7 +58,7 @@ public class FoodTypeGridViewAdapter extends BaseAdapter {
 
         FoodTypeMO food = (FoodTypeMO) dataList.get(position);
 
-        mHolder.food_type_gv_item_tv.setText(food.getFood_typ_name());
+        mHolder.food_type_gv_item_tv.setText(food.getFOOD_TYP_NAME());
 
         mHolder.food_type_gv_item_ll.setTag(food);
         mHolder.food_type_gv_item_ll.setOnClickListener(clickListener);

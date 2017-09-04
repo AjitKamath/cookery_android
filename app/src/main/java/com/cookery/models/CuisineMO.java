@@ -5,22 +5,22 @@ package com.cookery.models;
  */
 
 public class CuisineMO {
-    private String food_csn_name;
-    private String is_def;
+    private String FOOD_CSN_NAME;
+    private String IS_DEF;
 
-    public String getFood_csn_name() {
-        return food_csn_name;
+    public String getFOOD_CSN_NAME() {
+        return FOOD_CSN_NAME;
     }
 
-    public void setFood_csn_name(String food_csn_name) {
-        this.food_csn_name = food_csn_name;
+    public void setFOOD_CSN_NAME(String FOOD_CSN_NAME) {
+        this.FOOD_CSN_NAME = FOOD_CSN_NAME;
     }
 
-    public String getIs_def() {
-        return is_def;
+    public String getIS_DEF() {
+        return IS_DEF;
     }
 
-    public void setIs_def(String is_def) {
-        this.is_def = is_def;
+    public void setIS_DEF(String IS_DEF) {
+        this.IS_DEF = IS_DEF;
     }
 }

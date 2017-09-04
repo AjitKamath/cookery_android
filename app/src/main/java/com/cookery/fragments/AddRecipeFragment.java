@@ -18,6 +18,7 @@ import com.cookery.adapters.AddRecipeViewPagerAdapter;
 import com.cookery.component.ViewPagerCustom;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
+import com.cookery.models.MasterDataMO;
 import com.cookery.models.RecipeMO;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.UI_FONT;
 
 /**
@@ -48,6 +50,8 @@ public class AddRecipeFragment extends DialogFragment {
     @InjectView(R.id.common_fragment_header_add_recipe_forward_iv)
     ImageView common_fragment_header_add_recipe_forward_iv;
 
+    private MasterDataMO masterData;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_recipe, container);
@@ -56,9 +60,15 @@ public class AddRecipeFragment extends DialogFragment {
         Dialog d = getDialog();
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+        getDataFromBundle();
+
         setupPage();
 
         return view;
+    }
+
+    private void getDataFromBundle() {
+        masterData = (MasterDataMO) getArguments().get(MASTER);
     }
 
     private void setupPage() {
@@ -98,7 +108,7 @@ public class AddRecipeFragment extends DialogFragment {
         viewPagerTabsList.add(R.layout.view_pager_add_recipe_7);
         viewPagerTabsList.add(R.layout.view_pager_add_recipe_8);
 
-        final AddRecipeViewPagerAdapter viewPagerAdapter = new AddRecipeViewPagerAdapter(mContext, getFragmentManager(), viewPagerTabsList, new View.OnClickListener() {
+        final AddRecipeViewPagerAdapter viewPagerAdapter = new AddRecipeViewPagerAdapter(mContext, getFragmentManager(), viewPagerTabsList, masterData, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 RecipeMO recipe = getInputs();

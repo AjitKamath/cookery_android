@@ -7,31 +7,32 @@ import java.io.Serializable;
  */
 
 public class FoodTypeMO implements Serializable{
-    private int food_typ_id;
-    private String food_typ_name;
-    private String is_def;
+    private int FOOD_TYP_ID;
+    private String FOOD_TYP_NAME;
+    private String IS_DEF;
 
-    public String getIs_def() {
-        return is_def;
+    public String getIS_DEF() {
+        return IS_DEF;
     }
 
-    public void setIs_def(String is_def) {
-        this.is_def = is_def;
+    public void setIS_DEF(String IS_DEF) {
+        this.IS_DEF = IS_DEF;
     }
 
-    public int getFood_typ_id() {
-        return food_typ_id;
+    public int getFOOD_TYP_ID() {
+
+        return FOOD_TYP_ID;
     }
 
-    public void setFood_typ_id(int food_typ_id) {
-        this.food_typ_id = food_typ_id;
+    public void setFOOD_TYP_ID(int FOOD_TYP_ID) {
+        this.FOOD_TYP_ID = FOOD_TYP_ID;
     }
 
-    public String getFood_typ_name() {
-        return food_typ_name;
+    public String getFOOD_TYP_NAME() {
+        return FOOD_TYP_NAME;
     }
 
-    public void setFood_typ_name(String food_typ_name) {
-        this.food_typ_name = food_typ_name;
+    public void setFOOD_TYP_NAME(String FOOD_TYP_NAME) {
+        this.FOOD_TYP_NAME = FOOD_TYP_NAME;
     }
 }

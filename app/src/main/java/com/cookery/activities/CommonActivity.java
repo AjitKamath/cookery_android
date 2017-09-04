@@ -1,8 +1,10 @@
 package com.cookery.activities;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -18,9 +20,14 @@ import android.widget.ImageView;
 
 import com.cookery.R;
 import com.cookery.fragments.AddRecipeFragment;
+import com.cookery.models.FoodTypeMO;
+import com.cookery.models.MasterDataMO;
 import com.cookery.utils.Utility;
 
+import java.util.List;
+
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
+import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.OK;
 
 public abstract class CommonActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener{
@@ -96,12 +103,15 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         getFab().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAddRecipeFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                Fragment fragement = Utility.showWaitDialog(fragmentManager, "Loading data ..");
+
+                new AsyncTasker().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fragement);
             }
         });
     }
 
-    private void showAddRecipeFragment() {
+    private void showAddRecipeFragment(MasterDataMO masterData) {
         String fragmentNameStr = FRAGMENT_ADD_RECIPE;
         String parentFragmentNameStr = null;
 
@@ -117,7 +127,11 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             parentFragment = manager.findFragmentByTag(parentFragmentNameStr);
         }
 
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MASTER, masterData);
+
         AddRecipeFragment fragment = new AddRecipeFragment();
+        fragment.setArguments(bundle);
 
         if (parentFragment != null) {
             fragment.setTargetFragment(parentFragment, 0);
@@ -152,4 +166,31 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     protected abstract ImageView getCommon_header_navigation_drawer_iv();
 
     protected abstract CoordinatorLayout getWrapper_home_cl();
+
+    class AsyncTasker extends AsyncTask<Fragment, Void, Object> {
+
+        private Fragment fragment;
+
+        @Override
+        protected Object doInBackground(Fragment... objects) {
+            this.fragment = objects[0];
+
+            MasterDataMO masterData = new MasterDataMO();
+
+            masterData.setFoodTypes((List<FoodTypeMO>)Utility.fetchAllFoodTypes());
+
+            return masterData;
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            MasterDataMO masterData = (MasterDataMO) object;
+
+            if(masterData.getFoodTypes() != null && !masterData.getFoodTypes().isEmpty()) {
+                getFragmentManager().beginTransaction().remove(fragment).commit();
+
+                showAddRecipeFragment(masterData);
+            }
+        }
+    }
 }

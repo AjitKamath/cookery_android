@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ingredient_quantity_rl"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/capsule_white"
+    android:gravity="center"
+    android:padding="5dp">
+
+    <LinearLayout
+        android:layout_marginLeft="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_alignParentLeft="true">
+
+        <ImageView
+            android:id="@+id/ingredient_quantity_iv"
+            android:layout_width="@dimen/header_buttons_dimen"
+            android:layout_height="@dimen/header_buttons_dimen"
+            android:src="@drawable/food" />
+
+        <TextView
+            android:id="@+id/ingredient_quantity_ingredient_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="MILK"
+            android:textColor="@color/Gray"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/ingredient_quantity_quantity_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="3"
+            android:textColor="@color/red"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/ingredient_quantity_measurement_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="CUPS"
+            android:textColor="@color/red"
+            android:textSize="10sp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/ingredient_quantity_cancel_iv"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginRight="5dp"
+        android:src="@drawable/ic_close_grey600_36dp" />
+
+</RelativeLayout>

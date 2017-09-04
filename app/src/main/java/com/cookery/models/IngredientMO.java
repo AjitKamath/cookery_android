@@ -1,28 +1,35 @@
 package com.cookery.models;
 
-import android.graphics.drawable.Drawable;
-
 /**
  * Created by ajit on 27/8/17.
  */
 
-public class IngredientMO {
-    private String breed;
-    private int drawable;
+public class IngredientMO extends QuantityMO {
+    private int ING_ID;
+    private String ING_NAME;
+    private int QUANTITY;
 
-    public String getBreed() {
-        return breed;
+    public int getING_ID() {
+        return ING_ID;
     }
 
-    public void setBreed(String breed) {
-        this.breed = breed;
+    public void setING_ID(int ING_ID) {
+        this.ING_ID = ING_ID;
     }
 
-    public int getDrawable() {
-        return drawable;
+    public String getING_NAME() {
+        return ING_NAME;
     }
 
-    public void setDrawable(int drawable) {
-        this.drawable = drawable;
+    public void setING_NAME(String ING_NAME) {
+        this.ING_NAME = ING_NAME;
+    }
+
+    public int getQUANTITY() {
+        return QUANTITY;
+    }
+
+    public void setQUANTITY(int QUANTITY) {
+        this.QUANTITY = QUANTITY;
     }
 }

@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
+    android:background="@color/white"
     android:id="@+id/autocomplete_ingredient_ll"
     android:padding="@dimen/padding"
     android:gravity="center">
@@ -14,6 +15,7 @@
         android:src="@drawable/food" />
 
     <TextView
+        android:textColor="@color/darkOrange"
         android:layout_marginLeft="10dp"
         android:id="@+id/autocomplete_ingredient_tv"
         android:layout_width="match_parent"

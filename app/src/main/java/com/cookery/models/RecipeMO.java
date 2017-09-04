@@ -5,67 +5,67 @@ package com.cookery.models;
  */
 
 public class RecipeMO {
-    private String rcp_name;
-    private int food_typ_id;
-    private int food_csn_id;
-    private int tst_id;
-    private String rcp_proc;
-    private String rcp_plating;
-    private String rcp_note;
+    private String RCP_NAME;
+    private int FOOD_TYP_ID;
+    private int FOOD_CSN_ID;
+    private int TST_ID;
+    private String RCP_PROC;
+    private String RCP_PLATING;
+    private String RCP_NOTE;
 
-    public String getRcp_name() {
-        return rcp_name;
+    public String getRCP_NAME() {
+        return RCP_NAME;
     }
 
-    public void setRcp_name(String rcp_name) {
-        this.rcp_name = rcp_name;
+    public void setRCP_NAME(String RCP_NAME) {
+        this.RCP_NAME = RCP_NAME;
     }
 
-    public int getFood_typ_id() {
-        return food_typ_id;
+    public int getFOOD_TYP_ID() {
+        return FOOD_TYP_ID;
     }
 
-    public void setFood_typ_id(int food_typ_id) {
-        this.food_typ_id = food_typ_id;
+    public void setFOOD_TYP_ID(int FOOD_TYP_ID) {
+        this.FOOD_TYP_ID = FOOD_TYP_ID;
     }
 
-    public int getFood_csn_id() {
-        return food_csn_id;
+    public int getFOOD_CSN_ID() {
+        return FOOD_CSN_ID;
     }
 
-    public void setFood_csn_id(int food_csn_id) {
-        this.food_csn_id = food_csn_id;
+    public void setFOOD_CSN_ID(int FOOD_CSN_ID) {
+        this.FOOD_CSN_ID = FOOD_CSN_ID;
     }
 
-    public int getTst_id() {
-        return tst_id;
+    public int getTST_ID() {
+        return TST_ID;
     }
 
-    public void setTst_id(int tst_id) {
-        this.tst_id = tst_id;
+    public void setTST_ID(int TST_ID) {
+        this.TST_ID = TST_ID;
     }
 
-    public String getRcp_proc() {
-        return rcp_proc;
+    public String getRCP_PROC() {
+        return RCP_PROC;
     }
 
-    public void setRcp_proc(String rcp_proc) {
-        this.rcp_proc = rcp_proc;
+    public void setRCP_PROC(String RCP_PROC) {
+        this.RCP_PROC = RCP_PROC;
     }
 
-    public String getRcp_plating() {
-        return rcp_plating;
+    public String getRCP_PLATING() {
+        return RCP_PLATING;
     }
 
-    public void setRcp_plating(String rcp_plating) {
-        this.rcp_plating = rcp_plating;
+    public void setRCP_PLATING(String RCP_PLATING) {
+        this.RCP_PLATING = RCP_PLATING;
     }
 
-    public String getRcp_note() {
-        return rcp_note;
+    public String getRCP_NOTE() {
+        return RCP_NOTE;
     }
 
-    public void setRcp_note(String rcp_note) {
-        this.rcp_note = rcp_note;
+    public void setRCP_NOTE(String RCP_NOTE) {
+        this.RCP_NOTE = RCP_NOTE;
     }
 }

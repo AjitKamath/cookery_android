@@ -8,16 +8,16 @@ public final class Constants {
     public static final String SLASH = "/";
     public static final String SERVER_PROTOCOL = "http";
     public static final String SERVER_CODEANYWHERE_IP = "bookmybookphp-ajitkamathk452607.codeanyapp.com";
-    public static final String SERVER_DADDY_IP = "192.168.43.250";
+    public static final String SERVER_DADDY_IP = "192.168.43.173";
     public static final String SERVER_IP = SERVER_DADDY_IP;
-    public static final String SERVER_PORT = "90";
-    public static final String SERVER_PROJECT_DIRECTORY = "bmb";
+    public static final String SERVER_PORT = "";
+    public static final String SERVER_PROJECT_DIRECTORY = "cookery";
     public static final String SERVER_ADDRESS = SERVER_PROTOCOL+"://"+SERVER_IP+":"+SERVER_PORT+SLASH+SERVER_PROJECT_DIRECTORY;
     public static final String SERVER_CHARSET = "UTF-8";
     public static final int SERVER_TIMEOUT = 5000;  //in milliseconds
 
     //PHP
-    public static final String PHP_FETCH_ALL_CATEGORIES = "fetch_cat.php";
+    public static final String PHP_FETCH_ALL_FOOD_TYPES = "fetchfoodtype.php";
     public static final String PHP_FETCH_ALL_TENURES = "fetch_tenure.php";
     public static final String PHP_POST_BOOK = "imupload.php";
     public static final String PHP_FETCH_USER = "fetch_user.php";
@@ -45,6 +45,7 @@ public final class Constants {
     //FRAGMENT NAMES
     public static final String FRAGMENT_ADD_RECIPE = "FRAGMENT_ADD_RECIPE";
     public static final String FRAGMENT_COMMON_SELECTION = "FRAGMENT_COMMON_SELECTION";
+    public static final String FRAGMENT_COMMON_WAIT = "FRAGMENT_COMMON_WAIT";
     public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
     public static final String FRAGMENT_NO_INTERNET = "FRAGMENT_NO_INTERNET";
     public static final String FRAGMENT_COMMON_SPINNER = "FRAGMENT_COMMON_SPINNER";
@@ -55,7 +56,7 @@ public final class Constants {
 
     //FRAGMENT OBJECT KEYS
     public static final String LOGGED_IN_USER = "LOGGED_IN_USER";
-    public static final String BOOK = "BOOK";
+    public static final String MASTER = "MASTER";
     public static final String GENERIC_OBJECT = "GENERIC_OBJECT";
     public static final String LIST_DATA = "LIST_DATA";
     public static final String SELECTED_ITEM = "SELECTED_ITEM";

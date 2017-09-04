@@ -22,28 +22,28 @@ public class TestData {
         CuisineMO cuisine = null;
 
         cuisine = new CuisineMO();
-        cuisine.setFood_csn_name("INDIAN");
+        cuisine.setFOOD_CSN_NAME("INDIAN");
         cuisines.add(cuisine);
 
         cuisine = new CuisineMO();
-        cuisine.setFood_csn_name("CHINESE");
-        cuisine.setIs_def("Y");
+        cuisine.setFOOD_CSN_NAME("CHINESE");
+        cuisine.setIS_DEF("Y");
         cuisines.add(cuisine);
 
         cuisine = new CuisineMO();
-        cuisine.setFood_csn_name("THAI");
+        cuisine.setFOOD_CSN_NAME("THAI");
         cuisines.add(cuisine);
 
         cuisine = new CuisineMO();
-        cuisine.setFood_csn_name("MEXICAN");
+        cuisine.setFOOD_CSN_NAME("MEXICAN");
         cuisines.add(cuisine);
 
         cuisine = new CuisineMO();
-        cuisine.setFood_csn_name("SOUTH INDIAN");
+        cuisine.setFOOD_CSN_NAME("SOUTH INDIAN");
         cuisines.add(cuisine);
 
         cuisine = new CuisineMO();
-        cuisine.setFood_csn_name("NORTH INDIAN");
+        cuisine.setFOOD_CSN_NAME("NORTH INDIAN");
         cuisines.add(cuisine);
     }
 
@@ -52,29 +52,40 @@ public class TestData {
         IngredientMO ingredient = null;
 
         ingredient = new IngredientMO();
-        ingredient.setBreed("MILK");
-        ingredient.setDrawable(R.drawable.food);
+        ingredient.setING_NAME("MILK");
+        ingredient.setING_ID(1);
+        ingredient.setMSR_ID(11);
+        ingredient.setMSR_NAME("CUP");
         ingredients.add(ingredient);
 
         ingredient = new IngredientMO();
-        ingredient.setBreed("BREAD");
-        ingredient.setDrawable(R.drawable.food);
+        ingredient.setING_NAME("SALT");
+        ingredient.setING_ID(2);
+        ingredient.setMSR_ID(12);
+        ingredient.setMSR_NAME("TABLESPOON");
         ingredients.add(ingredient);
 
         ingredient = new IngredientMO();
-        ingredient.setBreed("SALT");
-        ingredient.setDrawable(R.drawable.food);
+        ingredient.setING_NAME("PEPPER");
+        ingredient.setING_ID(3);
+        ingredient.setMSR_ID(13);
+        ingredient.setMSR_NAME("SPOON");
         ingredients.add(ingredient);
 
         ingredient = new IngredientMO();
-        ingredient.setBreed("PEPPER");
-        ingredient.setDrawable(R.drawable.food);
+        ingredient.setING_NAME("CHILLY");
+        ingredient.setING_ID(4);
+        ingredient.setMSR_ID(14);
+        ingredient.setMSR_NAME("SPOON");
         ingredients.add(ingredient);
 
         ingredient = new IngredientMO();
-        ingredient.setBreed("CHILLY");
-        ingredient.setDrawable(R.drawable.food);
+        ingredient.setING_NAME("WATER");
+        ingredient.setING_ID(5);
+        ingredient.setMSR_ID(15);
+        ingredient.setMSR_NAME("CUP");
         ingredients.add(ingredient);
+
     }
 
     static{
@@ -82,33 +93,32 @@ public class TestData {
         FoodTypeMO foodType = null;
 
         foodType = new FoodTypeMO();
-        foodType.setFood_typ_id(1);
-        foodType.setFood_typ_name("BREAKFAST");
-        foodType.setIs_def("");
+        foodType.setFOOD_TYP_ID(1);
+        foodType.setFOOD_TYP_NAME("BREAKFAST");
         foodTypes.add(foodType);
 
         foodType = new FoodTypeMO();
-        foodType.setFood_typ_id(2);
-        foodType.setFood_typ_name("LUNCH");
-        foodType.setIs_def("Y");
+        foodType.setFOOD_TYP_ID(2);
+        foodType.setFOOD_TYP_NAME("LUNCH");
+        foodType.setIS_DEF("Y");
         foodTypes.add(foodType);
 
         foodType = new FoodTypeMO();
-        foodType.setFood_typ_id(3);
-        foodType.setFood_typ_name("SNACKS");
-        foodType.setIs_def("");
+        foodType.setFOOD_TYP_ID(3);
+        foodType.setFOOD_TYP_NAME("SNACKS");
+        foodType.setIS_DEF("");
         foodTypes.add(foodType);
 
         foodType = new FoodTypeMO();
-        foodType.setFood_typ_id(4);
-        foodType.setFood_typ_name("DINNER");
-        foodType.setIs_def("");
+        foodType.setFOOD_TYP_ID(4);
+        foodType.setFOOD_TYP_NAME("DINNER");
+        foodType.setIS_DEF("");
         foodTypes.add(foodType);
 
         foodType = new FoodTypeMO();
-        foodType.setFood_typ_id(5);
-        foodType.setFood_typ_name("DESSERT");
-        foodType.setIs_def("");
+        foodType.setFOOD_TYP_ID(5);
+        foodType.setFOOD_TYP_NAME("DESSERT");
+        foodType.setIS_DEF("");
         foodTypes.add(foodType);
     }
 }
