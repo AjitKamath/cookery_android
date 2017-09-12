@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/app_color_light"
     android:orientation="vertical">
 
@@ -25,7 +26,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="200dp"
             android:background="@color/white"
             android:gravity="center"
             android:orientation="vertical"
@@ -36,24 +37,65 @@
                 android:layout_height="match_parent"
                 android:background="@color/app_color"
                 android:gravity="center"
+                android:padding="@dimen/padding"
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/view_pager_add_recipe_8_no_photos_tv"
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No Photos Added"
                     android:textColor="@color/white"
                     android:textSize="15sp" />
 
-                <ListView
+                <LinearLayout
+                    android:id="@+id/view_pager_add_recipe_8_photos_ll"
+                    android:visibility="visible"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"></ListView>
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="180dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center">
+
+                        <ImageView
+                            android:layout_alignParentRight="true"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/ic_close_white_36dp"/>
+
+                        <ImageView
+                            android:id="@+id/view_pager_add_recipe_8_primary_photo_iv"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/food"/>
+
+                    </RelativeLayout>
+
+                    <GridView
+                        android:layout_marginLeft="10dp"
+                        android:stretchMode="columnWidth"
+                        android:verticalSpacing="2dp"
+                        android:horizontalSpacing="1dp"
+                        tools:listitem="@layout/add_recipe_photos_gv_item"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="top"
+                        android:id="@+id/view_pager_add_recipe_8_photos_gv"
+                        android:numColumns="2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
-
         <TextView
+            android:id="@+id/view_pager_add_recipe_8_add_photos_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -64,7 +106,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/view_pager_add_recipe_7_finish_ll"
+        android:id="@+id/view_pager_add_recipe_8_finish_ll"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"

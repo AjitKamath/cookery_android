@@ -1,26 +1,37 @@
 package com.cookery.models;
 
+import java.io.Serializable;
+
 /**
  * Created by ajit on 29/8/17.
  */
 
-public class QuantityMO {
-    private int MSR_ID;
-    private String MSR_NAME;
+public class QuantityMO  implements Serializable {
+    private int QTY_ID;
+    private String QTY_NAME;
+    private String IS_DEF;
 
-    public int getMSR_ID() {
-        return MSR_ID;
+    public String getIS_DEF() {
+        return IS_DEF;
     }
 
-    public void setMSR_ID(int MSR_ID) {
-        this.MSR_ID = MSR_ID;
+    public void setIS_DEF(String IS_DEF) {
+        this.IS_DEF = IS_DEF;
     }
 
-    public String getMSR_NAME() {
-        return MSR_NAME;
+    public int getQTY_ID() {
+        return QTY_ID;
     }
 
-    public void setMSR_NAME(String MSR_NAME) {
-        this.MSR_NAME = MSR_NAME;
+    public void setQTY_ID(int QTY_ID) {
+        this.QTY_ID = QTY_ID;
+    }
+
+    public String getQTY_NAME() {
+        return QTY_NAME;
+    }
+
+    public void setQTY_NAME(String QTY_NAME) {
+        this.QTY_NAME = QTY_NAME;
     }
 }

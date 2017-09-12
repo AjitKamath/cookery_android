@@ -4,20 +4,28 @@ package com.cookery.utils;
  * Created by ajit on 6/1/15.
  */
 public final class Constants {
+    public static final boolean USE_TEST_DATA = false;
+
     /*server properties*/
     public static final String SLASH = "/";
     public static final String SERVER_PROTOCOL = "http";
-    public static final String SERVER_CODEANYWHERE_IP = "bookmybookphp-ajitkamathk452607.codeanyapp.com";
-    public static final String SERVER_DADDY_IP = "192.168.43.173";
-    public static final String SERVER_IP = SERVER_DADDY_IP;
-    public static final String SERVER_PORT = "";
-    public static final String SERVER_PROJECT_DIRECTORY = "cookery";
-    public static final String SERVER_ADDRESS = SERVER_PROTOCOL+"://"+SERVER_IP+":"+SERVER_PORT+SLASH+SERVER_PROJECT_DIRECTORY;
+    public static final String SERVER_PORT = ":/";
+    public static final String SERVER_CODEANYWHERE_IP = "cookery_php-dial2vishal53897.codeanyapp.com"+SERVER_PORT;
+    public static final String SERVER_PROJECT_DIRECTORY = "cookery/";
+    public static final String SERVER_DADDY_IP = "192.168.43.173"+SERVER_PORT+"/"+SERVER_PROJECT_DIRECTORY;
     public static final String SERVER_CHARSET = "UTF-8";
     public static final int SERVER_TIMEOUT = 5000;  //in milliseconds
+    public static final String SERVER_IP = SERVER_CODEANYWHERE_IP;
+    public static final String SERVER_ADDRESS = SERVER_PROTOCOL+"://"+SERVER_IP;
 
     //PHP
     public static final String PHP_FETCH_ALL_FOOD_TYPES = "fetchfoodtype.php";
+    public static final String PHP_FETCH_ALL_CUISINES = "fetchcuisine.php";
+    public static final String PHP_FETCH_INGREDIENTS = "autocompleteingredient.php";
+    public static final String PHP_FETCH_ALL_TASTES = "fetchtastes.php";
+    public static final String PHP_FETCH_ALL_QUANTITIES = "fetchqty.php";
+    public static final String PHP_FETCH_SUBMIT_RECIPE = "addrecipe.php";
+
     public static final String PHP_FETCH_ALL_TENURES = "fetch_tenure.php";
     public static final String PHP_POST_BOOK = "imupload.php";
     public static final String PHP_FETCH_USER = "fetch_user.php";
@@ -47,6 +55,8 @@ public final class Constants {
     public static final String FRAGMENT_COMMON_SELECTION = "FRAGMENT_COMMON_SELECTION";
     public static final String FRAGMENT_COMMON_WAIT = "FRAGMENT_COMMON_WAIT";
     public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
+
+
     public static final String FRAGMENT_NO_INTERNET = "FRAGMENT_NO_INTERNET";
     public static final String FRAGMENT_COMMON_SPINNER = "FRAGMENT_COMMON_SPINNER";
     public static final String FRAGMENT_COMMON_INFO = "FRAGMENT_COMMON_INFO";
@@ -60,6 +70,7 @@ public final class Constants {
     public static final String GENERIC_OBJECT = "GENERIC_OBJECT";
     public static final String LIST_DATA = "LIST_DATA";
     public static final String SELECTED_ITEM = "SELECTED_ITEM";
+
     public static final String MIN_DURATION = "MIN_DURATION";
     public static final String MAX_DURATION = "MAX_DURATION";
     public static final String DURATION_TYPE = "DURATION_TYPE";

@@ -3,9 +3,19 @@ package com.cookery.fragments;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,16 +28,31 @@ import com.cookery.adapters.AddRecipeViewPagerAdapter;
 import com.cookery.component.ViewPagerCustom;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
+import com.cookery.models.IngredientMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.RecipeMO;
+import com.cookery.utils.Utility;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static android.app.Activity.RESULT_OK;
+import static com.cookery.utils.Constants.CAMERA_CHOICE;
+import static com.cookery.utils.Constants.GALLERY_CHOICE;
 import static com.cookery.utils.Constants.MASTER;
+import static com.cookery.utils.Constants.OK;
+import static com.cookery.utils.Constants.REQUEST_GALLERY_PHOTO;
+import static com.cookery.utils.Constants.REQUEST_TAKE_PHOTO;
 import static com.cookery.utils.Constants.UI_FONT;
 
 /**
@@ -37,20 +62,23 @@ import static com.cookery.utils.Constants.UI_FONT;
 public class AddRecipeFragment extends DialogFragment {
 
     private Context mContext;
+    private static final String CLASS_NAME = AddRecipeFragment.class.getName();
 
     @InjectView(R.id.add_recipe_vp)
     ViewPagerCustom add_recipe_vp;
 
-    @InjectView(R.id.common_fragment_header_add_recipe_close_iv)
-    ImageView common_fragment_header_add_recipe_close_iv;
+    @InjectView(R.id.common_fragment_header_close_iv)
+    ImageView common_fragment_header_close_iv;
 
-    @InjectView(R.id.common_fragment_header_add_recipe_back_iv)
-    ImageView common_fragment_header_add_recipe_back_iv;
+    @InjectView(R.id.common_fragment_header_back_iv)
+    ImageView common_fragment_header_back_iv;
 
-    @InjectView(R.id.common_fragment_header_add_recipe_forward_iv)
-    ImageView common_fragment_header_add_recipe_forward_iv;
+    @InjectView(R.id.common_fragment_header_forward_iv)
+    ImageView common_fragment_header_forward_iv;
 
     private MasterDataMO masterData;
+
+    private String imagePathStr;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,27 +102,63 @@ public class AddRecipeFragment extends DialogFragment {
     private void setupPage() {
         setupSliders();
 
-        common_fragment_header_add_recipe_close_iv.setOnClickListener(new View.OnClickListener() {
+        common_fragment_header_close_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dismiss();
             }
         });
 
-        common_fragment_header_add_recipe_back_iv.setOnClickListener(new View.OnClickListener() {
+        common_fragment_header_back_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                add_recipe_vp.setCurrentItem(add_recipe_vp.getCurrentItem() - 1);
+                changePage(add_recipe_vp.getCurrentItem() - 1);
             }
         });
 
-        common_fragment_header_add_recipe_forward_iv.setOnClickListener(new View.OnClickListener() {
+        common_fragment_header_forward_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                add_recipe_vp.setCurrentItem(add_recipe_vp.getCurrentItem() + 1);
+                changePage(add_recipe_vp.getCurrentItem() + 1);
             }
         });
 
+    }
+
+    private void changePage(int page){
+        if(page == 1){
+            String recipeName = String.valueOf(((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).view_pager_add_recipe_1_recipe_name_et.getText());
+            if(recipeName == null || recipeName.trim().isEmpty()){
+                Utility.showSnacks(add_recipe_vp, "Enter Recipe Name", OK, Snackbar.LENGTH_INDEFINITE);
+                return;
+            }
+            else{
+                ((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).setRecipeName();
+            }
+        }
+
+        if(page == 4){
+            if(((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).view_pager_add_recipe_4_ingedients_gv.getAdapter().isEmpty()){
+                Utility.showSnacks(add_recipe_vp, "Enter Ingredients", OK, Snackbar.LENGTH_INDEFINITE);
+                return;
+            }
+            else{
+                ((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).setIngredients();
+            }
+        }
+
+        if(page == 5){
+            String recipe = String.valueOf(((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).view_pager_add_recipe_5_recipe_et.getText());
+            if(recipe == null || recipe.trim().isEmpty()){
+                Utility.showSnacks(add_recipe_vp, "Enter Recipe", OK, Snackbar.LENGTH_INDEFINITE);
+                return;
+            }
+            else{
+                ((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).setRecipe();
+            }
+        }
+
+        add_recipe_vp.setCurrentItem(page);
     }
 
     private void setupSliders() {
@@ -111,7 +175,9 @@ public class AddRecipeFragment extends DialogFragment {
         final AddRecipeViewPagerAdapter viewPagerAdapter = new AddRecipeViewPagerAdapter(mContext, getFragmentManager(), viewPagerTabsList, masterData, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RecipeMO recipe = getInputs();
+                RecipeMO recipe = ((AddRecipeViewPagerAdapter)add_recipe_vp.getAdapter()).recipe;
+
+                new AsyncTasker().execute(recipe);
             }
         });
 
@@ -122,10 +188,11 @@ public class AddRecipeFragment extends DialogFragment {
 
         add_recipe_vp.setAdapter(viewPagerAdapter);
         add_recipe_vp.setCurrentItem(activePageIndex);
-        add_recipe_vp.setPagingEnabled(true);
+        add_recipe_vp.setOffscreenPageLimit(viewPagerTabsList.size());
+        add_recipe_vp.setPagingEnabled(true); //TODO: set false in prod
 
         //hide back button initially
-        common_fragment_header_add_recipe_back_iv.setVisibility(View.GONE);
+        common_fragment_header_back_iv.setVisibility(View.GONE);
 
         add_recipe_vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -134,17 +201,17 @@ public class AddRecipeFragment extends DialogFragment {
 
             @Override
             public void onPageSelected(int position) {
-                common_fragment_header_add_recipe_close_iv.setVisibility(View.VISIBLE);
-                common_fragment_header_add_recipe_back_iv.setVisibility(View.VISIBLE);
-                common_fragment_header_add_recipe_forward_iv.setVisibility(View.VISIBLE);
+                common_fragment_header_close_iv.setVisibility(View.VISIBLE);
+                common_fragment_header_back_iv.setVisibility(View.VISIBLE);
+                common_fragment_header_forward_iv.setVisibility(View.VISIBLE);
 
                 //hide close
                 if (position == 0) {
-                    common_fragment_header_add_recipe_back_iv.setVisibility(View.GONE);
+                    common_fragment_header_back_iv.setVisibility(View.GONE);
                 }
                 //hide forward
                 else if (position == viewPagerTabsList.size() - 1) {
-                    common_fragment_header_add_recipe_forward_iv.setVisibility(View.GONE);
+                    common_fragment_header_forward_iv.setVisibility(View.GONE);
                 }
             }
 
@@ -155,16 +222,20 @@ public class AddRecipeFragment extends DialogFragment {
         });
     }
 
-    private RecipeMO getInputs() {
-        return null;
-    }
-
     public void setFoodType(FoodTypeMO foodType) {
         ((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).setFoodType(foodType);
     }
 
     public void setCuisine(CuisineMO cuisine) {
         ((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).setCuisine(cuisine);
+    }
+
+    private void setPhoto(String photoPath){
+        ((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).setPhotos(photoPath);
+    }
+
+    public void addIngredient(IngredientMO ingredient){
+        ((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).addIngredient(ingredient);
     }
 
     // Empty constructor required for DialogFragment
@@ -191,14 +262,91 @@ public class AddRecipeFragment extends DialogFragment {
 
     public void onFinishDialog(Integer choice) {
         if (choice == null) {
+            Log.e(CLASS_NAME, "Could not identify the choice : "+choice);
             return;
         }
-        /*else if(GALLERY_CHOICE == choice){
+        else if(GALLERY_CHOICE == choice){
             showPickImageFromGallery();
         }
         else if(CAMERA_CHOICE == choice){
             showPickImageFromCamera();
-        }*/
+        }
+    }
+
+    private void showPickImageFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_GALLERY_PHOTO);
+    }
+
+    private void showPickImageFromCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(getActivity(), "com.example.android.fileprovider", photoFile);
+
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                }
+            }
+            catch (IOException ex) {
+                Log.e(CLASS_NAME, "An error occurred when getting image file from camera: ");
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePathStr);
+            setPhoto(imagePathStr);
+        }
+
+        else if (requestCode == REQUEST_GALLERY_PHOTO && resultCode == RESULT_OK) {
+            try {
+                InputStream inputStream = mContext.getContentResolver().openInputStream(data.getData());
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                File photoFile = createImageFile();
+
+                OutputStream outputStream =  new FileOutputStream(photoFile);
+
+                int read = 0;
+                byte[] bytes = new byte[1024];
+
+                InputStream is = mContext.getContentResolver().openInputStream(data.getData());
+
+                while ((read = is.read(bytes)) != -1) {
+                    outputStream.write(bytes, 0, read);
+                }
+
+                imagePathStr = photoFile.getAbsolutePath();
+
+                setPhoto(imagePathStr);
+            }
+            catch (Exception e){
+                Log.e(CLASS_NAME, "Error while getting the image from the user choice");
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = timeStamp + "_";
+        File storageDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName,  ".jpg", storageDir);
+
+        // Save a file: path for use with ACTION_VIEW intents
+        imagePathStr = image.getAbsolutePath();
+        return image;
     }
 
     //method iterates over each component in the activity and when it finds a text view..sets its font
@@ -216,6 +364,21 @@ public class AddRecipeFragment extends DialogFragment {
             } else if (v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
             }
+        }
+    }
+
+    class AsyncTasker extends AsyncTask<Object, Void, Object> {
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            Log.i(CLASS_NAME, Utility.submitRecipe((RecipeMO) objects[0]));
+
+            return "";
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+
         }
     }
 }

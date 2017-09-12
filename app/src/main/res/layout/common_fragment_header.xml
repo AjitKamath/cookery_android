@@ -5,11 +5,11 @@
     android:background="@color/app_color"
     android:gravity="center"
     android:orientation="vertical"
-    android:id="@+id/common_fragment_header_add_recipe_rl"
+    android:id="@+id/common_fragment_header_rl"
     android:padding="10dp">
 
     <ImageView
-        android:id="@+id/common_fragment_header_add_recipe_close_iv"
+        android:id="@+id/common_fragment_header_close_iv"
         android:layout_width="@dimen/header_buttons_dimen"
         android:layout_height="@dimen/header_buttons_dimen"
         android:layout_alignParentLeft="true"
@@ -22,13 +22,13 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/common_fragment_header_add_recipe_back_iv"
+            android:id="@+id/common_fragment_header_back_iv"
             android:layout_width="@dimen/header_buttons_dimen"
             android:layout_height="@dimen/header_buttons_dimen"
             android:src="@drawable/ic_arrow_back_white_36dp" />
 
         <ImageView
-            android:id="@+id/common_fragment_header_add_recipe_forward_iv"
+            android:id="@+id/common_fragment_header_forward_iv"
             android:layout_width="@dimen/header_buttons_dimen"
             android:layout_height="@dimen/header_buttons_dimen"
             android:layout_marginLeft="10dp"

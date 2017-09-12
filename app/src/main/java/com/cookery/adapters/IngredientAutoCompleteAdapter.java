@@ -7,12 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.filters.IngredientFilter;
+import com.cookery.filters.AutocompleteFilter;
 import com.cookery.models.IngredientMO;
 
 import java.util.ArrayList;
@@ -24,16 +25,15 @@ import static com.cookery.utils.Constants.UI_FONT;
  * Created by ajit on 27/8/17.
  */
 
-public class IngredientAutoCompleteAdapter extends ArrayAdapter<IngredientMO> {
+public class IngredientAutoCompleteAdapter extends ArrayAdapter<String> {
     private Context mContext;
 
-    private final List<IngredientMO> ingredients;
-    public List<IngredientMO> filteredIngredients = new ArrayList<>();
+    public List<Object> filteredIngredients = new ArrayList<>();
+    private static final String TYPE = "INGREDIENTS";
 
-    public IngredientAutoCompleteAdapter(Context context, List<IngredientMO> ingredients) {
-        super(context, 0, ingredients);
+    public IngredientAutoCompleteAdapter(Context context) {
+        super(context, R.layout.autocomplete_ingredient);
         this.mContext = context;
-        this.ingredients = ingredients;
     }
 
     @Override
@@ -42,14 +42,19 @@ public class IngredientAutoCompleteAdapter extends ArrayAdapter<IngredientMO> {
     }
 
     @Override
+    public String getItem(int position) {
+        return ((IngredientMO) filteredIngredients.get(position)).getING_NAME();
+    }
+
+    @Override
     public Filter getFilter() {
-        return new IngredientFilter(this, ingredients);
+        return new AutocompleteFilter(this, TYPE);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item from filtered list.
-        IngredientMO ingredient = filteredIngredients.get(position);
+        IngredientMO ingredient = (IngredientMO) filteredIngredients.get(position);
 
         // Inflate your custom row layout as usual.
         LayoutInflater inflater = LayoutInflater.from(getContext());

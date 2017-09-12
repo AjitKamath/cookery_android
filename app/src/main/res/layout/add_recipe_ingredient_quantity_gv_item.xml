@@ -9,10 +9,10 @@
 
     <LinearLayout
         android:layout_marginLeft="5dp"
-        android:layout_width="wrap_content"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
+        android:gravity="center_vertical|left"
         android:layout_alignParentLeft="true">
 
         <ImageView
@@ -25,7 +25,7 @@
             android:id="@+id/ingredient_quantity_ingredient_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:text="MILK"
             android:textColor="@color/Gray"
             android:textSize="12sp" />
@@ -37,16 +37,16 @@
             android:layout_marginLeft="10dp"
             android:text="3"
             android:textColor="@color/red"
-            android:textSize="10sp" />
+            android:textSize="8sp" />
 
         <TextView
             android:id="@+id/ingredient_quantity_measurement_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="2dp"
             android:text="CUPS"
             android:textColor="@color/red"
-            android:textSize="10sp" />
+            android:textSize="8sp" />
 
     </LinearLayout>
 

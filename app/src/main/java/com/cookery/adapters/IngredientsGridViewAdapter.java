@@ -7,12 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientMO;
 
 import java.util.List;
@@ -28,9 +26,9 @@ public class IngredientsGridViewAdapter extends BaseAdapter {
     private final String CLASS_NAME = this.getClass().getName();
     private final Context mContext;
     private LayoutInflater inflater;
-    private final int LAYOUT = R.layout.ingredient_quantity;
+    private final int LAYOUT = R.layout.add_recipe_ingredient_quantity_gv_item;
 
-    private List<IngredientMO> dataList;
+    public List<IngredientMO> dataList;
 
     public IngredientsGridViewAdapter(Context context, List<IngredientMO> dataList) {
         super();
@@ -69,8 +67,10 @@ public class IngredientsGridViewAdapter extends BaseAdapter {
             mHolder.ingredient_quantity_iv.setImageResource(R.drawable.dot);
         }
         mHolder.ingredient_quantity_ingredient_tv.setText(ingredient.getING_NAME());
-        mHolder.ingredient_quantity_quantity_tv.setTag(ingredient.getQUANTITY());
-        mHolder.ingredient_quantity_measurement_tv.setTag(ingredient.getMSR_NAME());
+        mHolder.ingredient_quantity_quantity_tv.setText(String.valueOf(ingredient.getQTY()));
+        mHolder.ingredient_quantity_measurement_tv.setText(ingredient.getQuantity().getQTY_NAME());
+
+        mHolder.ingredient_quantity_rl.setTag(ingredient);
 
         mHolder.ingredient_quantity_cancel_iv.setOnClickListener(new View.OnClickListener() {
             @Override

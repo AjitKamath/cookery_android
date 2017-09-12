@@ -21,11 +21,13 @@
             android:textSize="20sp" />
 
         <EditText
+            android:id="@+id/view_pager_add_recipe_5_recipe_et"
             android:layout_marginTop="25dp"
             android:textSize="15sp"
             android:textColor="@color/white"
             android:textColorHint="@color/LightGrey"
             android:hint="Your recipe .."
+            android:text="Kill Chicken. Fry it. Eat it."
             android:gravity="center"
             android:layout_width="match_parent"
             android:background="@drawable/edit_text_border_light"

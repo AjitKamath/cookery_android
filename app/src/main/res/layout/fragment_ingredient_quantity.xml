@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_ingredient_quantity_ll"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/White"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/fragment_ingredient_quantity_ingredient_iv"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/food" />
+
+        <TextView
+            android:id="@+id/fragment_ingredient_quantity_ingredient_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="MILK"
+            android:textColor="@color/darkOrange"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/fragment_ingredient_quantity_quantity_et"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:inputType="number"
+            android:text="1"
+            android:maxLength="2"
+            android:textColor="@color/DarkGray"
+            android:textSize="12sp" />
+
+        <Spinner
+            android:spinnerMode="dropdown"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/fragment_ingredient_quantity_quantity_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            tools:listitem="@layout/quantity_spinner_item" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/fragment_ingredient_quantity_ok_tv"
+        android:layout_marginTop="25dp"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="OK"
+        android:textSize="10sp"
+        android:background="@color/app_color"/>
+
+</LinearLayout>

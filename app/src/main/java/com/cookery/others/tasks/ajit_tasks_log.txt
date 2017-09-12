@@ -6,3 +6,19 @@
 4 sep 2017
 1. fetching food types from the database instead of hardcode in add recipe fragment.
 2. implemented custom waiting fragment.
+
+-- git checkin on 4 sep 2017 --
+
+6 sep 2017
+1. validations in add recipe fragment.
+
+8 sep 2017
+1. fetch ingredients auto complete from database.
+2. MultipartUtility is the standard for request response.
+
+9 sep 2017
+1. add photos from gallery & camera for add recipe implemented.
+2. ingredient quantity dialog implemented when adding ingredients in add recipe.
+
+10 sep 2017
+1. add recipe poc completed with multiple images upload.

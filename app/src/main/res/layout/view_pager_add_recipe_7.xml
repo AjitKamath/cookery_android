@@ -52,12 +52,16 @@
                 android:weightSum="5">
 
                 <ImageView
+                    android:id="@+id/view_pager_ad_recipe_7_spice_1_iv"
+                    android:tag="1"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_weight="1"
                     android:src="@drawable/spice_enabled"/>
 
                 <ImageView
+                    android:id="@+id/view_pager_ad_recipe_7_spice_2_iv"
+                    android:tag="2"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_weight="1"
@@ -65,18 +69,24 @@
 
 
                 <ImageView
+                    android:id="@+id/view_pager_ad_recipe_7_spice_3_iv"
+                    android:tag="3"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_weight="1"
                     android:src="@drawable/spice_enabled"/>
 
                 <ImageView
+                    android:id="@+id/view_pager_ad_recipe_7_spice_4_iv"
+                    android:tag="4"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_weight="1"
                     android:src="@drawable/spice_disabled"/>
 
                 <ImageView
+                    android:id="@+id/view_pager_ad_recipe_7_spice_5_iv"
+                    android:tag="5"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_weight="1"
@@ -109,12 +119,16 @@
                 android:weightSum="5">
 
                 <ImageView
+                    android:id="@+id/view_pager_ad_recipe_7_sweet_1_iv"
+                    android:tag="1"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_weight="1"
                     android:src="@drawable/sweet_enabled"/>
 
                 <ImageView
+                    android:id="@+id/view_pager_ad_recipe_7_sweet_2_iv"
+                    android:tag="2"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_weight="1"
@@ -122,18 +136,24 @@
 
 
                 <ImageView
+                    android:id="@+id/view_pager_ad_recipe_7_sweet_3_iv"
+                    android:tag="3"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_weight="1"
                     android:src="@drawable/sweet_disabled"/>
 
                 <ImageView
+                    android:id="@+id/view_pager_ad_recipe_7_sweet_4_iv"
+                    android:tag="4"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_weight="1"
                     android:src="@drawable/sweet_disabled"/>
 
                 <ImageView
+                    android:id="@+id/view_pager_ad_recipe_7_sweet_5_iv"
+                    android:tag="5"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_weight="1"

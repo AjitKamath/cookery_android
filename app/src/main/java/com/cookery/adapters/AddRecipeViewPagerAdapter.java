@@ -7,26 +7,40 @@ package com.cookery.adapters;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.ColorLong;
+import android.support.annotation.IntegerRes;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.fragments.AddRecipeIngredientQuantityFragment;
 import com.cookery.fragments.SelectionFragment;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.MasterDataMO;
+import com.cookery.models.QuantityMO;
+import com.cookery.models.RecipeMO;
+import com.cookery.models.TasteMO;
 import com.cookery.utils.TestData;
+import com.cookery.utils.Utility;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,23 +50,35 @@ import static com.cookery.utils.Constants.AFFIRMATIVE;
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_SELECTION;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.LIST_DATA;
+import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
+import static com.cookery.utils.TestData.cuisines;
 import static com.cookery.utils.TestData.foodTypes;
 
 public class AddRecipeViewPagerAdapter extends PagerAdapter {
-
     private Context mContext;
+    private static final String CLASS_NAME = AddRecipeViewPagerAdapter.class.getName();
+
     private FragmentManager fragmentManager;
     private List<Integer> layoutsList;
 
     private LinearLayout view_pager_add_recipe_2_food_type_ll;
     private LinearLayout view_pager_add_recipe_3_cuisine_ll;
-    private GridView view_pager_add_recipe_4_ingedients_gv;
+    private AutoCompleteTextView view_pager_add_recipe_ingredients_av;
     private ImageView view_pager_add_recipe_user_ingredients_iv;
+    private ImageView view_pager_add_recipe_8_primary_photo_iv;
+    private TextView view_pager_add_recipe_8_no_photos_tv;
+    private LinearLayout view_pager_add_recipe_8_photos_ll;
+    private GridView view_pager_add_recipe_8_photos_gv;
 
+    public EditText view_pager_add_recipe_1_recipe_name_et;
+    public GridView view_pager_add_recipe_4_ingedients_gv;
+    public EditText view_pager_add_recipe_5_recipe_et;
 
     private View.OnClickListener clickListener;
     private MasterDataMO masterData;
+    public RecipeMO recipe = new RecipeMO();
 
     public AddRecipeViewPagerAdapter(Context context, FragmentManager fragmentManager, List<Integer> layoutsList, MasterDataMO masterData, View.OnClickListener clickListener) {
         this.mContext = context;
@@ -68,11 +94,13 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         ViewGroup layout = (ViewGroup) inflater.inflate(layoutsList.get(position), collection, false);
 
         switch(position){
-            case 0: break;
+            case 0: setupAddRecipe1(layout); break;
             case 1: setupAddRecipe2(layout); break;
             case 2: setupAddRecipe3(layout); break;
             case 3: setupAddRecipe4(layout); break;
-            case 8: setupAddRecipe7(layout); break;
+            case 4: setupAddRecipe5(layout); break;
+            case 6: setupAddRecipe7(layout); break;
+            case 7: setupAddRecipe8(layout); break;
         }
 
         setFont(layout);
@@ -82,9 +110,60 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         return layout;
     }
 
+    private void setupAddRecipe5(ViewGroup layout) {
+        view_pager_add_recipe_5_recipe_et = layout.findViewById(R.id.view_pager_add_recipe_5_recipe_et);
+    }
+
+    private void setupAddRecipe1(ViewGroup layout) {
+        view_pager_add_recipe_1_recipe_name_et = layout.findViewById(R.id.view_pager_add_recipe_1_recipe_name_et);
+    }
+
+    private void setupAddRecipe7(ViewGroup layout) {
+        /*spice ratings*/
+        final List<ImageView> spicyIVList = new ArrayList<>();
+        spicyIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_spice_1_iv));
+        spicyIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_spice_2_iv));
+        spicyIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_spice_3_iv));
+        spicyIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_spice_4_iv));
+        spicyIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_spice_5_iv));
+
+        //by default set spice rating as 3
+        setSpiceRating(3, spicyIVList);
+
+        for(ImageView iter : spicyIVList){
+            iter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    setSpiceRating(Integer.parseInt(String.valueOf(view.getTag())), spicyIVList);
+                }
+            });
+        }
+        /*spice ratings*/
+
+        /*sweet ratings*/
+        final List<ImageView> sweetIVList = new ArrayList<>();
+        sweetIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_sweet_1_iv));
+        sweetIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_sweet_2_iv));
+        sweetIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_sweet_3_iv));
+        sweetIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_sweet_4_iv));
+        sweetIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_sweet_5_iv));
+
+        //by default set sweet rating as 2
+        setSweetRating(2, sweetIVList);
+
+        for(ImageView iter : sweetIVList){
+            iter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    setSweetRating(Integer.parseInt(String.valueOf(view.getTag())), sweetIVList);
+                }
+            });
+        }
+        /*sweet ratings*/
+    }
+
     private void setupAddRecipe3(ViewGroup layout) {
-        //TODO: get from master data
-        final List<CuisineMO> cuisines = TestData.cuisines;
+        final List<CuisineMO> cuisines = masterData.getCuisines();
 
         view_pager_add_recipe_3_cuisine_ll = layout.findViewById(R.id.view_pager_add_recipe_3_cuisine_ll);
 
@@ -100,11 +179,11 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
 
     private void setupAddRecipe4(ViewGroup layout) {
         //TODO: get this from db
-        final List<IngredientMO> dogsList = TestData.ingredients;
+        final List<IngredientMO> ingredients = TestData.ingredients;
 
-        final   AutoCompleteTextView autoCompleteTV = layout.findViewById(R.id.view_pager_add_recipe_ingredients_av);
-        IngredientAutoCompleteAdapter adapter = new IngredientAutoCompleteAdapter(mContext, dogsList);
-        autoCompleteTV.setAdapter(adapter);
+        view_pager_add_recipe_ingredients_av = layout.findViewById(R.id.view_pager_add_recipe_ingredients_av);
+        IngredientAutoCompleteAdapter adapter = new IngredientAutoCompleteAdapter(mContext);
+        view_pager_add_recipe_ingredients_av.setAdapter(adapter);
 
         view_pager_add_recipe_4_ingedients_gv = layout.findViewById(R.id.view_pager_add_recipe_4_ingedients_gv);
         final IngredientsGridViewAdapter ingAdapter = new IngredientsGridViewAdapter(mContext, new ArrayList<IngredientMO>());
@@ -114,35 +193,87 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         view_pager_add_recipe_user_ingredients_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(autoCompleteTV.getText().length() == 0){
+                if(view_pager_add_recipe_ingredients_av.getText().length() == 0){
                     return;
                 }
 
-                //TODO:implement way to get quantity and measurement from the user for user added ingredient
                 IngredientMO ingredient = new IngredientMO();
-                ingredient.setING_NAME(String.valueOf(autoCompleteTV.getText()));
-                ingredient.setMSR_NAME("CUPS");
-                ingredient.setMSR_ID(33);
+                ingredient.setING_NAME(String.valueOf(view_pager_add_recipe_ingredients_av.getText()));
 
-                ingAdapter.updateDatalist(ingredient);
-
-                autoCompleteTV.setText("");
+                showQuantityFragment(ingredient);
             }
         });
 
-        autoCompleteTV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        view_pager_add_recipe_ingredients_av.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ingAdapter.updateDatalist((IngredientMO)view.getTag());
-                autoCompleteTV.setText("");
+                showQuantityFragment((IngredientMO)view.getTag());
             }
         });
     }
 
-    private void setupAddRecipe7(ViewGroup layout) {
-        LinearLayout view_pager_add_recipe_7_finish_ll = layout.findViewById(R.id.view_pager_add_recipe_7_finish_ll);
+    public void addIngredient(IngredientMO ingredient){
+        ((IngredientsGridViewAdapter)view_pager_add_recipe_4_ingedients_gv.getAdapter()).updateDatalist(ingredient);
+        view_pager_add_recipe_ingredients_av.setText("");
+    }
 
-        view_pager_add_recipe_7_finish_ll.setOnClickListener(clickListener);
+    private void showQuantityFragment(IngredientMO ingredient) {
+        String fragmentNameStr = FRAGMENT_COMMON_SELECTION;
+        String parentFragmentNameStr = FRAGMENT_ADD_RECIPE;
+
+        Fragment frag = fragmentManager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            fragmentManager.beginTransaction().remove(frag).commit();
+        }
+
+        Fragment parentFragment = null;
+        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
+            parentFragment = fragmentManager.findFragmentByTag(parentFragmentNameStr);
+        }
+
+        AddRecipeIngredientQuantityFragment fragment = new AddRecipeIngredientQuantityFragment();
+
+        if (parentFragment != null) {
+            fragment.setTargetFragment(parentFragment, 0);
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SELECTED_ITEM, ingredient);
+        bundle.putSerializable(LIST_DATA, (Serializable) masterData.getQuantities());
+        fragment.setArguments(bundle);
+
+        fragment.show(fragmentManager, fragmentNameStr);
+    }
+
+
+    private void setupAddRecipe8(ViewGroup layout) {
+        view_pager_add_recipe_8_no_photos_tv = layout.findViewById(R.id.view_pager_add_recipe_8_no_photos_tv);
+        view_pager_add_recipe_8_photos_ll = layout.findViewById(R.id.view_pager_add_recipe_8_photos_ll);
+        view_pager_add_recipe_8_primary_photo_iv = layout.findViewById(R.id.view_pager_add_recipe_8_primary_photo_iv);
+        view_pager_add_recipe_8_photos_gv = layout.findViewById(R.id.view_pager_add_recipe_8_photos_gv);
+        TextView view_pager_add_recipe_8_add_photos_tv = layout.findViewById(R.id.view_pager_add_recipe_8_add_photos_tv);
+        LinearLayout view_pager_add_recipe_8_finish_ll = layout.findViewById(R.id.view_pager_add_recipe_8_finish_ll);
+
+        view_pager_add_recipe_8_no_photos_tv.setVisibility(View.VISIBLE);
+        view_pager_add_recipe_8_photos_ll.setVisibility(View.GONE);
+
+        AddRecipePhotosGridViewAdapter adapter = new AddRecipePhotosGridViewAdapter(mContext, new ArrayList<String>(), new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e(CLASS_NAME, "");
+            }
+        });
+        view_pager_add_recipe_8_photos_gv.setAdapter(adapter);
+
+        view_pager_add_recipe_8_add_photos_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Utility.pickPhotos(fragmentManager, FRAGMENT_ADD_RECIPE);
+            }
+        });
+
+        view_pager_add_recipe_8_finish_ll.setOnClickListener(clickListener);
     }
 
     private void setupAddRecipe2(ViewGroup layout) {
@@ -216,15 +347,20 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         fragment.show(fragmentManager, fragmentNameStr);
     }
 
-    public  void setCuisine(CuisineMO defaultCuisine) {
-        ImageView image = view_pager_add_recipe_3_cuisine_ll.findViewById(R.id.view_pager_add_recipe_3_cuisine_iv);
+    public  void setCuisine(final CuisineMO cuisine) {
+        final ImageView image = view_pager_add_recipe_3_cuisine_ll.findViewById(R.id.view_pager_add_recipe_3_cuisine_iv);
         TextView text = view_pager_add_recipe_3_cuisine_ll.findViewById(R.id.view_pager_add_recipe_3_cuisine_tv);
 
-        text.setText(defaultCuisine.getFOOD_CSN_NAME());
+        text.setText(cuisine.getFOOD_CSN_NAME());
 
-        view_pager_add_recipe_3_cuisine_ll.setTag(defaultCuisine);
+        if(cuisine.getImage() != null){
+            image.setImageBitmap(cuisine.getImage());
+        }
+
+        view_pager_add_recipe_3_cuisine_ll.setTag(cuisine);
+
+        recipe.setFOOD_CSN_ID(cuisine.getFOOD_CSN_ID());
     }
-
 
     public void setFoodType(FoodTypeMO foodType) {
         ImageView image = view_pager_add_recipe_2_food_type_ll.findViewById(R.id.view_pager_add_recipe_2_food_type_iv);
@@ -232,7 +368,90 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
 
         text.setText(foodType.getFOOD_TYP_NAME());
 
+        if(foodType.getImage() != null){
+            image.setImageBitmap(foodType.getImage());
+        }
+
         view_pager_add_recipe_2_food_type_ll.setTag(foodType);
+
+        recipe.setFOOD_TYP_ID(foodType.getFOOD_TYP_ID());
+    }
+
+    private void setSpiceRating(int rating, List<ImageView> spiceIVList){
+        for(int i=0; i<spiceIVList.size(); i++){
+            if(i+1 <= rating){
+                spiceIVList.get(i).setImageResource(R.drawable.spice_enabled);
+            }
+            else{
+                spiceIVList.get(i).setImageResource(R.drawable.spice_disabled);
+            }
+        }
+
+        for(TasteMO iter : masterData.getTastes()){
+            if("SPICY".equalsIgnoreCase(iter.getTST_NAME())){
+                iter.setQuantity(rating);
+                break;
+            }
+        }
+
+        setTaste();
+    }
+
+    private void setSweetRating(int rating, List<ImageView> sweetIVList){
+        for(int i=0; i<sweetIVList.size(); i++){
+            if(i+1 <= rating){
+                sweetIVList.get(i).setImageResource(R.drawable.sweet_enabled);
+            }
+            else{
+                sweetIVList.get(i).setImageResource(R.drawable.sweet_disabled);
+            }
+        }
+
+        for(TasteMO iter : masterData.getTastes()){
+            if("SWEET".equalsIgnoreCase(iter.getTST_NAME())){
+                iter.setQuantity(rating);
+                break;
+            }
+        }
+
+        setTaste();
+    }
+
+    private void setTaste(){
+        recipe.setTastes(masterData.getTastes());
+    }
+
+    public void setRecipeName(){
+        recipe.setRCP_NAME(String.valueOf(view_pager_add_recipe_1_recipe_name_et.getText()));
+    }
+
+    public void setRecipe() {
+        recipe.setRCP_PROC(String.valueOf(view_pager_add_recipe_5_recipe_et.getText()));
+    }
+
+    public void setPhotos(String photoPath) {
+        AddRecipePhotosGridViewAdapter adapter = (AddRecipePhotosGridViewAdapter) view_pager_add_recipe_8_photos_gv.getAdapter();
+
+        if(adapter.getCount() == 0 && view_pager_add_recipe_8_photos_ll.getVisibility() == View.GONE){
+            view_pager_add_recipe_8_primary_photo_iv.setImageBitmap(BitmapFactory.decodeFile(photoPath));
+            view_pager_add_recipe_8_primary_photo_iv.setTag(photoPath);
+        }
+        else{
+            adapter.updateDatalist(photoPath);
+        }
+
+        view_pager_add_recipe_8_no_photos_tv.setVisibility(View.GONE);
+        view_pager_add_recipe_8_photos_ll.setVisibility(View.VISIBLE);
+
+        List<String> images = new ArrayList<>();
+        images.add(String.valueOf(view_pager_add_recipe_8_primary_photo_iv.getTag()));
+        images.addAll(adapter.dataList);
+
+        recipe.setImages(images);
+    }
+
+    public void setIngredients() {
+        recipe.setIngredients(((IngredientsGridViewAdapter)view_pager_add_recipe_4_ingedients_gv.getAdapter()).dataList);
     }
 
     public FoodTypeMO getSelectedFoodType(){

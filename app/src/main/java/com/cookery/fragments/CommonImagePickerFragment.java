@@ -4,101 +4,75 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
-import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.adapters.CuisinesGridViewAdapter;
-import com.cookery.adapters.FoodTypeGridViewAdapter;
-import com.cookery.models.CuisineMO;
-import com.cookery.models.FoodTypeMO;
-
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.CAMERA_CHOICE;
+import static com.cookery.utils.Constants.GALLERY_CHOICE;
 import static com.cookery.utils.Constants.UI_FONT;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_PARENT_FRAGMENT;
 
 /**
  * Created by ajit on 21/3/16.
  */
-public class WaitFragment extends DialogFragment {
+public class CommonImagePickerFragment extends DialogFragment {
     private final String CLASS_NAME = this.getClass().getName();
     private Context mContext;
 
-    //components
-    @InjectView(R.id.common_wait_iv)
-    ImageView common_wait_iv;
+    /*components*/
+    @InjectView(R.id.common_fragment_header_back_iv)
+    ImageView common_fragment_header_back_iv;
 
-    @InjectView(R.id.common_wait_tv)
-    TextView common_wait_tv;
+    @InjectView(R.id.common_fragment_header_forward_iv)
+    ImageView common_fragment_header_forward_iv;
+    /*components*/
 
-    @InjectView(R.id.common_wait_error_tv)
-    TextView common_wait_error_tv;
-    //end of components
-
-    private Object object;
+    private Integer choice = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.common_wait, container);
+        View view = inflater.inflate(R.layout.common_image_picker, container);
         ButterKnife.inject(this, view);
 
         Dialog d = getDialog();
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        getDataFromBundle();
 
         setupPage();
 
         return view;
     }
 
-    private void getDataFromBundle() {
-        object = getArguments().get(GENERIC_OBJECT);
+    private void setupPage() {
+        common_fragment_header_back_iv.setVisibility(View.INVISIBLE);
+        common_fragment_header_forward_iv.setVisibility(View.INVISIBLE);
     }
 
-    private void setupPage() {
-        common_wait_tv.setText(String.valueOf(object));
-
-        //animate the image
-        RotateAnimation rotate = new RotateAnimation(
-                0, 360,
-                Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF, 0.5f
-        );
-        rotate.setDuration(800);
-        rotate.setRepeatCount(Animation.INFINITE);
-        common_wait_iv.startAnimation(rotate);
-
-
-        common_wait_error_tv.setVisibility(View.INVISIBLE);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                common_wait_error_tv.setVisibility(View.VISIBLE);
-            }
-        }, 5000);
-
+    @OnClick({R.id.common_image_picker_gallery_ll, R.id.common_image_picker_camera_ll})
+    public void onImagePickerChoice(View view){
+        if(R.id.common_image_picker_gallery_ll == view.getId()){
+            choice = GALLERY_CHOICE;
+        }
+        else if(R.id.common_image_picker_camera_ll == view.getId()){
+            choice = CAMERA_CHOICE;
+        }
+        dismiss();
     }
 
     // Empty constructor required for DialogFragment
-    public WaitFragment() {
-    }
+    public CommonImagePickerFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,12 +81,25 @@ public class WaitFragment extends DialogFragment {
     }
 
     @Override
+    public void onStop(){
+        super.onStop();
+
+        if(getTargetFragment() instanceof AddRecipeFragment){
+            AddRecipeFragment fragment = (AddRecipeFragment) getTargetFragment();
+            fragment.onFinishDialog(choice);
+        }
+        else{
+            Log.e(CLASS_NAME, UN_IDENTIFIED_PARENT_FRAGMENT+":"+getParentFragment());
+        }
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
 
         Dialog d = getDialog();
-        if (d != null) {
-            int width = 700;
+        if (d!=null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = 500;
             d.getWindow().setLayout(width, height);
         }
@@ -126,11 +113,12 @@ public class WaitFragment extends DialogFragment {
         int count = group.getChildCount();
         View v;
 
-        for (int i = 0; i < count; i++) {
+        for(int i = 0; i < count; i++) {
             v = group.getChildAt(i);
-            if (v instanceof TextView) {
+            if(v instanceof TextView) {
                 ((TextView) v).setTypeface(robotoCondensedLightFont);
-            } else if (v instanceof ViewGroup) {
+            }
+            else if(v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
             }
         }

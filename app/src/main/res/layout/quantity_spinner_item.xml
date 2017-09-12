@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/quantity_spinner_item_ll"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:layout_gravity="left|center_vertical"
+    android:gravity="left|center_vertical"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/quantity_spinner_item_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SPOON"
+        android:textColor="@color/Gray"
+        android:textSize="14sp" />
+
+
+</LinearLayout>

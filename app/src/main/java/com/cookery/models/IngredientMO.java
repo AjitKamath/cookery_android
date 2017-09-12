@@ -1,13 +1,46 @@
 package com.cookery.models;
 
+import android.graphics.Bitmap;
+
+import java.io.Serializable;
+
 /**
  * Created by ajit on 27/8/17.
  */
 
-public class IngredientMO extends QuantityMO {
+public class IngredientMO implements Serializable {
     private int ING_ID;
     private String ING_NAME;
-    private int QUANTITY;
+    private int QTY;
+    private String IMG;
+
+    private QuantityMO quantity;
+
+    public QuantityMO getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(QuantityMO quantity) {
+        this.quantity = quantity;
+    }
+
+    transient private Bitmap image;
+
+    public String getIMG() {
+        return IMG;
+    }
+
+    public void setIMG(String IMG) {
+        this.IMG = IMG;
+    }
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
 
     public int getING_ID() {
         return ING_ID;
@@ -25,11 +58,11 @@ public class IngredientMO extends QuantityMO {
         this.ING_NAME = ING_NAME;
     }
 
-    public int getQUANTITY() {
-        return QUANTITY;
+    public int getQTY() {
+        return QTY;
     }
 
-    public void setQUANTITY(int QUANTITY) {
-        this.QUANTITY = QUANTITY;
+    public void setQTY(int QTY) {
+        this.QTY = QTY;
     }
 }

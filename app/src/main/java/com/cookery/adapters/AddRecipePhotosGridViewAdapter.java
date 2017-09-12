@@ -1,6 +1,8 @@
 package com.cookery.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +10,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.models.FoodTypeMO;
+import com.cookery.models.CuisineMO;
 
 import java.util.List;
 
@@ -22,21 +25,26 @@ import static com.cookery.utils.Constants.UI_FONT;
  * Created by ajit on 8/1/15.
  */
 // Inner Class
-public class FoodTypeGridViewAdapter extends BaseAdapter {
+public class AddRecipePhotosGridViewAdapter extends BaseAdapter {
     private final String CLASS_NAME = this.getClass().getName();
     private final Context mContext;
     private LayoutInflater inflater;
-    private final int LAYOUT = R.layout.food_type_gv_item;
+    private final int LAYOUT = R.layout.add_recipe_photos_gv_item;
 
-    private List<? extends Object> dataList;
+    public List<String> dataList;
     private View.OnClickListener clickListener;
 
-    public FoodTypeGridViewAdapter(Context context, List<? extends Object> dataList, View.OnClickListener clickListener) {
+    public AddRecipePhotosGridViewAdapter(Context context, List<String> dataList, View.OnClickListener clickListener) {
         super();
         this.mContext = context;
         this.inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.dataList = dataList;
         this.clickListener = clickListener;
+    }
+
+    public void updateDatalist(String photoPath){
+        dataList.add(photoPath);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -47,27 +55,22 @@ public class FoodTypeGridViewAdapter extends BaseAdapter {
             mHolder = new ViewHolder();
             convertView = inflater.inflate(LAYOUT, null);
 
-            mHolder.food_type_gv_item_ll =  convertView.findViewById(R.id.food_type_gv_item_ll);
-            mHolder.food_type_gv_item_iv =  convertView.findViewById(R.id.food_type_gv_item_iv);
-            mHolder.food_type_gv_item_tv =  convertView.findViewById(R.id.food_type_gv_item_tv);
+            mHolder.add_recipe_photos_gv_item_rl =  convertView.findViewById(R.id.add_recipe_photos_gv_item_rl);
+            mHolder.add_recipe_photos_gv_item_iv =  convertView.findViewById(R.id.add_recipe_photos_gv_item_iv);
 
             convertView.setTag(LAYOUT, mHolder);
         } else {
             mHolder = (ViewHolder) convertView.getTag(LAYOUT);
         }
 
-        FoodTypeMO food = (FoodTypeMO) dataList.get(position);
+        String photoPath = dataList.get(position);
 
-        mHolder.food_type_gv_item_tv.setText(food.getFOOD_TYP_NAME());
+        mHolder.add_recipe_photos_gv_item_iv.setImageBitmap(BitmapFactory.decodeFile(photoPath));
 
-        if(food.getImage() != null){
-            mHolder.food_type_gv_item_iv.setImageBitmap(food.getImage());
-        }
+        mHolder.add_recipe_photos_gv_item_rl.setTag(photoPath);
+        mHolder.add_recipe_photos_gv_item_rl.setOnClickListener(clickListener);
 
-        mHolder.food_type_gv_item_ll.setTag(food);
-        mHolder.food_type_gv_item_ll.setOnClickListener(clickListener);
-
-        setFont(mHolder.food_type_gv_item_ll);
+        setFont(mHolder.add_recipe_photos_gv_item_rl);
 
         return convertView;
     }
@@ -78,9 +81,8 @@ public class FoodTypeGridViewAdapter extends BaseAdapter {
     }
 
     public class ViewHolder {
-        private LinearLayout food_type_gv_item_ll;
-        private ImageView food_type_gv_item_iv;
-        private TextView food_type_gv_item_tv;
+        private RelativeLayout add_recipe_photos_gv_item_rl;
+        private ImageView add_recipe_photos_gv_item_iv;
     }
 
     public Object getItem(int position) {

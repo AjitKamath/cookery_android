@@ -11,6 +11,15 @@ public class MasterDataMO implements Serializable {
     private List<CuisineMO> cuisines;
     private List<FoodTypeMO> foodTypes;
     private List<QuantityMO> quantities;
+    private List<TasteMO> tastes;
+
+    public List<TasteMO> getTastes() {
+        return tastes;
+    }
+
+    public void setTastes(List<TasteMO> tastes) {
+        this.tastes = tastes;
+    }
 
     public List<CuisineMO> getCuisines() {
         return cuisines;

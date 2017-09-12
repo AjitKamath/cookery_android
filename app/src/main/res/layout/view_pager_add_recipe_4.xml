@@ -57,9 +57,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:gravity="center"
-            android:numColumns="2"
+            android:numColumns="1"
             android:verticalSpacing="10dp"
-            tools:listitem="@layout/ingredient_quantity" />
+            tools:listitem="@layout/add_recipe_ingredient_quantity_gv_item" />
 
     </LinearLayout>
 </LinearLayout>

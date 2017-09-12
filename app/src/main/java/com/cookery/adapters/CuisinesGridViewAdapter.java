@@ -60,6 +60,10 @@ public class CuisinesGridViewAdapter extends BaseAdapter {
 
         mHolder.cuisine_gv_item_tv.setText(cuisine.getFOOD_CSN_NAME());
 
+        if(cuisine.getImage() != null){
+            mHolder.cuisine_gv_item_iv.setImageBitmap(cuisine.getImage());
+        }
+
         mHolder.cuisine_gv_item_ll.setTag(cuisine);
         mHolder.cuisine_gv_item_ll.setOnClickListener(clickListener);
 

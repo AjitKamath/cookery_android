@@ -20,8 +20,11 @@ import android.widget.ImageView;
 
 import com.cookery.R;
 import com.cookery.fragments.AddRecipeFragment;
+import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.MasterDataMO;
+import com.cookery.models.QuantityMO;
+import com.cookery.models.TasteMO;
 import com.cookery.utils.Utility;
 
 import java.util.List;
@@ -29,6 +32,7 @@ import java.util.List;
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.OK;
+import static com.cookery.utils.Constants.USE_TEST_DATA;
 
 public abstract class CommonActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener{
     private static final String CLASS_NAME = CommonActivity.class.getName();
@@ -178,6 +182,9 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             MasterDataMO masterData = new MasterDataMO();
 
             masterData.setFoodTypes((List<FoodTypeMO>)Utility.fetchAllFoodTypes());
+            masterData.setCuisines((List<CuisineMO>)Utility.fetchAllCuisines());
+            masterData.setQuantities((List<QuantityMO>)Utility.fetchAllQuantities());
+            masterData.setTastes((List<TasteMO>)Utility.fetchAllTastes());
 
             return masterData;
         }
@@ -187,9 +194,14 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             MasterDataMO masterData = (MasterDataMO) object;
 
             if(masterData.getFoodTypes() != null && !masterData.getFoodTypes().isEmpty()) {
-                getFragmentManager().beginTransaction().remove(fragment).commit();
-
-                showAddRecipeFragment(masterData);
+                if(masterData.getCuisines() != null && !masterData.getCuisines().isEmpty()){
+                    if(masterData.getQuantities() != null && !masterData.getQuantities().isEmpty()){
+                        if(masterData.getTastes() != null && !masterData.getTastes().isEmpty()){
+                            getFragmentManager().beginTransaction().remove(fragment).commit();
+                            showAddRecipeFragment(masterData);
+                        }
+                    }
+                }
             }
         }
     }

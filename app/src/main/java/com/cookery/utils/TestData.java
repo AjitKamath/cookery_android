@@ -4,6 +4,8 @@ import com.cookery.R;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.FoodTypeMO;
+import com.cookery.models.QuantityMO;
+import com.cookery.models.TasteMO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,13 @@ public class TestData {
     public static List<FoodTypeMO> foodTypes;
     public static List<IngredientMO> ingredients;
     public static List<CuisineMO> cuisines;
+    public static List<QuantityMO> quantities;
+    public static List<TasteMO> tastes;
+
+    static {
+        quantities = new ArrayList<>();
+        QuantityMO quantity = null;
+    }
 
     static{
         cuisines = new ArrayList<>();
@@ -54,36 +63,26 @@ public class TestData {
         ingredient = new IngredientMO();
         ingredient.setING_NAME("MILK");
         ingredient.setING_ID(1);
-        ingredient.setMSR_ID(11);
-        ingredient.setMSR_NAME("CUP");
         ingredients.add(ingredient);
 
         ingredient = new IngredientMO();
         ingredient.setING_NAME("SALT");
         ingredient.setING_ID(2);
-        ingredient.setMSR_ID(12);
-        ingredient.setMSR_NAME("TABLESPOON");
         ingredients.add(ingredient);
 
         ingredient = new IngredientMO();
         ingredient.setING_NAME("PEPPER");
         ingredient.setING_ID(3);
-        ingredient.setMSR_ID(13);
-        ingredient.setMSR_NAME("SPOON");
         ingredients.add(ingredient);
 
         ingredient = new IngredientMO();
         ingredient.setING_NAME("CHILLY");
         ingredient.setING_ID(4);
-        ingredient.setMSR_ID(14);
-        ingredient.setMSR_NAME("SPOON");
         ingredients.add(ingredient);
 
         ingredient = new IngredientMO();
         ingredient.setING_NAME("WATER");
         ingredient.setING_ID(5);
-        ingredient.setMSR_ID(15);
-        ingredient.setMSR_NAME("CUP");
         ingredients.add(ingredient);
 
     }
