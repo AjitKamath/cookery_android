@@ -31,6 +31,7 @@ import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.RecipeMO;
+import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import java.io.File;
@@ -371,7 +372,7 @@ public class AddRecipeFragment extends DialogFragment {
 
         @Override
         protected Object doInBackground(Object... objects) {
-            Log.i(CLASS_NAME, Utility.submitRecipe((RecipeMO) objects[0]));
+            Log.i(CLASS_NAME, InternetUtility.submitRecipe((RecipeMO) objects[0]));
 
             return "";
         }

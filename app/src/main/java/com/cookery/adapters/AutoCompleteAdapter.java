@@ -1,0 +1,143 @@
+package com.cookery.adapters;
+
+import android.content.Context;
+import android.graphics.Typeface;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.cookery.R;
+import com.cookery.filters.AutocompleteFilter;
+import com.cookery.models.IngredientMO;
+import com.cookery.models.RecipeMO;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.cookery.utils.Constants.UI_FONT;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
+
+/**
+ * Created by ajit on 27/8/17.
+ */
+
+public class AutoCompleteAdapter extends ArrayAdapter<String> {
+    private Context mContext;
+    private static final String CLASS_NAME = AutoCompleteAdapter.class.getName();
+
+    public List<Object> filteredIngredients = new ArrayList<>();
+    private static String type;
+    private static int layout;
+
+    public AutoCompleteAdapter(Context context, int layout, String type) {
+        super(context, layout);
+        this.mContext = context;
+        this.type = type;
+        this.layout = layout;
+    }
+
+    @Override
+    public int getCount() {
+        if(filteredIngredients == null){
+            return 0;
+        }
+
+        return filteredIngredients.size();
+    }
+
+    @Override
+    public String getItem(int position) {
+        if(filteredIngredients.get(position) instanceof IngredientMO){
+            return String.valueOf(((IngredientMO) filteredIngredients.get(position)).getING_NAME());
+        }
+        else if(filteredIngredients.get(position) instanceof RecipeMO){
+            return String.valueOf(((RecipeMO) filteredIngredients.get(position)).getRCP_NAME());
+        }
+        else{
+            Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+filteredIngredients.get(position));
+        }
+
+        return "ERROR";
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new AutocompleteFilter(this, type);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        // Inflate your custom row layout as usual.
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        convertView = inflater.inflate(layout, parent, false);
+
+        if(filteredIngredients.get(position) instanceof IngredientMO){
+            // Get the data item from filtered list.
+            IngredientMO ingredient = (IngredientMO) filteredIngredients.get(position);
+
+            LinearLayout autocomplete_ingredient_ll = convertView.findViewById(R.id.autocomplete_ingredient_ll);
+
+            TextView autocomplete_ingredient_tv = convertView.findViewById(R.id.autocomplete_ingredient_tv);
+            ImageView autocomplete_ingredient_iv = convertView.findViewById(R.id.autocomplete_ingredient_iv);
+
+            autocomplete_ingredient_tv.setText(ingredient.getING_NAME());
+            autocomplete_ingredient_iv.setImageResource(R.drawable.food);
+
+            convertView.setTag(ingredient);
+
+            setFont(autocomplete_ingredient_ll);
+        }
+        else if(filteredIngredients.get(position) instanceof RecipeMO){
+            // Get the data item from filtered list.
+            RecipeMO recipe = (RecipeMO) filteredIngredients.get(position);
+
+            RelativeLayout home_master_search_recipe_item_image_rl = convertView.findViewById(R.id.home_master_search_recipe_item_image_rl);
+
+            TextView home_master_search_recipe_item_recipe_name_tv = convertView.findViewById(R.id.home_master_search_recipe_item_recipe_name_tv);
+            ImageView home_master_search_recipe_item_image_iv = convertView.findViewById(R.id.home_master_search_recipe_item_image_iv);
+            TextView home_master_search_recipe_item_user_name_tv = convertView.findViewById(R.id.home_master_search_recipe_item_user_name_tv);
+
+            home_master_search_recipe_item_recipe_name_tv.setText(recipe.getRCP_NAME().toUpperCase());
+
+            if(recipe.getImagesList() != null && recipe.getImagesList().get(0) != null){
+                home_master_search_recipe_item_image_iv.setImageBitmap(recipe.getImagesList().get(0));
+            }
+
+            home_master_search_recipe_item_user_name_tv.setText(recipe.getNAME());
+
+            convertView.setTag(recipe);
+
+            setFont(home_master_search_recipe_item_image_rl);
+        }
+        else{
+            Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+filteredIngredients.get(position));
+        }
+
+        return convertView;
+    }
+
+    private void setFont(ViewGroup group) {
+        final Typeface font = Typeface.createFromAsset(mContext.getAssets(), UI_FONT);
+
+        int count = group.getChildCount();
+        View v;
+
+        for(int i = 0; i < count; i++) {
+            v = group.getChildAt(i);
+            if(v instanceof TextView) {
+                ((TextView) v).setTypeface(font);
+            }
+            else if(v instanceof ViewGroup) {
+                setFont((ViewGroup) v);
+            }
+        }
+    }
+}

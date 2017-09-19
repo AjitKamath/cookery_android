@@ -7,15 +7,9 @@ package com.cookery.adapters;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.ColorLong;
-import android.support.annotation.IntegerRes;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,7 +30,6 @@ import com.cookery.models.CuisineMO;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.MasterDataMO;
-import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.TasteMO;
 import com.cookery.utils.TestData;
@@ -53,8 +46,6 @@ import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LIST_DATA;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
-import static com.cookery.utils.TestData.cuisines;
-import static com.cookery.utils.TestData.foodTypes;
 
 public class AddRecipeViewPagerAdapter extends PagerAdapter {
     private Context mContext;
@@ -178,11 +169,8 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     }
 
     private void setupAddRecipe4(ViewGroup layout) {
-        //TODO: get this from db
-        final List<IngredientMO> ingredients = TestData.ingredients;
-
         view_pager_add_recipe_ingredients_av = layout.findViewById(R.id.view_pager_add_recipe_ingredients_av);
-        IngredientAutoCompleteAdapter adapter = new IngredientAutoCompleteAdapter(mContext);
+        AutoCompleteAdapter adapter = new AutoCompleteAdapter(mContext, R.layout.ingredient_autocomplete_item, "INGREDIENTS");
         view_pager_add_recipe_ingredients_av.setAdapter(adapter);
 
         view_pager_add_recipe_4_ingedients_gv = layout.findViewById(R.id.view_pager_add_recipe_4_ingedients_gv);

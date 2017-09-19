@@ -1,11 +1,11 @@
 package com.cookery.activities;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -14,25 +14,35 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 
 import com.cookery.R;
+import com.cookery.adapters.AutoCompleteAdapter;
 import com.cookery.fragments.AddRecipeFragment;
+import com.cookery.fragments.RecipeFragment;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.QuantityMO;
+import com.cookery.models.RecipeMO;
 import com.cookery.models.TasteMO;
+import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
+import java.io.Serializable;
 import java.util.List;
 
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
+import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.OK;
-import static com.cookery.utils.Constants.USE_TEST_DATA;
+import static com.cookery.utils.Constants.SELECTED_ITEM;
 
 public abstract class CommonActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener{
     private static final String CLASS_NAME = CommonActivity.class.getName();
@@ -48,7 +58,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         super.onResume();
 
         //check if the user is connected to the internet
-        if(!Utility.isNetworkAvailable(mContext)){
+        if(!InternetUtility.isNetworkAvailable(mContext)){
             FragmentManager fragment = getFragmentManager();
             //Utility.showNoInternetFragment(fragment);
             return;
@@ -58,7 +68,58 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         setupNavigator();
 
+        setupSearch();
+
         setupFab();
+    }
+
+    private void setupSearch() {
+        AutoCompleteAdapter adapter = new AutoCompleteAdapter(mContext, R.layout.master_search_recipe_autocomplete_item, "MASTER SEARCH");
+        getCommon_header_search_av().setAdapter(adapter);
+
+        getCommon_header_search_av().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                RecipeMO recipe = (RecipeMO) view.getTag();
+
+                if(recipe == null){
+                    Log.e(CLASS_NAME, "Selected Recipe object is null");
+                    return;
+                }
+
+                new AsyncTaskerFetchRecipe().execute(recipe);
+            }
+        });
+    }
+
+    private void showRecipeFragment(RecipeMO recipe){
+        String fragmentNameStr = FRAGMENT_RECIPE;
+        String parentFragmentNameStr = null;
+
+        FragmentManager manager = getFragmentManager();
+        Fragment frag = manager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            manager.beginTransaction().remove(frag).commit();
+        }
+
+        Fragment parentFragment = null;
+        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
+            parentFragment = manager.findFragmentByTag(parentFragmentNameStr);
+        }
+
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SELECTED_ITEM, recipe);
+
+        RecipeFragment fragment = new RecipeFragment();
+        fragment.setArguments(bundle);
+
+        if (parentFragment != null) {
+            fragment.setTargetFragment(parentFragment, 0);
+        }
+
+        fragment.show(manager, fragmentNameStr);
     }
 
     private void setupToolbar() {
@@ -110,7 +171,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
                 FragmentManager fragmentManager = getFragmentManager();
                 Fragment fragement = Utility.showWaitDialog(fragmentManager, "Loading data ..");
 
-                new AsyncTasker().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fragement);
+                new AsyncTaskerFetchMasterData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fragement);
             }
         });
     }
@@ -171,7 +232,9 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
     protected abstract CoordinatorLayout getWrapper_home_cl();
 
-    class AsyncTasker extends AsyncTask<Fragment, Void, Object> {
+    protected abstract AutoCompleteTextView getCommon_header_search_av();
+
+    class AsyncTaskerFetchMasterData extends AsyncTask<Fragment, Void, Object> {
 
         private Fragment fragment;
 
@@ -181,10 +244,10 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
             MasterDataMO masterData = new MasterDataMO();
 
-            masterData.setFoodTypes((List<FoodTypeMO>)Utility.fetchAllFoodTypes());
-            masterData.setCuisines((List<CuisineMO>)Utility.fetchAllCuisines());
-            masterData.setQuantities((List<QuantityMO>)Utility.fetchAllQuantities());
-            masterData.setTastes((List<TasteMO>)Utility.fetchAllTastes());
+            masterData.setFoodTypes((List<FoodTypeMO>) InternetUtility.fetchAllFoodTypes());
+            masterData.setCuisines((List<CuisineMO>)InternetUtility.fetchAllCuisines());
+            masterData.setQuantities((List<QuantityMO>)InternetUtility.fetchAllQuantities());
+            masterData.setTastes((List<TasteMO>)InternetUtility.fetchAllTastes());
 
             return masterData;
         }
@@ -203,6 +266,18 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
                     }
                 }
             }
+        }
+    }
+
+    class AsyncTaskerFetchRecipe extends AsyncTask<RecipeMO, Void, Object> {
+        @Override
+        protected Object doInBackground(RecipeMO... objects) {
+            return InternetUtility.fetchRecipe(objects[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            showRecipeFragment((RecipeMO) object);
         }
     }
 }

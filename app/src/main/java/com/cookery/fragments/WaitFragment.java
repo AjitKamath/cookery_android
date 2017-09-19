@@ -112,8 +112,8 @@ public class WaitFragment extends DialogFragment {
 
         Dialog d = getDialog();
         if (d != null) {
-            int width = 700;
-            int height = 500;
+            int width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
             d.getWindow().setLayout(width, height);
         }
     }

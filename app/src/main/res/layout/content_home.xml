@@ -2,26 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_home"
+    android:id="@+id/content_home_ll"
     android:background="@color/appBackgroundLight"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/wrapper_home"
+    android:layout_gravity="top"
+    android:gravity="top"
+    android:padding="@dimen/padding"
     android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/categorizedBooksLV"
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="5dp"
+        android:id="@+id/content_home_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@null" />
-
-    <!--<include android:id="@+id/account_summary"
-        layout="@layout/account_summary" />-->
-
-    <!--<View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_height"
-        android:background="@color/white" />-->
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
 
 </LinearLayout>

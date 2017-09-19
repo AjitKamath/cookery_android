@@ -1,0 +1,97 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center_vertical|right"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:textSize="10sp"
+            android:layout_marginRight="10dp"
+            android:text="This Recipe May Contain"/>
+
+        <ImageView
+            android:id="@+id/home_categorized_recipes_recipe_item_veg_non_veg_ind_iv"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/veg" />
+
+        <ImageView
+            android:id="@+id/home_categorized_recipes_recipe_item_nut_ind_iv"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/nut" />
+
+        <ImageView
+            android:id="@+id/home_categorized_recipes_recipe_item_garlic_ind_iv"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/garlic" />
+
+        <ImageView
+            android:id="@+id/home_categorized_recipes_recipe_item_onion_ind_iv"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/onion" />
+
+        <ImageView
+            android:id="@+id/home_categorized_recipes_recipe_item_dairy_ind_iv"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/milk" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/app_color"
+        android:textSize="12sp"
+        android:text="HOW TO MAKE"/>
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Step 1
+        \n
+For preparing this chicken recipe, clean and wash the chicken three-four times and drain. Keep this cleaned chicken aside and make a paste of 2 pieces of ginger, garlic, mustard seeds, cumin seeds, and black peppercorn.
+
+\n\nStep 2\n
+Then take chilli powder, coriander powder, turmeric powder and a quarter cup of water. Grind them all and make a paste of it. Now grind together grated fresh coconut and poppy seeds and make a fine paste of them.
+
+\n\nStep 3\n
+Heat oil in a pressure cooker, fry onions till they turn golden brown. Then add curry leaves and salt, mix in the ginger-garlic spice paste and fry for three minutes.
+
+\n\nStep 4\n
+Now add chilli-coriander-turmeric powder paste. Mix thoroughly and add the chicken pieces. Fry for five minutes.
+
+\n\nStep 5\n
+Add tomatoes and fry for another five minutes with one and a half cups of water and cook for about 10-15 minutes. When the chicken is tender, mix in the coconut-poppy seed paste and cook over medium heat for five minutes.
+
+\n\nStep 6\n
+Finally, add coriander leaves, mix well and remove from heat. Serve it hot with butter naan and raita."
+            android:textColor="@color/gray"
+            android:textSize="14sp" />
+
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

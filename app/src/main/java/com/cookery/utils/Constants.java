@@ -7,16 +7,19 @@ public final class Constants {
     public static final boolean USE_TEST_DATA = false;
 
     /*server properties*/
-    public static final String SLASH = "/";
-    public static final String SERVER_PROTOCOL = "http";
-    public static final String SERVER_PORT = ":/";
-    public static final String SERVER_CODEANYWHERE_IP = "cookery_php-dial2vishal53897.codeanyapp.com"+SERVER_PORT;
-    public static final String SERVER_PROJECT_DIRECTORY = "cookery/";
-    public static final String SERVER_DADDY_IP = "192.168.43.173"+SERVER_PORT+"/"+SERVER_PROJECT_DIRECTORY;
+    private static final String SLASH = "/";
+    private static final String COLON = ":";
+    private static final String SERVER_PROTOCOL = "http";
+    private static final String SERVER_PORT = "";
+    private static final String SERVER_PROJECT_DIRECTORY = "cookery"+SLASH;
+    private static final String SERVER_CODEANYWHERE_IP = "cookery_php-dial2vishal53897.codeanyapp.com"+COLON+SERVER_PORT+SLASH;
+    private static final String SERVER_DADDY_IP = "192.168.43.173"+COLON+SERVER_PORT+SLASH+SERVER_PROJECT_DIRECTORY+SLASH;
+
+    private static final String SERVER_IP = SERVER_CODEANYWHERE_IP;
+
+    public static final String SERVER_ADDRESS = SERVER_PROTOCOL+COLON+SLASH+SLASH+SERVER_IP;
     public static final String SERVER_CHARSET = "UTF-8";
     public static final int SERVER_TIMEOUT = 5000;  //in milliseconds
-    public static final String SERVER_IP = SERVER_CODEANYWHERE_IP;
-    public static final String SERVER_ADDRESS = SERVER_PROTOCOL+"://"+SERVER_IP;
 
     //PHP
     public static final String PHP_FETCH_ALL_FOOD_TYPES = "fetchfoodtype.php";
@@ -25,22 +28,17 @@ public final class Constants {
     public static final String PHP_FETCH_ALL_TASTES = "fetchtastes.php";
     public static final String PHP_FETCH_ALL_QUANTITIES = "fetchqty.php";
     public static final String PHP_FETCH_SUBMIT_RECIPE = "addrecipe.php";
-
-    public static final String PHP_FETCH_ALL_TENURES = "fetch_tenure.php";
-    public static final String PHP_POST_BOOK = "imupload.php";
-    public static final String PHP_FETCH_USER = "fetch_user.php";
+    public static final String PHP_FETCH_TRENDING_RECIPES = "fetchtrendingrecipes.php";
+    public static final String PHP_FETCH_MASTER_SEARCH = "mastersearch.php";
+    public static final String PHP_FETCH_RECIPE = "getrecipedetails.php";
 
     //fragment keys
     public static final int GALLERY_CHOICE = 1111;
     public static final int CAMERA_CHOICE = 2222;
 
     /*Async Task Purpose Keys*/
-    public static final String ASYNC_TASK_UPLOAD_FILES = "UPLOAD_FILES";
-    public static final String ASYNC_TASK_GET_BOOKS_ALL = "GET_BOOKS_ALL";
-    public static final String ASYNC_TASK_REGISTER_USER = "REGISTER_USER";
-    public static final String ASYNC_TASK_GET_CATEGORIES_ALL = "GET_CATEGORIES_ALL";
-    public static final String ASYNC_TASK_GET_TENURES_ALL = "GET_TENURES_ALL";
-    public static final String ASYNC_TASK_GET_USER = "ASYNC_TASK_GET_USER";
+    public static final String ASYNC_TASK_GET_ALL_CATEGORY_RECIPES = "ASYNC_TASK_GET_ALL_CATEGORY_RECIPES";
+    /*Async Task Purpose Keys*/
 
 
     //flag value for affirmative/non affirmative
@@ -52,17 +50,11 @@ public final class Constants {
     //Bundle Keys, Shared Prefs, Intent, fragment names
     //FRAGMENT NAMES
     public static final String FRAGMENT_ADD_RECIPE = "FRAGMENT_ADD_RECIPE";
+    public static final String FRAGMENT_RECIPE = "FRAGMENT_RECIPE";
     public static final String FRAGMENT_COMMON_SELECTION = "FRAGMENT_COMMON_SELECTION";
     public static final String FRAGMENT_COMMON_WAIT = "FRAGMENT_COMMON_WAIT";
     public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
 
-
-    public static final String FRAGMENT_NO_INTERNET = "FRAGMENT_NO_INTERNET";
-    public static final String FRAGMENT_COMMON_SPINNER = "FRAGMENT_COMMON_SPINNER";
-    public static final String FRAGMENT_COMMON_INFO = "FRAGMENT_COMMON_INFO";
-    public static final String FRAGMENT_LOGIN = "FRAGMENT_LOGIN";
-    public static final String FRAGMENT_REGISTRATION = "FRAGMENT_REGISTRATION";
-    public static final String FRAGMENT_SHARE_MESSAGE = "FRAGMENT_SHARE_MESSAGE";
 
     //FRAGMENT OBJECT KEYS
     public static final String LOGGED_IN_USER = "LOGGED_IN_USER";
@@ -71,15 +63,9 @@ public final class Constants {
     public static final String LIST_DATA = "LIST_DATA";
     public static final String SELECTED_ITEM = "SELECTED_ITEM";
 
-    public static final String MIN_DURATION = "MIN_DURATION";
-    public static final String MAX_DURATION = "MAX_DURATION";
-    public static final String DURATION_TYPE = "DURATION_TYPE";
-    public static final String CATEGORY = "CATEGORY";
-    public static final String INFO_MESSAGE_PRIMARY = "INFO_MESSAGE_PRIMARY";
-    public static final String INFO_MESSAGE_SECONDARY = "INFO_MESSAGE_SECONDARY";
-    public static final String HEADER = "HEADER";
-    public static final String RESPONSE = "RESPONSE";
-    public static final String SSID = "SSID";
+    public static final String TRENDING_RECIPES = "TRENDING RECIPES";
+    public static final String TOP_RECIPES_MONTH = "TOP RECIPES OF THE MONTH";
+    public static final String TOP_RECIPES_CHEF = "RECIPES FROM OUR TOP CHEF";
 
     //check master keys
     public static final String CHECK_MASTER_FOR_CATEGORIES = "CHECK_MASTER_FOR_CATEGORIES";

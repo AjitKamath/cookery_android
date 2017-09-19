@@ -49,7 +49,7 @@ public class MultipartUtility {
         boundary = "===" + System.currentTimeMillis() + "===";
 
         URL url = new URL(requestURL);
-        Log.i(CLASS_NAME, "URL : " + requestURL.toString());
+        //Log.i(CLASS_NAME, "URL : " + requestURL.toString());
         httpConn = (HttpURLConnection) url.openConnection();
         httpConn.setUseCaches(false);
         httpConn.setConnectTimeout(SERVER_TIMEOUT);

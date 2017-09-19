@@ -22,3 +22,11 @@
 
 10 sep 2017
 1. add recipe poc completed with multiple images upload.
+
+-- git checkin on 12 sep 2017 --
+
+13 sep 2017
+1. categorized recipes in home screen implemented partially with hard coded data.
+
+17 sep 2017
+1. recipe fragment implemented on selecting recipe from master search.

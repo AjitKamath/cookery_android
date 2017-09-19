@@ -1,10 +1,14 @@
 package com.cookery.utils;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+
 import com.cookery.R;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.QuantityMO;
+import com.cookery.models.RecipeMO;
 import com.cookery.models.TasteMO;
 
 import java.util.ArrayList;
@@ -15,18 +19,80 @@ import java.util.List;
  */
 
 public class TestData {
-    public static List<FoodTypeMO> foodTypes;
-    public static List<IngredientMO> ingredients;
-    public static List<CuisineMO> cuisines;
-    public static List<QuantityMO> quantities;
-    public static List<TasteMO> tastes;
+    private static List<FoodTypeMO> foodTypes;
+    private static List<IngredientMO> ingredients;
+    private static List<CuisineMO> cuisines;
+    private static List<QuantityMO> quantities;
+    private static List<TasteMO> tastes;
+    private static List<RecipeMO> recipes;
 
-    static {
-        quantities = new ArrayList<>();
-        QuantityMO quantity = null;
+    public static List<RecipeMO> getRecipesTestData(){
+        getIngredientsTestData();
+
+        recipes = new ArrayList<>();
+        RecipeMO recipe = null;
+
+        recipe = new RecipeMO();
+        recipe.setRCP_NAME("CHICKEN TANDORI");
+        recipe.setFOOD_TYP_NAME("DINNER");
+        recipe.setFOOD_CSN_NAME("INDIAN");
+        recipe.setNAME("Vishal Varhney");
+        recipe.setIngredients(ingredients);
+        recipes.add(recipe);
+
+        recipe = new RecipeMO();
+        recipe.setRCP_NAME("MUSHROOM NOODLES");
+        recipe.setFOOD_TYP_NAME("BREAKFAST");
+        recipe.setFOOD_CSN_NAME("CHINESE");
+        recipe.setIngredients(ingredients);
+        recipe.setNAME("Ajit Kamath");
+        recipes.add(recipe);
+
+        recipe = new RecipeMO();
+        recipe.setRCP_NAME("MASALA DOSA");
+        recipe.setFOOD_TYP_NAME("BREAKFAST");
+        recipe.setFOOD_CSN_NAME("SOUTH INDIAN");
+        recipe.setIngredients(ingredients);
+        recipe.setNAME("Ashish Bhargav");
+        recipes.add(recipe);
+
+        return recipes;
     }
 
-    static{
+    public static List<QuantityMO> getQuantitiesTestDate() {
+        quantities = new ArrayList<>();
+        QuantityMO quantity = null;
+
+        quantity = new QuantityMO();
+        quantity.setQTY_ID(1);
+        quantity.setIS_DEF("Y");
+        quantity.setQTY_NAME("SPOON");
+        quantities.add(quantity);
+
+        quantity = new QuantityMO();
+        quantity.setQTY_ID(2);
+        quantity.setQTY_NAME("CUP");
+        quantities.add(quantity);
+
+        quantity = new QuantityMO();
+        quantity.setQTY_ID(3);
+        quantity.setQTY_NAME("GLASS");
+        quantities.add(quantity);
+
+        quantity = new QuantityMO();
+        quantity.setQTY_ID(4);
+        quantity.setQTY_NAME("TEA SPOON");
+        quantities.add(quantity);
+
+        quantity = new QuantityMO();
+        quantity.setQTY_ID(5);
+        quantity.setQTY_NAME("PINCH");
+        quantities.add(quantity);
+
+        return quantities;
+    }
+
+    public static List<CuisineMO> getCuisinesTestData(){
         cuisines = new ArrayList<>();
         CuisineMO cuisine = null;
 
@@ -54,40 +120,53 @@ public class TestData {
         cuisine = new CuisineMO();
         cuisine.setFOOD_CSN_NAME("NORTH INDIAN");
         cuisines.add(cuisine);
+
+        return cuisines;
     }
 
-    static{
+    public static List<IngredientMO> getIngredientsTestData(){
         ingredients = new ArrayList<>();
         IngredientMO ingredient = null;
 
         ingredient = new IngredientMO();
         ingredient.setING_NAME("MILK");
         ingredient.setING_ID(1);
+        ingredient.setQTY(1);
+        ingredient.setQTY_NAME("SPOON");
         ingredients.add(ingredient);
 
         ingredient = new IngredientMO();
         ingredient.setING_NAME("SALT");
         ingredient.setING_ID(2);
+        ingredient.setQTY(3);
+        ingredient.setQTY_NAME("TABLE SPOON");
         ingredients.add(ingredient);
 
         ingredient = new IngredientMO();
         ingredient.setING_NAME("PEPPER");
         ingredient.setING_ID(3);
+        ingredient.setQTY(5);
+        ingredient.setQTY_NAME("CUP");
         ingredients.add(ingredient);
 
         ingredient = new IngredientMO();
         ingredient.setING_NAME("CHILLY");
         ingredient.setING_ID(4);
+        ingredient.setQTY(5);
+        ingredient.setQTY_NAME("BOWL");
         ingredients.add(ingredient);
 
         ingredient = new IngredientMO();
         ingredient.setING_NAME("WATER");
         ingredient.setING_ID(5);
+        ingredient.setQTY(3);
+        ingredient.setQTY_NAME("PINCH");
         ingredients.add(ingredient);
 
+        return ingredients;
     }
 
-    static{
+    public static List<FoodTypeMO> getFoodTypesTestData(){
         foodTypes = new ArrayList<>();
         FoodTypeMO foodType = null;
 
@@ -119,5 +198,7 @@ public class TestData {
         foodType.setFOOD_TYP_NAME("DESSERT");
         foodType.setIS_DEF("");
         foodTypes.add(foodType);
+
+        return foodTypes;
     }
 }

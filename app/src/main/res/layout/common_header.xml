@@ -4,29 +4,56 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/header_height"
     android:gravity="center_vertical"
+    android:orientation="vertical"
     android:theme="@style/AppTheme.AppBarOverlay"
     app:elevation="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
-        android:padding="5dp">
+        android:padding="5dp"
+        android:weightSum="10">
 
         <ImageView
-            android:layout_marginLeft="5dp"
             android:id="@+id/common_header_navigation_drawer_iv"
             android:layout_width="@dimen/header_buttons_dimen"
             android:layout_height="@dimen/header_buttons_dimen"
-            android:background="@drawable/options_small_white" />
-
-        <android.support.v7.widget.SearchView
             android:layout_marginLeft="5dp"
-            android:theme="@style/MySearchView"
+            android:background="@drawable/options_small_white"
+            android:clickable="true" />
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="10">
+
+            <AutoCompleteTextView
+                android:id="@+id/common_header_search_av"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/edit_text_border_dark"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:hint="recipes, people &amp; more .."
+                android:popupBackground="@android:color/transparent"
+                android:drawableLeft="@drawable/ic_search_white_24dp"
+                android:drawableRight="@drawable/ic_close_white_24dp"
+                android:scrollbars="vertical"
+                android:dropDownWidth="match_parent"
+                android:fadeScrollbars="false" />
+
+        </RelativeLayout>
+
+        <!--<ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/filter" />-->
 
     </LinearLayout>
-
 </android.support.design.widget.AppBarLayout>

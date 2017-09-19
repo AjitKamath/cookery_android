@@ -5,4 +5,75 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+
+
+    <string-array name="tab_A">
+        <item>Item 1A</item>
+        <item>Item 1B</item>
+        <item>Item 1C</item>
+        <item>Item 1D</item>
+        <item>Item 1E</item>
+        <item>Item 1F</item>
+        <item>Item 1G</item>
+        <item>Item 1H</item>
+        <item>Item 1I</item>
+        <item>Item 1J</item>
+        <item>Item 1K</item>
+        <item>Item 1L</item>
+        <item>Item 1M</item>
+        <item>Item 1N</item>
+        <item>Item 1O</item>
+        <item>Item 1P</item>
+        <item>Item 1Q</item>
+        <item>Item 1R</item>
+        <item>Item 1S</item>
+        <item>Item 1T</item>
+    </string-array>
+
+    <string-array name="tab_B">
+        <item>Item 2A</item>
+        <item>Item 2B</item>
+        <item>Item 2C</item>
+        <item>Item 2D</item>
+        <item>Item 2E</item>
+        <item>Item 2F</item>
+        <item>Item 2G</item>
+        <item>Item 2H</item>
+        <item>Item 2I</item>
+        <item>Item 2J</item>
+        <item>Item 2K</item>
+        <item>Item 2L</item>
+        <item>Item 2M</item>
+        <item>Item 2N</item>
+        <item>Item 2O</item>
+        <item>Item 2P</item>
+        <item>Item 2Q</item>
+        <item>Item 2R</item>
+        <item>Item 2S</item>
+        <item>Item 2T</item>
+    </string-array>
+
+    <string-array name="tab_C">
+        <item>Item 3A</item>
+        <item>Item 3B</item>
+        <item>Item 3C</item>
+        <item>Item 3D</item>
+        <item>Item 3E</item>
+        <item>Item 3F</item>
+        <item>Item 3G</item>
+        <item>Item 3H</item>
+        <item>Item 3I</item>
+        <item>Item 3J</item>
+        <item>Item 3K</item>
+        <item>Item 3L</item>
+        <item>Item 3M</item>
+        <item>Item 3N</item>
+        <item>Item 3O</item>
+        <item>Item 3P</item>
+        <item>Item 3Q</item>
+        <item>Item 3R</item>
+        <item>Item 3S</item>
+        <item>Item 3T</item>
+    </string-array>
 </resources>
