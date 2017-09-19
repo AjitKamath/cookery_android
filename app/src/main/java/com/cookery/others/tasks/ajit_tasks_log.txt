@@ -30,3 +30,10 @@
 
 17 sep 2017
 1. recipe fragment implemented on selecting recipe from master search.
+
+-- git checkin on 19 sep 2017 --
+
+19 sep 2017
+1. fixes in recipe fragment
+
+

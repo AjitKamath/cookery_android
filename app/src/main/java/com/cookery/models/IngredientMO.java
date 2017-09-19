@@ -14,11 +14,20 @@ public class IngredientMO implements Serializable {
     private int QTY;
     private String IMG;
 
+    private int ING_QTY;
     private String QTY_NAME;
     private QuantityMO quantity;
 
     public String getQTY_NAME() {
         return QTY_NAME;
+    }
+
+    public int getING_QTY() {
+        return ING_QTY;
+    }
+
+    public void setING_QTY(int ING_QTY) {
+        this.ING_QTY = ING_QTY;
     }
 
     public void setQTY_NAME(String QTY_NAME) {

@@ -181,6 +181,7 @@ public class Utility extends Activity {
         }
         catch (Exception e){
             Log.e(CLASS_NAME, "Error in parsing the json("+jsonStr+") into the mapping class("+mappingClass+")");
+            Log.e(CLASS_NAME, e.getMessage());
         }
 
         return null;

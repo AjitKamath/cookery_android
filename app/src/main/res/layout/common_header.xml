@@ -33,6 +33,7 @@
             android:layout_weight="10">
 
             <AutoCompleteTextView
+
                 android:id="@+id/common_header_search_av"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"

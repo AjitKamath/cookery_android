@@ -58,11 +58,11 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         super.onResume();
 
         //check if the user is connected to the internet
-        if(!InternetUtility.isNetworkAvailable(mContext)){
+        /*if(!InternetUtility.isNetworkAvailable(mContext)){
             FragmentManager fragment = getFragmentManager();
             //Utility.showNoInternetFragment(fragment);
             return;
-        }
+        }*/
 
         //setupToolbar();
 
@@ -93,6 +93,11 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     }
 
     private void showRecipeFragment(RecipeMO recipe){
+        if(recipe == null){
+            Log.e(CLASS_NAME, "Recipe is null");
+            return;
+        }
+
         String fragmentNameStr = FRAGMENT_RECIPE;
         String parentFragmentNameStr = null;
 
@@ -277,7 +282,11 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected void onPostExecute(Object object) {
-            showRecipeFragment((RecipeMO) object);
+            List<RecipeMO> recipes = (List<RecipeMO>) object;
+
+            if(recipes != null && !recipes.isEmpty()){
+                showRecipeFragment(recipes.get(0));
+            }
         }
     }
 }
