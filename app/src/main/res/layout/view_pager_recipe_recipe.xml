@@ -19,34 +19,34 @@
             android:text="This Recipe May Contain"/>
 
         <ImageView
-            android:id="@+id/home_categorized_recipes_recipe_item_veg_non_veg_ind_iv"
+            android:id="@+id/view_pager_recipe_recipe_item_veg_non_veg_ind_iv"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:src="@drawable/veg" />
 
         <ImageView
-            android:id="@+id/home_categorized_recipes_recipe_item_nut_ind_iv"
+            android:id="@+id/view_pager_recipe_recipe_item_nut_ind_iv"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_marginLeft="10dp"
             android:src="@drawable/nut" />
 
         <ImageView
-            android:id="@+id/home_categorized_recipes_recipe_item_garlic_ind_iv"
+            android:id="@+id/view_pager_recipe_recipe_item_garlic_ind_iv"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_marginLeft="10dp"
             android:src="@drawable/garlic" />
 
         <ImageView
-            android:id="@+id/home_categorized_recipes_recipe_item_onion_ind_iv"
+            android:id="@+id/view_pager_recipe_recipe_item_onion_ind_iv"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_marginLeft="10dp"
             android:src="@drawable/onion" />
 
         <ImageView
-            android:id="@+id/home_categorized_recipes_recipe_item_dairy_ind_iv"
+            android:id="@+id/view_pager_recipe_recipe_item_dairy_ind_iv"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_marginLeft="10dp"
@@ -69,6 +69,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/view_pager_recipe_recipe_proc_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Step 1

@@ -2,8 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_color_light"
-    android:orientation="vertical">
+    android:background="@color/White"
+    android:orientation="vertical"
+    android:padding="@dimen/padding">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tell us your recipe"
+        android:textColor="@color/gray"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,27 +21,18 @@
         android:padding="10dp"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tell us your recipe"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-
         <EditText
             android:id="@+id/view_pager_add_recipe_5_recipe_et"
             android:layout_marginTop="25dp"
             android:textSize="15sp"
-            android:textColor="@color/white"
+            android:textColor="@color/gray"
             android:textColorHint="@color/LightGrey"
             android:hint="Your recipe .."
+            android:background="@drawable/edit_text_border_white_bg"
             android:text="Kill Chicken. Fry it. Eat it."
             android:gravity="center"
             android:layout_width="match_parent"
-            android:background="@drawable/edit_text_border_light"
             android:layout_height="@dimen/edit_text_height"/>
-
-
     </LinearLayout>
 
 

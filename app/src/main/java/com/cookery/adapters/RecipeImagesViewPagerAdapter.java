@@ -52,10 +52,12 @@ public class RecipeImagesViewPagerAdapter extends PagerAdapter {
     private static final String CLASS_NAME = RecipeImagesViewPagerAdapter.class.getName();
 
     private List<Bitmap> images;
+    private View.OnClickListener listener;
 
-    public RecipeImagesViewPagerAdapter(Context context, List<Bitmap> images) {
+    public RecipeImagesViewPagerAdapter(Context context, List<Bitmap> images, View.OnClickListener listener) {
         this.mContext = context;
         this.images = images;
+        this.listener = listener;
     }
 
     @Override
@@ -73,10 +75,24 @@ public class RecipeImagesViewPagerAdapter extends PagerAdapter {
     }
 
     private void setupPage(ViewGroup layout, int position) {
+        if(images == null){
+            return;
+        }
+
         ImageView view_pager_recipe_image_iv = layout.findViewById(R.id.view_pager_recipe_image_iv);
         view_pager_recipe_image_iv.setImageBitmap(images.get(position));
+
+        view_pager_recipe_image_iv.setOnClickListener(listener);
     }
 
+    public void updateData(Bitmap newImage){
+        if(images == null){
+            images = new ArrayList<>();
+        }
+
+        images.add(newImage);
+        notifyDataSetChanged();
+    }
 
     @Override
     public void destroyItem(ViewGroup collection, int position, Object view) {
@@ -91,6 +107,10 @@ public class RecipeImagesViewPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
+        if(images == null){
+            return 0;
+        }
+
         return images.size();
     }
 

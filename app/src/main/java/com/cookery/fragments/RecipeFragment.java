@@ -2,6 +2,7 @@ package com.cookery.fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -10,6 +11,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +33,8 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
@@ -56,6 +60,21 @@ public class RecipeFragment extends DialogFragment {
 
     @InjectView(R.id.common_fragment_recipe_tl)
     TabLayout common_fragment_recipe_tl;
+
+    @InjectView(R.id.common_fragment_recipe_recipe_name_tv)
+    TextView common_fragment_recipe_recipe_name_tv;
+
+    @InjectView(R.id.common_fragment_recipe_food_type_tv)
+    TextView common_fragment_recipe_food_type_tv;
+
+    @InjectView(R.id.common_fragment_recipe_cuisine_name_tv)
+    TextView common_fragment_recipe_cuisine_name_tv;
+
+    @InjectView(R.id.common_fragment_recipe_username_tv)
+    TextView common_fragment_recipe_username_tv;
+
+    @InjectView(R.id.common_fragment_recipe_rating_tv)
+    TextView common_fragment_recipe_rating_tv;
     //end of components
 
     private RecipeMO recipe;
@@ -83,6 +102,12 @@ public class RecipeFragment extends DialogFragment {
 
     private void setupPage() {
         setupImages();
+
+        common_fragment_recipe_recipe_name_tv.setText(recipe.getRCP_NAME().toUpperCase());
+        common_fragment_recipe_food_type_tv.setText(recipe.getFOOD_TYP_NAME().toUpperCase());
+        common_fragment_recipe_cuisine_name_tv.setText(recipe.getFOOD_CSN_NAME());
+        common_fragment_recipe_username_tv.setText(recipe.getNAME());
+        common_fragment_recipe_rating_tv.setText(recipe.getRATING());
 
         final List<Integer> viewPagerTabsList = new ArrayList<>();
         viewPagerTabsList.add(R.layout.view_pager_recipe_recipe);
@@ -119,14 +144,16 @@ public class RecipeFragment extends DialogFragment {
     }
 
     private void setupImages() {
-        //TODO: hardcode
+        if(recipe.getImagesList() == null){
+            recipe.setImagesList(Utility.getTestImages(mContext));
+        }
 
-        List<Bitmap> test = new ArrayList<>();
-        test.add(Utility.drawableToBitmap(getResources().getDrawable(R.drawable.food_sample)));
-        test.add(Utility.drawableToBitmap(getResources().getDrawable(R.drawable.food_sample)));
-        test.add(Utility.drawableToBitmap(getResources().getDrawable(R.drawable.food_sample)));
-
-        common_fragment_recipe_vp.setAdapter(new RecipeImagesViewPagerAdapter(mContext, test));
+        common_fragment_recipe_vp.setAdapter(new RecipeImagesViewPagerAdapter(mContext, recipe.getImagesList(), new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Utility.showRecipeImagesFragment(getFragmentManager(), recipe);
+            }
+        }));
     }
 
     // Empty constructor required for DialogFragment

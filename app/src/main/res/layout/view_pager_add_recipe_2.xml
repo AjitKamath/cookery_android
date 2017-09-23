@@ -2,8 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_color_light"
+    android:background="@color/White"
+    android:padding="@dimen/padding"
     android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="What type of dish ?"
+        android:textColor="@color/Gray"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,13 +20,6 @@
         android:gravity="center"
         android:padding="10dp"
         android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="What type of dish ?"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
 
         <LinearLayout
             android:id="@+id/view_pager_add_recipe_2_food_type_ll"
@@ -44,9 +45,14 @@
                 android:textSize="15sp" />
         </LinearLayout>
 
-
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="8sp"
+            android:textColor="@color/gray"
+            android:text="Eg. BREAKFAST, SNACK, DESSERT Etc."/>
 
     </LinearLayout>
-
 
 </LinearLayout>

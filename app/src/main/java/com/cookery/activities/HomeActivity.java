@@ -11,13 +11,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 
 import com.cookery.R;
 import com.cookery.adapters.HomeCategoriesRecipesRecyclerViewAdapter;
+import com.cookery.component.DelayAutoCompleteTextView;
 import com.cookery.models.RecipeMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
@@ -29,7 +30,6 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.cookery.utils.Constants.ASYNC_TASK_GET_ALL_CATEGORY_RECIPES;
 import static com.cookery.utils.Constants.TOP_RECIPES_CHEF;
 import static com.cookery.utils.Constants.TOP_RECIPES_MONTH;
 import static com.cookery.utils.Constants.TRENDING_RECIPES;
@@ -47,7 +47,7 @@ public class HomeActivity extends CommonActivity{
     DrawerLayout drawer_layout;
 
     @InjectView(R.id.common_header_search_av)
-    AutoCompleteTextView common_header_search_av;
+    DelayAutoCompleteTextView common_header_search_av;
 
     @InjectView(R.id.common_header_navigation_drawer_iv)
     ImageView common_header_navigation_drawer_iv;
@@ -80,7 +80,19 @@ public class HomeActivity extends CommonActivity{
     }
 
     private void setupAllCategoriesRecipes(Map<String, List<RecipeMO>> categoriesRecipes){
-        HomeCategoriesRecipesRecyclerViewAdapter adapter = new HomeCategoriesRecipesRecyclerViewAdapter(mContext, categoriesRecipes);
+        HomeCategoriesRecipesRecyclerViewAdapter adapter = new HomeCategoriesRecipesRecyclerViewAdapter(mContext, categoriesRecipes, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RecipeMO recipe = (RecipeMO) view.getTag();
+
+                if(recipe == null){
+                    Log.e(CLASS_NAME, "Selected Recipe object is null");
+                    return;
+                }
+
+                new AsyncTaskerFetchRecipe().execute(recipe);
+            }
+        });
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
 
         content_home_rv.setLayoutManager(mLayoutManager);
@@ -114,7 +126,7 @@ public class HomeActivity extends CommonActivity{
     }
 
     @Override
-    protected AutoCompleteTextView getCommon_header_search_av(){
+    protected DelayAutoCompleteTextView getCommon_header_search_av(){
         return common_header_search_av;
     }
 
@@ -141,7 +153,7 @@ public class HomeActivity extends CommonActivity{
         protected void onPostExecute(Object object) {
             setupAllCategoriesRecipes((Map<String, List<RecipeMO>>) object);
 
-            getFragmentManager().beginTransaction().remove(fragment).commit();
+            Utility.closeWaitDialog(getFragmentManager(), fragment);
         }
     }
 }

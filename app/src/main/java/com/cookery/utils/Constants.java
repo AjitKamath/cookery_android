@@ -51,8 +51,10 @@ public final class Constants {
     //FRAGMENT NAMES
     public static final String FRAGMENT_ADD_RECIPE = "FRAGMENT_ADD_RECIPE";
     public static final String FRAGMENT_RECIPE = "FRAGMENT_RECIPE";
+    public static final String FRAGMENT_RECIPE_IMAGES = "FRAGMENT_RECIPE_IMAGES";
     public static final String FRAGMENT_COMMON_SELECTION = "FRAGMENT_COMMON_SELECTION";
     public static final String FRAGMENT_COMMON_WAIT = "FRAGMENT_COMMON_WAIT";
+    public static final String FRAGMENT_COMMON_MESSAGE = "FRAGMENT_COMMON_MESSAGE";
     public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
 
 

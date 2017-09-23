@@ -23,6 +23,7 @@ import android.widget.ImageView;
 
 import com.cookery.R;
 import com.cookery.adapters.AutoCompleteAdapter;
+import com.cookery.component.DelayAutoCompleteTextView;
 import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.RecipeFragment;
 import com.cookery.models.CuisineMO;
@@ -75,6 +76,8 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
     private void setupSearch() {
         AutoCompleteAdapter adapter = new AutoCompleteAdapter(mContext, R.layout.master_search_recipe_autocomplete_item, "MASTER SEARCH");
+        getCommon_header_search_av().setThreshold(2);
+        getCommon_header_search_av().setAutoCompleteDelay(1000);
         getCommon_header_search_av().setAdapter(adapter);
 
         getCommon_header_search_av().setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -90,41 +93,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
                 new AsyncTaskerFetchRecipe().execute(recipe);
             }
         });
-    }
-
-    private void showRecipeFragment(RecipeMO recipe){
-        if(recipe == null){
-            Log.e(CLASS_NAME, "Recipe is null");
-            return;
-        }
-
-        String fragmentNameStr = FRAGMENT_RECIPE;
-        String parentFragmentNameStr = null;
-
-        FragmentManager manager = getFragmentManager();
-        Fragment frag = manager.findFragmentByTag(fragmentNameStr);
-
-        if (frag != null) {
-            manager.beginTransaction().remove(frag).commit();
-        }
-
-        Fragment parentFragment = null;
-        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
-            parentFragment = manager.findFragmentByTag(parentFragmentNameStr);
-        }
-
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(SELECTED_ITEM, recipe);
-
-        RecipeFragment fragment = new RecipeFragment();
-        fragment.setArguments(bundle);
-
-        if (parentFragment != null) {
-            fragment.setTargetFragment(parentFragment, 0);
-        }
-
-        fragment.show(manager, fragmentNameStr);
     }
 
     private void setupToolbar() {
@@ -237,7 +205,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
     protected abstract CoordinatorLayout getWrapper_home_cl();
 
-    protected abstract AutoCompleteTextView getCommon_header_search_av();
+    protected abstract DelayAutoCompleteTextView getCommon_header_search_av();
 
     class AsyncTaskerFetchMasterData extends AsyncTask<Fragment, Void, Object> {
 
@@ -275,6 +243,13 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     }
 
     class AsyncTaskerFetchRecipe extends AsyncTask<RecipeMO, Void, Object> {
+        private Fragment fragment;
+
+        @Override
+        protected void onPreExecute(){
+            fragment = Utility.showWaitDialog(getFragmentManager(), "Fetching recipe ..");
+        }
+
         @Override
         protected Object doInBackground(RecipeMO... objects) {
             return InternetUtility.fetchRecipe(objects[0]);
@@ -282,10 +257,12 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected void onPostExecute(Object object) {
-            List<RecipeMO> recipes = (List<RecipeMO>) object;
+            RecipeMO recipe = (RecipeMO) object;
 
-            if(recipes != null && !recipes.isEmpty()){
-                showRecipeFragment(recipes.get(0));
+            if(recipe != null){
+                Utility.showRecipeFragment(getFragmentManager(), recipe);
+
+                Utility.closeWaitDialog(getFragmentManager(), fragment);
             }
         }
     }

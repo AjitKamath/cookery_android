@@ -3,7 +3,9 @@ package com.cookery.utils;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -14,10 +16,14 @@ import android.view.ViewGroup;
 
 import com.cookery.R;
 import com.cookery.fragments.CommonImagePickerFragment;
+import com.cookery.fragments.MessageFragment;
+import com.cookery.fragments.RecipeFragment;
+import com.cookery.fragments.RecipeImagesFragment;
 import com.cookery.fragments.WaitFragment;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientMO;
+import com.cookery.models.MessageMO;
 import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.TasteMO;
@@ -29,10 +35,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_WAIT;
 import static com.cookery.utils.Constants.FRAGMENT_PICK_IMAGE;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.OK;
+import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.SERVER_TIMEOUT;
 
 public class Utility extends Activity {
@@ -187,7 +197,43 @@ public class Utility extends Activity {
         return null;
     }
 
+    public static void showRecipeFragment(FragmentManager fragmentManager, RecipeMO recipe){
+        if(recipe == null){
+            Log.e(CLASS_NAME, "Recipe is null");
+            return;
+        }
 
+        String fragmentNameStr = FRAGMENT_RECIPE;
+        String parentFragmentNameStr = null;
+
+        Fragment frag = fragmentManager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            fragmentManager.beginTransaction().remove(frag).commit();
+        }
+
+        Fragment parentFragment = null;
+        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
+            parentFragment = fragmentManager.findFragmentByTag(parentFragmentNameStr);
+        }
+
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SELECTED_ITEM, recipe);
+
+        RecipeFragment fragment = new RecipeFragment();
+        fragment.setArguments(bundle);
+
+        if (parentFragment != null) {
+            fragment.setTargetFragment(parentFragment, 0);
+        }
+
+        fragment.show(fragmentManager, fragmentNameStr);
+    }
+
+    public static void closeWaitDialog(FragmentManager fragManager, Fragment fragment){
+        fragManager.beginTransaction().remove(fragment).commit();
+    }
 
     public static Fragment showWaitDialog(FragmentManager fragManager, String message) {
         String fragmentNameStr = FRAGMENT_COMMON_WAIT;
@@ -207,5 +253,67 @@ public class Utility extends Activity {
         fragment.show(fragManager, fragmentNameStr);
 
         return fragment;
+    }
+
+    public static Fragment showMessageDialog(FragmentManager fragManager, MessageMO message) {
+        String fragmentNameStr = FRAGMENT_COMMON_MESSAGE;
+
+        Fragment frag = fragManager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            fragManager.beginTransaction().remove(frag).commit();
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(GENERIC_OBJECT, message);
+
+        MessageFragment fragment = new MessageFragment();
+        fragment.setArguments(bundle);
+
+        fragment.show(fragManager, fragmentNameStr);
+
+        return fragment;
+    }
+
+    public static Fragment showRecipeImagesFragment(FragmentManager fragManager, RecipeMO recipe) {
+        String fragmentNameStr = FRAGMENT_RECIPE_IMAGES;
+
+        Fragment frag = fragManager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            fragManager.beginTransaction().remove(frag).commit();
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(GENERIC_OBJECT, recipe);
+
+        RecipeImagesFragment fragment = new RecipeImagesFragment();
+        fragment.setArguments(bundle);
+
+        fragment.show(fragManager, fragmentNameStr);
+
+        return fragment;
+    }
+
+    public static List<Bitmap> getTestImages(Context context){
+        List<Bitmap> images = new ArrayList<>();
+        Bitmap bitmap = null;
+
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.food_sample);
+        images.add(bitmap);
+
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.food_sample);
+        images.add(bitmap);
+
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.food_sample);
+        images.add(bitmap);
+
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.food_sample);
+        images.add(bitmap);
+
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.food_sample);
+        images.add(bitmap);
+
+        return images;
     }
 }

@@ -55,7 +55,7 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
 
     @Override
     public String getItem(int position) {
-        if(filteredIngredients.get(position) instanceof IngredientMO){
+        /*if(filteredIngredients.get(position) instanceof IngredientMO){
             return String.valueOf(((IngredientMO) filteredIngredients.get(position)).getING_NAME());
         }
         else if(filteredIngredients.get(position) instanceof RecipeMO){
@@ -65,7 +65,9 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
             Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+filteredIngredients.get(position));
         }
 
-        return "ERROR";
+        return "ERROR";*/
+
+        return "";
     }
 
     @Override

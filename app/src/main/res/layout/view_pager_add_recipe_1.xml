@@ -1,37 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_color_light">
+    android:background="@color/White"
+    android:padding="@dimen/padding"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="What's your secret recipe name ?"
+        android:textColor="@color/Gray"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:padding="10dp"
-        android:layout_gravity="center">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textColor="@color/white"
-            android:text="What's your secret recipe name ?"/>
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <EditText
             android:id="@+id/view_pager_add_recipe_1_recipe_name_et"
             android:layout_width="match_parent"
             android:layout_height="@dimen/edit_text_height"
-            android:layout_marginTop="15dp"
-            android:textSize="18sp"
-            android:textColor="@color/white"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/edit_text_border_white_bg"
             android:gravity="center"
-            android:text="Chicken Dum Biriyani"
             android:hint="Chicken Tandoori, Palak Paneer etc"
-            android:background="@drawable/edit_text_border_light"
+            android:text="Chicken Dum Biriyani"
+            android:textColor="@color/Gray"
             android:textColorHint="@color/LightGrey"
-            />
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="8sp"
+            android:textColor="@color/gray"
+            android:text="Eg. PANEER TIKKA, CHICKEN MASALA Etc."/>
 
     </LinearLayout>
 </LinearLayout>

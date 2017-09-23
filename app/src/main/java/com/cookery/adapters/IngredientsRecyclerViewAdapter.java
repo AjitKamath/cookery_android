@@ -54,7 +54,7 @@ public class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<Ingredi
         }
 
         holder.view_pager_recipe_ingredients_item_tv.setText(ingredient.getING_NAME().toUpperCase());
-        holder.view_pager_recipe_ingredients_item_qty_tv.setText(String.valueOf(ingredient.getQTY()));
+        holder.view_pager_recipe_ingredients_item_qty_tv.setText(String.valueOf(ingredient.getING_QTY()));
         holder.view_pager_recipe_ingredients_item_qty_type_tv.setText(ingredient.getQTY_NAME().toUpperCase());
     }
 

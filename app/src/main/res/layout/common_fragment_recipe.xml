@@ -11,9 +11,7 @@
         android:id="@+id/common_fragment_recipe_vp"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_alignParentTop="true"
-        android:scaleType="centerCrop"
-        android:src="@drawable/food_sample" />
+        android:layout_alignParentTop="true"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -26,6 +24,7 @@
         android:padding="8dp">
 
         <TextView
+            android:id="@+id/common_fragment_recipe_recipe_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="CHICKEN KOLHAPURI"
@@ -39,6 +38,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/common_fragment_recipe_food_type_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="BREAKFAST"
@@ -55,6 +55,7 @@
                 android:textSize="8sp" />
 
             <TextView
+                android:id="@+id/common_fragment_recipe_cuisine_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="INDIAN"
@@ -89,6 +90,7 @@
                 android:src="@drawable/star" />
 
             <TextView
+                android:id="@+id/common_fragment_recipe_rating_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -134,6 +136,7 @@
             android:paddingRight="10dp">
 
             <TextView
+                android:id="@+id/common_fragment_recipe_username_tv"
                 android:maxWidth="270dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -7,6 +7,7 @@ package com.cookery.adapters;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.component.ViewPagerCustom;
 import com.cookery.fragments.AddRecipeIngredientQuantityFragment;
 import com.cookery.fragments.SelectionFragment;
 import com.cookery.models.CuisineMO;
@@ -58,10 +60,8 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     private LinearLayout view_pager_add_recipe_3_cuisine_ll;
     private AutoCompleteTextView view_pager_add_recipe_ingredients_av;
     private ImageView view_pager_add_recipe_user_ingredients_iv;
-    private ImageView view_pager_add_recipe_8_primary_photo_iv;
     private TextView view_pager_add_recipe_8_no_photos_tv;
-    private LinearLayout view_pager_add_recipe_8_photos_ll;
-    private GridView view_pager_add_recipe_8_photos_gv;
+    private ViewPagerCustom view_pager_add_recipe_8_photos_vp;
 
     public EditText view_pager_add_recipe_1_recipe_name_et;
     public GridView view_pager_add_recipe_4_ingedients_gv;
@@ -237,22 +237,18 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
 
     private void setupAddRecipe8(ViewGroup layout) {
         view_pager_add_recipe_8_no_photos_tv = layout.findViewById(R.id.view_pager_add_recipe_8_no_photos_tv);
-        view_pager_add_recipe_8_photos_ll = layout.findViewById(R.id.view_pager_add_recipe_8_photos_ll);
-        view_pager_add_recipe_8_primary_photo_iv = layout.findViewById(R.id.view_pager_add_recipe_8_primary_photo_iv);
-        view_pager_add_recipe_8_photos_gv = layout.findViewById(R.id.view_pager_add_recipe_8_photos_gv);
         TextView view_pager_add_recipe_8_add_photos_tv = layout.findViewById(R.id.view_pager_add_recipe_8_add_photos_tv);
         LinearLayout view_pager_add_recipe_8_finish_ll = layout.findViewById(R.id.view_pager_add_recipe_8_finish_ll);
 
-        view_pager_add_recipe_8_no_photos_tv.setVisibility(View.VISIBLE);
-        view_pager_add_recipe_8_photos_ll.setVisibility(View.GONE);
-
-        AddRecipePhotosGridViewAdapter adapter = new AddRecipePhotosGridViewAdapter(mContext, new ArrayList<String>(), new View.OnClickListener() {
+        view_pager_add_recipe_8_photos_vp = layout.findViewById(R.id.view_pager_add_recipe_8_photos_vp);
+        view_pager_add_recipe_8_photos_vp.setAdapter(new RecipeImagesViewPagerAdapter(mContext, null, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e(CLASS_NAME, "");
+
             }
-        });
-        view_pager_add_recipe_8_photos_gv.setAdapter(adapter);
+        }));
+
+        updateImages(null);
 
         view_pager_add_recipe_8_add_photos_tv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -262,6 +258,21 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         });
 
         view_pager_add_recipe_8_finish_ll.setOnClickListener(clickListener);
+    }
+
+    private void updateImages(Bitmap image){
+        if(image == null){
+            view_pager_add_recipe_8_no_photos_tv.setVisibility(View.VISIBLE);
+            view_pager_add_recipe_8_photos_vp.setVisibility(View.GONE);
+            return;
+        }
+
+        view_pager_add_recipe_8_no_photos_tv.setVisibility(View.GONE);
+        view_pager_add_recipe_8_photos_vp.setVisibility(View.VISIBLE);
+
+        RecipeImagesViewPagerAdapter adapter = (RecipeImagesViewPagerAdapter) view_pager_add_recipe_8_photos_vp.getAdapter();
+        adapter.updateData(image);
+        view_pager_add_recipe_8_photos_vp.setCurrentItem(adapter.getCount()-1);
     }
 
     private void setupAddRecipe2(ViewGroup layout) {
@@ -418,22 +429,14 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     }
 
     public void setPhotos(String photoPath) {
-        AddRecipePhotosGridViewAdapter adapter = (AddRecipePhotosGridViewAdapter) view_pager_add_recipe_8_photos_gv.getAdapter();
+        Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
+        updateImages(bitmap);
 
-        if(adapter.getCount() == 0 && view_pager_add_recipe_8_photos_ll.getVisibility() == View.GONE){
-            view_pager_add_recipe_8_primary_photo_iv.setImageBitmap(BitmapFactory.decodeFile(photoPath));
-            view_pager_add_recipe_8_primary_photo_iv.setTag(photoPath);
+        List<String> images = recipe.getImages();
+        if(images == null){
+            images = new ArrayList<>();
         }
-        else{
-            adapter.updateDatalist(photoPath);
-        }
-
-        view_pager_add_recipe_8_no_photos_tv.setVisibility(View.GONE);
-        view_pager_add_recipe_8_photos_ll.setVisibility(View.VISIBLE);
-
-        List<String> images = new ArrayList<>();
-        images.add(String.valueOf(view_pager_add_recipe_8_primary_photo_iv.getTag()));
-        images.addAll(adapter.dataList);
+        images.add(photoPath);
 
         recipe.setImages(images);
     }

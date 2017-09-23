@@ -89,6 +89,10 @@ public class HomeCateoryRecipesViewPagerAdapter extends PagerAdapter {
         home_categorized_recipes_recipe_item_food_type_tv.setText(recipe.getFOOD_TYP_NAME().toUpperCase());
         home_categorized_recipes_recipe_item_food_cuisine_tv.setText(recipe.getFOOD_CSN_NAME());
         home_categorized_recipes_recipe_item_user_name_tv.setText(recipe.getNAME());
+
+        layout.setOnClickListener(clickListener);
+
+        layout.setTag(recipe);
     }
 
     @Override

@@ -2,9 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_color_light"
+    android:background="@color/White"
+    android:padding="@dimen/padding"
     android:id="@+id/view_pager_add_recipe_3_cuisine_ll"
     android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cuisine ?"
+        android:textColor="@color/gray"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,13 +21,6 @@
         android:gravity="center"
         android:padding="10dp"
         android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cuisine ?"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_marginTop="25dp"
@@ -44,7 +45,13 @@
                 android:textSize="15sp" />
         </LinearLayout>
 
-
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="8sp"
+            android:textColor="@color/gray"
+            android:text="Eg. INDIAN, MEXICAN, ARABIAN Etc."/>
 
     </LinearLayout>
 

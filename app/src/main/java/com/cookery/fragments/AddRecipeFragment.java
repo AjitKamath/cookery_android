@@ -2,6 +2,7 @@ package com.cookery.fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -30,6 +32,7 @@ import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.MasterDataMO;
+import com.cookery.models.MessageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
@@ -65,8 +68,8 @@ public class AddRecipeFragment extends DialogFragment {
     private Context mContext;
     private static final String CLASS_NAME = AddRecipeFragment.class.getName();
 
-    @InjectView(R.id.add_recipe_vp)
-    ViewPagerCustom add_recipe_vp;
+    @InjectView(R.id.fragment_add_recipe_vp)
+    ViewPagerCustom fragment_add_recipe_vp;
 
     @InjectView(R.id.common_fragment_header_close_iv)
     ImageView common_fragment_header_close_iv;
@@ -113,14 +116,14 @@ public class AddRecipeFragment extends DialogFragment {
         common_fragment_header_back_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changePage(add_recipe_vp.getCurrentItem() - 1);
+                changePage(fragment_add_recipe_vp.getCurrentItem() - 1);
             }
         });
 
         common_fragment_header_forward_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changePage(add_recipe_vp.getCurrentItem() + 1);
+                changePage(fragment_add_recipe_vp.getCurrentItem() + 1);
             }
         });
 
@@ -128,38 +131,38 @@ public class AddRecipeFragment extends DialogFragment {
 
     private void changePage(int page){
         if(page == 1){
-            String recipeName = String.valueOf(((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).view_pager_add_recipe_1_recipe_name_et.getText());
+            String recipeName = String.valueOf(((AddRecipeViewPagerAdapter) fragment_add_recipe_vp.getAdapter()).view_pager_add_recipe_1_recipe_name_et.getText());
             if(recipeName == null || recipeName.trim().isEmpty()){
-                Utility.showSnacks(add_recipe_vp, "Enter Recipe Name", OK, Snackbar.LENGTH_INDEFINITE);
+                Utility.showSnacks(fragment_add_recipe_vp, "Enter Recipe Name", OK, Snackbar.LENGTH_LONG);
                 return;
             }
             else{
-                ((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).setRecipeName();
+                ((AddRecipeViewPagerAdapter) fragment_add_recipe_vp.getAdapter()).setRecipeName();
             }
         }
 
         if(page == 4){
-            if(((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).view_pager_add_recipe_4_ingedients_gv.getAdapter().isEmpty()){
-                Utility.showSnacks(add_recipe_vp, "Enter Ingredients", OK, Snackbar.LENGTH_INDEFINITE);
+            if(((AddRecipeViewPagerAdapter) fragment_add_recipe_vp.getAdapter()).view_pager_add_recipe_4_ingedients_gv.getAdapter().isEmpty()){
+                Utility.showSnacks(fragment_add_recipe_vp, "Enter Ingredients", OK, Snackbar.LENGTH_LONG);
                 return;
             }
             else{
-                ((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).setIngredients();
+                ((AddRecipeViewPagerAdapter) fragment_add_recipe_vp.getAdapter()).setIngredients();
             }
         }
 
         if(page == 5){
-            String recipe = String.valueOf(((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).view_pager_add_recipe_5_recipe_et.getText());
+            String recipe = String.valueOf(((AddRecipeViewPagerAdapter) fragment_add_recipe_vp.getAdapter()).view_pager_add_recipe_5_recipe_et.getText());
             if(recipe == null || recipe.trim().isEmpty()){
-                Utility.showSnacks(add_recipe_vp, "Enter Recipe", OK, Snackbar.LENGTH_INDEFINITE);
+                Utility.showSnacks(fragment_add_recipe_vp, "Enter Recipe", OK, Snackbar.LENGTH_LONG);
                 return;
             }
             else{
-                ((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).setRecipe();
+                ((AddRecipeViewPagerAdapter) fragment_add_recipe_vp.getAdapter()).setRecipe();
             }
         }
 
-        add_recipe_vp.setCurrentItem(page);
+        fragment_add_recipe_vp.setCurrentItem(page);
     }
 
     private void setupSliders() {
@@ -176,26 +179,31 @@ public class AddRecipeFragment extends DialogFragment {
         final AddRecipeViewPagerAdapter viewPagerAdapter = new AddRecipeViewPagerAdapter(mContext, getFragmentManager(), viewPagerTabsList, masterData, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RecipeMO recipe = ((AddRecipeViewPagerAdapter)add_recipe_vp.getAdapter()).recipe;
+                RecipeMO recipe = ((AddRecipeViewPagerAdapter)fragment_add_recipe_vp.getAdapter()).recipe;
+
+                if(recipe.getImages() == null || recipe.getImages().isEmpty()){
+                    Utility.showSnacks(fragment_add_recipe_vp, "Add atleast one photo", OK, Snackbar.LENGTH_LONG);
+                    return;
+                }
 
                 new AsyncTasker().execute(recipe);
             }
         });
 
         int activePageIndex = 0;
-        if (add_recipe_vp != null && add_recipe_vp.getAdapter() != null) {
-            activePageIndex = add_recipe_vp.getCurrentItem();
+        if (fragment_add_recipe_vp != null && fragment_add_recipe_vp.getAdapter() != null) {
+            activePageIndex = fragment_add_recipe_vp.getCurrentItem();
         }
 
-        add_recipe_vp.setAdapter(viewPagerAdapter);
-        add_recipe_vp.setCurrentItem(activePageIndex);
-        add_recipe_vp.setOffscreenPageLimit(viewPagerTabsList.size());
-        add_recipe_vp.setPagingEnabled(true); //TODO: set false in prod
+        fragment_add_recipe_vp.setAdapter(viewPagerAdapter);
+        fragment_add_recipe_vp.setCurrentItem(activePageIndex);
+        fragment_add_recipe_vp.setOffscreenPageLimit(viewPagerTabsList.size());
+        fragment_add_recipe_vp.setPagingEnabled(true); //TODO: set false in prod
 
         //hide back button initially
         common_fragment_header_back_iv.setVisibility(View.GONE);
 
-        add_recipe_vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        fragment_add_recipe_vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
@@ -224,19 +232,19 @@ public class AddRecipeFragment extends DialogFragment {
     }
 
     public void setFoodType(FoodTypeMO foodType) {
-        ((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).setFoodType(foodType);
+        ((AddRecipeViewPagerAdapter) fragment_add_recipe_vp.getAdapter()).setFoodType(foodType);
     }
 
     public void setCuisine(CuisineMO cuisine) {
-        ((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).setCuisine(cuisine);
+        ((AddRecipeViewPagerAdapter) fragment_add_recipe_vp.getAdapter()).setCuisine(cuisine);
     }
 
     private void setPhoto(String photoPath){
-        ((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).setPhotos(photoPath);
+        ((AddRecipeViewPagerAdapter) fragment_add_recipe_vp.getAdapter()).setPhotos(photoPath);
     }
 
     public void addIngredient(IngredientMO ingredient){
-        ((AddRecipeViewPagerAdapter) add_recipe_vp.getAdapter()).addIngredient(ingredient);
+        ((AddRecipeViewPagerAdapter) fragment_add_recipe_vp.getAdapter()).addIngredient(ingredient);
     }
 
     // Empty constructor required for DialogFragment
@@ -369,17 +377,32 @@ public class AddRecipeFragment extends DialogFragment {
     }
 
     class AsyncTasker extends AsyncTask<Object, Void, Object> {
+        android.app.Fragment frag = null;
+
+        @Override
+        protected void onPreExecute(){
+            frag = Utility.showWaitDialog(getFragmentManager(), "Submitting your Recipe ..");
+        }
 
         @Override
         protected Object doInBackground(Object... objects) {
-            Log.i(CLASS_NAME, InternetUtility.submitRecipe((RecipeMO) objects[0]));
-
-            return "";
+            return InternetUtility.submitRecipe((RecipeMO) objects[0]);
         }
 
         @Override
         protected void onPostExecute(Object object) {
+            MessageMO message = (MessageMO) object;
 
+            if(message.isError()){
+                Log.e(CLASS_NAME, "Error : "+message.getErr_message());
+            }
+            else{
+                Log.i(CLASS_NAME, message.getErr_message());
+                dismiss();
+            }
+
+            Utility.closeWaitDialog(getFragmentManager(), frag);
+            Utility.showMessageDialog(getFragmentManager(), message);
         }
     }
 }

@@ -25,7 +25,7 @@ public class RecipeMO  implements Serializable {
     private List<IngredientMO> ingredients;
     private List<TasteMO> tastes;
 
-    private List<Bitmap> imagesList;
+    private transient List<Bitmap> imagesList;
     private List<String> images;
     private List<String> RCP_IMGS;
     private String RATING;

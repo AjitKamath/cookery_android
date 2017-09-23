@@ -201,4 +201,22 @@ public class TestData {
 
         return foodTypes;
     }
+
+    public static List<TasteMO> getTastesTestData(){
+        TasteMO taste = null;
+        List<TasteMO> tastes = new ArrayList<>();
+
+        taste = new TasteMO();
+        taste.setTST_ID(1);
+        taste.setTST_NAME("SWEET");
+        tastes.add(taste);
+
+        taste = new TasteMO();
+        taste.setTST_ID(1);
+        taste.setTST_NAME("SPICE");
+        tastes.add(taste);
+
+        return tastes;
+    }
+
 }

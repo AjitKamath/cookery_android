@@ -7,8 +7,6 @@ package com.cookery.adapters;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +16,7 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.models.RecipeMO;
+import com.cookery.utils.Utility;
 
 import java.util.List;
 import java.util.Map;
@@ -27,15 +26,17 @@ import static com.cookery.utils.Constants.TOP_RECIPES_MONTH;
 import static com.cookery.utils.Constants.TRENDING_RECIPES;
 
 public class HomeCategoriesRecipesRecyclerViewAdapter extends RecyclerView.Adapter<HomeCategoriesRecipesRecyclerViewAdapter.ViewHolder> {
-
     private static final String CLASS_NAME = HomeCategoriesRecipesRecyclerViewAdapter.class.getName();
     private Context mContext;
 
-    private Map<String, List<RecipeMO>> categoryRecipes;
 
-    public HomeCategoriesRecipesRecyclerViewAdapter(Context mContext, Map<String, List<RecipeMO>> categoryRecipes) {
+    private Map<String, List<RecipeMO>> categoryRecipes;
+    private View.OnClickListener clickListener;
+
+    public HomeCategoriesRecipesRecyclerViewAdapter(Context mContext, Map<String, List<RecipeMO>> categoryRecipes, View.OnClickListener clickListener) {
         this.mContext = mContext;
         this.categoryRecipes = categoryRecipes;
+        this.clickListener = clickListener;
     }
 
     @Override
@@ -60,12 +61,7 @@ public class HomeCategoriesRecipesRecyclerViewAdapter extends RecyclerView.Adapt
 
         holder.home_categorized_recipes_tv.setText(choice.toUpperCase());
 
-        HomeCateoryRecipesViewPagerAdapter adapter = new HomeCateoryRecipesViewPagerAdapter(mContext, recipes, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+        HomeCateoryRecipesViewPagerAdapter adapter = new HomeCateoryRecipesViewPagerAdapter(mContext, recipes, clickListener);
 
         holder.home_categorized_recipes_vp.setAdapter(adapter);
     }

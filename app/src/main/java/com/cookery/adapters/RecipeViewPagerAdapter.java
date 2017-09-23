@@ -7,6 +7,7 @@ package com.cookery.adapters;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -65,16 +66,8 @@ public class RecipeViewPagerAdapter extends PagerAdapter {
     }
 
     private void setupRecipeProcedure(ViewGroup layout) {
-        TextView home_categorized_recipes_recipe_item_recipe_name_tv = layout.findViewById(R.id.home_categorized_recipes_recipe_item_recipe_name_tv);
-        TextView home_categorized_recipes_recipe_item_food_type_tv = layout.findViewById(R.id.home_categorized_recipes_recipe_item_food_type_tv);
-        TextView home_categorized_recipes_recipe_item_food_cuisine_tv = layout.findViewById(R.id.home_categorized_recipes_recipe_item_food_cuisine_tv);
-        TextView home_categorized_recipes_recipe_item_user_name_tv = layout.findViewById(R.id.home_categorized_recipes_recipe_item_user_name_tv);
-
-
-        /*home_categorized_recipes_recipe_item_recipe_name_tv.setText(recipe.getRCP_NAME().toUpperCase());
-        home_categorized_recipes_recipe_item_food_type_tv.setText(recipe.getFOOD_TYPE_NAME().toUpperCase());
-        home_categorized_recipes_recipe_item_food_cuisine_tv.setText(recipe.getFOOD_CSN_NAME());
-        home_categorized_recipes_recipe_item_user_name_tv.setText(recipe.getNAME());*/
+        TextView view_pager_recipe_recipe_proc_tv = layout.findViewById(R.id.view_pager_recipe_recipe_proc_tv);
+        view_pager_recipe_recipe_proc_tv.setText(recipe.getRCP_PROC());
     }
 
     @Override
