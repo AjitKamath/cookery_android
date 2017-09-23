@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cookery.R;
+import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.CommonImagePickerFragment;
 import com.cookery.fragments.MessageFragment;
 import com.cookery.fragments.RecipeFragment;
@@ -255,7 +256,7 @@ public class Utility extends Activity {
         return fragment;
     }
 
-    public static Fragment showMessageDialog(FragmentManager fragManager, MessageMO message) {
+    public static Fragment showMessageDialog(FragmentManager fragManager, Fragment parentFrag,  MessageMO message) {
         String fragmentNameStr = FRAGMENT_COMMON_MESSAGE;
 
         Fragment frag = fragManager.findFragmentByTag(fragmentNameStr);
@@ -269,6 +270,7 @@ public class Utility extends Activity {
 
         MessageFragment fragment = new MessageFragment();
         fragment.setArguments(bundle);
+        fragment.setTargetFragment(parentFrag, 0);
 
         fragment.show(fragManager, fragmentNameStr);
 

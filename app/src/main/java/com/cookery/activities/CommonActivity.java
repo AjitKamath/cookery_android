@@ -48,6 +48,7 @@ import static com.cookery.utils.Constants.SELECTED_ITEM;
 public abstract class CommonActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener{
     private static final String CLASS_NAME = CommonActivity.class.getName();
     private Context mContext = this;
+    private MasterDataMO masterData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,10 +142,12 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         getFab().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fragmentManager = getFragmentManager();
-                Fragment fragement = Utility.showWaitDialog(fragmentManager, "Loading data ..");
-
-                new AsyncTaskerFetchMasterData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fragement);
+                if(masterData == null){
+                    new AsyncTaskerFetchMasterData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "FETCH_AND_SHOW_ADD_RECIPE");
+                }
+                else{
+                    showAddRecipeFragment(masterData);
+                }
             }
         });
     }
@@ -207,13 +210,14 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
     protected abstract DelayAutoCompleteTextView getCommon_header_search_av();
 
-    class AsyncTaskerFetchMasterData extends AsyncTask<Fragment, Void, Object> {
 
-        private Fragment fragment;
+    class AsyncTaskerFetchMasterData extends AsyncTask<String, Void, Object> {
+        String whatToDo;
+        Fragment fragment;
 
         @Override
-        protected Object doInBackground(Fragment... objects) {
-            this.fragment = objects[0];
+        protected Object doInBackground(String... objects) {
+            whatToDo = String.valueOf(objects[0]);
 
             MasterDataMO masterData = new MasterDataMO();
 
@@ -226,15 +230,25 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         }
 
         @Override
-        protected void onPostExecute(Object object) {
-            MasterDataMO masterData = (MasterDataMO) object;
+        protected void onPreExecute() {
+            fragment = Utility.showWaitDialog(getFragmentManager(), "loading data ..");
+        }
 
-            if(masterData.getFoodTypes() != null && !masterData.getFoodTypes().isEmpty()) {
-                if(masterData.getCuisines() != null && !masterData.getCuisines().isEmpty()){
-                    if(masterData.getQuantities() != null && !masterData.getQuantities().isEmpty()){
-                        if(masterData.getTastes() != null && !masterData.getTastes().isEmpty()){
-                            getFragmentManager().beginTransaction().remove(fragment).commit();
-                            showAddRecipeFragment(masterData);
+        @Override
+        protected void onPostExecute(Object object) {
+           MasterDataMO temp = (MasterDataMO) object;
+
+            if(temp.getFoodTypes() != null && !temp.getFoodTypes().isEmpty()) {
+                if(temp.getCuisines() != null && !temp.getCuisines().isEmpty()){
+                    if(temp.getQuantities() != null && !temp.getQuantities().isEmpty()){
+                        if(temp.getTastes() != null && !temp.getTastes().isEmpty()){
+                            masterData = temp;
+
+                            Utility.closeWaitDialog(getFragmentManager(), fragment);
+
+                            if("FETCH_AND_SHOW_ADD_RECIPE".equalsIgnoreCase(whatToDo)){
+                                showAddRecipeFragment(masterData);
+                            }
                         }
                     }
                 }
@@ -247,7 +261,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected void onPreExecute(){
-            fragment = Utility.showWaitDialog(getFragmentManager(), "Fetching recipe ..");
+            fragment = Utility.showWaitDialog(getFragmentManager(), "Fetching Recipe ..");
         }
 
         @Override
@@ -257,7 +271,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected void onPostExecute(Object object) {
-            RecipeMO recipe = (RecipeMO) object;
+            RecipeMO recipe = ((List<RecipeMO>) object).get(0);
 
             if(recipe != null){
                 Utility.showRecipeFragment(getFragmentManager(), recipe);

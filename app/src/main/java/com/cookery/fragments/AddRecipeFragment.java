@@ -2,7 +2,7 @@ package com.cookery.fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.FragmentManager;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -52,6 +51,7 @@ import butterknife.InjectView;
 
 import static android.app.Activity.RESULT_OK;
 import static com.cookery.utils.Constants.CAMERA_CHOICE;
+import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.GALLERY_CHOICE;
 import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.OK;
@@ -109,7 +109,13 @@ public class AddRecipeFragment extends DialogFragment {
         common_fragment_header_close_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dismiss();
+                MessageMO message = new MessageMO();
+                message.setErr_message("Your Recipe will be lost");
+                message.setPurpose("CLOSE_ADD_RECIPE");
+                message.setError(false);
+
+                Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_ADD_RECIPE);
+                Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
             }
         });
 
@@ -377,7 +383,7 @@ public class AddRecipeFragment extends DialogFragment {
     }
 
     class AsyncTasker extends AsyncTask<Object, Void, Object> {
-        android.app.Fragment frag = null;
+        Fragment frag = null;
 
         @Override
         protected void onPreExecute(){
@@ -392,6 +398,7 @@ public class AddRecipeFragment extends DialogFragment {
         @Override
         protected void onPostExecute(Object object) {
             MessageMO message = (MessageMO) object;
+            message.setPurpose("ADD_RECIPE");
 
             if(message.isError()){
                 Log.e(CLASS_NAME, "Error : "+message.getErr_message());
@@ -402,7 +409,9 @@ public class AddRecipeFragment extends DialogFragment {
             }
 
             Utility.closeWaitDialog(getFragmentManager(), frag);
-            Utility.showMessageDialog(getFragmentManager(), message);
+
+            Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_ADD_RECIPE);
+            Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
         }
     }
 }

@@ -48,3 +48,9 @@
 1. redesigned the add recipe fragment.
 2. redesigned images in add recipe fragment.
 3. success/fail message after submitting a recipe.
+
+-- git checkin on 23 sep 2017 --
+
+23 sep 2017
+1. fixed app crash on recipe click on home screen.
+2. confirm message before closing add recipe fragment.

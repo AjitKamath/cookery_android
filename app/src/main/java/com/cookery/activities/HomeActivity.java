@@ -76,7 +76,8 @@ public class HomeActivity extends CommonActivity{
     }
 
     private void fetchAllCategoriesRecipes() {
-        new AsyncTasker().execute();
+        new AsyncTaskerHomeRecipes().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new AsyncTaskerFetchMasterData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "JUST_FETCH");
     }
 
     private void setupAllCategoriesRecipes(Map<String, List<RecipeMO>> categoriesRecipes){
@@ -130,7 +131,7 @@ public class HomeActivity extends CommonActivity{
         return common_header_search_av;
     }
 
-    class AsyncTasker extends AsyncTask<Object, Void, Object> {
+    class AsyncTaskerHomeRecipes extends AsyncTask<Object, Void, Object> {
         private Fragment fragment;
 
         @Override
@@ -151,9 +152,12 @@ public class HomeActivity extends CommonActivity{
 
         @Override
         protected void onPostExecute(Object object) {
-            setupAllCategoriesRecipes((Map<String, List<RecipeMO>>) object);
+            Map<String, List<RecipeMO>> categoryRecipesMap = (Map<String, List<RecipeMO>>) object;
 
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
+            if(categoryRecipesMap != null || !categoryRecipesMap.isEmpty()){
+                setupAllCategoriesRecipes((Map<String, List<RecipeMO>>) object);
+                Utility.closeWaitDialog(getFragmentManager(), fragment);
+            }
         }
     }
 }

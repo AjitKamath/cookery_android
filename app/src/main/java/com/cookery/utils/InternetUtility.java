@@ -20,11 +20,13 @@ import junit.framework.Test;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -210,8 +212,10 @@ public class InternetUtility {
             message.setError(false);
         }
         catch(SocketException e){
+            Log.e(CLASS_NAME, e.getMessage());
+
             message.setError(true);
-            message.setErr_message("Failed to connect to internet");
+            message.setErr_message("Check your internet");
         }
         catch(Exception e){
             Log.e(CLASS_NAME, e.getMessage());
@@ -255,7 +259,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static String getResponseFromCookery(String url, Map<String, String> paramMap){
+    public static String getResponseFromCookery(String url, Map<String, String> paramMap) throws Exception{
         try {
             MultipartUtility multipart = new MultipartUtility(url, SERVER_CHARSET);
 
@@ -277,10 +281,16 @@ public class InternetUtility {
 
             return  response;
         }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+
+            throw new IOException(e);
+        }
         catch(Exception e) {
             Log.e(CLASS_NAME, e.getMessage());
+
+            throw new Exception(e);
         }
-        return null;
     }
 
     public static Bitmap getImageFromUrl(String url){
@@ -310,6 +320,9 @@ public class InternetUtility {
         try {
             String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_FETCH_TRENDING_RECIPES, null);
             return (List<RecipeMO>) Utility.jsonToObject(jsonStr, RecipeMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
         }
         catch (Exception e){
             Log.e(CLASS_NAME, "Could not fetch Cuisines from the server : "+e);
