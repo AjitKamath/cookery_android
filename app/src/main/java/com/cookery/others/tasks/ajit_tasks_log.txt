@@ -54,3 +54,7 @@
 23 sep 2017
 1. fixed app crash on recipe click on home screen.
 2. confirm message before closing add recipe fragment.
+
+25 sep 2017
+1. implemented my favorites.
+2. header search cross animation and clear input on click.

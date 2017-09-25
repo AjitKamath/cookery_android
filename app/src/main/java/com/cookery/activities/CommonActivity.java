@@ -14,9 +14,14 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
@@ -25,6 +30,7 @@ import com.cookery.R;
 import com.cookery.adapters.AutoCompleteAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
 import com.cookery.fragments.AddRecipeFragment;
+import com.cookery.fragments.FavoriteRecipesFragment;
 import com.cookery.fragments.RecipeFragment;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
@@ -36,9 +42,12 @@ import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_MY_FAVORITES;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.MASTER;
@@ -92,6 +101,55 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
                 }
 
                 new AsyncTaskerFetchRecipe().execute(recipe);
+            }
+        });
+
+        getCommon_header_search_av().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String text = String.valueOf(getCommon_header_search_av().getText());
+
+                if(text.trim().isEmpty()){
+                    RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                    rotate.setDuration(100);
+                    rotate.setInterpolator(new LinearInterpolator());
+                    getCommon_header_search_iv().startAnimation(rotate);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String text = String.valueOf(getCommon_header_search_av().getText());
+
+                if(text.trim().isEmpty()){
+                    RotateAnimation rotate = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                    rotate.setDuration(100);
+                    rotate.setInterpolator(new LinearInterpolator());
+                    getCommon_header_search_iv().startAnimation(rotate);
+
+                    getCommon_header_search_iv().setVisibility(View.GONE);
+                }
+                else{
+                    getCommon_header_search_iv().setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        getCommon_header_search_iv().setVisibility(View.GONE);
+        getCommon_header_search_iv().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getCommon_header_search_av().setText("");
+
+                RotateAnimation rotate = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                rotate.setDuration(100);
+                rotate.setInterpolator(new LinearInterpolator());
+                getCommon_header_search_iv().startAnimation(rotate);
             }
         });
     }
@@ -181,12 +239,34 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         fragment.show(manager, fragmentNameStr);
     }
 
+    private void showFavRecipesFragment(Map<String, List<RecipeMO>> favRecipes) {
+        String fragmentNameStr = FRAGMENT_MY_FAVORITES;
+
+        FragmentManager manager = getFragmentManager();
+        Fragment frag = manager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            manager.beginTransaction().remove(frag).commit();
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(GENERIC_OBJECT, (Serializable) favRecipes);
+
+        FavoriteRecipesFragment fragment = new FavoriteRecipesFragment();
+        fragment.setArguments(bundle);
+
+        fragment.show(manager, fragmentNameStr);
+    }
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         if(R.id.navigation_drawer_logout == item.getItemId()){
             //new SharedPrefUtility(mContext).clearSharedPreference();
             //clearMasterData();
             //setupAccountSummary();
+        }
+        else if(R.id.activity_home_drawer_my_favorites == item.getItemId()){
+            new AsyncTaskerFetchFavRecipes().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         else{
             Utility.showSnacks(getDrawer_layout(), "NOT IMPLEMENTED YET", OK, Snackbar.LENGTH_INDEFINITE);
@@ -209,6 +289,9 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     protected abstract CoordinatorLayout getWrapper_home_cl();
 
     protected abstract DelayAutoCompleteTextView getCommon_header_search_av();
+
+    protected abstract ImageView getCommon_header_search_iv();
+
 
 
     class AsyncTaskerFetchMasterData extends AsyncTask<String, Void, Object> {
@@ -275,6 +358,37 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
             if(recipe != null){
                 Utility.showRecipeFragment(getFragmentManager(), recipe);
+
+                Utility.closeWaitDialog(getFragmentManager(), fragment);
+            }
+        }
+    }
+
+    class AsyncTaskerFetchFavRecipes extends AsyncTask<Void, Void, Object> {
+        private Fragment fragment;
+
+        @Override
+        protected void onPreExecute(){
+            fragment = Utility.showWaitDialog(getFragmentManager(), "Fetching your favorite Recipes ..");
+        }
+
+        @Override
+        protected Object doInBackground(Void... objects) {
+            Map<String, List<RecipeMO>> favRecipes = new HashMap<>();
+
+            favRecipes.put("FAVORITES", (List<RecipeMO>)InternetUtility.fetchFavRecipes("FAVORITES"));
+            favRecipes.put("VIEWED", (List<RecipeMO>)InternetUtility.fetchFavRecipes("VIEWED"));
+            favRecipes.put("REVIEWED", (List<RecipeMO>)InternetUtility.fetchFavRecipes("REVIEWED"));
+
+            return favRecipes;
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            Map<String, List<RecipeMO>> favRecipes = (Map<String, List<RecipeMO>>) object;
+
+            if(favRecipes != null && !favRecipes.isEmpty()){
+                showFavRecipesFragment(favRecipes);
 
                 Utility.closeWaitDialog(getFragmentManager(), fragment);
             }

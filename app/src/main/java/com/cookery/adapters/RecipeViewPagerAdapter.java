@@ -81,9 +81,8 @@ public class RecipeViewPagerAdapter extends PagerAdapter {
             case 0: return "RECIPE";
             case 1: return "INGREDIENTS";
             case 2: return "REVIEWS";
+            default: return "UNIMPL";
         }
-
-        return "UNIMPLMENTED";
     }
 
 

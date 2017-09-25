@@ -31,6 +31,7 @@ public final class Constants {
     public static final String PHP_FETCH_TRENDING_RECIPES = "fetchtrendingrecipes.php";
     public static final String PHP_FETCH_MASTER_SEARCH = "mastersearch.php";
     public static final String PHP_FETCH_RECIPE = "getrecipedetails.php";
+    public static final String PHP_FETCH_FAV_RECIPES = "getfavrecipes.php";
 
     //fragment keys
     public static final int GALLERY_CHOICE = 1111;
@@ -50,6 +51,7 @@ public final class Constants {
     //Bundle Keys, Shared Prefs, Intent, fragment names
     //FRAGMENT NAMES
     public static final String FRAGMENT_ADD_RECIPE = "FRAGMENT_ADD_RECIPE";
+    public static final String FRAGMENT_MY_FAVORITES = "FRAGMENT_MY_FAVORITES";
     public static final String FRAGMENT_RECIPE = "FRAGMENT_RECIPE";
     public static final String FRAGMENT_RECIPE_IMAGES = "FRAGMENT_RECIPE_IMAGES";
     public static final String FRAGMENT_COMMON_SELECTION = "FRAGMENT_COMMON_SELECTION";

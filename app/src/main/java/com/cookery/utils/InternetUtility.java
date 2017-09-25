@@ -35,6 +35,7 @@ import static com.cookery.utils.Constants.PHP_FETCH_ALL_CUISINES;
 import static com.cookery.utils.Constants.PHP_FETCH_ALL_FOOD_TYPES;
 import static com.cookery.utils.Constants.PHP_FETCH_ALL_QUANTITIES;
 import static com.cookery.utils.Constants.PHP_FETCH_ALL_TASTES;
+import static com.cookery.utils.Constants.PHP_FETCH_FAV_RECIPES;
 import static com.cookery.utils.Constants.PHP_FETCH_INGREDIENTS;
 import static com.cookery.utils.Constants.PHP_FETCH_MASTER_SEARCH;
 import static com.cookery.utils.Constants.PHP_FETCH_RECIPE;
@@ -99,6 +100,25 @@ public class InternetUtility {
         }
         catch (Exception e){
             Log.e(CLASS_NAME, "Could not fetch Recipe for rcp_id("+recipe.getRCP_ID()+") from the server : "+e);
+        }
+
+        return null;
+    }
+
+    public static Object fetchFavRecipes(String favRecipeType) {
+        if(USE_TEST_DATA){
+            return TestData.getRecipesTestData();
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("text", favRecipeType);
+
+            String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_FETCH_FAV_RECIPES, paramMap);
+            return Utility.jsonToObject(jsonStr, RecipeMO.class);
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch fav recipes("+favRecipeType+") from the server : "+e);
         }
 
         return null;

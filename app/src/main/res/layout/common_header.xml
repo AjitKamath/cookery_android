@@ -25,6 +25,8 @@
             android:clickable="true" />
 
         <RelativeLayout
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
@@ -42,10 +44,21 @@
                 android:hint="recipes, people &amp; more .."
                 android:popupBackground="@android:color/transparent"
                 android:drawableLeft="@drawable/ic_search_white_24dp"
-                android:drawableRight="@drawable/ic_close_white_24dp"
                 android:scrollbars="vertical"
+                android:paddingRight="30dp"
+                android:maxLines="1"
+                android:inputType="text"
+                android:imeOptions="actionNext"
                 android:dropDownWidth="match_parent"
                 android:fadeScrollbars="false" />
+
+            <ImageView
+                android:id="@+id/common_header_search_iv"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_width="@dimen/header_buttons_dimen"
+                android:layout_height="@dimen/header_buttons_dimen"
+                android:src="@drawable/ic_close_white_36dp"/>
 
         </RelativeLayout>
 

@@ -92,7 +92,7 @@ public class WaitFragment extends DialogFragment {
             public void run() {
                 common_wait_error_tv.setVisibility(View.VISIBLE);
             }
-        }, 5000);
+        }, 10000);
 
     }
 

@@ -49,6 +49,9 @@ public class HomeActivity extends CommonActivity{
     @InjectView(R.id.common_header_search_av)
     DelayAutoCompleteTextView common_header_search_av;
 
+    @InjectView(R.id.common_header_search_iv)
+    ImageView common_header_search_iv;
+
     @InjectView(R.id.common_header_navigation_drawer_iv)
     ImageView common_header_navigation_drawer_iv;
 
@@ -131,8 +134,13 @@ public class HomeActivity extends CommonActivity{
         return common_header_search_av;
     }
 
+    @Override
+    protected ImageView getCommon_header_search_iv(){
+        return common_header_search_iv;
+    }
+
     class AsyncTaskerHomeRecipes extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
+        //private Fragment fragment;
 
         @Override
         protected Object doInBackground(Object... objects) {
@@ -147,7 +155,7 @@ public class HomeActivity extends CommonActivity{
 
         @Override
         protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "loading recipes ..");
+            //fragment = Utility.showWaitDialog(getFragmentManager(), "loading recipes ..");
         }
 
         @Override
@@ -156,7 +164,7 @@ public class HomeActivity extends CommonActivity{
 
             if(categoryRecipesMap != null || !categoryRecipesMap.isEmpty()){
                 setupAllCategoriesRecipes((Map<String, List<RecipeMO>>) object);
-                Utility.closeWaitDialog(getFragmentManager(), fragment);
+                //Utility.closeWaitDialog(getFragmentManager(), fragment);
             }
         }
     }
