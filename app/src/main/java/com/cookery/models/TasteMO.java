@@ -1,9 +1,5 @@
 package com.cookery.models;
 
-import android.graphics.Bitmap;
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.io.Serializable;
 
 /**
@@ -15,7 +11,6 @@ public class TasteMO  implements Serializable {
     private String TST_NAME;
     private String IMG;
 
-    transient private Bitmap image;
     private int quantity;
 
     public int getTST_ID() {
@@ -40,14 +35,6 @@ public class TasteMO  implements Serializable {
 
     public void setIMG(String IMG) {
         this.IMG = IMG;
-    }
-
-    public Bitmap getImage() {
-        return image;
-    }
-
-    public void setImage(Bitmap image) {
-        this.image = image;
     }
 
     public int getQuantity() {

@@ -15,8 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.models.IngredientMO;
 import com.cookery.models.RecipeMO;
+import com.cookery.utils.Utility;
 
 import java.util.List;
 
@@ -45,8 +45,8 @@ public class FavRecipesRecyclerViewAdapter extends RecyclerView.Adapter<FavRecip
     public void onBindViewHolder(ViewHolder holder, int position) {
         final RecipeMO recipe = recipes.get(position);
 
-        if(recipe.getImagesList() != null && !recipe.getImagesList().isEmpty()){
-            holder.view_pager_fav_recipes_recipe_iv.setImageBitmap(recipe.getImagesList().get(0));
+        if(recipe.getRCP_IMGS() != null && !recipe.getRCP_IMGS().isEmpty()){
+            Utility.loadImageFromURL(mContext, recipe.getRCP_IMGS().get(0), holder.view_pager_fav_recipes_recipe_iv);
         }
 
         holder.view_pager_fav_recipes_recipe_tv.setText(recipe.getRCP_NAME().toUpperCase());

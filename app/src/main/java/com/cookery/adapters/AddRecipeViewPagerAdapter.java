@@ -7,12 +7,9 @@ package com.cookery.adapters;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,12 +26,11 @@ import com.cookery.component.ViewPagerCustom;
 import com.cookery.fragments.AddRecipeIngredientQuantityFragment;
 import com.cookery.fragments.SelectionFragment;
 import com.cookery.models.CuisineMO;
-import com.cookery.models.IngredientMO;
 import com.cookery.models.FoodTypeMO;
+import com.cookery.models.IngredientMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.TasteMO;
-import com.cookery.utils.TestData;
 import com.cookery.utils.Utility;
 
 import java.io.Serializable;
@@ -241,7 +237,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         LinearLayout view_pager_add_recipe_8_finish_ll = layout.findViewById(R.id.view_pager_add_recipe_8_finish_ll);
 
         view_pager_add_recipe_8_photos_vp = layout.findViewById(R.id.view_pager_add_recipe_8_photos_vp);
-        view_pager_add_recipe_8_photos_vp.setAdapter(new RecipeImagesViewPagerAdapter(mContext, null, new View.OnClickListener() {
+        view_pager_add_recipe_8_photos_vp.setAdapter(new RecipeImagesViewPagerAdapter(mContext, null, false, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -260,7 +256,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         view_pager_add_recipe_8_finish_ll.setOnClickListener(clickListener);
     }
 
-    private void updateImages(Bitmap image){
+    private void updateImages(String image){
         if(image == null){
             view_pager_add_recipe_8_no_photos_tv.setVisibility(View.VISIBLE);
             view_pager_add_recipe_8_photos_vp.setVisibility(View.GONE);
@@ -352,8 +348,8 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
 
         text.setText(cuisine.getFOOD_CSN_NAME());
 
-        if(cuisine.getImage() != null){
-            image.setImageBitmap(cuisine.getImage());
+        if(cuisine.getIMG() != null){
+            Utility.loadImageFromURL(mContext, cuisine.getIMG(), image);
         }
 
         view_pager_add_recipe_3_cuisine_ll.setTag(cuisine);
@@ -367,8 +363,8 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
 
         text.setText(foodType.getFOOD_TYP_NAME());
 
-        if(foodType.getImage() != null){
-            image.setImageBitmap(foodType.getImage());
+        if(foodType.getIMG() != null){
+            Utility.loadImageFromURL(mContext, foodType.getIMG(), image);
         }
 
         view_pager_add_recipe_2_food_type_ll.setTag(foodType);
@@ -429,8 +425,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     }
 
     public void setPhotos(String photoPath) {
-        Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
-        updateImages(bitmap);
+        updateImages(photoPath);
 
         List<String> images = recipe.getImages();
         if(images == null){

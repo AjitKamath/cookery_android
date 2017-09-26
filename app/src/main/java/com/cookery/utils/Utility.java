@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -13,9 +12,9 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.cookery.R;
-import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.CommonImagePickerFragment;
 import com.cookery.fragments.MessageFragment;
 import com.cookery.fragments.RecipeFragment;
@@ -30,10 +29,11 @@ import com.cookery.models.RecipeMO;
 import com.cookery.models.TasteMO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
@@ -44,6 +44,7 @@ import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
+import static com.cookery.utils.Constants.SERVER_ADDRESS;
 import static com.cookery.utils.Constants.SERVER_TIMEOUT;
 
 public class Utility extends Activity {
@@ -121,70 +122,22 @@ public class Utility extends Activity {
         try{
             Gson gson = new Gson();
             if(mappingClass.equals(FoodTypeMO.class)){
-                List<FoodTypeMO> list = gson.fromJson(jsonStr, new TypeToken<List<FoodTypeMO>>(){}.getType());
-
-                //TODO:this must be replaced when GSON supports calling getters/setters
-                for(FoodTypeMO iteration : list){
-                    iteration.setImage(InternetUtility.getImageFromUrl(iteration.getIMG()));
-                }
-
-                return list;
+                return gson.fromJson(jsonStr, new TypeToken<List<FoodTypeMO>>(){}.getType());
             }
             else if(mappingClass.equals(CuisineMO.class)){
-                List<CuisineMO> list = gson.fromJson(jsonStr, new TypeToken<List<CuisineMO>>(){}.getType());
-
-                //TODO:this must be replaced when GSON supports calling getters/setters
-                for(CuisineMO iteration : list){
-                    iteration.setImage(InternetUtility.getImageFromUrl(iteration.getIMG()));
-                }
-
-                return list;
+                return gson.fromJson(jsonStr, new TypeToken<List<CuisineMO>>(){}.getType());
             }
             else if(mappingClass.equals(IngredientMO.class)){
-                List<IngredientMO> list = gson.fromJson(jsonStr, new TypeToken<List<IngredientMO>>(){}.getType());
-
-                //TODO:this must be replaced when GSON supports calling getters/setters
-                for(IngredientMO iteration : list){
-                    iteration.setImage(InternetUtility.getImageFromUrl(iteration.getIMG()));
-                }
-
-                return list;
+                return gson.fromJson(jsonStr, new TypeToken<List<IngredientMO>>(){}.getType());
             }
             else if(mappingClass.equals(QuantityMO.class)){
-                List<QuantityMO> list = gson.fromJson(jsonStr, new TypeToken<List<QuantityMO>>(){}.getType());
-
-                //TODO:this must be replaced when GSON supports calling getters/setters
-                /*for(QuantityMO iteration : list){
-                    iteration.setImage(getImageFromUrl(iteration.getIMG()));
-                }*/
-
-                return list;
+                return gson.fromJson(jsonStr, new TypeToken<List<QuantityMO>>(){}.getType());
             }
             else if(mappingClass.equals(TasteMO.class)){
-                List<TasteMO> list = gson.fromJson(jsonStr, new TypeToken<List<TasteMO>>(){}.getType());
-
-                //TODO:this must be replaced when GSON supports calling getters/setters
-                for(TasteMO iteration : list){
-                    iteration.setImage(InternetUtility.getImageFromUrl(iteration.getIMG()));
-                }
-
-                return list;
+                return gson.fromJson(jsonStr, new TypeToken<List<TasteMO>>(){}.getType());
             }
             else if(mappingClass.equals(RecipeMO.class)){
-                List<RecipeMO> list = gson.fromJson(jsonStr, new TypeToken<List<RecipeMO>>(){}.getType());
-
-                //TODO:this must be replaced when GSON supports calling getters/setters
-                for(RecipeMO iteration : list){
-                    List<Bitmap> imagesList = new ArrayList<>();
-
-                    for(String iter : iteration.getRCP_IMGS()){
-                        imagesList.add(InternetUtility.getImageFromUrl(iter));
-                    }
-
-                    iteration.setImagesList(imagesList);
-                }
-
-                return list;
+                return gson.fromJson(jsonStr, new TypeToken<List<RecipeMO>>(){}.getType());
             }
             else{
                 Log.e(CLASS_NAME, mappingClass+" is not identified for parsing JSON");
@@ -196,6 +149,14 @@ public class Utility extends Activity {
         }
 
         return null;
+    }
+
+    public static void loadImageFromURL(Context context, String imageAddress, ImageView imageView){
+        Picasso.with(context).load(SERVER_ADDRESS+imageAddress).placeholder(R.drawable.placeholder).into(imageView);
+    }
+
+    public static void loadImageFromPath(Context context, String imageAddress, ImageView imageView){
+        Picasso.with(context).load(new File(imageAddress)).into(imageView);
     }
 
     public static void showRecipeFragment(FragmentManager fragmentManager, RecipeMO recipe){
@@ -297,7 +258,7 @@ public class Utility extends Activity {
         return fragment;
     }
 
-    public static List<Bitmap> getTestImages(Context context){
+    /*public static List<Bitmap> getTestImages(Context context){
         List<Bitmap> images = new ArrayList<>();
         Bitmap bitmap = null;
 
@@ -317,5 +278,5 @@ public class Utility extends Activity {
         images.add(bitmap);
 
         return images;
-    }
+    }*/
 }

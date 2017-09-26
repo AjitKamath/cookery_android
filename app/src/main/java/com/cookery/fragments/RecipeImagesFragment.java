@@ -3,7 +3,6 @@ package com.cookery.fragments;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -12,16 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.adapters.CuisinesGridViewAdapter;
-import com.cookery.adapters.FoodTypeGridViewAdapter;
 import com.cookery.adapters.RecipeImagesViewPagerAdapter;
-import com.cookery.adapters.RecipeViewPagerAdapter;
-import com.cookery.models.CuisineMO;
-import com.cookery.models.FoodTypeMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.utils.Utility;
 
@@ -29,10 +22,8 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
-import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
 
 /**
@@ -47,7 +38,7 @@ public class RecipeImagesFragment extends DialogFragment {
     ViewPager common_fragment_recipe_images_vp;
     //end of components
 
-    private List<Bitmap> imagesList;
+    private List<String> imagesList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,11 +56,7 @@ public class RecipeImagesFragment extends DialogFragment {
     }
 
     private void getDataFromBundle() {
-        imagesList = ((RecipeMO)getArguments().get(GENERIC_OBJECT)).getImagesList();
-
-        if(imagesList == null){
-            imagesList = Utility.getTestImages(mContext);
-        }
+        imagesList = ((RecipeMO)getArguments().get(GENERIC_OBJECT)).getRCP_IMGS();
     }
 
     private void setupPage() {
@@ -78,11 +65,11 @@ public class RecipeImagesFragment extends DialogFragment {
             return;
         }
 
-        common_fragment_recipe_images_vp.setAdapter(new RecipeImagesViewPagerAdapter(mContext, imagesList, new View.OnClickListener(){
+        common_fragment_recipe_images_vp.setAdapter(new RecipeImagesViewPagerAdapter(mContext, imagesList, false, new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 RecipeMO temp = new RecipeMO();
-                temp.setImagesList(imagesList);
+                temp.setRCP_IMGS(imagesList);
 
                 Utility.showRecipeImagesFragment(getFragmentManager(), temp);
             }

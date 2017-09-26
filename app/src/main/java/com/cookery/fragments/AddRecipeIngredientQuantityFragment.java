@@ -11,9 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -21,24 +19,15 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.adapters.AddRecipeQuantitySpinnerAdapter;
-import com.cookery.adapters.CuisinesGridViewAdapter;
-import com.cookery.adapters.FoodTypeGridViewAdapter;
-import com.cookery.models.CuisineMO;
-import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.QuantityMO;
 import com.cookery.utils.Utility;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
-import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LIST_DATA;
 import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
@@ -100,8 +89,8 @@ public class AddRecipeIngredientQuantityFragment extends DialogFragment {
             return;
         }
 
-        if(ingredient.getImage() != null){
-            fragment_ingredient_quantity_ingredient_iv.setImageBitmap(ingredient.getImage());
+        if(ingredient.getIMG() != null){
+            Utility.loadImageFromURL(mContext, ingredient.getIMG(), fragment_ingredient_quantity_ingredient_iv);
         }
 
         fragment_ingredient_quantity_ingredient_tv.setText(ingredient.getING_NAME());

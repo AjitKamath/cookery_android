@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.models.FoodTypeMO;
+import com.cookery.utils.Utility;
 
 import java.util.List;
 
@@ -60,8 +61,8 @@ public class FoodTypeGridViewAdapter extends BaseAdapter {
 
         mHolder.food_type_gv_item_tv.setText(food.getFOOD_TYP_NAME());
 
-        if(food.getImage() != null){
-            mHolder.food_type_gv_item_iv.setImageBitmap(food.getImage());
+        if(food.getIMG() != null){
+            Utility.loadImageFromURL(mContext, food.getIMG(), mHolder.food_type_gv_item_iv);
         }
 
         mHolder.food_type_gv_item_ll.setTag(food);

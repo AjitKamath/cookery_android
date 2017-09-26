@@ -1,7 +1,5 @@
 package com.cookery.models;
 
-import android.graphics.Bitmap;
-
 import java.io.Serializable;
 
 /**
@@ -14,22 +12,12 @@ public class FoodTypeMO implements Serializable{
     private String IS_DEF;
     private String IMG;
 
-    transient private Bitmap image;
-
     public String getIMG() {
         return IMG;
     }
 
     public void setIMG(String IMG) {
         this.IMG = IMG;
-    }
-
-    public Bitmap getImage() {
-        return image;
-    }
-
-    public void setImage(Bitmap image) {
-        this.image = image;
     }
 
     public String getIS_DEF() {

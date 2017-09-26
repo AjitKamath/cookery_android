@@ -4,47 +4,22 @@ package com.cookery.adapters;
  * Created by ajit on 25/8/17.
  */
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.fragments.AddRecipeIngredientQuantityFragment;
-import com.cookery.fragments.SelectionFragment;
-import com.cookery.models.CuisineMO;
-import com.cookery.models.FoodTypeMO;
-import com.cookery.models.IngredientMO;
-import com.cookery.models.MasterDataMO;
 import com.cookery.models.RecipeMO;
-import com.cookery.models.TasteMO;
-import com.cookery.utils.TestData;
 import com.cookery.utils.Utility;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.cookery.utils.Constants.AFFIRMATIVE;
-import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
-import static com.cookery.utils.Constants.FRAGMENT_COMMON_SELECTION;
-import static com.cookery.utils.Constants.GENERIC_OBJECT;
-import static com.cookery.utils.Constants.LIST_DATA;
-import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
 
 public class HomeCateoryRecipesViewPagerAdapter extends PagerAdapter {
@@ -81,8 +56,8 @@ public class HomeCateoryRecipesViewPagerAdapter extends PagerAdapter {
 
         RecipeMO recipe = recipes.get(position);
 
-        if(recipe.getImagesList() != null && !recipe.getImagesList().isEmpty()){
-            home_categorized_recipes_recipe_item_image_iv.setImageBitmap(recipe.getImagesList().get(0));
+        if(recipe.getRCP_IMGS() != null && !recipe.getRCP_IMGS().isEmpty()){
+            Utility.loadImageFromURL(mContext, recipe.getRCP_IMGS().get(0), home_categorized_recipes_recipe_item_image_iv);
         }
 
         home_categorized_recipes_recipe_item_recipe_name_tv.setText(recipe.getRCP_NAME().toUpperCase());

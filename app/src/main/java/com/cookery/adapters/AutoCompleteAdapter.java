@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -18,6 +17,7 @@ import com.cookery.R;
 import com.cookery.filters.AutocompleteFilter;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.RecipeMO;
+import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,8 +109,8 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
 
             home_master_search_recipe_item_recipe_name_tv.setText(recipe.getRCP_NAME().toUpperCase());
 
-            if(recipe.getImagesList() != null && recipe.getImagesList().get(0) != null){
-                home_master_search_recipe_item_image_iv.setImageBitmap(recipe.getImagesList().get(0));
+            if(recipe.getRCP_IMGS() != null && recipe.getRCP_IMGS().get(0) != null){
+                Utility.loadImageFromURL(mContext, recipe.getRCP_IMGS().get(0), home_master_search_recipe_item_image_iv);
             }
 
             home_master_search_recipe_item_user_name_tv.setText(recipe.getNAME());

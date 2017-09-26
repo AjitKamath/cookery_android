@@ -58,3 +58,8 @@
 25 sep 2017
 1. implemented my favorites.
 2. header search cross animation and clear input on click.
+
+-- git checkin on 25 sep 2017 --
+
+26 sep 2017
+1. implemented picasso to get image from url and path.

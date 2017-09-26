@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.models.CuisineMO;
+import com.cookery.utils.Utility;
 
 import java.util.List;
 
@@ -60,8 +61,8 @@ public class CuisinesGridViewAdapter extends BaseAdapter {
 
         mHolder.cuisine_gv_item_tv.setText(cuisine.getFOOD_CSN_NAME());
 
-        if(cuisine.getImage() != null){
-            mHolder.cuisine_gv_item_iv.setImageBitmap(cuisine.getImage());
+        if(cuisine.getIMG() != null){
+            Utility.loadImageFromURL(mContext, cuisine.getIMG(), mHolder.cuisine_gv_item_iv);
         }
 
         mHolder.cuisine_gv_item_ll.setTag(cuisine);

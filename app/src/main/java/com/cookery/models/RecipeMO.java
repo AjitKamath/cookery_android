@@ -1,7 +1,5 @@
 package com.cookery.models;
 
-import android.graphics.Bitmap;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -25,7 +23,6 @@ public class RecipeMO  implements Serializable {
     private List<IngredientMO> ingredients;
     private List<TasteMO> tastes;
 
-    private transient List<Bitmap> imagesList;
     private List<String> images;
     private List<String> RCP_IMGS;
     private String RATING;
@@ -68,14 +65,6 @@ public class RecipeMO  implements Serializable {
 
     public void setFOOD_CSN_NAME(String FOOD_CSN_NAME) {
         this.FOOD_CSN_NAME = FOOD_CSN_NAME;
-    }
-
-    public List<Bitmap> getImagesList() {
-        return imagesList;
-    }
-
-    public void setImagesList(List<Bitmap> imagesList) {
-        this.imagesList = imagesList;
     }
 
     public List<String> getImages() {

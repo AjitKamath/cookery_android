@@ -2,16 +2,13 @@ package com.cookery.fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +19,7 @@ import android.widget.TextView;
 import com.cookery.R;
 import com.cookery.adapters.RecipeImagesViewPagerAdapter;
 import com.cookery.adapters.RecipeViewPagerAdapter;
-import com.cookery.models.MasterDataMO;
 import com.cookery.models.RecipeMO;
-import com.cookery.utils.TestData;
-import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +27,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
-import static com.cookery.utils.Constants.GENERIC_OBJECT;
-import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
 
@@ -144,14 +134,11 @@ public class RecipeFragment extends DialogFragment {
     }
 
     private void setupImages() {
-        if(recipe.getImagesList() == null){
-            recipe.setImagesList(Utility.getTestImages(mContext));
-        }
-
-        common_fragment_recipe_vp.setAdapter(new RecipeImagesViewPagerAdapter(mContext, recipe.getImagesList(), new View.OnClickListener(){
+        common_fragment_recipe_vp.setAdapter(new RecipeImagesViewPagerAdapter(mContext, recipe.getRCP_IMGS(), true, new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Utility.showRecipeImagesFragment(getFragmentManager(), recipe);
+                //TODO: do not re use showrecipefragment. implement another fragment
+                //Utility.showRecipeImagesFragment(getFragmentManager(), recipe);
             }
         }));
     }
