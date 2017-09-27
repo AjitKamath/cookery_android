@@ -20,19 +20,17 @@ import com.cookery.models.RecipeMO;
 import java.util.List;
 import java.util.Map;
 
-import static com.cookery.utils.Constants.TOP_RECIPES_CHEF;
-import static com.cookery.utils.Constants.TOP_RECIPES_MONTH;
-import static com.cookery.utils.Constants.TRENDING_RECIPES;
+import static com.cookery.utils.Constants.MY_RCPS;
 
-public class HomeCategoriesRecipesRecyclerViewAdapter extends RecyclerView.Adapter<HomeCategoriesRecipesRecyclerViewAdapter.ViewHolder> {
-    private static final String CLASS_NAME = HomeCategoriesRecipesRecyclerViewAdapter.class.getName();
+public class MyRecipesRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipesRecyclerViewAdapter.ViewHolder> {
+    private static final String CLASS_NAME = MyRecipesRecyclerViewAdapter.class.getName();
     private Context mContext;
 
 
     private Map<String, List<RecipeMO>> categoryRecipes;
     private View.OnClickListener clickListener;
 
-    public HomeCategoriesRecipesRecyclerViewAdapter(Context mContext, Map<String, List<RecipeMO>> categoryRecipes, View.OnClickListener clickListener) {
+    public MyRecipesRecyclerViewAdapter(Context mContext, Map<String, List<RecipeMO>> categoryRecipes, View.OnClickListener clickListener) {
         this.mContext = mContext;
         this.categoryRecipes = categoryRecipes;
         this.clickListener = clickListener;
@@ -50,16 +48,15 @@ public class HomeCategoriesRecipesRecyclerViewAdapter extends RecyclerView.Adapt
         String choice = "";
 
         switch (position){
-            case 0: choice = TRENDING_RECIPES; break;
-            case 1: choice = TOP_RECIPES_MONTH; break;
-            case 2: choice = TOP_RECIPES_CHEF; break;
+            case 0: choice = MY_RCPS; break;
             default: Log.e(CLASS_NAME, "There are more categories of recipes than they are implemented");
         }
 
         List<RecipeMO> recipes = categoryRecipes.get(choice);
 
-        holder.home_categorized_recipes_tv.setText(choice.toUpperCase());
-
+        if(choice.equalsIgnoreCase("MY_RCPS")) {
+            holder.home_categorized_recipes_tv.setText("MY DELICIOUS RECIPES");
+        }
         HomeCateoryRecipesViewPagerAdapter adapter = new HomeCateoryRecipesViewPagerAdapter(mContext, recipes, clickListener);
 
         holder.home_categorized_recipes_vp.setAdapter(adapter);

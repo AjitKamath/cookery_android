@@ -5,7 +5,6 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -23,7 +22,6 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 
 import com.cookery.R;
@@ -31,7 +29,7 @@ import com.cookery.adapters.AutoCompleteAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
 import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.FavoriteRecipesFragment;
-import com.cookery.fragments.RecipeFragment;
+import com.cookery.fragments.MyRecipesFragment;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.MasterDataMO;
@@ -42,17 +40,19 @@ import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_MY_FAVORITES;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.MASTER;
+import static com.cookery.utils.Constants.MY_RCPS;
 import static com.cookery.utils.Constants.OK;
-import static com.cookery.utils.Constants.SELECTED_ITEM;
+
 
 public abstract class CommonActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener{
     private static final String CLASS_NAME = CommonActivity.class.getName();
@@ -258,6 +258,28 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         fragment.show(manager, fragmentNameStr);
     }
 
+    private void setupMyRecipesFragment(List<RecipeMO> categoriesRecipes)
+    {
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MY_RCPS, (Serializable) categoriesRecipes);
+
+        MyRecipesFragment fragment = new MyRecipesFragment();
+        fragment.setArguments(bundle);
+
+
+        String fragmentNameStr = FRAGMENT_MY_RECIPE;
+        FragmentManager manager = getFragmentManager();
+        Fragment frag = manager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            manager.beginTransaction().remove(frag).commit();
+        }
+
+        fragment.show(manager, fragmentNameStr);
+    }
+
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         if(R.id.navigation_drawer_logout == item.getItemId()){
@@ -267,6 +289,9 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         }
         else if(R.id.activity_home_drawer_my_favorites == item.getItemId()){
             new AsyncTaskerFetchFavRecipes().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+        else if(R.id.activity_home_drawer_my_recipes == item.getItemId()){
+            new AsyncTaskerFetchMyRecipes().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         else{
             Utility.showSnacks(getDrawer_layout(), "NOT IMPLEMENTED YET", OK, Snackbar.LENGTH_INDEFINITE);
@@ -390,6 +415,34 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             if(favRecipes != null && !favRecipes.isEmpty()){
                 showFavRecipesFragment(favRecipes);
 
+                Utility.closeWaitDialog(getFragmentManager(), fragment);
+            }
+        }
+    }
+
+    class AsyncTaskerFetchMyRecipes extends AsyncTask<Object, Void, Object> {
+        private Fragment fragment;
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            List<RecipeMO> allCategoriesRecipes = new ArrayList<RecipeMO>();
+
+            allCategoriesRecipes.addAll(InternetUtility.fetchTrendingRecipes());
+
+            return allCategoriesRecipes;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            fragment = Utility.showWaitDialog(getFragmentManager(), "loading recipes ..");
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            ArrayList<RecipeMO> categoryRecipesMap = (ArrayList<RecipeMO>) object;
+
+            if(categoryRecipesMap != null || !categoryRecipesMap.isEmpty()){
+                setupMyRecipesFragment((List<RecipeMO>) object);
                 Utility.closeWaitDialog(getFragmentManager(), fragment);
             }
         }
