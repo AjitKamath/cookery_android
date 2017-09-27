@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import com.cookery.R;
 import com.cookery.fragments.CommonImagePickerFragment;
 import com.cookery.fragments.MessageFragment;
+import com.cookery.fragments.RecipeCommentsFragment;
 import com.cookery.fragments.RecipeFragment;
 import com.cookery.fragments.RecipeImagesFragment;
 import com.cookery.fragments.WaitFragment;
@@ -40,6 +41,7 @@ import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_WAIT;
 import static com.cookery.utils.Constants.FRAGMENT_PICK_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.OK;
@@ -184,6 +186,40 @@ public class Utility extends Activity {
         bundle.putSerializable(SELECTED_ITEM, recipe);
 
         RecipeFragment fragment = new RecipeFragment();
+        fragment.setArguments(bundle);
+
+        if (parentFragment != null) {
+            fragment.setTargetFragment(parentFragment, 0);
+        }
+
+        fragment.show(fragmentManager, fragmentNameStr);
+    }
+
+    public static void showRecipeCommentsFragment(FragmentManager fragmentManager, RecipeMO recipe){
+        if(recipe == null){
+            Log.e(CLASS_NAME, "Recipe is null");
+            return;
+        }
+
+        String fragmentNameStr = FRAGMENT_RECIPE_COMMENTS;
+        String parentFragmentNameStr = null;
+
+        Fragment frag = fragmentManager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            fragmentManager.beginTransaction().remove(frag).commit();
+        }
+
+        Fragment parentFragment = null;
+        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
+            parentFragment = fragmentManager.findFragmentByTag(parentFragmentNameStr);
+        }
+
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SELECTED_ITEM, recipe);
+
+        RecipeCommentsFragment fragment = new RecipeCommentsFragment();
         fragment.setArguments(bundle);
 
         if (parentFragment != null) {

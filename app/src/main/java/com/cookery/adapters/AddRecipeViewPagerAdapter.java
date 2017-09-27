@@ -427,13 +427,13 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     public void setPhotos(String photoPath) {
         updateImages(photoPath);
 
-        List<String> images = recipe.getImages();
+        List<String> images = recipe.getRCP_IMGS();
         if(images == null){
             images = new ArrayList<>();
         }
         images.add(photoPath);
 
-        recipe.setImages(images);
+        recipe.setRCP_IMGS(images);
     }
 
     public void setIngredients() {

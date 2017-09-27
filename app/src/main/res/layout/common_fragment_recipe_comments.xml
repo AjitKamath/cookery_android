@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/common_fragment_recipe_rl"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/common_fragment_recipe_comments_rl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/common_fragment_recipe_vp"
+        android:id="@+id/common_fragment_recipe_comments_vp"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_alignParentTop="true"/>
@@ -24,7 +22,7 @@
         android:padding="8dp">
 
         <TextView
-            android:id="@+id/common_fragment_recipe_recipe_name_tv"
+            android:id="@+id/common_fragment_recipe_comments_recipe_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="CHICKEN KOLHAPURI"
@@ -38,7 +36,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/common_fragment_recipe_food_type_tv"
+                android:id="@+id/common_fragment_recipe_comments_food_type_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="BREAKFAST"
@@ -55,7 +53,7 @@
                 android:textSize="8sp" />
 
             <TextView
-                android:id="@+id/common_fragment_recipe_cuisine_name_tv"
+                android:id="@+id/common_fragment_recipe_comments_cuisine_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="INDIAN"
@@ -70,7 +68,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/common_fragment_recipe_vp"
+        android:layout_alignBottom="@+id/common_fragment_recipe_comments_vp"
         android:layout_alignParentRight="true"
         android:background="@drawable/linear_gradient_right_to_left"
         android:gravity="center"
@@ -90,7 +88,7 @@
                 android:src="@drawable/star" />
 
             <TextView
-                android:id="@+id/common_fragment_recipe_rating_tv"
+                android:id="@+id/common_fragment_recipe_comments_rating_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -121,7 +119,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/common_fragment_recipe_vp"
+        android:layout_alignBottom="@+id/common_fragment_recipe_comments_vp"
         android:layout_alignParentLeft="true"
         android:background="@drawable/linear_gradient_left_to_right"
         android:gravity="center"
@@ -136,7 +134,7 @@
             android:paddingRight="10dp">
 
             <TextView
-                android:id="@+id/common_fragment_recipe_username_tv"
+                android:id="@+id/common_fragment_recipe_comments_username_tv"
                 android:maxWidth="270dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -148,46 +146,49 @@
 
     </LinearLayout>
 
-
-    <android.support.design.widget.CoordinatorLayout
+    <android.support.v7.widget.RecyclerView
+        android:background="@color/gray"
+        android:padding="5dp"
+        android:layout_below="@id/common_fragment_recipe_comments_vp"
+        android:id="@+id/common_fragment_recipe_comments_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/common_fragment_recipe_vp"
-        android:orientation="vertical">
+        android:scrollbars="vertical" />
 
-        <android.support.design.widget.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/common_fragment_recipe_tl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabGravity="fill"
-                app:tabIndicatorColor="@color/white"
-                app:tabMaxWidth="0dp"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/white"
-                app:tabTextColor="@color/white" />
-
-        </android.support.design.widget.AppBarLayout>
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/common_fragment_recipe_tab_vp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-    </android.support.design.widget.CoordinatorLayout>
-
-    <TextView
-        android:id="@+id/common_fragment_recipe_comments_tv"
-        android:padding="@dimen/padding"
+    <LinearLayout
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:gravity="center"
-        android:text="32 COMMENTS"
-        android:layout_alignParentBottom="true"/>
+        android:padding="1dp"
+        android:background="@color/gray"
+        android:layout_alignParentBottom="true"
+        android:layout_height="35dp">
+
+        <EditText
+            android:gravity="center"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:textColor="@color/gray"
+            android:textSize="12sp"
+            android:textColorHint="@color/gray"
+            android:hint="add your comments .."
+            android:textStyle="italic"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:background="@color/white"/>
+
+    </LinearLayout>
+
+
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/send"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"/>
+
 
 </RelativeLayout>

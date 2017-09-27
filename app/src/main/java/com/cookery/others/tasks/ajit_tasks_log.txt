@@ -63,3 +63,6 @@
 
 26 sep 2017
 1. implemented picasso to get image from url and path.
+
+27 sep 2017
+1. implemented dummy comments for a recipe.

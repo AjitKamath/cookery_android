@@ -187,7 +187,7 @@ public class AddRecipeFragment extends DialogFragment {
             public void onClick(View view) {
                 RecipeMO recipe = ((AddRecipeViewPagerAdapter)fragment_add_recipe_vp.getAdapter()).recipe;
 
-                if(recipe.getImages() == null || recipe.getImages().isEmpty()){
+                if(recipe.getRCP_IMGS() == null || recipe.getRCP_IMGS().isEmpty()){
                     Utility.showSnacks(fragment_add_recipe_vp, "Add atleast one photo", OK, Snackbar.LENGTH_LONG);
                     return;
                 }

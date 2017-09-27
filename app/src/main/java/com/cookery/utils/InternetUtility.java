@@ -15,10 +15,7 @@ import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.TasteMO;
 
-import junit.framework.Test;
-
 import java.io.BufferedReader;
-import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +23,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +84,7 @@ public class InternetUtility {
 
     public static Object fetchRecipe(RecipeMO recipe) {
         if(USE_TEST_DATA){
-            return TestData.getRecipesTestData().get(0);
+            return TestData.getRecipesTestData();
         }
 
         try {
@@ -202,8 +198,8 @@ public class InternetUtility {
             //images
             //Note: image upload doesnt work if you do not add form field to multipart.
             //form field should be added to multipart only after file part
-            for(int i=0; i<recipe.getImages().size(); i++){
-                multipart.addFilePart("images["+i+"]", new File(recipe.getImages().get(i)));
+            for(int i=0; i<recipe.getRCP_IMGS().size(); i++){
+                multipart.addFilePart("images["+i+"]", new File(recipe.getRCP_IMGS().get(i)));
             }
 
             multipart.addFormField("rcp_nm", recipe.getRCP_NAME());

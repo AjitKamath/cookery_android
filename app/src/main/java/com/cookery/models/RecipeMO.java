@@ -22,17 +22,15 @@ public class RecipeMO  implements Serializable {
 
     private List<IngredientMO> ingredients;
     private List<TasteMO> tastes;
-
-    private List<String> images;
     private List<String> RCP_IMGS;
-    private String RATING;
+    private List<CommentMO> comments;
 
-    public String getRATING() {
-        return RATING;
+    public List<CommentMO> getComments() {
+        return comments;
     }
 
-    public void setRATING(String RATING) {
-        this.RATING = RATING;
+    public void setComments(List<CommentMO> comments) {
+        this.comments = comments;
     }
 
     public List<String> getRCP_IMGS() {
@@ -65,14 +63,6 @@ public class RecipeMO  implements Serializable {
 
     public void setFOOD_CSN_NAME(String FOOD_CSN_NAME) {
         this.FOOD_CSN_NAME = FOOD_CSN_NAME;
-    }
-
-    public List<String> getImages() {
-        return images;
-    }
-
-    public void setImages(List<String> images) {
-        this.images = images;
     }
 
     public List<TasteMO> getTastes() {

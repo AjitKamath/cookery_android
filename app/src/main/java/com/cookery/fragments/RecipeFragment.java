@@ -20,6 +20,7 @@ import com.cookery.R;
 import com.cookery.adapters.RecipeImagesViewPagerAdapter;
 import com.cookery.adapters.RecipeViewPagerAdapter;
 import com.cookery.models.RecipeMO;
+import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,9 @@ public class RecipeFragment extends DialogFragment {
 
     @InjectView(R.id.common_fragment_recipe_rating_tv)
     TextView common_fragment_recipe_rating_tv;
+
+    @InjectView(R.id.common_fragment_recipe_comments_tv)
+    TextView common_fragment_recipe_comments_tv;
     //end of components
 
     private RecipeMO recipe;
@@ -97,7 +101,6 @@ public class RecipeFragment extends DialogFragment {
         common_fragment_recipe_food_type_tv.setText(recipe.getFOOD_TYP_NAME().toUpperCase());
         common_fragment_recipe_cuisine_name_tv.setText(recipe.getFOOD_CSN_NAME());
         common_fragment_recipe_username_tv.setText(recipe.getNAME());
-        common_fragment_recipe_rating_tv.setText(recipe.getRATING());
 
         final List<Integer> viewPagerTabsList = new ArrayList<>();
         viewPagerTabsList.add(R.layout.view_pager_recipe_recipe);
@@ -108,7 +111,7 @@ public class RecipeFragment extends DialogFragment {
             common_fragment_recipe_tl.addTab(common_fragment_recipe_tl.newTab());
         }
 
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         common_fragment_recipe_tab_vp.setAdapter(new RecipeViewPagerAdapter(mContext, viewPagerTabsList, recipe));
@@ -131,6 +134,20 @@ public class RecipeFragment extends DialogFragment {
 
             }
         });
+
+        if(recipe.getComments() == null || recipe.getComments().isEmpty()){
+            common_fragment_recipe_comments_tv.setText("NO COMMENTS");
+        }
+        else{
+            common_fragment_recipe_comments_tv.setText(recipe.getComments().size()+" COMMENTS");
+
+            common_fragment_recipe_comments_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Utility.showRecipeCommentsFragment(getFragmentManager(), recipe);
+                }
+            });
+        }
     }
 
     private void setupImages() {

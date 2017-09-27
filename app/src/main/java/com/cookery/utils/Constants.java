@@ -4,7 +4,7 @@ package com.cookery.utils;
  * Created by ajit on 6/1/15.
  */
 public final class Constants {
-    public static final boolean USE_TEST_DATA = false;
+    public static final boolean USE_TEST_DATA = true;
 
     /*server properties*/
     private static final String SLASH = "/";
@@ -53,6 +53,7 @@ public final class Constants {
     public static final String FRAGMENT_ADD_RECIPE = "FRAGMENT_ADD_RECIPE";
     public static final String FRAGMENT_MY_FAVORITES = "FRAGMENT_MY_FAVORITES";
     public static final String FRAGMENT_RECIPE = "FRAGMENT_RECIPE";
+    public static final String FRAGMENT_RECIPE_COMMENTS = "FRAGMENT_RECIPE_COMMENTS";
     public static final String FRAGMENT_RECIPE_IMAGES = "FRAGMENT_RECIPE_IMAGES";
     public static final String FRAGMENT_COMMON_SELECTION = "FRAGMENT_COMMON_SELECTION";
     public static final String FRAGMENT_COMMON_WAIT = "FRAGMENT_COMMON_WAIT";
