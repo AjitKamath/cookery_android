@@ -204,7 +204,7 @@ public class AddRecipeFragment extends DialogFragment {
         fragment_add_recipe_vp.setAdapter(viewPagerAdapter);
         fragment_add_recipe_vp.setCurrentItem(activePageIndex);
         fragment_add_recipe_vp.setOffscreenPageLimit(viewPagerTabsList.size());
-        fragment_add_recipe_vp.setPagingEnabled(true); //TODO: set false in prod
+        fragment_add_recipe_vp.setPagingEnabled(false); //TODO: set false in prod
 
         //hide back button initially
         common_fragment_header_back_iv.setVisibility(View.GONE);

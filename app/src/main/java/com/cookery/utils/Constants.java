@@ -59,6 +59,7 @@ public final class Constants {
     public static final String FRAGMENT_COMMON_WAIT = "FRAGMENT_COMMON_WAIT";
     public static final String FRAGMENT_COMMON_MESSAGE = "FRAGMENT_COMMON_MESSAGE";
     public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
+    public static final String FRAGMENT_MY_RECIPE = "FRAGMENT_MY_RECIPE";
 
 
     //FRAGMENT OBJECT KEYS
@@ -67,10 +68,12 @@ public final class Constants {
     public static final String GENERIC_OBJECT = "GENERIC_OBJECT";
     public static final String LIST_DATA = "LIST_DATA";
     public static final String SELECTED_ITEM = "SELECTED_ITEM";
+    public static final String MY_RCPS = "MY_RCPS";
 
     public static final String TRENDING_RECIPES = "TRENDING RECIPES";
     public static final String TOP_RECIPES_MONTH = "TOP RECIPES OF THE MONTH";
     public static final String TOP_RECIPES_CHEF = "RECIPES FROM OUR TOP CHEF";
+    public static final String MY_RECIPES = "MY RECIPES";
 
     //check master keys
     public static final String CHECK_MASTER_FOR_CATEGORIES = "CHECK_MASTER_FOR_CATEGORIES";
