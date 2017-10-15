@@ -3,18 +3,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_marginTop="10dp"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/view_pager_recipe_reviews_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="YET TO IMPLEMENT"
-            android:textColor="@color/gray"
-            android:textSize="14sp" />
-
-    </android.support.v4.widget.NestedScrollView>
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        android:paddingBottom="15dp"/>
 
 </LinearLayout>

@@ -7,19 +7,20 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.cookery.models.CommentMO;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientMO;
+import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
+import com.cookery.models.ReviewMO;
 import com.cookery.models.TasteMO;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.URL;
@@ -35,8 +36,12 @@ import static com.cookery.utils.Constants.PHP_FETCH_FAV_RECIPES;
 import static com.cookery.utils.Constants.PHP_FETCH_INGREDIENTS;
 import static com.cookery.utils.Constants.PHP_FETCH_MASTER_SEARCH;
 import static com.cookery.utils.Constants.PHP_FETCH_RECIPE;
+import static com.cookery.utils.Constants.PHP_FETCH_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.PHP_FETCH_SUBMIT_RECIPE;
 import static com.cookery.utils.Constants.PHP_FETCH_TRENDING_RECIPES;
+import static com.cookery.utils.Constants.PHP_SUBMIT_MY_RECIPE_LIKES;
+import static com.cookery.utils.Constants.PHP_SUBMIT_RECIPE_COMMENT;
+import static com.cookery.utils.Constants.PHP_SUBMIT_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.SERVER_ADDRESS;
 import static com.cookery.utils.Constants.SERVER_CHARSET;
 import static com.cookery.utils.Constants.USE_TEST_DATA;
@@ -47,25 +52,6 @@ import static com.cookery.utils.Constants.USE_TEST_DATA;
 
 public class InternetUtility {
     private static final String CLASS_NAME = InternetUtility.class.getName();
-
-    public static String getResponseFromCookery(HttpURLConnection connection) throws Exception {
-        int status = connection.getResponseCode();
-
-        switch (status) {
-            case 200:
-            case 201:
-                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = br.readLine()) != null) {
-                    sb.append(line+"\n");
-                }
-                br.close();
-                return String.valueOf(sb);
-        }
-
-        return null;
-    }
 
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -82,7 +68,7 @@ public class InternetUtility {
         return hasInternet;
     }
 
-    public static Object fetchRecipe(RecipeMO recipe) {
+    public static Object fetchRecipe(RecipeMO recipe, int userId) {
         if(USE_TEST_DATA){
             return TestData.getRecipesTestData();
         }
@@ -90,6 +76,7 @@ public class InternetUtility {
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put("rcp_id", String.valueOf(recipe.getRCP_ID()));
+            paramMap.put("user_id", String.valueOf(userId));
 
             String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_FETCH_RECIPE, paramMap);
             return Utility.jsonToObject(jsonStr, RecipeMO.class);
@@ -101,7 +88,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static Object fetchFavRecipes(String favRecipeType) {
+    public static Object fetchFavRecipes(String favRecipeType, int user_id) {
         if(USE_TEST_DATA){
             return TestData.getRecipesTestData();
         }
@@ -109,6 +96,7 @@ public class InternetUtility {
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put("text", favRecipeType);
+            paramMap.put("user_id", String.valueOf(user_id));
 
             String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_FETCH_FAV_RECIPES, paramMap);
             return Utility.jsonToObject(jsonStr, RecipeMO.class);
@@ -190,6 +178,26 @@ public class InternetUtility {
         return null;
     }
 
+    public static Object fetchUsersRecipeReview(ReviewMO review) {
+        if(USE_TEST_DATA){
+            return TestData.getReviewsTestData().get(0);
+        }
+
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("user_id", String.valueOf(review.getRCP_ID()));
+        paramMap.put("rcp_id", String.valueOf(review.getRCP_ID()));
+
+        try {
+            String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_FETCH_RECIPE_REVIEW, paramMap);
+            return Utility.jsonToObject(jsonStr, ReviewMO.class);
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch Users Recipe Review from the server : "+e);
+        }
+
+        return null;
+    }
+
     public static Object submitRecipe(RecipeMO recipe) {
         MessageMO message = new MessageMO();
         try {
@@ -203,6 +211,7 @@ public class InternetUtility {
             }
 
             multipart.addFormField("rcp_nm", recipe.getRCP_NAME());
+            multipart.addFormField("user_id", String.valueOf(recipe.getUSER_ID()));
             multipart.addFormField("food_typ_id", String.valueOf(recipe.getFOOD_TYP_ID()));
             multipart.addFormField("food_csn_nm", String.valueOf(recipe.getFOOD_CSN_ID()));
 
@@ -241,6 +250,80 @@ public class InternetUtility {
         }
 
         return message;
+    }
+
+    public static MessageMO submitRecipeComment(CommentMO comment) {
+        MessageMO message = new MessageMO();
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("rcp_id", String.valueOf(comment.getRCP_ID()));
+            paramMap.put("user_id", String.valueOf(comment.getUSER_ID()));
+            paramMap.put("comment", comment.getCOMMENT());
+
+            message.setErr_message(getResponseFromCookery(SERVER_ADDRESS+PHP_SUBMIT_RECIPE_COMMENT, paramMap));
+            message.setError(false);
+        }
+        catch(SocketException e){
+            Log.e(CLASS_NAME, e.getMessage());
+
+            message.setError(true);
+            message.setErr_message("Check your internet");
+        }
+        catch(Exception e){
+            Log.e(CLASS_NAME, e.getMessage());
+
+            message.setError(true);
+            message.setErr_message("Something went wrong");
+        }
+
+        return message;
+    }
+
+    public static MessageMO submitRecipeReview(ReviewMO review) {
+        MessageMO message = new MessageMO();
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("rcp_id", String.valueOf(review.getRCP_ID()));
+            paramMap.put("user_id", String.valueOf(review.getUSER_ID()));
+            paramMap.put("review", review.getREVIEW());
+            paramMap.put("rating", String.valueOf(review.getRATING()));
+
+            message.setErr_message(getResponseFromCookery(SERVER_ADDRESS+PHP_SUBMIT_RECIPE_REVIEW, paramMap));
+            message.setError(false);
+        }
+        catch(SocketException e){
+            Log.e(CLASS_NAME, e.getMessage());
+
+            message.setError(true);
+            message.setErr_message("Check your internet");
+        }
+        catch(Exception e){
+            Log.e(CLASS_NAME, e.getMessage());
+
+            message.setError(true);
+            message.setErr_message("Something went wrong");
+        }
+
+        return message;
+    }
+
+    public static LikesMO submitLike(LikesMO like) {
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("type_id", String.valueOf(like.getTYPE_ID()));
+            paramMap.put("user_id", String.valueOf(like.getUSER_ID()));
+            paramMap.put("type", like.getTYPE());
+
+            return (LikesMO) Utility.jsonToObject(getResponseFromCookery(SERVER_ADDRESS+PHP_SUBMIT_MY_RECIPE_LIKES, paramMap), LikesMO.class);
+        }
+        catch(SocketException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch(Exception e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+
+        return null;
     }
 
     public static Object fetchAllQuantities() {

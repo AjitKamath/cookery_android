@@ -4,7 +4,7 @@ package com.cookery.utils;
  * Created by ajit on 6/1/15.
  */
 public final class Constants {
-    public static final boolean USE_TEST_DATA = true;
+    public static final boolean USE_TEST_DATA = false;
 
     /*server properties*/
     private static final String SLASH = "/";
@@ -32,6 +32,11 @@ public final class Constants {
     public static final String PHP_FETCH_MASTER_SEARCH = "mastersearch.php";
     public static final String PHP_FETCH_RECIPE = "getrecipedetails.php";
     public static final String PHP_FETCH_FAV_RECIPES = "getfavrecipes.php";
+    public static final String PHP_FETCH_RECIPE_REVIEW = "fetchrecipereview.php";      //NOT READY
+    public static final String PHP_SUBMIT_RECIPE_COMMENT = "submitrecipecomment.php"; //NOT READY
+    public static final String PHP_SUBMIT_RECIPE_REVIEW = "submitrecipereview.php";   //NOT READY
+    public static final String PHP_SUBMIT_MY_RECIPE_LIKES = "myrecipelikes.php";
+
 
     //fragment keys
     public static final int GALLERY_CHOICE = 1111;
@@ -54,6 +59,8 @@ public final class Constants {
     public static final String FRAGMENT_MY_FAVORITES = "FRAGMENT_MY_FAVORITES";
     public static final String FRAGMENT_RECIPE = "FRAGMENT_RECIPE";
     public static final String FRAGMENT_RECIPE_COMMENTS = "FRAGMENT_RECIPE_COMMENTS";
+    public static final String FRAGMENT_RECIPE_REVIEW = "FRAGMENT_RECIPE_REVIEW";
+    public static final String FRAGMENT_RECIPE_REVIEWS = "FRAGMENT_RECIPE_REVIEWS";
     public static final String FRAGMENT_RECIPE_IMAGES = "FRAGMENT_RECIPE_IMAGES";
     public static final String FRAGMENT_COMMON_SELECTION = "FRAGMENT_COMMON_SELECTION";
     public static final String FRAGMENT_COMMON_WAIT = "FRAGMENT_COMMON_WAIT";

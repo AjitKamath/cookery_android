@@ -66,3 +66,19 @@
 
 27 sep 2017
 1. implemented dummy comments for a recipe.
+
+-- git checkin on 27 sep 2017 --
+
+8 oct 2017
+1. add comments for a recipe.
+2. layout for recipe rating.
+
+9 oct 2017
+1. impl. recipe reviews.
+
+10 oct 2017
+1. integrated recipe reviews into recipe fragment.
+
+15 oct 2017
+1. get views and likes for a recipe.
+2. add like to a recipe.

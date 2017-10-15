@@ -7,17 +7,17 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="WHAT IS REQUIRED"
         android:textColor="@color/app_color"
-        android:textSize="12sp" />
+        android:textSize="10sp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/view_pager_recipe_ingredients_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:scrollbars="vertical" />
-
+        android:scrollbars="vertical"
+        android:paddingBottom="15dp"/>
 
 </LinearLayout>

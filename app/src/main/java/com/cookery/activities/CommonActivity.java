@@ -36,7 +36,9 @@ import com.cookery.models.MasterDataMO;
 import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.TasteMO;
+import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
+import com.cookery.utils.TestData;
 import com.cookery.utils.Utility;
 
 import java.io.Serializable;
@@ -49,6 +51,7 @@ import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_MY_FAVORITES;
 import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.MY_RCPS;
 import static com.cookery.utils.Constants.OK;
@@ -59,6 +62,8 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     private Context mContext = this;
     private MasterDataMO masterData;
 
+    private UserMO loggedInUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,20 +73,16 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     protected void onResume(){
         super.onResume();
 
-        //check if the user is connected to the internet
-        /*if(!InternetUtility.isNetworkAvailable(mContext)){
-            FragmentManager fragment = getFragmentManager();
-            //Utility.showNoInternetFragment(fragment);
-            return;
-        }*/
-
-        //setupToolbar();
-
         setupNavigator();
-
         setupSearch();
-
         setupFab();
+
+        loggedInUser = (UserMO) Utility.readFromUserSecurity(mContext, LOGGED_IN_USER);
+        if(loggedInUser == null || loggedInUser.getUser_id() == 0){
+            //TODO: show login/signup screen
+            loggedInUser = TestData.getUserTestData();
+            Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, loggedInUser);
+        }
     }
 
     private void setupSearch() {
@@ -374,7 +375,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected Object doInBackground(RecipeMO... objects) {
-            return InternetUtility.fetchRecipe(objects[0]);
+            return InternetUtility.fetchRecipe(objects[0], loggedInUser.getUser_id());
         }
 
         @Override
@@ -401,9 +402,9 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         protected Object doInBackground(Void... objects) {
             Map<String, List<RecipeMO>> favRecipes = new HashMap<>();
 
-            favRecipes.put("FAVORITES", (List<RecipeMO>)InternetUtility.fetchFavRecipes("FAVORITES"));
-            favRecipes.put("VIEWED", (List<RecipeMO>)InternetUtility.fetchFavRecipes("VIEWED"));
-            favRecipes.put("REVIEWED", (List<RecipeMO>)InternetUtility.fetchFavRecipes("REVIEWED"));
+            favRecipes.put("FAVORITES", (List<RecipeMO>)InternetUtility.fetchFavRecipes("FAVORITES", loggedInUser.getUser_id()));
+            favRecipes.put("VIEWED", (List<RecipeMO>)InternetUtility.fetchFavRecipes("VIEWED", loggedInUser.getUser_id()));
+            favRecipes.put("REVIEWED", (List<RecipeMO>)InternetUtility.fetchFavRecipes("REVIEWED", loggedInUser.getUser_id()));
 
             return favRecipes;
         }

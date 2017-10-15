@@ -15,6 +15,7 @@ public class RecipeMO  implements Serializable {
     private String RCP_PROC;
     private String RCP_PLATING;
     private String RCP_NOTE;
+    private int USER_ID;
 
     private String FOOD_TYP_NAME;
     private String FOOD_CSN_NAME;
@@ -24,6 +25,10 @@ public class RecipeMO  implements Serializable {
     private List<TasteMO> tastes;
     private List<String> RCP_IMGS;
     private List<CommentMO> comments;
+    private List<ReviewMO> reviews;
+    private boolean isLiked;
+    private int likes;
+    private int views;
 
     public List<CommentMO> getComments() {
         return comments;
@@ -135,5 +140,45 @@ public class RecipeMO  implements Serializable {
 
     public void setFOOD_TYP_NAME(String FOOD_TYP_NAME) {
         this.FOOD_TYP_NAME = FOOD_TYP_NAME;
+    }
+
+    public List<ReviewMO> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<ReviewMO> reviews) {
+        this.reviews = reviews;
+    }
+
+    public int getUSER_ID() {
+        return USER_ID;
+    }
+
+    public void setUSER_ID(int USER_ID) {
+        this.USER_ID = USER_ID;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public int getViews() {
+        return views;
+    }
+
+    public void setViews(int views) {
+        this.views = views;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
     }
 }

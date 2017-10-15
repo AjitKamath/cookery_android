@@ -6,7 +6,9 @@ import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
+import com.cookery.models.ReviewMO;
 import com.cookery.models.TasteMO;
+import com.cookery.models.UserMO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +24,23 @@ public class TestData {
     private static List<QuantityMO> quantities;
     private static List<TasteMO> tastes;
     private static List<CommentMO> comments;
+    private static UserMO user;
+    private static List<ReviewMO> reviews;
 
     private static List<RecipeMO> recipes; //keep it last
+
+    public static UserMO getUserTestData(){
+        user = new UserMO();
+        user.setUser_id(1);
+        user.setName("Vishal");
+
+        return user;
+    }
 
     public static List<RecipeMO> getRecipesTestData(){
         getIngredientsTestData();
         getCommentsTestData();
+        getReviewsTestData();
 
         recipes = new ArrayList<>();
         RecipeMO recipe = null;
@@ -39,7 +52,9 @@ public class TestData {
         recipe.setNAME("Vishal Varhney");
         recipe.setRCP_PROC("Kill it. boil it. eat it.");
         recipe.setIngredients(ingredients);
+        recipe.setReviews(reviews);
         recipe.setComments(comments);
+        recipe.setLikes(34);
         recipes.add(recipe);
 
         recipe = new RecipeMO();
@@ -49,7 +64,9 @@ public class TestData {
         recipe.setRCP_PROC("Boil water. Burn chicken. Cut tomatoes. Eat and dance.");
         recipe.setIngredients(ingredients);
         recipe.setComments(comments);
+        recipe.setReviews(reviews);
         recipe.setNAME("Ajit Kamath");
+        recipe.setLikes(86);
         recipes.add(recipe);
 
         recipe = new RecipeMO();
@@ -59,7 +76,9 @@ public class TestData {
         recipe.setRCP_PROC("Water + salt + sugar + lemon = lemon juice");
         recipe.setIngredients(ingredients);
         recipe.setComments(comments);
+        recipe.setReviews(reviews);
         recipe.setNAME("Ashish Bhargav");
+        recipe.setLikes(58);
         recipes.add(recipe);
 
         return recipes;
@@ -254,6 +273,43 @@ public class TestData {
         comments.add(comment);
 
         return comments;
+    }
+
+    public static List<ReviewMO> getReviewsTestData(){
+        getUserTestData();
+
+        ReviewMO review = null;
+        reviews = new ArrayList<>();
+
+        review = new ReviewMO();
+        review.setUSER_ID(user.getUser_id());
+        review.setRCP_ID(1);
+        review.setREVIEW("Food worth dying for.");
+        review.setRATING(4);
+        reviews.add(review);
+
+        review = new ReviewMO();
+        review.setUSER_ID(user.getUser_id());
+        review.setRCP_ID(2);
+        review.setREVIEW("Amazing recipe");
+        review.setRATING(3);
+        reviews.add(review);
+
+        review = new ReviewMO();
+        review.setUSER_ID(user.getUser_id());
+        review.setRCP_ID(4);
+        review.setREVIEW("Simple yet ravishing taste.");
+        review.setRATING(4);
+        reviews.add(review);
+
+        review = new ReviewMO();
+        review.setUSER_ID(user.getUser_id());
+        review.setRCP_ID(3);
+        review.setREVIEW("Have always been a fan of mediterranean food. Loved it.");
+        review.setRATING(3);
+        reviews.add(review);
+
+        return reviews;
     }
 
     public static String getBigStringTestData(){

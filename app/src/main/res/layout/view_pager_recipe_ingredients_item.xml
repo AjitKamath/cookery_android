@@ -1,66 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/view_pager_recipe_ingredients_item_cv"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
+    android:layout_marginTop="5dp"
     android:background="@color/white"
-    android:paddingTop="@dimen/padding"
-    android:paddingBottom="@dimen/padding"
-    android:id="@+id/view_pager_recipe_ingredients_item_ll">
+    card_view:cardCornerRadius="5dp"
+    card_view:cardPreventCornerOverlap="true">
 
-    <LinearLayout
-        android:layout_centerInParent="true"
-        android:layout_alignParentLeft="true"
-        android:layout_width="wrap_content"
-        android:gravity="center"
+    <RelativeLayout
+        android:id="@+id/view_pager_recipe_ingredients_item_ll"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding">
 
-        <ImageView
-            android:id="@+id/view_pager_recipe_ingredients_item_iv"
-            android:layout_width="@dimen/header_buttons_dimen"
-            android:layout_height="@dimen/header_buttons_dimen"
-            android:src="@drawable/food" />
-
-        <TextView
-            android:maxWidth="200dp"
-            android:textColor="@color/black"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/view_pager_recipe_ingredients_item_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:text="NOODLES" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_alignParentRight="true"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/view_pager_recipe_ingredients_item_qty_tv"
-            android:textColor="@color/Gray"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="10sp"
-            android:text="99" />
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/view_pager_recipe_ingredients_item_qty_type_tv"
-            android:maxWidth="200dp"
-            android:textColor="@color/Gray"
-            android:layout_marginLeft="10dp"
+            <ImageView
+                android:id="@+id/view_pager_recipe_ingredients_item_iv"
+                android:layout_width="@dimen/header_buttons_dimen"
+                android:layout_height="@dimen/header_buttons_dimen"
+                android:src="@drawable/food" />
+
+            <TextView
+                android:id="@+id/view_pager_recipe_ingredients_item_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:maxWidth="200dp"
+                android:text="NOODLES"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="10sp"
-            android:text="TABLE SPOON" />
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/view_pager_recipe_ingredients_item_qty_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="99"
+                android:textColor="@color/Gray"
+                android:textSize="10sp" />
 
-</RelativeLayout>
+            <TextView
+                android:id="@+id/view_pager_recipe_ingredients_item_qty_type_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:maxWidth="200dp"
+                android:text="TABLE SPOON"
+                android:textColor="@color/Gray"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
