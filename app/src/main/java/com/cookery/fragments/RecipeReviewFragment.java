@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
@@ -108,6 +109,15 @@ public class RecipeReviewFragment extends DialogFragment {
             selectStars(0);
         }
 
+        for(ImageView iterStars : stars){
+            iterStars.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    selectStars(Integer.parseInt(String.valueOf(view.getTag())));
+                }
+            });
+        }
+
         common_fragment_recipe_rating_submit_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,15 +127,7 @@ public class RecipeReviewFragment extends DialogFragment {
                 }
                 review.setREVIEW(String.valueOf(common_fragment_recipe_rating_review_tv.getText()));
 
-                MessageMO message = InternetUtility.submitRecipeReview(review);
-
-                message.setPurpose("ADD_RECIPE_REVIEW");
-                Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_RECIPE_REVIEW);
-                Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
-
-                if(!message.isError()){
-                    dismiss();
-                }
+                new AsyncSubmitReview().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, review);
             }
         });
     }
@@ -179,6 +181,51 @@ public class RecipeReviewFragment extends DialogFragment {
                 ((TextView) v).setTypeface(robotoCondensedLightFont);
             } else if (v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
+            }
+        }
+    }
+
+    public class AsyncSubmitReview extends AsyncTask<Object, Void, Object> {
+        Fragment frag;
+
+        @Override
+        protected void onPreExecute(){
+            frag = Utility.showWaitDialog(getFragmentManager(), "Submitting your review ..");
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            ReviewMO review = (ReviewMO) objects[0];
+            return InternetUtility.submitRecipeReview(review);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            Utility.closeWaitDialog(getFragmentManager(), frag);
+
+            ReviewMO review = (ReviewMO) object;
+
+            MessageMO message = new MessageMO();
+            message.setPurpose("ADD_RECIPE_REVIEW");
+
+            if(review != null && review.isReviewed()){
+                message.setError(false);
+                message.setErr_message("Thank You for the review !");
+            }
+            else{
+                message.setError(true);
+                message.setErr_message("Something went wrong. Try again.");
+            }
+
+            Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_RECIPE_REVIEW);
+            Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
+
+            if(!message.isError()){
+                dismiss();
+
+                if(getTargetFragment() instanceof RecipeFragment){
+                    ((RecipeFragment)getTargetFragment()).setRatingView(review.isReviewed(), review.getRating());
+                }
             }
         }
     }

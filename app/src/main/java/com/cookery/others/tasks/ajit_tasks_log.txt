@@ -82,3 +82,11 @@
 15 oct 2017
 1. get views and likes for a recipe.
 2. add like to a recipe.
+
+-- git checkin on 15 oct 2017 --
+
+16 oct 2017
+1. user like/unlike for a recipe implemented.
+
+17 oct 2017
+1. implemented rating for recipe.

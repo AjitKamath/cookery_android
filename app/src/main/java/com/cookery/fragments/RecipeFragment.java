@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.cookery.R;
 import com.cookery.adapters.RecipeImagesViewPagerAdapter;
 import com.cookery.adapters.RecipeViewPagerAdapter;
-import com.cookery.async.AsyncUtility;
 import com.cookery.models.LikesMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
@@ -90,11 +89,17 @@ public class RecipeFragment extends DialogFragment {
     @InjectView(R.id.common_fragment_recipe_username_tv)
     TextView common_fragment_recipe_username_tv;
 
+    @InjectView(R.id.common_fragment_recipe_view_ll)
+    LinearLayout common_fragment_recipe_view_ll;
+
     @InjectView(R.id.common_fragment_recipe_rating_tv)
     TextView common_fragment_recipe_rating_tv;
 
     @InjectView(R.id.common_fragment_recipe_comments_tv)
     TextView common_fragment_recipe_comments_tv;
+
+    @InjectView(R.id.common_fragment_recipe_rating_iv)
+    ImageView common_fragment_recipe_rating_iv;
 
     //end of components
 
@@ -135,6 +140,10 @@ public class RecipeFragment extends DialogFragment {
         common_fragment_recipe_cuisine_name_tv.setText(recipe.getFOOD_CSN_NAME());
         common_fragment_recipe_username_tv.setText(recipe.getNAME());
         common_fragment_recipe_views_tv.setText(Utility.getSmartNumber(recipe.getViews()));
+
+        if(recipe.getRating() != null && !recipe.getRating().trim().isEmpty()){
+            common_fragment_recipe_rating_tv.setText(recipe.getRating());
+        }
 
         final List<Integer> viewPagerTabsList = new ArrayList<>();
         viewPagerTabsList.add(R.layout.view_pager_recipe_recipe);
@@ -183,10 +192,19 @@ public class RecipeFragment extends DialogFragment {
             });
         }
 
+        common_fragment_recipe_view_ll.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                //TODO: show people who have viewed this recipe
+
+                return false;
+            }
+        });
+
         common_fragment_recipe_rating_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AsyncTasker().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new AsyncFetchReview().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -202,11 +220,12 @@ public class RecipeFragment extends DialogFragment {
                 like.setTYPE("RECIPE");
                 like.setTYPE_ID(recipe.getRCP_ID());
 
-                new AsyncUtility().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this, FRAGMENT_RECIPE, like);
+                new AsyncSubmitLike().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
             }
         });
 
         setLikeView(recipe.isLiked(), recipe.getLikes());
+        setRatingView(recipe.isReviewed(), recipe.getRating());
     }
 
     private void setupImages() {
@@ -229,6 +248,19 @@ public class RecipeFragment extends DialogFragment {
         }
         else{
             common_fragment_recipe_like_iv.setImageResource(R.drawable.heart_unselected);
+        }
+    }
+
+    public void setRatingView(boolean isReviewed, String rating){
+        if(rating != null && !rating.trim().isEmpty()){
+            common_fragment_recipe_rating_tv.setText(rating);
+        }
+
+        if(isReviewed){
+            common_fragment_recipe_rating_iv.setImageResource(R.drawable.star);
+        }
+        else{
+            common_fragment_recipe_rating_iv.setImageResource(R.drawable.star_unselected);
         }
     }
 
@@ -272,7 +304,7 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
-    class AsyncTasker extends AsyncTask<Object, Void, Object> {
+    class AsyncFetchReview extends AsyncTask<Object, Void, Object> {
         Fragment frag = null;
 
         @Override
@@ -295,10 +327,31 @@ public class RecipeFragment extends DialogFragment {
             Utility.closeWaitDialog(getFragmentManager(), frag);
 
             if(review == null){
-                return;
+                review = new ReviewMO();
             }
 
-            Utility.showRecipeReviewFragment(getFragmentManager(), review);
+            review.setRCP_ID(recipe.getRCP_ID());
+            review.setUSER_ID(loggerInUser.getUser_id());
+
+            Utility.showRecipeReviewFragment(getFragmentManager(), FRAGMENT_RECIPE, review);
+        }
+    }
+
+    public class AsyncSubmitLike extends AsyncTask<Object, Void, Object> {
+        @Override
+        protected void onPreExecute(){
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            LikesMO like = (LikesMO) objects[0];
+            return InternetUtility.submitLike(like);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            LikesMO like = (LikesMO) object;
+            setLikeView(like.isLiked(), like.getLikes());
         }
     }
 }

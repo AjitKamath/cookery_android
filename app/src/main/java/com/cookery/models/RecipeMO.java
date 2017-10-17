@@ -27,8 +27,10 @@ public class RecipeMO  implements Serializable {
     private List<CommentMO> comments;
     private List<ReviewMO> reviews;
     private boolean isLiked;
+    private boolean isReviewed;
     private int likes;
     private int views;
+    private String rating;
 
     public List<CommentMO> getComments() {
         return comments;
@@ -180,5 +182,21 @@ public class RecipeMO  implements Serializable {
 
     public void setLiked(boolean liked) {
         isLiked = liked;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+
+    public boolean isReviewed() {
+        return isReviewed;
+    }
+
+    public void setReviewed(boolean reviewed) {
+        isReviewed = reviewed;
     }
 }

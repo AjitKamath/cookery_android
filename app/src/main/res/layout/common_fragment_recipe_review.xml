@@ -33,6 +33,7 @@
                 android:weightSum="5">
 
                 <ImageView
+                    android:tag="1"
                     android:id="@+id/common_fragment_recipe_rating_star_1_iv"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
@@ -40,6 +41,7 @@
                     android:src="@drawable/star_unselected" />
 
                 <ImageView
+                    android:tag="2"
                     android:id="@+id/common_fragment_recipe_rating_star_2_iv"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
@@ -47,6 +49,7 @@
                     android:src="@drawable/star_unselected" />
 
                 <ImageView
+                    android:tag="3"
                     android:id="@+id/common_fragment_recipe_rating_star_3_iv"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
@@ -54,6 +57,7 @@
                     android:src="@drawable/star_unselected" />
 
                 <ImageView
+                    android:tag="4"
                     android:id="@+id/common_fragment_recipe_rating_star_4_iv"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
@@ -61,6 +65,7 @@
                     android:src="@drawable/star_unselected" />
 
                 <ImageView
+                    android:tag="5"
                     android:id="@+id/common_fragment_recipe_rating_star_5_iv"
                     android:layout_width="25dp"
                     android:layout_height="25dp"

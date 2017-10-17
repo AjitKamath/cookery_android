@@ -15,6 +15,8 @@ public class ReviewMO implements Serializable {
 
     private String userImage;
     private int likeCount;
+    private boolean isReviewed;
+    private String rating;
 
     public int getREV_ID() {
         return REV_ID;
@@ -70,5 +72,21 @@ public class ReviewMO implements Serializable {
 
     public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
+    }
+
+    public boolean isReviewed() {
+        return isReviewed;
+    }
+
+    public void setReviewed(boolean reviewed) {
+        isReviewed = reviewed;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
     }
 }

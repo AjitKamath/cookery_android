@@ -242,14 +242,13 @@ public class Utility extends Activity {
         fragment.show(fragmentManager, fragmentNameStr);
     }
 
-    public static void showRecipeReviewFragment(FragmentManager fragmentManager, ReviewMO review){
+    public static void showRecipeReviewFragment(FragmentManager fragmentManager, String parentFragmentNameStr, ReviewMO review){
         if(review == null){
             Log.e(CLASS_NAME, "Review is null");
             return;
         }
 
         String fragmentNameStr = FRAGMENT_RECIPE_REVIEW;
-        String parentFragmentNameStr = null;
 
         Fragment frag = fragmentManager.findFragmentByTag(fragmentNameStr);
 

@@ -39,7 +39,7 @@ import static com.cookery.utils.Constants.PHP_FETCH_RECIPE;
 import static com.cookery.utils.Constants.PHP_FETCH_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.PHP_FETCH_SUBMIT_RECIPE;
 import static com.cookery.utils.Constants.PHP_FETCH_TRENDING_RECIPES;
-import static com.cookery.utils.Constants.PHP_SUBMIT_MY_RECIPE_LIKES;
+import static com.cookery.utils.Constants.PHP_SUBMIT_LIKE;
 import static com.cookery.utils.Constants.PHP_SUBMIT_RECIPE_COMMENT;
 import static com.cookery.utils.Constants.PHP_SUBMIT_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.SERVER_ADDRESS;
@@ -184,7 +184,7 @@ public class InternetUtility {
         }
 
         Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("user_id", String.valueOf(review.getRCP_ID()));
+        paramMap.put("user_id", String.valueOf(review.getUSER_ID()));
         paramMap.put("rcp_id", String.valueOf(review.getRCP_ID()));
 
         try {
@@ -279,8 +279,7 @@ public class InternetUtility {
         return message;
     }
 
-    public static MessageMO submitRecipeReview(ReviewMO review) {
-        MessageMO message = new MessageMO();
+    public static ReviewMO submitRecipeReview(ReviewMO review) {
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put("rcp_id", String.valueOf(review.getRCP_ID()));
@@ -288,23 +287,16 @@ public class InternetUtility {
             paramMap.put("review", review.getREVIEW());
             paramMap.put("rating", String.valueOf(review.getRATING()));
 
-            message.setErr_message(getResponseFromCookery(SERVER_ADDRESS+PHP_SUBMIT_RECIPE_REVIEW, paramMap));
-            message.setError(false);
+            return  (ReviewMO) Utility.jsonToObject(getResponseFromCookery(SERVER_ADDRESS+PHP_SUBMIT_RECIPE_REVIEW, paramMap), ReviewMO.class);
         }
         catch(SocketException e){
             Log.e(CLASS_NAME, e.getMessage());
-
-            message.setError(true);
-            message.setErr_message("Check your internet");
         }
         catch(Exception e){
             Log.e(CLASS_NAME, e.getMessage());
-
-            message.setError(true);
-            message.setErr_message("Something went wrong");
         }
 
-        return message;
+        return null;
     }
 
     public static LikesMO submitLike(LikesMO like) {
@@ -314,7 +306,7 @@ public class InternetUtility {
             paramMap.put("user_id", String.valueOf(like.getUSER_ID()));
             paramMap.put("type", like.getTYPE());
 
-            return (LikesMO) Utility.jsonToObject(getResponseFromCookery(SERVER_ADDRESS+PHP_SUBMIT_MY_RECIPE_LIKES, paramMap), LikesMO.class);
+            return (LikesMO) Utility.jsonToObject(getResponseFromCookery(SERVER_ADDRESS+PHP_SUBMIT_LIKE, paramMap), LikesMO.class);
         }
         catch(SocketException e){
             Log.e(CLASS_NAME, e.getMessage());

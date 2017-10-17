@@ -32,10 +32,10 @@ public final class Constants {
     public static final String PHP_FETCH_MASTER_SEARCH = "mastersearch.php";
     public static final String PHP_FETCH_RECIPE = "getrecipedetails.php";
     public static final String PHP_FETCH_FAV_RECIPES = "getfavrecipes.php";
-    public static final String PHP_FETCH_RECIPE_REVIEW = "fetchrecipereview.php";      //NOT READY
+    public static final String PHP_FETCH_RECIPE_REVIEW = "fetchrecipereview.php";
     public static final String PHP_SUBMIT_RECIPE_COMMENT = "submitrecipecomment.php"; //NOT READY
-    public static final String PHP_SUBMIT_RECIPE_REVIEW = "submitrecipereview.php";   //NOT READY
-    public static final String PHP_SUBMIT_MY_RECIPE_LIKES = "myrecipelikes.php";
+    public static final String PHP_SUBMIT_RECIPE_REVIEW = "submitrecipereview.php";
+    public static final String PHP_SUBMIT_LIKE = "submitlike.php";
 
 
     //fragment keys
