@@ -35,11 +35,14 @@ import static com.cookery.utils.Constants.PHP_FETCH_ALL_TASTES;
 import static com.cookery.utils.Constants.PHP_FETCH_FAV_RECIPES;
 import static com.cookery.utils.Constants.PHP_FETCH_INGREDIENTS;
 import static com.cookery.utils.Constants.PHP_FETCH_MASTER_SEARCH;
+import static com.cookery.utils.Constants.PHP_FETCH_MY_RECIPES;
 import static com.cookery.utils.Constants.PHP_FETCH_RECIPE;
 import static com.cookery.utils.Constants.PHP_FETCH_RECIPE_REVIEW;
-import static com.cookery.utils.Constants.PHP_FETCH_SUBMIT_RECIPE;
+import static com.cookery.utils.Constants.PHP_FETCH_REVIEWED_RECIPES;
 import static com.cookery.utils.Constants.PHP_FETCH_TRENDING_RECIPES;
+import static com.cookery.utils.Constants.PHP_FETCH_VIEWED_RECIPES;
 import static com.cookery.utils.Constants.PHP_SUBMIT_LIKE;
+import static com.cookery.utils.Constants.PHP_SUBMIT_RECIPE;
 import static com.cookery.utils.Constants.PHP_SUBMIT_RECIPE_COMMENT;
 import static com.cookery.utils.Constants.PHP_SUBMIT_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.SERVER_ADDRESS;
@@ -88,21 +91,58 @@ public class InternetUtility {
         return null;
     }
 
-    public static Object fetchFavRecipes(String favRecipeType, int user_id) {
+    public static Object fetchFavRecipes(int user_id) {
         if(USE_TEST_DATA){
             return TestData.getRecipesTestData();
         }
 
         try {
             Map<String, String> paramMap = new HashMap<>();
-            paramMap.put("text", favRecipeType);
             paramMap.put("user_id", String.valueOf(user_id));
 
             String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_FETCH_FAV_RECIPES, paramMap);
             return Utility.jsonToObject(jsonStr, RecipeMO.class);
         }
         catch (Exception e){
-            Log.e(CLASS_NAME, "Could not fetch fav recipes("+favRecipeType+") from the server : "+e);
+            Log.e(CLASS_NAME, "Could not fetch fav recipes from the server : "+e);
+        }
+
+        return null;
+    }
+
+    public static Object fetchViewedRecipes(int user_id) {
+        if(USE_TEST_DATA){
+            return TestData.getRecipesTestData();
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("user_id", String.valueOf(user_id));
+
+            String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_FETCH_VIEWED_RECIPES, paramMap);
+            return Utility.jsonToObject(jsonStr, RecipeMO.class);
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch viewed recipes from the server : "+e);
+        }
+
+        return null;
+    }
+
+    public static Object fetchReviewedRecipes(int user_id) {
+        if(USE_TEST_DATA){
+            return TestData.getRecipesTestData();
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("user_id", String.valueOf(user_id));
+
+            String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_FETCH_REVIEWED_RECIPES, paramMap);
+            return Utility.jsonToObject(jsonStr, RecipeMO.class);
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch reviewed recipes from the server : "+e);
         }
 
         return null;
@@ -201,7 +241,7 @@ public class InternetUtility {
     public static Object submitRecipe(RecipeMO recipe) {
         MessageMO message = new MessageMO();
         try {
-            MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS+PHP_FETCH_SUBMIT_RECIPE, SERVER_CHARSET);
+            MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS+PHP_SUBMIT_RECIPE, SERVER_CHARSET);
 
             //images
             //Note: image upload doesnt work if you do not add form field to multipart.
@@ -410,6 +450,28 @@ public class InternetUtility {
 
         try {
             String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_FETCH_TRENDING_RECIPES, null);
+            return (List<RecipeMO>) Utility.jsonToObject(jsonStr, RecipeMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch Cuisines from the server : "+e);
+        }
+
+        return null;
+    }
+
+    public static List<RecipeMO> fetchMyRecipes(int user_id) {
+        if(USE_TEST_DATA){
+            return TestData.getRecipesTestData();
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("user_id", String.valueOf(user_id));
+
+            String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_FETCH_MY_RECIPES, paramMap);
             return (List<RecipeMO>) Utility.jsonToObject(jsonStr, RecipeMO.class);
         }
         catch (IOException e){

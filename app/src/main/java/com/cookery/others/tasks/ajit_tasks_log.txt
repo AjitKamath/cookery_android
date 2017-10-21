@@ -90,3 +90,11 @@
 
 17 oct 2017
 1. implemented rating for recipe.
+
+-- git checkin on 15 oct 2017 --
+
+22 oct 2017
+1. UI changes in favorite recipes.
+2. UI changes in my recipes.
+3. My Recipes service for logged in user implemented.
+4. Fav recipes service for logged in user implemented.

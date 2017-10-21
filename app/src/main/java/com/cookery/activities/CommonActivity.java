@@ -42,7 +42,6 @@ import com.cookery.utils.TestData;
 import com.cookery.utils.Utility;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -402,9 +401,9 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         protected Object doInBackground(Void... objects) {
             Map<String, List<RecipeMO>> favRecipes = new HashMap<>();
 
-            favRecipes.put("FAVORITES", (List<RecipeMO>)InternetUtility.fetchFavRecipes("FAVORITES", loggedInUser.getUser_id()));
-            favRecipes.put("VIEWED", (List<RecipeMO>)InternetUtility.fetchFavRecipes("VIEWED", loggedInUser.getUser_id()));
-            favRecipes.put("REVIEWED", (List<RecipeMO>)InternetUtility.fetchFavRecipes("REVIEWED", loggedInUser.getUser_id()));
+            favRecipes.put("FAVORITES", (List<RecipeMO>)InternetUtility.fetchFavRecipes(loggedInUser.getUser_id()));
+            favRecipes.put("VIEWED", (List<RecipeMO>)InternetUtility.fetchViewedRecipes(loggedInUser.getUser_id()));
+            favRecipes.put("REVIEWED", (List<RecipeMO>)InternetUtility.fetchReviewedRecipes(loggedInUser.getUser_id()));
 
             return favRecipes;
         }
@@ -426,23 +425,19 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected Object doInBackground(Object... objects) {
-            List<RecipeMO> allCategoriesRecipes = new ArrayList<RecipeMO>();
-
-            allCategoriesRecipes.addAll(InternetUtility.fetchTrendingRecipes());
-
-            return allCategoriesRecipes;
+            return InternetUtility.fetchMyRecipes(loggedInUser.getUser_id());
         }
 
         @Override
         protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "loading recipes ..");
+            fragment = Utility.showWaitDialog(getFragmentManager(), "Loading My Recipes ..");
         }
 
         @Override
         protected void onPostExecute(Object object) {
-            ArrayList<RecipeMO> categoryRecipesMap = (ArrayList<RecipeMO>) object;
+            List<RecipeMO> myRecipes = (List<RecipeMO>) object;
 
-            if(categoryRecipesMap != null || !categoryRecipesMap.isEmpty()){
+            if(myRecipes != null || !myRecipes.isEmpty()){
                 setupMyRecipesFragment((List<RecipeMO>) object);
                 Utility.closeWaitDialog(getFragmentManager(), fragment);
             }

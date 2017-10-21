@@ -1,6 +1,7 @@
 package com.cookery.models;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,6 +17,8 @@ public class RecipeMO  implements Serializable {
     private String RCP_PLATING;
     private String RCP_NOTE;
     private int USER_ID;
+    private Date CREATE_DTM;
+    private Date MOD_DTM;
 
     private String FOOD_TYP_NAME;
     private String FOOD_CSN_NAME;
@@ -31,6 +34,8 @@ public class RecipeMO  implements Serializable {
     private int likes;
     private int views;
     private String rating;
+    private String createDateTime;
+    private String modifiedDateTime;
 
     public List<CommentMO> getComments() {
         return comments;
@@ -198,5 +203,37 @@ public class RecipeMO  implements Serializable {
 
     public void setReviewed(boolean reviewed) {
         isReviewed = reviewed;
+    }
+
+    public Date getMOD_DTM() {
+        return MOD_DTM;
+    }
+
+    public void setMOD_DTM(Date MOD_DTM) {
+        this.MOD_DTM = MOD_DTM;
+    }
+
+    public Date getCREATE_DTM() {
+        return CREATE_DTM;
+    }
+
+    public void setCREATE_DTM(Date CREATE_DTM) {
+        this.CREATE_DTM = CREATE_DTM;
+    }
+
+    public String getCreateDateTime() {
+        return createDateTime;
+    }
+
+    public void setCreateDateTime(String createDateTime) {
+        this.createDateTime = createDateTime;
+    }
+
+    public String getModifiedDateTime() {
+        return modifiedDateTime;
+    }
+
+    public void setModifiedDateTime(String modifiedDateTime) {
+        this.modifiedDateTime = modifiedDateTime;
     }
 }

@@ -27,16 +27,23 @@ public final class Constants {
     public static final String PHP_FETCH_INGREDIENTS = "autocompleteingredient.php";
     public static final String PHP_FETCH_ALL_TASTES = "fetchtastes.php";
     public static final String PHP_FETCH_ALL_QUANTITIES = "fetchqty.php";
-    public static final String PHP_FETCH_SUBMIT_RECIPE = "addrecipe.php";
     public static final String PHP_FETCH_TRENDING_RECIPES = "fetchtrendingrecipes.php";
     public static final String PHP_FETCH_MASTER_SEARCH = "mastersearch.php";
-    public static final String PHP_FETCH_RECIPE = "getrecipedetails.php";
-    public static final String PHP_FETCH_FAV_RECIPES = "getfavrecipes.php";
+    public static final String PHP_FETCH_RECIPE = "fetchrecipedetails.php";
+    public static final String PHP_FETCH_FAV_RECIPES = "fetchuserfavrecipes.php";
+    public static final String PHP_FETCH_VIEWED_RECIPES = "fetchuserviewedrecipes.php";
+    public static final String PHP_FETCH_REVIEWED_RECIPES = "fetchuserreviewedrecipes.php";
     public static final String PHP_FETCH_RECIPE_REVIEW = "fetchrecipereview.php";
+    public static final String PHP_FETCH_MY_RECIPES = "fetchuserrecipes.php";
+    public static final String PHP_SUBMIT_RECIPE = "addrecipe.php";
     public static final String PHP_SUBMIT_RECIPE_COMMENT = "submitrecipecomment.php"; //NOT READY
     public static final String PHP_SUBMIT_RECIPE_REVIEW = "submitrecipereview.php";
     public static final String PHP_SUBMIT_LIKE = "submitlike.php";
 
+
+    /*Date Time*/
+    public static final String DB_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
+    /*Date Time*/
 
     //fragment keys
     public static final int GALLERY_CHOICE = 1111;

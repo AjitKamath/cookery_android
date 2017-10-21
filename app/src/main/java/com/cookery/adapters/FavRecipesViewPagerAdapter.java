@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
@@ -39,7 +40,7 @@ public class FavRecipesViewPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup collection, int position) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.view_pager_fav_recipes_recipes, collection, false);
+        ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.view_pager_recipes_recipes_mini, collection, false);
 
         String choice = "";
         switch(position){
@@ -59,7 +60,10 @@ public class FavRecipesViewPagerAdapter extends PagerAdapter {
     private void setupPage(ViewGroup layout, String choice) {
         List<RecipeMO> recipes = favRecipes.get(choice);
 
-        TextView view_pager_fav_recipes_tv = layout.findViewById(R.id.view_pager_fav_recipes_tv);
+        TextView view_pager_recipes_recipes_mini_tv = layout.findViewById(R.id.view_pager_recipes_recipes_mini_tv);
+        TextView view_pager_recipes_recipes_mini_count_tv = layout.findViewById(R.id.view_pager_recipes_recipes_mini_count_tv);
+        LinearLayout view_pager_recipes_recipes_mini_content_ll = layout.findViewById(R.id.view_pager_recipes_recipes_mini_content_ll);
+
 
         if(recipes == null || recipes.isEmpty()){
             String message = "";
@@ -70,21 +74,32 @@ public class FavRecipesViewPagerAdapter extends PagerAdapter {
                 default: message = "UNIMPL";
             }
 
-            view_pager_fav_recipes_tv.setText(message);
-            view_pager_fav_recipes_tv.setVisibility(View.VISIBLE);
+            view_pager_recipes_recipes_mini_tv.setText(message);
+
+            view_pager_recipes_recipes_mini_tv.setVisibility(View.VISIBLE);
+            view_pager_recipes_recipes_mini_content_ll.setVisibility(View.GONE);
             return;
         }
         else{
-            layout.findViewById(R.id.view_pager_fav_recipes_tv).setVisibility(View.GONE);
+            view_pager_recipes_recipes_mini_tv.setVisibility(View.GONE);
+            view_pager_recipes_recipes_mini_content_ll.setVisibility(View.VISIBLE);
+
+            if(recipes.size() == 1){
+                view_pager_recipes_recipes_mini_count_tv.setText(recipes.size()+ " Recipe");
+            }
+            else{
+                view_pager_recipes_recipes_mini_count_tv.setText(recipes.size()+ " Recipes");
+            }
         }
 
-        FavRecipesRecyclerViewAdapter adapter = new FavRecipesRecyclerViewAdapter(mContext, favRecipes.get(choice), listener);
+        RecipesMiniRecyclerViewAdapter adapter = new RecipesMiniRecyclerViewAdapter(mContext, favRecipes.get(choice), "FAV_RECIPES", listener);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
+        mLayoutManager.scrollToPosition(favRecipes.size()-1);
 
-        RecyclerView view_pager_fav_recipes_rv = layout.findViewById(R.id.view_pager_fav_recipes_rv);
-        view_pager_fav_recipes_rv.setLayoutManager(mLayoutManager);
-        view_pager_fav_recipes_rv.setItemAnimator(new DefaultItemAnimator());
-        view_pager_fav_recipes_rv.setAdapter(adapter);
+        RecyclerView view_pager_recipes_recipes_mini_rv = layout.findViewById(R.id.view_pager_recipes_recipes_mini_rv);
+        view_pager_recipes_recipes_mini_rv.setLayoutManager(mLayoutManager);
+        view_pager_recipes_recipes_mini_rv.setItemAnimator(new DefaultItemAnimator());
+        view_pager_recipes_recipes_mini_rv.setAdapter(adapter);
     }
 
     @Override

@@ -11,7 +11,7 @@
     <dimen name="padding" tools:override="true">10dp</dimen>
 
     <!--header-->
-    <dimen name="header_height" tools:override="true">50dp</dimen>
+    <dimen name="header_height" tools:override="true">40dp</dimen>
     <dimen name="header_buttons_dimen" tools:override="true">25dp</dimen>
 
 </resources>
