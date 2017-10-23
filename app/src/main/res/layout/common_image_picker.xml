@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/common_fragment_header"
-        layout="@layout/common_fragment_header" />
+        layout="@layout/common_fragment_navigation_header" />
 
     <LinearLayout
         android:layout_marginTop="10dp"

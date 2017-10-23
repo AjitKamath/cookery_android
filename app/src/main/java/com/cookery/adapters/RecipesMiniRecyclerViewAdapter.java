@@ -64,12 +64,12 @@ public class RecipesMiniRecyclerViewAdapter extends RecyclerView.Adapter<Recipes
         holder.view_pager_recipes_recipe_mini_views_tv.setText(Utility.getSmartNumber(recipe.getViews()));
         holder.view_pager_recipes_recipe_mini_likes_tv.setText(Utility.getSmartNumber(recipe.getLikes()));
 
-        if(recipe.getModifiedDateTime() != null && !recipe.getModifiedDateTime().trim().isEmpty()){
-            Date date = DateTimeUtility.convertStringToDateTime(recipe.getModifiedDateTime(), DB_DATE_TIME);
+        if(recipe.getMOD_DTM() != null && !recipe.getMOD_DTM().trim().isEmpty()){
+            Date date = DateTimeUtility.convertStringToDateTime(recipe.getMOD_DTM(), DB_DATE_TIME);
             holder.view_pager_recipes_recipe_mini_date_time_tv.setText(DateTimeUtility.getSmartDateTime(date));
         }
-        else if(recipe.getCreateDateTime() != null && !recipe.getCreateDateTime().trim().isEmpty()){
-            Date date = DateTimeUtility.convertStringToDateTime(recipe.getCreateDateTime(), DB_DATE_TIME);
+        else if(recipe.getCREATE_DTM() != null && !recipe.getCREATE_DTM().trim().isEmpty()){
+            Date date = DateTimeUtility.convertStringToDateTime(recipe.getCREATE_DTM(), DB_DATE_TIME);
             holder.view_pager_recipes_recipe_mini_date_time_tv.setText(DateTimeUtility.getSmartDateTime(date));
         }
 

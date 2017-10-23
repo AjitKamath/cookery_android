@@ -1,8 +1,6 @@
 package com.cookery.utils;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -20,10 +18,7 @@ import com.cookery.models.TasteMO;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.SocketException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +31,7 @@ import static com.cookery.utils.Constants.PHP_FETCH_FAV_RECIPES;
 import static com.cookery.utils.Constants.PHP_FETCH_INGREDIENTS;
 import static com.cookery.utils.Constants.PHP_FETCH_MASTER_SEARCH;
 import static com.cookery.utils.Constants.PHP_FETCH_MY_RECIPES;
+import static com.cookery.utils.Constants.PHP_FETCH_MY_REVIEWS;
 import static com.cookery.utils.Constants.PHP_FETCH_RECIPE;
 import static com.cookery.utils.Constants.PHP_FETCH_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.PHP_FETCH_REVIEWED_RECIPES;
@@ -424,25 +420,6 @@ public class InternetUtility {
         }
     }
 
-    public static Bitmap getImageFromUrl(String url){
-        if(url != null && !url.trim().isEmpty()){
-            try {
-                URL urlConnection = new URL(SERVER_ADDRESS+url);
-                HttpURLConnection connection = (HttpURLConnection) urlConnection.openConnection();
-                connection.setDoInput(true);
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                Bitmap myBitmap = BitmapFactory.decodeStream(input);
-                return myBitmap;
-            }
-            catch (Exception e){
-                Log.e(CLASS_NAME, "Error !!  "+e);
-            }
-        }
-
-        return null;
-    }
-
     public static List<RecipeMO> fetchTrendingRecipes() {
         if(USE_TEST_DATA){
             return TestData.getRecipesTestData();
@@ -456,7 +433,7 @@ public class InternetUtility {
             Log.e(CLASS_NAME, e.getMessage());
         }
         catch (Exception e){
-            Log.e(CLASS_NAME, "Could not fetch Cuisines from the server : "+e);
+            Log.e(CLASS_NAME, "Could not fetch trending recipes from the server : "+e);
         }
 
         return null;
@@ -472,6 +449,28 @@ public class InternetUtility {
             paramMap.put("user_id", String.valueOf(user_id));
 
             String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_FETCH_MY_RECIPES, paramMap);
+            return (List<RecipeMO>) Utility.jsonToObject(jsonStr, RecipeMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch my recipes from the server : "+e);
+        }
+
+        return null;
+    }
+
+    public static List<RecipeMO> fetchMyReviews(int user_id) {
+        if(USE_TEST_DATA){
+            return TestData.getRecipesTestData();
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("user_id", String.valueOf(user_id));
+
+            String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_FETCH_MY_REVIEWS, paramMap);
             return (List<RecipeMO>) Utility.jsonToObject(jsonStr, RecipeMO.class);
         }
         catch (IOException e){

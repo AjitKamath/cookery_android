@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
@@ -33,11 +32,11 @@ public class CommonImagePickerFragment extends DialogFragment {
     private Context mContext;
 
     /*components*/
-    @InjectView(R.id.common_fragment_header_back_iv)
-    ImageView common_fragment_header_back_iv;
+    @InjectView(R.id.common_fragment_navigation_header_back_iv)
+    ImageView common_fragment_navigation_header_back_iv;
 
-    @InjectView(R.id.common_fragment_header_forward_iv)
-    ImageView common_fragment_header_forward_iv;
+    @InjectView(R.id.common_fragment_navigation_header_forward_iv)
+    ImageView common_fragment_navigation_header_forward_iv;
     /*components*/
 
     private Integer choice = null;
@@ -56,8 +55,8 @@ public class CommonImagePickerFragment extends DialogFragment {
     }
 
     private void setupPage() {
-        common_fragment_header_back_iv.setVisibility(View.INVISIBLE);
-        common_fragment_header_forward_iv.setVisibility(View.INVISIBLE);
+        common_fragment_navigation_header_back_iv.setVisibility(View.INVISIBLE);
+        common_fragment_navigation_header_forward_iv.setVisibility(View.INVISIBLE);
     }
 
     @OnClick({R.id.common_image_picker_gallery_ll, R.id.common_image_picker_camera_ll})

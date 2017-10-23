@@ -1,14 +1,13 @@
 package com.cookery.models;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by ajit on 27/8/17.
  */
 
-public class RecipeMO  implements Serializable {
+public class RecipeMO extends CommonMO implements Serializable {
     private int RCP_ID;
     private String RCP_NAME;
     private int FOOD_TYP_ID;
@@ -16,9 +15,6 @@ public class RecipeMO  implements Serializable {
     private String RCP_PROC;
     private String RCP_PLATING;
     private String RCP_NOTE;
-    private int USER_ID;
-    private Date CREATE_DTM;
-    private Date MOD_DTM;
 
     private String FOOD_TYP_NAME;
     private String FOOD_CSN_NAME;
@@ -34,8 +30,6 @@ public class RecipeMO  implements Serializable {
     private int likes;
     private int views;
     private String rating;
-    private String createDateTime;
-    private String modifiedDateTime;
 
     public List<CommentMO> getComments() {
         return comments;
@@ -157,14 +151,6 @@ public class RecipeMO  implements Serializable {
         this.reviews = reviews;
     }
 
-    public int getUSER_ID() {
-        return USER_ID;
-    }
-
-    public void setUSER_ID(int USER_ID) {
-        this.USER_ID = USER_ID;
-    }
-
     public int getLikes() {
         return likes;
     }
@@ -203,37 +189,5 @@ public class RecipeMO  implements Serializable {
 
     public void setReviewed(boolean reviewed) {
         isReviewed = reviewed;
-    }
-
-    public Date getMOD_DTM() {
-        return MOD_DTM;
-    }
-
-    public void setMOD_DTM(Date MOD_DTM) {
-        this.MOD_DTM = MOD_DTM;
-    }
-
-    public Date getCREATE_DTM() {
-        return CREATE_DTM;
-    }
-
-    public void setCREATE_DTM(Date CREATE_DTM) {
-        this.CREATE_DTM = CREATE_DTM;
-    }
-
-    public String getCreateDateTime() {
-        return createDateTime;
-    }
-
-    public void setCreateDateTime(String createDateTime) {
-        this.createDateTime = createDateTime;
-    }
-
-    public String getModifiedDateTime() {
-        return modifiedDateTime;
-    }
-
-    public void setModifiedDateTime(String modifiedDateTime) {
-        this.modifiedDateTime = modifiedDateTime;
     }
 }

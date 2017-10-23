@@ -98,3 +98,13 @@
 2. UI changes in my recipes.
 3. My Recipes service for logged in user implemented.
 4. Fav recipes service for logged in user implemented.
+
+-- git checkin on 22 oct 2017 --
+
+23 oct 2017
+1. My Reviews PHP service implemented.
+2. Partial implementation of My Reviews.
+3. UI redesigned for home navigation drawer.
+
+23 oct 2017
+1. My Reviews implemented.

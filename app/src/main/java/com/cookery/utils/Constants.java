@@ -35,6 +35,7 @@ public final class Constants {
     public static final String PHP_FETCH_REVIEWED_RECIPES = "fetchuserreviewedrecipes.php";
     public static final String PHP_FETCH_RECIPE_REVIEW = "fetchrecipereview.php";
     public static final String PHP_FETCH_MY_RECIPES = "fetchuserrecipes.php";
+    public static final String PHP_FETCH_MY_REVIEWS = "fetchuserrecipesreviews.php";
     public static final String PHP_SUBMIT_RECIPE = "addrecipe.php";
     public static final String PHP_SUBMIT_RECIPE_COMMENT = "submitrecipecomment.php"; //NOT READY
     public static final String PHP_SUBMIT_RECIPE_REVIEW = "submitrecipereview.php";
@@ -74,6 +75,7 @@ public final class Constants {
     public static final String FRAGMENT_COMMON_MESSAGE = "FRAGMENT_COMMON_MESSAGE";
     public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
     public static final String FRAGMENT_MY_RECIPE = "FRAGMENT_MY_RECIPE";
+    public static final String FRAGMENT_MY_REVIEWS = "FRAGMENT_MY_REVIEWS";
 
 
     //FRAGMENT OBJECT KEYS
@@ -82,12 +84,12 @@ public final class Constants {
     public static final String GENERIC_OBJECT = "GENERIC_OBJECT";
     public static final String LIST_DATA = "LIST_DATA";
     public static final String SELECTED_ITEM = "SELECTED_ITEM";
-    public static final String MY_RCPS = "MY_RCPS";
 
     public static final String TRENDING_RECIPES = "TRENDING RECIPES";
     public static final String TOP_RECIPES_MONTH = "TOP RECIPES OF THE MONTH";
     public static final String TOP_RECIPES_CHEF = "RECIPES FROM OUR TOP CHEF";
     public static final String MY_RECIPES = "MY RECIPES";
+    public static final String MY_REVIEWS = "MY REVIEWS";
 
     //check master keys
     public static final String CHECK_MASTER_FOR_CATEGORIES = "CHECK_MASTER_FOR_CATEGORIES";

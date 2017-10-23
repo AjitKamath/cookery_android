@@ -139,7 +139,7 @@
                     android:gravity="center"
                     android:text="25 Sep at 1:05 AM"
                     android:textColor="@color/gray"
-                    android:textSize="8sp" />
+                    android:textSize="7sp" />
 
             </RelativeLayout>
 

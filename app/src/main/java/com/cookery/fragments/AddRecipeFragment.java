@@ -71,14 +71,14 @@ public class AddRecipeFragment extends DialogFragment {
     @InjectView(R.id.fragment_add_recipe_vp)
     ViewPagerCustom fragment_add_recipe_vp;
 
-    @InjectView(R.id.common_fragment_header_close_iv)
-    ImageView common_fragment_header_close_iv;
+    @InjectView(R.id.common_fragment_navigation_header_close_iv)
+    ImageView common_fragment_navigation_header_close_iv;
 
-    @InjectView(R.id.common_fragment_header_back_iv)
-    ImageView common_fragment_header_back_iv;
+    @InjectView(R.id.common_fragment_navigation_header_back_iv)
+    ImageView common_fragment_navigation_header_back_iv;
 
-    @InjectView(R.id.common_fragment_header_forward_iv)
-    ImageView common_fragment_header_forward_iv;
+    @InjectView(R.id.common_fragment_navigation_header_forward_iv)
+    ImageView common_fragment_navigation_header_forward_iv;
 
     private MasterDataMO masterData;
 
@@ -106,7 +106,7 @@ public class AddRecipeFragment extends DialogFragment {
     private void setupPage() {
         setupSliders();
 
-        common_fragment_header_close_iv.setOnClickListener(new View.OnClickListener() {
+        common_fragment_navigation_header_close_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 MessageMO message = new MessageMO();
@@ -119,14 +119,14 @@ public class AddRecipeFragment extends DialogFragment {
             }
         });
 
-        common_fragment_header_back_iv.setOnClickListener(new View.OnClickListener() {
+        common_fragment_navigation_header_back_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changePage(fragment_add_recipe_vp.getCurrentItem() - 1);
             }
         });
 
-        common_fragment_header_forward_iv.setOnClickListener(new View.OnClickListener() {
+        common_fragment_navigation_header_forward_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changePage(fragment_add_recipe_vp.getCurrentItem() + 1);
@@ -207,7 +207,7 @@ public class AddRecipeFragment extends DialogFragment {
         fragment_add_recipe_vp.setPagingEnabled(false); //TODO: set false in prod
 
         //hide back button initially
-        common_fragment_header_back_iv.setVisibility(View.GONE);
+        common_fragment_navigation_header_back_iv.setVisibility(View.GONE);
 
         fragment_add_recipe_vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -216,17 +216,17 @@ public class AddRecipeFragment extends DialogFragment {
 
             @Override
             public void onPageSelected(int position) {
-                common_fragment_header_close_iv.setVisibility(View.VISIBLE);
-                common_fragment_header_back_iv.setVisibility(View.VISIBLE);
-                common_fragment_header_forward_iv.setVisibility(View.VISIBLE);
+                common_fragment_navigation_header_close_iv.setVisibility(View.VISIBLE);
+                common_fragment_navigation_header_back_iv.setVisibility(View.VISIBLE);
+                common_fragment_navigation_header_forward_iv.setVisibility(View.VISIBLE);
 
                 //hide close
                 if (position == 0) {
-                    common_fragment_header_back_iv.setVisibility(View.GONE);
+                    common_fragment_navigation_header_back_iv.setVisibility(View.GONE);
                 }
                 //hide forward
                 else if (position == viewPagerTabsList.size() - 1) {
-                    common_fragment_header_forward_iv.setVisibility(View.GONE);
+                    common_fragment_navigation_header_forward_iv.setVisibility(View.GONE);
                 }
             }
 

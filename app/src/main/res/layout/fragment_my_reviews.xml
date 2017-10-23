@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragment_my_recipes_ll"
+    android:id="@+id/fragment_my_reviews_ll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
@@ -13,24 +13,24 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/fragment_my_recipes_tv"
+        android:id="@+id/fragment_my_reviews_tv"
         android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/gray"
         android:textSize="15sp"
         android:layout_gravity="center"
-        android:text="You have no Recipes"/>
+        android:text="You have not reviewed any recipes"/>
 
     <LinearLayout
         android:layout_marginTop="5dp"
-        android:id="@+id/fragment_my_recipes_content_ll"
+        android:id="@+id/fragment_my_reviews_content_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/content_my_recipes_count_tv"
+            android:id="@+id/fragment_my_reviews_content_count_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/gray"
@@ -42,7 +42,7 @@
         <android.support.v7.widget.RecyclerView
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:id="@+id/content_my_recipes_rv"
+            android:id="@+id/fragment_my_reviews_content_recipes_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="vertical" />

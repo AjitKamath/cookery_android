@@ -6,9 +6,8 @@ import java.io.Serializable;
  * Created by ajit on 9/10/17.
  */
 
-public class ReviewMO implements Serializable {
+public class ReviewMO extends CommonMO implements Serializable {
     private int REV_ID;
-    private int USER_ID;
     private int RCP_ID;
     private String REVIEW;
     private int RATING;
@@ -24,14 +23,6 @@ public class ReviewMO implements Serializable {
 
     public void setREV_ID(int REV_ID) {
         this.REV_ID = REV_ID;
-    }
-
-    public int getUSER_ID() {
-        return USER_ID;
-    }
-
-    public void setUSER_ID(int USER_ID) {
-        this.USER_ID = USER_ID;
     }
 
     public int getRCP_ID() {
