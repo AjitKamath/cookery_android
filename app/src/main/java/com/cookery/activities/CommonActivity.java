@@ -30,17 +30,19 @@ import com.cookery.component.DelayAutoCompleteTextView;
 import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.FavoriteRecipesFragment;
 import com.cookery.fragments.MyRecipesFragment;
+import com.cookery.fragments.MyReviewsFragment;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.TasteMO;
+import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
+import com.cookery.utils.TestData;
 import com.cookery.utils.Utility;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,9 +50,12 @@ import java.util.Map;
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_MY_FAVORITES;
 import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_MY_REVIEWS;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.MASTER;
-import static com.cookery.utils.Constants.MY_RCPS;
+import static com.cookery.utils.Constants.MY_RECIPES;
+import static com.cookery.utils.Constants.MY_REVIEWS;
 import static com.cookery.utils.Constants.OK;
 
 
@@ -58,6 +63,8 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     private static final String CLASS_NAME = CommonActivity.class.getName();
     private Context mContext = this;
     private MasterDataMO masterData;
+
+    private UserMO loggedInUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,20 +75,16 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     protected void onResume(){
         super.onResume();
 
-        //check if the user is connected to the internet
-        /*if(!InternetUtility.isNetworkAvailable(mContext)){
-            FragmentManager fragment = getFragmentManager();
-            //Utility.showNoInternetFragment(fragment);
-            return;
-        }*/
-
-        //setupToolbar();
-
         setupNavigator();
-
         setupSearch();
-
         setupFab();
+
+        loggedInUser = (UserMO) Utility.readFromUserSecurity(mContext, LOGGED_IN_USER);
+        if(loggedInUser == null || loggedInUser.getUser_id() == 0){
+            //TODO: show login/signup screen
+            loggedInUser = TestData.getUserTestData();
+            Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, loggedInUser);
+        }
     }
 
     private void setupSearch() {
@@ -258,11 +261,10 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         fragment.show(manager, fragmentNameStr);
     }
 
-    private void setupMyRecipesFragment(List<RecipeMO> categoriesRecipes)
-    {
+    private void setupMyRecipesFragment(List<RecipeMO> recipes){
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable(MY_RCPS, (Serializable) categoriesRecipes);
+        bundle.putSerializable(MY_RECIPES, (Serializable) recipes);
 
         MyRecipesFragment fragment = new MyRecipesFragment();
         fragment.setArguments(bundle);
@@ -279,22 +281,40 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         fragment.show(manager, fragmentNameStr);
     }
 
+    private void setupMyReviewsFragment(List<RecipeMO> reviews){
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MY_REVIEWS, (Serializable) reviews);
+
+        MyReviewsFragment fragment = new MyReviewsFragment();
+        fragment.setArguments(bundle);
+
+
+        String fragmentNameStr = FRAGMENT_MY_REVIEWS;
+        FragmentManager manager = getFragmentManager();
+        Fragment frag = manager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            manager.beginTransaction().remove(frag).commit();
+        }
+
+        fragment.show(manager, fragmentNameStr);
+    }
+
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        if(R.id.navigation_drawer_logout == item.getItemId()){
-            //new SharedPrefUtility(mContext).clearSharedPreference();
-            //clearMasterData();
-            //setupAccountSummary();
-        }
-        else if(R.id.activity_home_drawer_my_favorites == item.getItemId()){
+        if(R.id.activity_home_drawer_my_favorites == item.getItemId()){
             new AsyncTaskerFetchFavRecipes().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         else if(R.id.activity_home_drawer_my_recipes == item.getItemId()){
             new AsyncTaskerFetchMyRecipes().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
+        else if(R.id.activity_home_drawer_my_reviews == item.getItemId()){
+            new AsyncTaskerFetchMyReviews().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
         else{
-            Utility.showSnacks(getDrawer_layout(), "NOT IMPLEMENTED YET", OK, Snackbar.LENGTH_INDEFINITE);
+            Utility.showSnacks(getDrawer_layout(), "NOT IMPLEMENTED YET", OK, Snackbar.LENGTH_LONG);
             return true;
         }
 
@@ -374,7 +394,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected Object doInBackground(RecipeMO... objects) {
-            return InternetUtility.fetchRecipe(objects[0]);
+            return InternetUtility.fetchRecipe(objects[0], loggedInUser.getUser_id());
         }
 
         @Override
@@ -401,9 +421,9 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         protected Object doInBackground(Void... objects) {
             Map<String, List<RecipeMO>> favRecipes = new HashMap<>();
 
-            favRecipes.put("FAVORITES", (List<RecipeMO>)InternetUtility.fetchFavRecipes("FAVORITES"));
-            favRecipes.put("VIEWED", (List<RecipeMO>)InternetUtility.fetchFavRecipes("VIEWED"));
-            favRecipes.put("REVIEWED", (List<RecipeMO>)InternetUtility.fetchFavRecipes("REVIEWED"));
+            favRecipes.put("FAVORITES", (List<RecipeMO>)InternetUtility.fetchFavRecipes(loggedInUser.getUser_id()));
+            favRecipes.put("VIEWED", (List<RecipeMO>)InternetUtility.fetchViewedRecipes(loggedInUser.getUser_id()));
+            favRecipes.put("REVIEWED", (List<RecipeMO>)InternetUtility.fetchReviewedRecipes(loggedInUser.getUser_id()));
 
             return favRecipes;
         }
@@ -425,24 +445,44 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected Object doInBackground(Object... objects) {
-            List<RecipeMO> allCategoriesRecipes = new ArrayList<RecipeMO>();
-
-            allCategoriesRecipes.addAll(InternetUtility.fetchTrendingRecipes());
-
-            return allCategoriesRecipes;
+            return InternetUtility.fetchMyRecipes(loggedInUser.getUser_id());
         }
 
         @Override
         protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "loading recipes ..");
+            fragment = Utility.showWaitDialog(getFragmentManager(), "Loading My Recipes ..");
         }
 
         @Override
         protected void onPostExecute(Object object) {
-            ArrayList<RecipeMO> categoryRecipesMap = (ArrayList<RecipeMO>) object;
+            List<RecipeMO> myRecipes = (List<RecipeMO>) object;
 
-            if(categoryRecipesMap != null || !categoryRecipesMap.isEmpty()){
+            if(myRecipes != null || !myRecipes.isEmpty()){
                 setupMyRecipesFragment((List<RecipeMO>) object);
+                Utility.closeWaitDialog(getFragmentManager(), fragment);
+            }
+        }
+    }
+
+    class AsyncTaskerFetchMyReviews extends AsyncTask<Object, Void, Object> {
+        private Fragment fragment;
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            return InternetUtility.fetchMyReviews(loggedInUser.getUser_id());
+        }
+
+        @Override
+        protected void onPreExecute() {
+            fragment = Utility.showWaitDialog(getFragmentManager(), "Loading My Reviews ..");
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            List<RecipeMO> myReviews = (List<RecipeMO>) object;
+
+            if(myReviews != null || !myReviews.isEmpty()){
+                setupMyReviewsFragment((List<RecipeMO>) object);
                 Utility.closeWaitDialog(getFragmentManager(), fragment);
             }
         }

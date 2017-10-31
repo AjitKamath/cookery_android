@@ -8,17 +8,46 @@
     android:orientation="vertical">
 
     <include
-        layout="@layout/fragment_my_recipe_header"
+        layout="@layout/common_fragment_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="wrap_content" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/content_my_recipes_rv"
+    <TextView
+        android:id="@+id/fragment_my_recipes_tv"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gray"
+        android:textSize="15sp"
+        android:layout_gravity="center"
+        android:text="You have no Recipes"/>
+
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:id="@+id/fragment_my_recipes_content_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical"
-        android:padding="@dimen/padding"
-        android:layout_marginTop="10dp" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/content_my_recipes_count_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            android:layout_gravity="right"
+            android:layout_marginRight="5dp"
+            android:textSize="12sp"
+            android:text="23 Recipes"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/content_my_recipes_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical" />
+
+    </LinearLayout>
+
 
 </LinearLayout>

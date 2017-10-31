@@ -1,0 +1,278 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_reviews_review_mini_item_rl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:background="@color/white">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        card_view:cardPreventCornerOverlap="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <LinearLayout
+                android:id="@+id/fragment_reviews_review_mini_item_recipe_details_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:orientation="horizontal">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/fragment_reviews_review_mini_item_iv"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="top"
+                    android:src="@drawable/food_sample"
+                    app:border_color="@color/white"
+                    app:border_width="1dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/fragment_reviews_review_mini_item_recipe_name_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MEXICAN ALOO PARATHA"
+                            android:textColor="@color/primaryDarkText"
+                            android:textSize="10sp" />
+
+                        <ImageView
+                            android:id="@+id/fragment_reviews_review_mini_item_options_iv"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:layout_alignParentRight="true"
+                            android:src="@drawable/ic_more_horiz_grey600_24dp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp">
+
+                        <TextView
+                            android:id="@+id/fragment_reviews_review_mini_item_food_type_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxWidth="140dp"
+                            android:text="BREAKFAST"
+                            android:textColor="@color/secondaryDarkText"
+                            android:textSize="6sp" />
+
+                        <TextView
+                            android:id="@+id/fragment_reviews_review_mini_item_seperator_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_toRightOf="@+id/fragment_reviews_review_mini_item_food_type_tv"
+                            android:text="."
+                            android:textColor="@color/secondaryDarkText"
+                            android:textSize="6sp" />
+
+
+                        <TextView
+                            android:id="@+id/fragment_reviews_review_mini_item_cuisine_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/fragment_reviews_review_mini_item_seperator_tv"
+                            android:maxWidth="140dp"
+                            android:text="MEXICAN"
+                            android:textColor="@color/secondaryDarkText"
+                            android:textSize="6sp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/fragment_reviews_review_mini_item_username_iv"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/team"
+                            app:border_color="@color/White"
+                            app:border_width="1dp" />
+
+                        <TextView
+                            android:id="@+id/fragment_reviews_review_mini_item_username_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="2dp"
+                            android:layout_toRightOf="@+id/fragment_reviews_review_mini_item_username_iv"
+                            android:maxWidth="140dp"
+                            android:text="Vishal Varshney"
+                            android:textColor="@color/usernameDarkText"
+                            android:textSize="8sp" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <android.support.v7.widget.CardView
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="2dp"
+                android:layout_below="@+id/fragment_reviews_review_mini_item_recipe_details_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/tertiaryLightText"
+                app:cardCornerRadius="2dp"
+                card_view:cardPreventCornerOverlap="true">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/fragment_reviews_review_mini_item_review_tv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="This recipe made my day. This chef is the best !! Would like to try more from him. I follow this chef and he is good lookig too ;) I do not know what to write here. But i am typing because i want to see how a big comment looks like on the screen."
+                            android:textColor="@color/secondaryDarkText"
+                            android:textSize="10sp" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginTop="2dp"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:id="@+id/fragment_reviews_review_mini_item_likes_iv"
+                                android:layout_width="10dp"
+                                android:layout_height="10dp"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerInParent="true"
+                                android:layout_centerVertical="true"
+                                android:src="@drawable/heart_unselected" />
+
+                            <TextView
+                                android:id="@+id/fragment_reviews_review_mini_item_likes_count_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="2dp"
+                                android:layout_toRightOf="@+id/fragment_reviews_review_mini_item_likes_iv"
+                                android:gravity="center"
+                                android:text="12"
+                                android:textColor="@color/secondaryDarkText"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:id="@+id/fragment_reviews_review_mini_item_useless_text_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="30dp"
+                                android:layout_toRightOf="@+id/fragment_reviews_review_mini_item_likes_count_tv"
+                                android:gravity="center"
+                                android:text="You rated"
+                                android:textColor="@color/tertiaryDarkText"
+                                android:textSize="8sp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="2dp"
+                                android:layout_toRightOf="@+id/fragment_reviews_review_mini_item_useless_text_tv"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:weightSum="5">
+
+                                <ImageView
+                                    android:id="@+id/fragment_reviews_review_mini_item_star_1_iv"
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:layout_weight="1"
+                                    android:src="@drawable/star" />
+
+                                <ImageView
+                                    android:id="@+id/fragment_reviews_review_mini_item_star_2_iv"
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:layout_weight="1"
+                                    android:src="@drawable/star" />
+
+                                <ImageView
+                                    android:id="@+id/fragment_reviews_review_mini_item_star_3_iv"
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:layout_weight="1"
+                                    android:src="@drawable/star" />
+
+                                <ImageView
+                                    android:id="@+id/fragment_reviews_review_mini_item_star_4_iv"
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:layout_weight="1"
+                                    android:src="@drawable/star" />
+
+                                <ImageView
+                                    android:id="@+id/fragment_reviews_review_mini_item_star_5_iv"
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:layout_weight="1"
+                                    android:src="@drawable/star" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/fragment_reviews_review_mini_item_date_time_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerInParent="true"
+                                android:gravity="center"
+                                android:text="25 Sep at 1:05 AM"
+                                android:textColor="@color/tertiaryDarkText"
+                                android:textSize="7sp" />
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

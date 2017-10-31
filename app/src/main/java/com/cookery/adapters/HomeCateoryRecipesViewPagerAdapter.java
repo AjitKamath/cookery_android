@@ -53,6 +53,7 @@ public class HomeCateoryRecipesViewPagerAdapter extends PagerAdapter {
         TextView home_categorized_recipes_recipe_item_food_cuisine_tv = layout.findViewById(R.id.home_categorized_recipes_recipe_item_food_cuisine_tv);
         TextView home_categorized_recipes_recipe_item_user_name_tv = layout.findViewById(R.id.home_categorized_recipes_recipe_item_user_name_tv);
         ImageView home_categorized_recipes_recipe_item_image_iv = layout.findViewById(R.id.home_categorized_recipes_recipe_item_image_iv);
+        TextView home_categorized_recipes_recipe_item_views_tv = layout.findViewById(R.id.home_categorized_recipes_recipe_item_views_tv);
 
         RecipeMO recipe = recipes.get(position);
 
@@ -64,6 +65,7 @@ public class HomeCateoryRecipesViewPagerAdapter extends PagerAdapter {
         home_categorized_recipes_recipe_item_food_type_tv.setText(recipe.getFOOD_TYP_NAME().toUpperCase());
         home_categorized_recipes_recipe_item_food_cuisine_tv.setText(recipe.getFOOD_CSN_NAME());
         home_categorized_recipes_recipe_item_user_name_tv.setText(recipe.getNAME());
+        home_categorized_recipes_recipe_item_views_tv.setText(Utility.getSmartNumber(recipe.getViews()));
 
         layout.setOnClickListener(clickListener);
 

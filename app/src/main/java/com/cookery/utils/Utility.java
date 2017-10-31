@@ -17,16 +17,21 @@ import android.widget.ImageView;
 import com.cookery.R;
 import com.cookery.fragments.CommonImagePickerFragment;
 import com.cookery.fragments.MessageFragment;
+import com.cookery.fragments.RecipeCommentsFragment;
 import com.cookery.fragments.RecipeFragment;
 import com.cookery.fragments.RecipeImagesFragment;
+import com.cookery.fragments.RecipeReviewFragment;
 import com.cookery.fragments.WaitFragment;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientMO;
+import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
+import com.cookery.models.ReviewMO;
 import com.cookery.models.TasteMO;
+import com.cookery.models.UserMO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
@@ -40,12 +45,15 @@ import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_WAIT;
 import static com.cookery.utils.Constants.FRAGMENT_PICK_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.SERVER_ADDRESS;
 import static com.cookery.utils.Constants.SERVER_TIMEOUT;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
 public class Utility extends Activity {
 
@@ -54,6 +62,20 @@ public class Utility extends Activity {
     public static Bitmap drawableToBitmap(Drawable drawable){
         BitmapDrawable bitmapDrawable = ((BitmapDrawable) drawable);
         return bitmapDrawable .getBitmap();
+    }
+
+    public static Object readFromUserSecurity(Context context, String key){
+        UserSecurity userSecurity = new UserSecurity(context);
+        return userSecurity.read(key);
+    }
+
+    public static void writeIntoUserSecurity(Context context, String key, Object value){
+        UserSecurity userSecurity = new UserSecurity(context);userSecurity.write(key, value);
+    }
+
+    public static String getSmartNumber(int number){
+        //TODO: here goes logic to convert number into smart number
+        return String .valueOf(number);
     }
 
     public static void pickPhotos(FragmentManager fragmentManager, String parentFragmentStr){
@@ -109,6 +131,24 @@ public class Utility extends Activity {
         return urlConnection;
     }
 
+    public static String obectToJson(Object object){
+        Gson gson = new Gson();
+
+        try {
+            if (object instanceof UserMO) {
+                return gson.toJson(object, new TypeToken<UserMO>(){}.getType());
+            }
+            else{
+                Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+object.getClass().getName());
+            }
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Error in Object o JSON conversion");
+        }
+
+        return null;
+    }
+
     public static Object jsonToObject(String jsonStr, Class mappingClass){
         if(jsonStr == null || jsonStr.isEmpty()){
             Log.e(CLASS_NAME, "JSON is null");
@@ -141,6 +181,15 @@ public class Utility extends Activity {
             }
             else if(mappingClass.equals(MessageMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<MessageMO>(){}.getType());
+            }
+            else if(mappingClass.equals(UserMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<UserMO>(){}.getType());
+            }
+            else if(mappingClass.equals(ReviewMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<ReviewMO>(){}.getType());
+            }
+            else if(mappingClass.equals(LikesMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<LikesMO>(){}.getType());
             }
             else{
                 Log.e(CLASS_NAME, mappingClass+" is not identified for parsing JSON");
@@ -187,6 +236,73 @@ public class Utility extends Activity {
         bundle.putSerializable(SELECTED_ITEM, recipe);
 
         RecipeFragment fragment = new RecipeFragment();
+        fragment.setArguments(bundle);
+
+        if (parentFragment != null) {
+            fragment.setTargetFragment(parentFragment, 0);
+        }
+
+        fragment.show(fragmentManager, fragmentNameStr);
+    }
+
+    public static void showRecipeReviewFragment(FragmentManager fragmentManager, String parentFragmentNameStr, ReviewMO review){
+        if(review == null){
+            Log.e(CLASS_NAME, "Review is null");
+            return;
+        }
+
+        String fragmentNameStr = FRAGMENT_RECIPE_REVIEW;
+
+        Fragment frag = fragmentManager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            fragmentManager.beginTransaction().remove(frag).commit();
+        }
+
+        Fragment parentFragment = null;
+        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
+            parentFragment = fragmentManager.findFragmentByTag(parentFragmentNameStr);
+        }
+
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(GENERIC_OBJECT, review);
+
+        RecipeReviewFragment fragment = new RecipeReviewFragment();
+        fragment.setArguments(bundle);
+
+        if (parentFragment != null) {
+            fragment.setTargetFragment(parentFragment, 0);
+        }
+
+        fragment.show(fragmentManager, fragmentNameStr);
+    }
+
+    public static void showRecipeCommentsFragment(FragmentManager fragmentManager, RecipeMO recipe){
+        if(recipe == null){
+            Log.e(CLASS_NAME, "Recipe is null");
+            return;
+        }
+
+        String fragmentNameStr = FRAGMENT_RECIPE_COMMENTS;
+        String parentFragmentNameStr = null;
+
+        Fragment frag = fragmentManager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            fragmentManager.beginTransaction().remove(frag).commit();
+        }
+
+        Fragment parentFragment = null;
+        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
+            parentFragment = fragmentManager.findFragmentByTag(parentFragmentNameStr);
+        }
+
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SELECTED_ITEM, recipe);
+
+        RecipeCommentsFragment fragment = new RecipeCommentsFragment();
         fragment.setArguments(bundle);
 
         if (parentFragment != null) {

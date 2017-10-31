@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/fragment_add_recipe_header_include"
-        layout="@layout/common_fragment_header" />
+        layout="@layout/common_fragment_navigation_header" />
 
     <com.cookery.component.ViewPagerCustom
         android:layout_below="@+id/fragment_add_recipe_header_include"

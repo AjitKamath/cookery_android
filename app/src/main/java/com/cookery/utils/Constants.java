@@ -27,12 +27,24 @@ public final class Constants {
     public static final String PHP_FETCH_INGREDIENTS = "autocompleteingredient.php";
     public static final String PHP_FETCH_ALL_TASTES = "fetchtastes.php";
     public static final String PHP_FETCH_ALL_QUANTITIES = "fetchqty.php";
-    public static final String PHP_FETCH_SUBMIT_RECIPE = "addrecipe.php";
     public static final String PHP_FETCH_TRENDING_RECIPES = "fetchtrendingrecipes.php";
     public static final String PHP_FETCH_MASTER_SEARCH = "mastersearch.php";
-    public static final String PHP_FETCH_RECIPE = "getrecipedetails.php";
-    public static final String PHP_FETCH_FAV_RECIPES = "getfavrecipes.php";
-    public static final String PHP_USER_REGISTRATION = "register.php";
+    public static final String PHP_FETCH_RECIPE = "fetchrecipedetails.php";
+    public static final String PHP_FETCH_FAV_RECIPES = "fetchuserfavrecipes.php";
+    public static final String PHP_FETCH_VIEWED_RECIPES = "fetchuserviewedrecipes.php";
+    public static final String PHP_FETCH_REVIEWED_RECIPES = "fetchuserreviewedrecipes.php";
+    public static final String PHP_FETCH_RECIPE_REVIEW = "fetchrecipereview.php";
+    public static final String PHP_FETCH_MY_RECIPES = "fetchuserrecipes.php";
+    public static final String PHP_FETCH_MY_REVIEWS = "fetchuserrecipesreviews.php";
+    public static final String PHP_SUBMIT_RECIPE = "addrecipe.php";
+    public static final String PHP_SUBMIT_RECIPE_COMMENT = "submitrecipecomment.php"; //NOT READY
+    public static final String PHP_SUBMIT_RECIPE_REVIEW = "submitrecipereview.php";
+    public static final String PHP_SUBMIT_LIKE = "submitlike.php";
+
+
+    /*Date Time*/
+    public static final String DB_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
+    /*Date Time*/
 
     //fragment keys
     public static final int GALLERY_CHOICE = 1111;
@@ -54,13 +66,16 @@ public final class Constants {
     public static final String FRAGMENT_ADD_RECIPE = "FRAGMENT_ADD_RECIPE";
     public static final String FRAGMENT_MY_FAVORITES = "FRAGMENT_MY_FAVORITES";
     public static final String FRAGMENT_RECIPE = "FRAGMENT_RECIPE";
+    public static final String FRAGMENT_RECIPE_COMMENTS = "FRAGMENT_RECIPE_COMMENTS";
+    public static final String FRAGMENT_RECIPE_REVIEW = "FRAGMENT_RECIPE_REVIEW";
+    public static final String FRAGMENT_RECIPE_REVIEWS = "FRAGMENT_RECIPE_REVIEWS";
     public static final String FRAGMENT_RECIPE_IMAGES = "FRAGMENT_RECIPE_IMAGES";
     public static final String FRAGMENT_COMMON_SELECTION = "FRAGMENT_COMMON_SELECTION";
     public static final String FRAGMENT_COMMON_WAIT = "FRAGMENT_COMMON_WAIT";
     public static final String FRAGMENT_COMMON_MESSAGE = "FRAGMENT_COMMON_MESSAGE";
     public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
     public static final String FRAGMENT_MY_RECIPE = "FRAGMENT_MY_RECIPE";
-    public static final String FRAGMENT_MY_ACCOUNT = "FRAGMENT_MY_ACCOUNT";
+    public static final String FRAGMENT_MY_REVIEWS = "FRAGMENT_MY_REVIEWS";
 
 
     //FRAGMENT OBJECT KEYS
@@ -69,12 +84,12 @@ public final class Constants {
     public static final String GENERIC_OBJECT = "GENERIC_OBJECT";
     public static final String LIST_DATA = "LIST_DATA";
     public static final String SELECTED_ITEM = "SELECTED_ITEM";
-    public static final String MY_RCPS = "MY_RCPS";
 
     public static final String TRENDING_RECIPES = "TRENDING RECIPES";
     public static final String TOP_RECIPES_MONTH = "TOP RECIPES OF THE MONTH";
     public static final String TOP_RECIPES_CHEF = "RECIPES FROM OUR TOP CHEF";
     public static final String MY_RECIPES = "MY RECIPES";
+    public static final String MY_REVIEWS = "MY REVIEWS";
 
     //check master keys
     public static final String CHECK_MASTER_FOR_CATEGORIES = "CHECK_MASTER_FOR_CATEGORIES";

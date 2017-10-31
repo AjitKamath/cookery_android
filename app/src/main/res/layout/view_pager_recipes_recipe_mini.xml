@@ -1,0 +1,231 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/view_pager_recipes_recipe_mini_rl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:background="@color/white">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        card_view:cardPreventCornerOverlap="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/view_pager_recipes_recipe_mini_iv"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/food_sample" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/view_pager_recipes_recipe_mini_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MEXICAN ALOO PARATHA"
+                            android:textColor="@color/black"
+                            android:textSize="10sp" />
+
+                        <ImageView
+                            android:id="@+id/view_pager_recipes_recipe_options_iv"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:layout_alignParentRight="true"
+                            android:src="@drawable/ic_more_horiz_grey600_24dp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp">
+
+                        <TextView
+                            android:id="@+id/view_pager_recipes_recipe_mini_food_type_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxWidth="140dp"
+                            android:text="BREAKFAST"
+                            android:textColor="@color/gray"
+                            android:textSize="8sp" />
+
+                        <TextView
+                            android:id="@+id/view_pager_recipes_recipe_mini_seperator_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_toRightOf="@+id/view_pager_recipes_recipe_mini_food_type_tv"
+                            android:text="."
+                            android:textColor="@color/gray"
+                            android:textSize="8sp" />
+
+
+                        <TextView
+                            android:id="@+id/view_pager_recipes_recipe_mini_cuisine_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/view_pager_recipes_recipe_mini_seperator_tv"
+                            android:maxWidth="140dp"
+                            android:text="MEXICAN"
+                            android:textColor="@color/gray"
+                            android:textSize="8sp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_marginTop="5dp"
+                            android:layout_alignParentRight="true"
+                            android:id="@+id/view_pager_recipes_recipe_mini_username_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxWidth="140dp"
+                            android:text="XXXXX"
+                            android:textColor="@color/gray"
+                            android:textSize="8sp" />
+
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_height="0.5dp"
+                        android:layout_width="match_parent"
+                        android:background="@color/divider" />
+
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:src="@drawable/star" />
+
+                                <TextView
+                                    android:id="@+id/view_pager_recipes_recipe_mini_rating_tv"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="2dp"
+                                    android:gravity="center"
+                                    android:text="4.7"
+                                    android:textColor="@color/gray"
+                                    android:textSize="8sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:src="@drawable/eye" />
+
+                                <TextView
+                                    android:id="@+id/view_pager_recipes_recipe_mini_views_tv"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="2dp"
+                                    android:text="2.5 K"
+                                    android:textColor="@color/gray"
+                                    android:textSize="8sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:src="@drawable/heart" />
+
+                                <TextView
+                                    android:id="@+id/view_pager_recipes_recipe_mini_likes_tv"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="2dp"
+                                    android:text="96"
+                                    android:textColor="@color/gray"
+                                    android:textSize="8sp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+
+                        <TextView
+                            android:id="@+id/view_pager_recipes_recipe_mini_date_time_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:text="Just now"
+                            android:textColor="@color/DarkGray"
+                            android:textSize="8sp" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

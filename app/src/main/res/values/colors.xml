@@ -186,13 +186,6 @@
     <color name="appPrimaryDark">#303F9F</color>
     <color name="appBackgroundLight">#e7e7e7</color>
 
-    <!--Text-->
-    <color name="textLightPrimary">#FFFFFF</color>
-    <color name="textLightSecondary">#e7e7e7</color>
-    <color name="textLightTertiary">#808080</color>
-    <color name="text_amount">#006400</color>
-    <color name="text_currency">#303F9F</color>
-
     <!--fab-->
     <color name="app_color">#FF6347</color>
     <color name="app_color_light">#FF8C00</color>
@@ -208,5 +201,14 @@
     <!--form-->
     <color name="text_form_field_header">#303F9F</color>
     <color name="background_material_light">#e1dcdc</color>
+    
+    <!--labels-->
+    <color name="primaryDarkText">#212121</color>
+    <color name="secondaryDarkText">#616161</color>
+    <color name="tertiaryDarkText">#9e9e9e</color>
+    <color name="primaryLightText">#fafafa</color>
+    <color name="secondaryLightText">#eeeeee</color>
+    <color name="tertiaryLightText">#bdbdbd</color>
+    <color name="usernameDarkText">#FF8C00</color>
 
 </resources>

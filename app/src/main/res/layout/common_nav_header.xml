@@ -1,38 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/nav_header_height"
-    android:background="@color/app_color"
-    android:gravity="bottom"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:layout_height="150dp"
+    android:gravity="bottom">
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/food" />
-
-    <TextView
-        android:id="@+id/common_nav_header_name_tv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:textColor="@color/textLightPrimary"
-        android:text="VISHAL" />
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:src="@drawable/food_sample"
+        android:scaleType="centerCrop"/>
 
-    <TextView
-        android:id="@+id/common_nav_header_city_tv"
-        android:layout_marginTop="5dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/textLightSecondary"
-        android:textSize="10sp"
-        android:text="FOODIE" />
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:padding="10dp"
+        android:background="@drawable/linear_gradient"
+        android:orientation="horizontal">
 
-</LinearLayout>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_alignParentLeft="true"
+            android:id="@+id/common_nav_header_iv"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/happy"
+            app:border_color="@color/white"
+            app:border_width="1dp" />
+
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/common_nav_header_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/primaryLightText"
+                android:text="Vishal Varshney" />
+
+            <TextView
+                android:id="@+id/common_nav_header_rank_tv"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/secondaryLightText"
+                android:textSize="8sp"
+                android:text="FOODIE" />
+
+            <TextView
+                android:id="@+id/common_nav_header_email_tv"
+                android:layout_marginTop="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/secondaryLightText"
+                android:textSize="8sp"
+                android:text="dial2vishal@gmail.com" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

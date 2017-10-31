@@ -7,7 +7,7 @@ import java.util.List;
  * Created by ajit on 27/8/17.
  */
 
-public class RecipeMO  implements Serializable {
+public class RecipeMO extends CommonMO implements Serializable {
     private int RCP_ID;
     private String RCP_NAME;
     private int FOOD_TYP_ID;
@@ -22,17 +22,21 @@ public class RecipeMO  implements Serializable {
 
     private List<IngredientMO> ingredients;
     private List<TasteMO> tastes;
-
-    private List<String> images;
     private List<String> RCP_IMGS;
-    private String RATING;
+    private List<CommentMO> comments;
+    private List<ReviewMO> reviews;
+    private boolean isLiked;
+    private boolean isReviewed;
+    private int likes;
+    private int views;
+    private String rating;
 
-    public String getRATING() {
-        return RATING;
+    public List<CommentMO> getComments() {
+        return comments;
     }
 
-    public void setRATING(String RATING) {
-        this.RATING = RATING;
+    public void setComments(List<CommentMO> comments) {
+        this.comments = comments;
     }
 
     public List<String> getRCP_IMGS() {
@@ -65,14 +69,6 @@ public class RecipeMO  implements Serializable {
 
     public void setFOOD_CSN_NAME(String FOOD_CSN_NAME) {
         this.FOOD_CSN_NAME = FOOD_CSN_NAME;
-    }
-
-    public List<String> getImages() {
-        return images;
-    }
-
-    public void setImages(List<String> images) {
-        this.images = images;
     }
 
     public List<TasteMO> getTastes() {
@@ -145,5 +141,53 @@ public class RecipeMO  implements Serializable {
 
     public void setFOOD_TYP_NAME(String FOOD_TYP_NAME) {
         this.FOOD_TYP_NAME = FOOD_TYP_NAME;
+    }
+
+    public List<ReviewMO> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<ReviewMO> reviews) {
+        this.reviews = reviews;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public int getViews() {
+        return views;
+    }
+
+    public void setViews(int views) {
+        this.views = views;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+
+    public boolean isReviewed() {
+        return isReviewed;
+    }
+
+    public void setReviewed(boolean reviewed) {
+        isReviewed = reviewed;
     }
 }

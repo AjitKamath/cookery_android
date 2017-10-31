@@ -7,7 +7,6 @@ package com.cookery.adapters;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -44,7 +43,7 @@ public class RecipeViewPagerAdapter extends PagerAdapter {
         switch(position){
             case 0: setupRecipeProcedure(layout); break;
             case 1: setupRecipeIngredients(layout); break;
-            case 2: setupRecipeComments(layout); break;
+            case 2: setupRecipeReviews(layout); break;
         }
 
         setFont(layout);
@@ -52,7 +51,14 @@ public class RecipeViewPagerAdapter extends PagerAdapter {
         return layout;
     }
 
-    private void setupRecipeComments(ViewGroup layout) {
+    private void setupRecipeReviews(ViewGroup layout) {
+        RecipeReviewsRecyclerViewAdapter adapter = new RecipeReviewsRecyclerViewAdapter(mContext, recipe.getReviews());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
+
+        RecyclerView view_pager_recipe_reviews_rv = layout.findViewById(R.id.view_pager_recipe_reviews_rv);
+        view_pager_recipe_reviews_rv.setLayoutManager(mLayoutManager);
+        view_pager_recipe_reviews_rv.setItemAnimator(new DefaultItemAnimator());
+        view_pager_recipe_reviews_rv.setAdapter(adapter);
     }
 
     private void setupRecipeIngredients(ViewGroup layout) {

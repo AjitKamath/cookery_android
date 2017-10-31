@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/common_fragment_recipe_comments_comment_item_cv"
+    android:background="@color/white"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    card_view:cardCornerRadius="5dp"
+    android:layout_marginTop="5dp"
+    card_view:cardPreventCornerOverlap="true">
+
+    <RelativeLayout
+        android:padding="5dp"
+        android:id="@+id/common_fragment_recipe_comments_comment_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/common_fragment_recipe_comments_comment_image_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:gravity="center_horizontal|top"
+            android:orientation="vertical">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/common_fragment_recipe_comments_comment_item_iv"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/food_sample"
+                app:border_color="@color/white"
+                app:border_width="1dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginLeft="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/common_fragment_recipe_comments_comment_image_ll"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/common_fragment_recipe_comments_comment_item_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="This recipe made my day. This chef is the best !! Would like to try more from him. I follow this chef and he is good lookig too ;) I do not know what to write here. But i am typing because i want to see how a big comment looks like on the screen."
+                android:textColor="@color/gray"
+                android:textSize="10sp" />
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="10dp">
+
+                <ImageView
+                    android:id="@+id/common_fragment_recipe_comments_comment_likes_iv"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/heart_unselected" />
+
+                <TextView
+                    android:id="@+id/common_fragment_recipe_comments_comment_item_likes_count_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/common_fragment_recipe_comments_comment_likes_iv"
+                    android:gravity="center"
+                    android:text="12"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/common_fragment_recipe_comments_comment_item_date_time_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="25 Sep at 1:05 AM"
+                    android:textColor="@color/gray"
+                    android:textSize="8sp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
+
+

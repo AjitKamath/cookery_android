@@ -1,6 +1,5 @@
 package com.cookery.activities;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 
 import com.cookery.R;
@@ -21,7 +19,6 @@ import com.cookery.adapters.HomeCategoriesRecipesRecyclerViewAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
 import com.cookery.models.RecipeMO;
 import com.cookery.utils.InternetUtility;
-import com.cookery.utils.Utility;
 
 import java.util.HashMap;
 import java.util.List;
@@ -98,6 +95,7 @@ public class HomeActivity extends CommonActivity{
             }
         });
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
+        mLayoutManager.scrollToPosition(categoriesRecipes.size()-1);
 
         content_home_rv.setLayoutManager(mLayoutManager);
         content_home_rv.setItemAnimator(new DefaultItemAnimator());

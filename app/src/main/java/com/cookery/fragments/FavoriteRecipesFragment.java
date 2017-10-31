@@ -5,7 +5,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.ColorLong;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -20,8 +19,6 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.adapters.FavRecipesViewPagerAdapter;
-import com.cookery.adapters.RecipeImagesViewPagerAdapter;
-import com.cookery.adapters.RecipeViewPagerAdapter;
 import com.cookery.models.RecipeMO;
 import com.cookery.utils.Utility;
 
@@ -33,7 +30,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
-import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
 
 /**
@@ -80,9 +76,9 @@ public class FavoriteRecipesFragment extends DialogFragment {
 
     private void setupPage() {
         final List<Integer> viewPagerTabsList = new ArrayList<>();
-        viewPagerTabsList.add(R.layout.view_pager_fav_recipes_recipes);
-        viewPagerTabsList.add(R.layout.view_pager_fav_recipes_recipes);
-        viewPagerTabsList.add(R.layout.view_pager_fav_recipes_recipes);
+        viewPagerTabsList.add(R.layout.view_pager_recipes_recipes_mini);
+        viewPagerTabsList.add(R.layout.view_pager_recipes_recipes_mini);
+        viewPagerTabsList.add(R.layout.view_pager_recipes_recipes_mini);
 
         for(Integer iter : viewPagerTabsList){
             common_fragment_fav_recipes_tl.addTab(common_fragment_fav_recipes_tl.newTab());

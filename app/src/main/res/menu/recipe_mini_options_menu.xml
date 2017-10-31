@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item
+            android:id="@+id/recipe_mini_options_share_item"
+            android:title="Share" />
+        <item
+            android:id="@+id/recipe_mini_options_edit_item"
+            android:title="Edit" />
+        <item
+            android:id="@+id/recipe_mini_options_delete_item"
+            android:title="Delete" />
+    </group>
+</menu>

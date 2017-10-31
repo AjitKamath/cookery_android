@@ -1,77 +1,49 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:gravity="center_vertical|right"
-        android:orientation="horizontal"
-        android:padding="8dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/red"
-            android:textSize="10sp"
-            android:layout_marginRight="10dp"
-            android:text="This Recipe May Contain"/>
-
-        <ImageView
-            android:id="@+id/view_pager_recipe_recipe_item_veg_non_veg_ind_iv"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:src="@drawable/veg" />
-
-        <ImageView
-            android:id="@+id/view_pager_recipe_recipe_item_nut_ind_iv"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/nut" />
-
-        <ImageView
-            android:id="@+id/view_pager_recipe_recipe_item_garlic_ind_iv"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/garlic" />
-
-        <ImageView
-            android:id="@+id/view_pager_recipe_recipe_item_onion_ind_iv"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/onion" />
-
-        <ImageView
-            android:id="@+id/view_pager_recipe_recipe_item_dairy_ind_iv"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/milk" />
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/app_color"
-        android:textSize="12sp"
-        android:text="HOW TO MAKE"/>
-
-
-    <android.support.v4.widget.NestedScrollView
-        android:layout_marginTop="10dp"
+    <RelativeLayout
+        android:id="@+id/view_pager_recipe_recipe_contails_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:textSize="20sp"
+            android:textColor="@color/gray"
+            android:text="30:00 MINS" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_below="@+id/view_pager_recipe_recipe_contails_rl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="HOW TO MAKE"
+            android:textColor="@color/app_color"
+            android:textSize="10sp" />
+
+        <TextView
             android:id="@+id/view_pager_recipe_recipe_proc_tv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/white"
+            android:gravity="top"
+            android:paddingBottom="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
             android:text="Step 1
         \n
 For preparing this chicken recipe, clean and wash the chicken three-four times and drain. Keep this cleaned chicken aside and make a paste of 2 pieces of ginger, garlic, mustard seeds, cumin seeds, and black peppercorn.
@@ -91,8 +63,7 @@ Add tomatoes and fry for another five minutes with one and a half cups of water 
 \n\nStep 6\n
 Finally, add coriander leaves, mix well and remove from heat. Serve it hot with butter naan and raita."
             android:textColor="@color/gray"
-            android:textSize="14sp" />
+            android:textSize="10sp" />
 
-    </android.support.v4.widget.NestedScrollView>
-
-</LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
