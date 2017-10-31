@@ -139,6 +139,9 @@ public class Utility extends Activity {
             else if(mappingClass.equals(RecipeMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<RecipeMO>>(){}.getType());
             }
+            else if(mappingClass.equals(MessageMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<MessageMO>(){}.getType());
+            }
             else{
                 Log.e(CLASS_NAME, mappingClass+" is not identified for parsing JSON");
             }

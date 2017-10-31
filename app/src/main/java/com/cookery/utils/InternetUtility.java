@@ -15,10 +15,7 @@ import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.TasteMO;
 
-import junit.framework.Test;
-
 import java.io.BufferedReader;
-import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +23,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +37,7 @@ import static com.cookery.utils.Constants.PHP_FETCH_MASTER_SEARCH;
 import static com.cookery.utils.Constants.PHP_FETCH_RECIPE;
 import static com.cookery.utils.Constants.PHP_FETCH_SUBMIT_RECIPE;
 import static com.cookery.utils.Constants.PHP_FETCH_TRENDING_RECIPES;
+import static com.cookery.utils.Constants.PHP_USER_REGISTRATION;
 import static com.cookery.utils.Constants.SERVER_ADDRESS;
 import static com.cookery.utils.Constants.SERVER_CHARSET;
 import static com.cookery.utils.Constants.USE_TEST_DATA;
@@ -350,4 +347,47 @@ public class InternetUtility {
 
         return null;
     }
+
+
+    public static Object userRegistraion(String name,String email, String mobile, String password, String gender)
+    {
+        String flag="";
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("code", "1");
+            paramMap.put("name", name);
+            paramMap.put("email", email);
+            paramMap.put("mobile", mobile);
+            paramMap.put("password", password);
+            paramMap.put("gender", gender);
+
+            String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_USER_REGISTRATION, paramMap);
+            return Utility.jsonToObject(jsonStr, MessageMO.class);
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not register the user : "+e);
+        }
+        return null;
+    }
+
+    public static Object userLogin(String email, String password)
+    {
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("code", "4");
+            paramMap.put("email", email);
+            paramMap.put("password", password);
+
+            String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_USER_REGISTRATION, paramMap);
+            return Utility.jsonToObject(jsonStr, MessageMO.class);
+
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not register the user : "+e);
+        }
+
+        return null;
+    }
+
 }

@@ -4,7 +4,7 @@ package com.cookery.utils;
  * Created by ajit on 6/1/15.
  */
 public final class Constants {
-    public static final boolean USE_TEST_DATA = true;
+    public static final boolean USE_TEST_DATA = false;
 
     /*server properties*/
     private static final String SLASH = "/";
@@ -32,6 +32,7 @@ public final class Constants {
     public static final String PHP_FETCH_MASTER_SEARCH = "mastersearch.php";
     public static final String PHP_FETCH_RECIPE = "getrecipedetails.php";
     public static final String PHP_FETCH_FAV_RECIPES = "getfavrecipes.php";
+    public static final String PHP_USER_REGISTRATION = "register.php";
 
     //fragment keys
     public static final int GALLERY_CHOICE = 1111;
@@ -59,6 +60,7 @@ public final class Constants {
     public static final String FRAGMENT_COMMON_MESSAGE = "FRAGMENT_COMMON_MESSAGE";
     public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
     public static final String FRAGMENT_MY_RECIPE = "FRAGMENT_MY_RECIPE";
+    public static final String FRAGMENT_MY_ACCOUNT = "FRAGMENT_MY_ACCOUNT";
 
 
     //FRAGMENT OBJECT KEYS
