@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "72307569554",
+    "firebase_url": "https://cookery-a0203.firebaseio.com",
+    "project_id": "cookery-a0203",
+    "storage_bucket": "cookery-a0203.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72307569554:android:44dc8ec2ef6651c9",
+        "android_client_info": {
+          "package_name": "com.cookery.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72307569554-7mf2oomrbm1g693sa64ujnmdhjr8323f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6K3ksqK8KAH5GBuf2RWqtoEG7qYvOEu0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
