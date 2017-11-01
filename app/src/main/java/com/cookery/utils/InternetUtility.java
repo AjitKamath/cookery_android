@@ -569,7 +569,7 @@ public class InternetUtility {
 
         }
         catch (Exception e){
-            Log.e(CLASS_NAME, "Could not register the user : "+e);
+            Log.e(CLASS_NAME, "Could not login the user : "+e);
         }
 
         return null;

@@ -36,7 +36,7 @@ public class MyAccountFragment extends AppCompatActivity {
 
     //components
     @InjectView(R.id.common_fragment_header_rl)
-    RelativeLayout fragment_my_recipe_header_rl;
+    RelativeLayout common_fragment_header_rl;
 
     @InjectView(R.id.common_fragment_header_tv)
     TextView fragment_my_recipe_header_tv;
@@ -174,7 +174,7 @@ public class MyAccountFragment extends AppCompatActivity {
             }
             else
             {
-                Utility.showSnacks(fragment_my_recipe_header_rl, status, OK, Snackbar.LENGTH_LONG);
+                Utility.showSnacks(common_fragment_header_rl, status, OK, Snackbar.LENGTH_LONG);
             }
 
              Utility.closeWaitDialog(getFragmentManager(), fragment);
