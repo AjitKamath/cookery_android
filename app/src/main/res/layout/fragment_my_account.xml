@@ -8,7 +8,7 @@
     android:layout_height="match_parent">
 
     <include
-        layout="@layout/fragment_my_recipe_header"
+        layout="@layout/common_fragment_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />

@@ -12,6 +12,8 @@ public class UserMO implements Serializable {
     private String PASSWORD;
     private String GENDER;
     private String MOBILE;
+    private int user_id;
+    private String name;
 
     public String getNAME() {
         return NAME;
@@ -51,5 +53,21 @@ public class UserMO implements Serializable {
 
     public void setMOBILE(String MOBILE) {
         this.MOBILE = MOBILE;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

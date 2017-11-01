@@ -28,7 +28,7 @@ public class LoginFragment extends AppCompatActivity {
 
 
     //components
-    @InjectView(R.id.fragment_my_recipe_header_tv)
+    @InjectView(R.id.common_fragment_header_tv)
     TextView fragment_my_recipe_header_tv;
 
     @InjectView(R.id.et_email)

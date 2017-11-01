@@ -24,6 +24,7 @@ import com.cookery.utils.Utility;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
 
 /**
@@ -34,10 +35,10 @@ public class MyAccountFragment extends AppCompatActivity {
     private Context mContext;
 
     //components
-    @InjectView(R.id.fragment_my_recipe_header_rl)
+    @InjectView(R.id.common_fragment_header_rl)
     RelativeLayout fragment_my_recipe_header_rl;
 
-    @InjectView(R.id.fragment_my_recipe_header_tv)
+    @InjectView(R.id.common_fragment_header_tv)
     TextView fragment_my_recipe_header_tv;
 
     @InjectView(R.id.et_name)
@@ -164,6 +165,9 @@ public class MyAccountFragment extends AppCompatActivity {
             String status = msg.getErr_message();
             if(status.equalsIgnoreCase("User Registered Successfully"))
             {
+                //TODO: pass user ID
+                Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, "");
+
                 login();
                 Utility.closeWaitDialog(getFragmentManager(), fragment);
 

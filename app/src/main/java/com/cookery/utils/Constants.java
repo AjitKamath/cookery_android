@@ -40,7 +40,7 @@ public final class Constants {
     public static final String PHP_SUBMIT_RECIPE_COMMENT = "submitrecipecomment.php"; //NOT READY
     public static final String PHP_SUBMIT_RECIPE_REVIEW = "submitrecipereview.php";
     public static final String PHP_SUBMIT_LIKE = "submitlike.php";
-
+    public static final String PHP_USER_REGISTRATION = "register.php";
 
     /*Date Time*/
     public static final String DB_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
