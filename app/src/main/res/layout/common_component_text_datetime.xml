@@ -1,0 +1,9 @@
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/common_component_text_datetime_tv"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="1 Jan 2018 at 12:00 AM"
+    android:layout_marginTop="2dp"
+    android:textColor="@color/tertiaryDarkText"
+    android:textSize="6sp" />

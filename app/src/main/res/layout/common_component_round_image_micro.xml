@@ -1,0 +1,9 @@
+<de.hdodenhof.circleimageview.CircleImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/common_component_round_image_micro_iv"
+    android:layout_width="20dp"
+    android:layout_height="20dp"
+    android:src="@drawable/food_sample"
+    app:border_color="@color/white"
+    app:border_width="1dp" />

@@ -32,7 +32,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_COMMENTS;
-import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
 
@@ -80,7 +79,7 @@ public class RecipeCommentsFragment extends DialogFragment {
     }
 
     private void getLoggedInUser() {
-        loggedInUser = (UserMO) Utility.readFromUserSecurity(mContext, LOGGED_IN_USER);
+        loggedInUser = Utility.getUserFromUserSecurity(mContext);
     }
 
     private void getDataFromBundle() {

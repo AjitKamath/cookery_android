@@ -15,6 +15,8 @@ import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.TasteMO;
+import com.cookery.models.TimelineMO;
+import com.cookery.models.UserMO;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +38,8 @@ import static com.cookery.utils.Constants.PHP_FETCH_RECIPE;
 import static com.cookery.utils.Constants.PHP_FETCH_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.PHP_FETCH_REVIEWED_RECIPES;
 import static com.cookery.utils.Constants.PHP_FETCH_TRENDING_RECIPES;
+import static com.cookery.utils.Constants.PHP_FETCH_USER_DETAILS;
+import static com.cookery.utils.Constants.PHP_FETCH_USER_TIMELINE;
 import static com.cookery.utils.Constants.PHP_FETCH_VIEWED_RECIPES;
 import static com.cookery.utils.Constants.PHP_SUBMIT_LIKE;
 import static com.cookery.utils.Constants.PHP_SUBMIT_RECIPE;
@@ -479,6 +483,51 @@ public class InternetUtility {
         }
         catch (Exception e){
             Log.e(CLASS_NAME, "Could not fetch Cuisines from the server : "+e);
+        }
+
+        return null;
+    }
+
+    public static UserMO getFetchUserDetails(int userId) {
+        if(USE_TEST_DATA){
+            return TestData.getUserTestData();
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("user_id", String.valueOf(userId));
+
+            String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_FETCH_USER_DETAILS, paramMap);
+            return (UserMO) Utility.jsonToObject(jsonStr, UserMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch user details from the server : "+e);
+        }
+
+        return null;
+    }
+
+    public static List<TimelineMO> getFetchUserTimeline(int userId, int index) {
+        if(USE_TEST_DATA){
+            return null;
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("user_id", String.valueOf(userId));
+            paramMap.put("index", String.valueOf(index));
+
+            String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_FETCH_USER_TIMELINE, paramMap);
+            return (List<TimelineMO>) Utility.jsonToObject(jsonStr, TimelineMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch user timeline from the server : "+e);
         }
 
         return null;

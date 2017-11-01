@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -17,6 +14,7 @@ import android.widget.ImageView;
 import com.cookery.R;
 import com.cookery.fragments.CommonImagePickerFragment;
 import com.cookery.fragments.MessageFragment;
+import com.cookery.fragments.MyTimelinesFragment;
 import com.cookery.fragments.RecipeCommentsFragment;
 import com.cookery.fragments.RecipeFragment;
 import com.cookery.fragments.RecipeImagesFragment;
@@ -31,24 +29,29 @@ import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.TasteMO;
+import com.cookery.models.TimelineMO;
 import com.cookery.models.UserMO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_WAIT;
+import static com.cookery.utils.Constants.FRAGMENT_MY_TIMELINES;
 import static com.cookery.utils.Constants.FRAGMENT_PICK_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
+import static com.cookery.utils.Constants.MY_TIMELINES;
 import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.SERVER_ADDRESS;
@@ -56,17 +59,11 @@ import static com.cookery.utils.Constants.SERVER_TIMEOUT;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
 public class Utility extends Activity {
-
     private static final String CLASS_NAME = Utility.class.getName();
 
-    public static Bitmap drawableToBitmap(Drawable drawable){
-        BitmapDrawable bitmapDrawable = ((BitmapDrawable) drawable);
-        return bitmapDrawable .getBitmap();
-    }
-
-    public static Object readFromUserSecurity(Context context, String key){
+    public static UserMO getUserFromUserSecurity(Context context){
         UserSecurity userSecurity = new UserSecurity(context);
-        return userSecurity.read(key);
+        return (UserMO) userSecurity.read(LOGGED_IN_USER);
     }
 
     public static void writeIntoUserSecurity(Context context, String key, Object value){
@@ -191,6 +188,9 @@ public class Utility extends Activity {
             else if(mappingClass.equals(LikesMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<LikesMO>(){}.getType());
             }
+            else if(mappingClass.equals(TimelineMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<List<TimelineMO>>(){}.getType());
+            }
             else{
                 Log.e(CLASS_NAME, mappingClass+" is not identified for parsing JSON");
             }
@@ -236,6 +236,40 @@ public class Utility extends Activity {
         bundle.putSerializable(SELECTED_ITEM, recipe);
 
         RecipeFragment fragment = new RecipeFragment();
+        fragment.setArguments(bundle);
+
+        if (parentFragment != null) {
+            fragment.setTargetFragment(parentFragment, 0);
+        }
+
+        fragment.show(fragmentManager, fragmentNameStr);
+    }
+
+    public static void showMyTimelinesFragment(FragmentManager fragmentManager, List<TimelineMO> timelines){
+        if(timelines == null || timelines.isEmpty()){
+            Log.e(CLASS_NAME, "Timelines are null");
+            return;
+        }
+
+        String fragmentNameStr = FRAGMENT_MY_TIMELINES;
+        String parentFragmentNameStr = null;
+
+        Fragment frag = fragmentManager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            fragmentManager.beginTransaction().remove(frag).commit();
+        }
+
+        Fragment parentFragment = null;
+        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
+            parentFragment = fragmentManager.findFragmentByTag(parentFragmentNameStr);
+        }
+
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(MY_TIMELINES, (Serializable) timelines);
+
+        MyTimelinesFragment fragment = new MyTimelinesFragment();
         fragment.setArguments(bundle);
 
         if (parentFragment != null) {

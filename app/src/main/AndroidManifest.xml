@@ -51,7 +51,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
         
-        <service android:name=".FirebaseIDService">
+        <service android:name=".services.FirebaseIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>

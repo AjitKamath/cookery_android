@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/fragment_timelines_timeline_like_rl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:background="@color/white"
+        app:cardCornerRadius="2dp"
+        card_view:cardPreventCornerOverlap="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
+
+            <LinearLayout
+                android:id="@+id/fragment_timelines_timeline_like_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/common_component_round_image_mini"
+                        android:id="@+id/common_component_round_image_mini_layout"/>
+
+                    <LinearLayout
+                        android:layout_marginLeft="5dp"
+                        android:layout_centerInParent="true"
+                        android:layout_toRightOf="@+id/common_component_round_image_mini_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/fragment_timelines_timeline_like_who_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="XXXX"
+                                android:textColor="@color/app_color"
+                                android:textSize="8sp" />
+
+                            <TextView
+                                android:id="@+id/fragment_timelines_timeline_like_what_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=" liked "
+                                android:textColor="@color/secondaryDarkText"
+                                android:textSize="8sp" />
+
+                            <TextView
+                                android:id="@+id/fragment_timelines_timeline_like_whose_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="YYYY's"
+                                android:textColor="@color/app_color"
+                                android:textSize="8sp" />
+
+                            <TextView
+                                android:id="@+id/fragment_timelines_timeline_like_on_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=" recipe/review/comment"
+                                android:textColor="@color/primaryDarkText"
+                                android:textSize="8sp" />
+
+                        </LinearLayout>
+
+                        <include layout="@layout/common_component_text_datetime" />
+
+                    </LinearLayout>
+
+                    <include layout="@layout/common_component_image_options_mini" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="15dp">
+
+                    <TextView
+                        android:id="@+id/fragment_timelines_timeline_like_review_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLength="150"
+                        android:text="@string/sample_commnet"
+                        android:textColor="@color/tertiaryDarkText"
+                        android:textSize="8sp" />
+
+                </RelativeLayout>
+
+                <include layout="@layout/common_component_card_timeline_recipe" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

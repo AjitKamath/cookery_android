@@ -105,6 +105,14 @@
 1. My Reviews PHP service implemented.
 2. Partial implementation of My Reviews.
 3. UI redesigned for home navigation drawer.
+4. My Reviews implemented.
 
-23 oct 2017
-1. My Reviews implemented.
+-- git checkin on 23 oct 2017 --
+
+26 oct 2017
+1. php service for fetching user timelines.
+2. ui layouts for time line items.
+3. implemented my timelines with dummy data.
+
+1 nov 2017
+1. setup push notifications.

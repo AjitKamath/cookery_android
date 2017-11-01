@@ -36,11 +36,14 @@ public final class Constants {
     public static final String PHP_FETCH_RECIPE_REVIEW = "fetchrecipereview.php";
     public static final String PHP_FETCH_MY_RECIPES = "fetchuserrecipes.php";
     public static final String PHP_FETCH_MY_REVIEWS = "fetchuserrecipesreviews.php";
+    public static final String PHP_FETCH_USER_DETAILS = "fetchuserdetails.php";
+    public static final String PHP_FETCH_USER_TIMELINE = "fetchusertimeline.php";
     public static final String PHP_SUBMIT_RECIPE = "addrecipe.php";
     public static final String PHP_SUBMIT_RECIPE_COMMENT = "submitrecipecomment.php"; //NOT READY
     public static final String PHP_SUBMIT_RECIPE_REVIEW = "submitrecipereview.php";
     public static final String PHP_SUBMIT_LIKE = "submitlike.php";
     public static final String PHP_USER_REGISTRATION = "register.php";
+
 
     /*Date Time*/
     public static final String DB_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
@@ -76,6 +79,7 @@ public final class Constants {
     public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
     public static final String FRAGMENT_MY_RECIPE = "FRAGMENT_MY_RECIPE";
     public static final String FRAGMENT_MY_REVIEWS = "FRAGMENT_MY_REVIEWS";
+    public static final String FRAGMENT_MY_TIMELINES = "FRAGMENT_MY_TIMELINES";
 
 
     //FRAGMENT OBJECT KEYS
@@ -90,6 +94,7 @@ public final class Constants {
     public static final String TOP_RECIPES_CHEF = "RECIPES FROM OUR TOP CHEF";
     public static final String MY_RECIPES = "MY RECIPES";
     public static final String MY_REVIEWS = "MY REVIEWS";
+    public static final String MY_TIMELINES = "MY TIMELINES";
 
     //check master keys
     public static final String CHECK_MASTER_FOR_CATEGORIES = "CHECK_MASTER_FOR_CATEGORIES";

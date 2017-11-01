@@ -37,6 +37,7 @@ import com.cookery.models.MasterDataMO;
 import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.TasteMO;
+import com.cookery.models.TimelineMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.TestData;
@@ -78,8 +79,11 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         setupNavigator();
         setupSearch();
         setupFab();
+        verifyLoggedInUser();
+    }
 
-        loggedInUser = (UserMO) Utility.readFromUserSecurity(mContext, LOGGED_IN_USER);
+    private void verifyLoggedInUser() {
+        loggedInUser = Utility.getUserFromUserSecurity(mContext);
         if(loggedInUser == null || loggedInUser.getUser_id() == 0){
             //TODO: show login/signup screen
             loggedInUser = TestData.getUserTestData();
@@ -313,6 +317,9 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         else if(R.id.activity_home_drawer_my_reviews == item.getItemId()){
             new AsyncTaskerFetchMyReviews().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
+        else if(R.id.navigation_drawer_timeline == item.getItemId()){
+            new AsyncTaskerFetchMyTimelines().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
         else{
             Utility.showSnacks(getDrawer_layout(), "NOT IMPLEMENTED YET", OK, Snackbar.LENGTH_LONG);
             return true;
@@ -383,6 +390,32 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             }
         }
     }
+
+    class AsyncTaskerFetchMyTimelines extends AsyncTask<Void, Void, List<TimelineMO>> {
+        private Fragment fragment;
+
+        @Override
+        protected void onPreExecute(){
+            fragment = Utility.showWaitDialog(getFragmentManager(), "Fetching your timelines ..");
+        }
+
+        @Override
+        protected List<TimelineMO> doInBackground(Void... objects) {
+            return InternetUtility.getFetchUserTimeline(loggedInUser.getUser_id(), 0);
+        }
+
+        @Override
+        protected void onPostExecute(List<TimelineMO> objectList) {
+            List<TimelineMO> timelines = objectList;
+
+            if(timelines != null && !timelines.isEmpty()){
+                Utility.showMyTimelinesFragment(getFragmentManager(), timelines);
+
+                Utility.closeWaitDialog(getFragmentManager(), fragment);
+            }
+        }
+    }
+
 
     class AsyncTaskerFetchRecipe extends AsyncTask<RecipeMO, Void, Object> {
         private Fragment fragment;

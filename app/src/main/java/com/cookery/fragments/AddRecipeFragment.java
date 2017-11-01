@@ -192,6 +192,8 @@ public class AddRecipeFragment extends DialogFragment {
                     return;
                 }
 
+                recipe.setUSER_ID(Utility.getUserFromUserSecurity(mContext).getUser_id());
+
                 new AsyncTasker().execute(recipe);
             }
         });
