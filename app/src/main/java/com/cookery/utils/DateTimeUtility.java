@@ -45,16 +45,16 @@ public class DateTimeUtility {
                     if (milliseconds < 10 * 60 * 60 * 1000) {
                         return getSmartTime(milliseconds);
                     } else {
-                        sdf = new SimpleDateFormat("'at' hh:mm a");
+                        sdf = new SimpleDateFormat("'at' h:mm a");
                     }
                 } else {
-                    sdf = new SimpleDateFormat("d MMM 'at' hh:mm a");
+                    sdf = new SimpleDateFormat("d MMM 'at' h:mm a");
                 }
             } else {
-                sdf = new SimpleDateFormat("d MMM 'at' hh:mm a");
+                sdf = new SimpleDateFormat("d MMM 'at' h:mm a");
             }
         } else {
-            sdf = new SimpleDateFormat("d MMM yyyy 'at' hh:mm a");
+            sdf = new SimpleDateFormat("d MMM yyyy 'at' h:mm a");
         }
 
         return sdf.format(dateTime);

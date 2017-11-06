@@ -432,4 +432,8 @@ public class Utility extends Activity {
 
         return images;
     }*/
+
+    public static int getPlaceHolder(){
+        return R.drawable.placeholder;
+    }
 }

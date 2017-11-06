@@ -402,6 +402,11 @@ public class AddRecipeFragment extends DialogFragment {
             MessageMO message = (MessageMO) object;
             message.setPurpose("ADD_RECIPE");
 
+            Utility.closeWaitDialog(getFragmentManager(), frag);
+
+            Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_ADD_RECIPE);
+            Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
+
             if(message.isError()){
                 Log.e(CLASS_NAME, "Error : "+message.getErr_message());
             }
@@ -409,11 +414,6 @@ public class AddRecipeFragment extends DialogFragment {
                 Log.i(CLASS_NAME, message.getErr_message());
                 dismiss();
             }
-
-            Utility.closeWaitDialog(getFragmentManager(), frag);
-
-            Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_ADD_RECIPE);
-            Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
         }
     }
 }

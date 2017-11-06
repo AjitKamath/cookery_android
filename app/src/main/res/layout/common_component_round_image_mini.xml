@@ -4,6 +4,6 @@
     android:id="@+id/common_component_round_image_mini_iv"
     android:layout_width="25dp"
     android:layout_height="25dp"
-    android:src="@drawable/food_sample"
+    android:src="@drawable/placeholder"
     app:border_color="@color/white"
     app:border_width="1dp" />

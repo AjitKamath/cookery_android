@@ -56,8 +56,6 @@ public class MyTimelinesFragment extends DialogFragment {
     //components
 
     private List<TimelineMO> myTimelines;
-    private int currentIndex;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,6 +73,10 @@ public class MyTimelinesFragment extends DialogFragment {
 
     private void getDataFromBundle() {
         myTimelines = (ArrayList<TimelineMO>) getArguments().get(MY_TIMELINES);
+
+        if(myTimelines == null){
+            myTimelines = new ArrayList<>();
+        }
     }
 
 
@@ -119,7 +121,7 @@ public class MyTimelinesFragment extends DialogFragment {
         adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
             @Override
             public void onBottomReached(int position) {
-                new AsyncTaskerFetchMyTimelines().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, adapter.getItemCount()+10);
+                new AsyncTaskerFetchMyTimelines().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, myTimelines.size());
             }
         });
 
@@ -133,9 +135,20 @@ public class MyTimelinesFragment extends DialogFragment {
         fragment_my_timeline_srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new AsyncTaskerFetchMyTimelines().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, 0);
+                new AsyncTaskerFetchMyTimelines().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, myTimelines.size());
             }
         });
+
+        /*fragment_my_timeline_rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(1)) {
+                    new AsyncTaskerFetchMyTimelines().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, myTimelines.size());
+                }
+            }
+        });*/
     }
 
     private void updateTopTimeline(List<TimelineMO> timelines){
@@ -184,17 +197,12 @@ public class MyTimelinesFragment extends DialogFragment {
     }
 
     class AsyncTaskerFetchMyTimelines extends AsyncTask<Integer, Void, List<TimelineMO>> {
-        int index;
-
         @Override
-        protected void onPreExecute(){
-        }
+        protected void onPreExecute(){}
 
         @Override
         protected List<TimelineMO> doInBackground(Integer... objects) {
-            index = Integer.parseInt(String.valueOf(objects[0]));
-
-            return InternetUtility.getFetchUserTimeline(Utility.getUserFromUserSecurity(mContext).getUser_id(), index);
+            return InternetUtility.getFetchUserTimeline(Utility.getUserFromUserSecurity(mContext).getUser_id(), myTimelines.size());
         }
 
         @Override
@@ -202,13 +210,15 @@ public class MyTimelinesFragment extends DialogFragment {
             List<TimelineMO> timelines = objectList;
 
             if(timelines != null && !timelines.isEmpty()){
-                if(index == 0){
+                if(timelines.isEmpty()){
                     updateTopTimeline(timelines);
                 }
                 else{
                     updateBottomTimeline(timelines);
                 }
             }
+
+            fragment_my_timeline_srl.setRefreshing(false);
         }
     }
 }

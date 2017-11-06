@@ -410,9 +410,12 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
             if(timelines != null && !timelines.isEmpty()){
                 Utility.showMyTimelinesFragment(getFragmentManager(), timelines);
-
-                Utility.closeWaitDialog(getFragmentManager(), fragment);
             }
+            else{
+                Log.e(CLASS_NAME, "Error ! Timeline cannot be empty ! Ideally there should atleast be one timeline which is when the user registered.");
+            }
+
+            Utility.closeWaitDialog(getFragmentManager(), fragment);
         }
     }
 

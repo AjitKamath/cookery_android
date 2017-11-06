@@ -8,20 +8,22 @@ import java.io.Serializable;
 
 public class TimelineMO extends CommonMO implements Serializable {
     private int TMLN_ID;
+    private int REF_USER_ID;
     private String TYPE;
     private int TYPE_ID;
 
-    private String timelineUserName;
-    private String timelineUserImage;
+    private String whoName;
+    private int whoUserId;
+    private String whoUserImage;
+    private String whoseName;
+    private int whoseUserId;
 
     /*recipe*/
     private int recipeId;
     private String recipeName;
     private String recipeTypeName;
     private String recipeCuisineName;
-    private int recipeOwnerId;
-    private String recipeOwnerName;
-    private String recipeOwnerImage;
+    private String recipeOwnerImg;
     private String recipeImage;
     /*recipe*/
 
@@ -42,6 +44,14 @@ public class TimelineMO extends CommonMO implements Serializable {
         this.TMLN_ID = TMLN_ID;
     }
 
+    public int getREF_USER_ID() {
+        return REF_USER_ID;
+    }
+
+    public void setREF_USER_ID(int REF_USER_ID) {
+        this.REF_USER_ID = REF_USER_ID;
+    }
+
     public String getTYPE() {
         return TYPE;
     }
@@ -58,20 +68,44 @@ public class TimelineMO extends CommonMO implements Serializable {
         this.TYPE_ID = TYPE_ID;
     }
 
-    public String getTimelineUserName() {
-        return timelineUserName;
+    public String getWhoName() {
+        return whoName;
     }
 
-    public void setTimelineUserName(String timelineUserName) {
-        this.timelineUserName = timelineUserName;
+    public void setWhoName(String whoName) {
+        this.whoName = whoName;
     }
 
-    public String getTimelineUserImage() {
-        return timelineUserImage;
+    public int getWhoUserId() {
+        return whoUserId;
     }
 
-    public void setTimelineUserImage(String timelineUserImage) {
-        this.timelineUserImage = timelineUserImage;
+    public void setWhoUserId(int whoUserId) {
+        this.whoUserId = whoUserId;
+    }
+
+    public String getWhoUserImage() {
+        return whoUserImage;
+    }
+
+    public void setWhoUserImage(String whoUserImage) {
+        this.whoUserImage = whoUserImage;
+    }
+
+    public String getWhoseName() {
+        return whoseName;
+    }
+
+    public void setWhoseName(String whoseName) {
+        this.whoseName = whoseName;
+    }
+
+    public int getWhoseUserId() {
+        return whoseUserId;
+    }
+
+    public void setWhoseUserId(int whoseUserId) {
+        this.whoseUserId = whoseUserId;
     }
 
     public int getRecipeId() {
@@ -106,28 +140,12 @@ public class TimelineMO extends CommonMO implements Serializable {
         this.recipeCuisineName = recipeCuisineName;
     }
 
-    public int getRecipeOwnerId() {
-        return recipeOwnerId;
+    public String getRecipeOwnerImg() {
+        return recipeOwnerImg;
     }
 
-    public void setRecipeOwnerId(int recipeOwnerId) {
-        this.recipeOwnerId = recipeOwnerId;
-    }
-
-    public String getRecipeOwnerName() {
-        return recipeOwnerName;
-    }
-
-    public void setRecipeOwnerName(String recipeOwnerName) {
-        this.recipeOwnerName = recipeOwnerName;
-    }
-
-    public String getRecipeOwnerImage() {
-        return recipeOwnerImage;
-    }
-
-    public void setRecipeOwnerImage(String recipeOwnerImage) {
-        this.recipeOwnerImage = recipeOwnerImage;
+    public void setRecipeOwnerImg(String recipeOwnerImg) {
+        this.recipeOwnerImg = recipeOwnerImg;
     }
 
     public String getRecipeImage() {

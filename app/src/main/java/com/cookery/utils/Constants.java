@@ -12,7 +12,9 @@ public final class Constants {
     private static final String SERVER_PROTOCOL = "http";
     private static final String SERVER_PORT = "";
     private static final String SERVER_PROJECT_DIRECTORY = "cookery"+SLASH;
-    private static final String SERVER_CODEANYWHERE_IP = "cookery_php-dial2vishal53897.codeanyapp.com"+COLON+SERVER_PORT+SLASH;
+    private static final String SERVER_CODE_ANYWHERE_IP_AJIT = "cookery_php-ajitkamathk452607.codeanyapp.com";
+    private static final String SERVER_CODE_ANYWHERE_IP_VISHAL = "cookery_php-dial2vishal53897.codeanyapp.com";
+    private static final String SERVER_CODEANYWHERE_IP = SERVER_CODE_ANYWHERE_IP_AJIT+COLON+SERVER_PORT+SLASH;
     private static final String SERVER_DADDY_IP = "192.168.43.173"+COLON+SERVER_PORT+SLASH+SERVER_PROJECT_DIRECTORY+SLASH;
 
     private static final String SERVER_IP = SERVER_CODEANYWHERE_IP;
@@ -44,6 +46,27 @@ public final class Constants {
     public static final String PHP_SUBMIT_LIKE = "submitlike.php";
     public static final String PHP_USER_REGISTRATION = "register.php";
 
+
+    /*Timeline keys*/
+    public static final String TIMELINE_RECIPE_ADD = "RECIPE_ADD";
+    public static final String TIMELINE_RECIPE_MODIFY = "RECIPE_MODIFY";
+    public static final String TIMELINE_RECIPE_REMOVE = "RECIPE_REMOVE";
+
+    public static final String TIMELINE_LIKE_RECIPE_ADD = "LIKE_RECIPE_ADD";
+    public static final String TIMELINE_LIKE_RECIPE_REMOVE = "LIKE_RECIPE_REMOVE";
+    public static final String TIMELINE_LIKE_COMMENT_ADD = "LIKE_COMMENT_ADD";
+    public static final String TIMELINE_LIKE_COMMENT_REMOVE = "LIKE_COMMENT_REMOVE";
+    public static final String TIMELINE_LIKE_REVIEW_ADD = "LIKE_REVIEW_ADD";
+    public static final String TIMELINE_LIKE_REVIEW_REMOVE = "LIKE_REVIEW_REMOVE";
+
+    public static final String TIMELINE_COMMENT_RECIPE_ADD = "COMMENT_RECIPE_ADD";
+    public static final String TIMELINE_COMMENT_RECIPE_REMOVE = "COMMENT_RECIPE_REMOVE";
+
+    public static final String TIMELINE_REVIEW_RECIPE_ADD = "REVIEW_RECIPE_ADD";
+    public static final String TIMELINE_REVIEW_RECIPE_REMOVE = "REVIEW_RECIPE_REMOVE";
+
+    public static final String TIMELINE_USER_ADD = "USER_ADD";
+    /*Timeline keys*/
 
     /*Date Time*/
     public static final String DB_DATE_TIME = "yyyy-MM-dd HH:mm:ss";

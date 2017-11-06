@@ -116,3 +116,8 @@
 
 1 nov 2017
 1. setup push notifications.
+
+-- git checkin on 1 nov 2017 --
+
+6 nov 2017
+1. partial implementation o My Timelines with php service.
