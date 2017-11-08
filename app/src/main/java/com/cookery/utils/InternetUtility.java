@@ -37,6 +37,7 @@ import static com.cookery.utils.Constants.PHP_FETCH_MY_REVIEWS;
 import static com.cookery.utils.Constants.PHP_FETCH_RECIPE;
 import static com.cookery.utils.Constants.PHP_FETCH_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.PHP_FETCH_REVIEWED_RECIPES;
+import static com.cookery.utils.Constants.PHP_FETCH_TIMELINE_DETAILS;
 import static com.cookery.utils.Constants.PHP_FETCH_TRENDING_RECIPES;
 import static com.cookery.utils.Constants.PHP_FETCH_USER_DETAILS;
 import static com.cookery.utils.Constants.PHP_FETCH_USER_TIMELINE;
@@ -528,6 +529,28 @@ public class InternetUtility {
         }
         catch (Exception e){
             Log.e(CLASS_NAME, "Could not fetch user timeline from the server : "+e);
+        }
+
+        return null;
+    }
+
+    public static List<TimelineMO> getFetchTimelineDetails(TimelineMO timeline) {
+        if(USE_TEST_DATA){
+            return null;
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("tmln_id", String.valueOf(timeline.getTMLN_ID()));
+
+            String jsonStr = getResponseFromCookery(SERVER_ADDRESS+PHP_FETCH_TIMELINE_DETAILS, paramMap);
+            return (List<TimelineMO>) Utility.jsonToObject(jsonStr, TimelineMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch user timeline details from the server : "+e);
         }
 
         return null;

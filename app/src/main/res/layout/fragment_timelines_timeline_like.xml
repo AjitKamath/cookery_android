@@ -4,7 +4,8 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:id="@+id/fragment_timelines_timeline_like_rl"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -50,33 +51,36 @@
                                 android:id="@+id/fragment_timelines_timeline_like_who_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="XXXX"
+                                android:text="WHO"
                                 android:textColor="@color/app_color"
-                                android:textSize="8sp" />
+                                android:textSize="10sp" />
 
                             <TextView
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
                                 android:id="@+id/fragment_timelines_timeline_like_what_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text=" liked "
-                                android:textColor="@color/secondaryDarkText"
-                                android:textSize="8sp" />
+                                android:text=" WHAT "
+                                android:textColor="@color/primaryDarkText"
+                                android:textSize="10sp" />
 
                             <TextView
                                 android:id="@+id/fragment_timelines_timeline_like_whose_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="YYYY's"
+                                android:text="WHO's"
                                 android:textColor="@color/app_color"
-                                android:textSize="8sp" />
+                                android:textSize="10sp" />
 
                             <TextView
+                                android:layout_marginLeft="5dp"
                                 android:id="@+id/fragment_timelines_timeline_like_on_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text=" recipe/review/comment"
+                                android:text="WHAT"
                                 android:textColor="@color/primaryDarkText"
-                                android:textSize="8sp" />
+                                android:textSize="10sp" />
 
                         </LinearLayout>
 
@@ -101,7 +105,7 @@
                         android:maxLength="150"
                         android:text="@string/sample_commnet"
                         android:textColor="@color/tertiaryDarkText"
-                        android:textSize="8sp" />
+                        android:textSize="10sp" />
 
                 </RelativeLayout>
 

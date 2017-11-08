@@ -4,7 +4,8 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:id="@+id/fragment_timelines_timeline_user_rl"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -47,8 +48,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="You joined Cookery !"
-                            android:textColor="@color/secondaryDarkText"
-                            android:textSize="8sp" />
+                            android:textColor="@color/primaryDarkText"
+                            android:textSize="10sp" />
 
                         <include layout="@layout/common_component_text_datetime" />
 

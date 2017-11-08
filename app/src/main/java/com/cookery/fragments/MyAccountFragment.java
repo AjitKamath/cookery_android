@@ -181,7 +181,4 @@ public class MyAccountFragment extends AppCompatActivity {
 
         }
     }
-
-
-
 }

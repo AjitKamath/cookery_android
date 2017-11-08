@@ -121,3 +121,8 @@
 
 6 nov 2017
 1. partial implementation o My Timelines with php service.
+
+-- git checkin on 6 nov 2017 --
+
+7 nov 2017
+1. timeline implemented.

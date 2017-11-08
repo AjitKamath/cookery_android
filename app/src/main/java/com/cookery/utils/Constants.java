@@ -40,6 +40,7 @@ public final class Constants {
     public static final String PHP_FETCH_MY_REVIEWS = "fetchuserrecipesreviews.php";
     public static final String PHP_FETCH_USER_DETAILS = "fetchuserdetails.php";
     public static final String PHP_FETCH_USER_TIMELINE = "fetchusertimeline.php";
+    public static final String PHP_FETCH_TIMELINE_DETAILS = "fetchusertimelinedetails.php";
     public static final String PHP_SUBMIT_RECIPE = "addrecipe.php";
     public static final String PHP_SUBMIT_RECIPE_COMMENT = "submitrecipecomment.php"; //NOT READY
     public static final String PHP_SUBMIT_RECIPE_REVIEW = "submitrecipereview.php";

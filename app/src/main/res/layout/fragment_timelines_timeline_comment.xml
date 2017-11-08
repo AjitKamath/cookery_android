@@ -4,6 +4,7 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:id="@+id/fragment_timelines_timeline_comment_rl"
     android:layout_width="match_parent"
+    android:layout_marginBottom="10dp"
     android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
@@ -51,32 +52,33 @@
                                 android:id="@+id/fragment_timelines_timeline_comment_who_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="XXXX"
+                                android:text="WHO"
                                 android:textColor="@color/app_color"
-                                android:textSize="8sp" />
+                                android:textSize="10sp" />
 
                             <TextView
                                 android:id="@+id/fragment_timelines_timeline_comment_what_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text=" commented on "
-                                android:textColor="@color/secondaryDarkText"
-                                android:textSize="8sp" />
+                                android:textColor="@color/primaryDarkText"
+                                android:textSize="10sp" />
 
                             <TextView
                                 android:id="@+id/fragment_timelines_timeline_comment_whose_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="YYYY"
+                                android:text="WHO's"
                                 android:textColor="@color/app_color"
                                 android:textSize="8sp" />
 
                             <TextView
+                                android:layout_marginLeft="5dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text=" recipe"
+                                android:text="recipe"
                                 android:textColor="@color/primaryDarkText"
-                                android:textSize="8sp" />
+                                android:textSize="10sp" />
 
                         </LinearLayout>
 
@@ -103,7 +105,7 @@
                         android:maxLength="150"
                         android:text="@string/sample_commnet"
                         android:textColor="@color/tertiaryDarkText"
-                        android:textSize="8sp" />
+                        android:textSize="10sp" />
 
                 </RelativeLayout>
 

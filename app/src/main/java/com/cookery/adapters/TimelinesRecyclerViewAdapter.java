@@ -7,6 +7,7 @@ package com.cookery.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,8 +22,8 @@ import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.TimelineMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.DateTimeUtility;
+import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,9 +130,13 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
     public void onBindViewHolder(ViewHolder holder, int position) {
         final TimelineMO timeline = timelines.get(position);
 
+        new AsyncTaskerFetchTimelineDetails(holder).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, timeline);
+    }
+
+    private void setupLayout(ViewHolder holder, TimelineMO timeline){
         //commons
-        if(timeline.getWhoUserImage() != null || !timeline.getWhoUserImage().trim().isEmpty()){
-            Picasso.with(mContext).load(timeline.getWhoUserImage()).placeholder(Utility.getPlaceHolder()).into(holder.common_component_round_image_mini_iv);
+        if(timeline.getWhoUserImage() != null && !timeline.getWhoUserImage().trim().isEmpty()){
+            Utility.loadImageFromURL(mContext, timeline.getWhoUserImage(), holder.common_component_round_image_mini_iv);
         }
         holder.common_component_text_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(timeline.getCREATE_DTM(), DB_DATE_TIME)));
         //commons
@@ -152,8 +157,8 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
             }
 
             /*recipe*/
-            if(timeline.getRecipeImage() != null || !timeline.getRecipeImage().trim().isEmpty()){
-                Picasso.with(mContext).load(timeline.getRecipeImage()).placeholder(Utility.getPlaceHolder()).into(holder.common_component_card_timeline_recipe_recipe_iv);
+            if(timeline.getRecipeImage() != null && !timeline.getRecipeImage().trim().isEmpty()){
+                Utility.loadImageFromURL(mContext, timeline.getRecipeImage(), holder.common_component_card_timeline_recipe_recipe_iv);
             }
 
 
@@ -205,12 +210,12 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
             }
 
             /*recipe*/
-            if(timeline.getRecipeOwnerImg() != null || !timeline.getRecipeOwnerImg().trim().isEmpty()){
-                Picasso.with(mContext).load(timeline.getRecipeOwnerImg()).placeholder(Utility.getPlaceHolder()).into(holder.common_component_round_image_micro_iv);
+            if(timeline.getRecipeOwnerImg() != null && !timeline.getRecipeOwnerImg().trim().isEmpty()){
+                Utility.loadImageFromURL(mContext, timeline.getRecipeOwnerImg(), holder.common_component_round_image_micro_iv);
             }
 
-            if(timeline.getRecipeImage() != null || !timeline.getRecipeImage().trim().isEmpty()){
-                Picasso.with(mContext).load(timeline.getRecipeImage()).placeholder(Utility.getPlaceHolder()).into(holder.common_component_card_timeline_recipe_recipe_iv);
+            if(timeline.getRecipeImage() != null && !timeline.getRecipeImage().trim().isEmpty()){
+                Utility.loadImageFromURL(mContext, timeline.getRecipeImage(), holder.common_component_card_timeline_recipe_recipe_iv);
             }
 
 
@@ -239,12 +244,12 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
             holder.fragment_timelines_timeline_comment_comment_tv.setText(timeline.getComment());
 
             /*recipe*/
-            if(timeline.getRecipeOwnerImg() != null || !timeline.getRecipeOwnerImg().trim().isEmpty()){
-                Picasso.with(mContext).load(timeline.getRecipeOwnerImg()).placeholder(Utility.getPlaceHolder()).into(holder.common_component_round_image_micro_iv);
+            if(timeline.getRecipeOwnerImg() != null && !timeline.getRecipeOwnerImg().trim().isEmpty()){
+                Utility.loadImageFromURL(mContext, timeline.getRecipeOwnerImg(), holder.common_component_round_image_micro_iv);
             }
 
-            if(timeline.getRecipeImage() != null || !timeline.getRecipeImage().trim().isEmpty()){
-                Picasso.with(mContext).load(timeline.getRecipeImage()).placeholder(Utility.getPlaceHolder()).into(holder.common_component_card_timeline_recipe_recipe_iv);
+            if(timeline.getRecipeImage() != null && !timeline.getRecipeImage().trim().isEmpty()){
+                Utility.loadImageFromURL(mContext, timeline.getRecipeImage(), holder.common_component_card_timeline_recipe_recipe_iv);
             }
 
 
@@ -284,12 +289,12 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
             /*review*/
 
             /*recipe*/
-            if(timeline.getRecipeOwnerImg() != null || !timeline.getRecipeOwnerImg().trim().isEmpty()){
-                Picasso.with(mContext).load(timeline.getRecipeOwnerImg()).placeholder(Utility.getPlaceHolder()).into(holder.common_component_round_image_micro_iv);
+            if(timeline.getRecipeOwnerImg() != null && !timeline.getRecipeOwnerImg().trim().isEmpty()){
+                Utility.loadImageFromURL(mContext, timeline.getRecipeOwnerImg(), holder.common_component_round_image_micro_iv);
             }
 
-            if(timeline.getRecipeImage() != null || !timeline.getRecipeImage().trim().isEmpty()){
-                Picasso.with(mContext).load(timeline.getRecipeImage()).placeholder(Utility.getPlaceHolder()).into(holder.common_component_card_timeline_recipe_recipe_iv);
+            if(timeline.getRecipeImage() != null && !timeline.getRecipeImage().trim().isEmpty()){
+                Utility.loadImageFromURL(mContext, timeline.getRecipeImage(), holder.common_component_card_timeline_recipe_recipe_iv);
             }
 
 
@@ -454,6 +459,32 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
             }
             else if(v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
+            }
+        }
+    }
+
+    class AsyncTaskerFetchTimelineDetails extends AsyncTask<TimelineMO, Void, Object> {
+        private ViewHolder holder;
+
+        public AsyncTaskerFetchTimelineDetails(ViewHolder holder){
+            this.holder = holder;
+        }
+
+        @Override
+        protected void onPreExecute(){
+        }
+
+        @Override
+        protected Object doInBackground(TimelineMO... objects) {
+            return InternetUtility.getFetchTimelineDetails(objects[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            List<TimelineMO> timeline = (List<TimelineMO>)object;
+
+            if(timeline != null && !timeline.isEmpty()){
+                setupLayout(holder, timeline.get(0));
             }
         }
     }

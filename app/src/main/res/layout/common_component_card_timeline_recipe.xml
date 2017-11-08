@@ -45,9 +45,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
-                    android:text="AMERICAN MUSHROOM MASALA WITH MEXICAN CORN AND CHEESE"
+                    android:text="RECIPE"
                     android:textColor="@color/secondaryDarkText"
-                    android:textSize="8sp" />
+                    android:textSize="10sp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -61,9 +61,9 @@
                         android:layout_height="wrap_content"
                         android:maxLength="18"
                         android:maxLines="1"
-                        android:text="BREAKFAST"
+                        android:text="TYPE"
                         android:textColor="@color/tertiaryDarkText"
-                        android:textSize="6sp" />
+                        android:textSize="9sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
                         android:maxLines="1"
                         android:text="."
                         android:textColor="@color/tertiaryDarkText"
-                        android:textSize="6sp" />
+                        android:textSize="9sp" />
 
                     <TextView
                         android:id="@+id/common_component_card_timeline_recipe_recipe_cuisine_tv"
@@ -82,9 +82,9 @@
                         android:layout_height="wrap_content"
                         android:maxLength="18"
                         android:maxLines="1"
-                        android:text="SOUTH INDIAN"
+                        android:text="CUISINE"
                         android:textColor="@color/tertiaryDarkText"
-                        android:textSize="6sp" />
+                        android:textSize="9sp" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -98,7 +98,7 @@
             android:layout_below="@+id/common_component_card_timeline_recipe_ll"
             android:layout_marginTop="2dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/food_sample" />
+            android:src="@drawable/placeholder" />
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>
