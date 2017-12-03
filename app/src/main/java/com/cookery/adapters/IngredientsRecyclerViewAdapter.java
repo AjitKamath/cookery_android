@@ -17,23 +17,28 @@ import com.cookery.R;
 import com.cookery.models.IngredientMO;
 import com.cookery.utils.Utility;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<IngredientsRecyclerViewAdapter.ViewHolder> {
 
     private static final String CLASS_NAME = IngredientsRecyclerViewAdapter.class.getName();
     private Context mContext;
 
-    private List<IngredientMO> ingredients;
+    public List<IngredientMO> ingredients;
+    private View.OnClickListener listener;
 
-    public IngredientsRecyclerViewAdapter(Context mContext, List<IngredientMO> ingredients) {
+    public IngredientsRecyclerViewAdapter(Context mContext, List<IngredientMO> ingredients, View.OnClickListener listener) {
         this.mContext = mContext;
         this.ingredients = ingredients;
+        this.listener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_pager_recipe_ingredients_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_add_ingredients_item, parent, false);
 
         return new ViewHolder(itemView);
     }
@@ -43,12 +48,27 @@ public class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<Ingredi
         IngredientMO ingredient = ingredients.get(position);
 
         if(ingredient.getIMG() != null){
-            Utility.loadImageFromURL(mContext, ingredient.getIMG(), holder.view_pager_recipe_ingredients_item_iv);
+            Utility.loadImageFromURL(mContext, ingredient.getIMG(), holder.recipe_add_ingredients_item_iv);
         }
 
-        holder.view_pager_recipe_ingredients_item_tv.setText(ingredient.getING_NAME().toUpperCase());
-        holder.view_pager_recipe_ingredients_item_qty_tv.setText(String.valueOf(ingredient.getING_QTY()));
-        holder.view_pager_recipe_ingredients_item_qty_type_tv.setText(ingredient.getQTY_NAME().toUpperCase());
+        holder.recipe_add_ingredients_item_tv.setText(ingredient.getING_NAME().toUpperCase());
+        holder.recipe_add_ingredients_item_qty_tv.setText(String.valueOf(ingredient.getQTY()));
+        holder.recipe_add_ingredients_item_qty_type_tv.setText(ingredient.getQuantity().getQTY_NAME().toUpperCase());
+
+        holder.recipe_add_ingredients_item_edit_iv.setTag(ingredient);
+        holder.recipe_add_ingredients_item_delete_iv.setTag(ingredient);
+
+        holder.recipe_add_ingredients_item_edit_iv.setOnClickListener(listener);
+        holder.recipe_add_ingredients_item_delete_iv.setOnClickListener(listener);
+
+        /*divider*/
+        if(position == ingredients.size()-1){
+            holder.recipe_add_ingredients_item_divider_view.setVisibility(View.GONE);
+        }
+        else{
+            holder.recipe_add_ingredients_item_divider_view.setVisibility(View.VISIBLE);
+        }
+        /*divider*/
     }
 
     @Override
@@ -56,18 +76,52 @@ public class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<Ingredi
         return ingredients.size();
     }
 
+    public void addData(IngredientMO ingredient) {
+        if(ingredients == null){
+            ingredients = new ArrayList<>();
+        }
+
+        if(!ingredients.isEmpty()){
+            //check if the ingredien is already added, if yes, bring it on top
+            for(IngredientMO thisIngredient: ingredients){
+                if(thisIngredient.getING_NAME().equalsIgnoreCase(ingredient.getING_NAME())){
+                    ingredients.remove(thisIngredient);
+                    break;
+                }
+            }
+        }
+
+        ingredients.add(0, ingredient);
+        notifyDataSetChanged();
+    }
+
+    public void removeData(IngredientMO ingredient) {
+        if(ingredients == null){
+            ingredients = new ArrayList<>();
+        }
+
+        ingredients.remove(ingredient);
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView view_pager_recipe_ingredients_item_iv;
-        public TextView view_pager_recipe_ingredients_item_tv;
-        public TextView view_pager_recipe_ingredients_item_qty_tv;
-        public TextView view_pager_recipe_ingredients_item_qty_type_tv;
+        public CircleImageView recipe_add_ingredients_item_iv;
+        public TextView recipe_add_ingredients_item_tv;
+        public TextView recipe_add_ingredients_item_qty_tv;
+        public TextView recipe_add_ingredients_item_qty_type_tv;
+        public ImageView recipe_add_ingredients_item_edit_iv;
+        public ImageView recipe_add_ingredients_item_delete_iv;
+        public View recipe_add_ingredients_item_divider_view;
 
         public ViewHolder(View view) {
             super(view);
-            view_pager_recipe_ingredients_item_iv = view.findViewById(R.id.view_pager_recipe_ingredients_item_iv);
-            view_pager_recipe_ingredients_item_tv = view.findViewById(R.id.view_pager_recipe_ingredients_item_tv);
-            view_pager_recipe_ingredients_item_qty_tv = view.findViewById(R.id.view_pager_recipe_ingredients_item_qty_tv);
-            view_pager_recipe_ingredients_item_qty_type_tv = view.findViewById(R.id.view_pager_recipe_ingredients_item_qty_type_tv);
+            recipe_add_ingredients_item_iv = view.findViewById(R.id.recipe_add_ingredients_item_iv);
+            recipe_add_ingredients_item_tv = view.findViewById(R.id.recipe_add_ingredients_item_tv);
+            recipe_add_ingredients_item_qty_tv = view.findViewById(R.id.recipe_add_ingredients_item_qty_tv);
+            recipe_add_ingredients_item_qty_type_tv = view.findViewById(R.id.recipe_add_ingredients_item_qty_type_tv);
+            recipe_add_ingredients_item_edit_iv = view.findViewById(R.id.recipe_add_ingredients_item_edit_iv);
+            recipe_add_ingredients_item_delete_iv = view.findViewById(R.id.recipe_add_ingredients_item_delete_iv);
+            recipe_add_ingredients_item_divider_view = view.findViewById(R.id.recipe_add_ingredients_item_divider_view);
         }
     }
 }

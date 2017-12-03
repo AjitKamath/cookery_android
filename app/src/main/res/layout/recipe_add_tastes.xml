@@ -1,42 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/White"
-    android:padding="@dimen/padding"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/white"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Define how your food is ?"
-        android:textColor="@color/gray"
-        android:textSize="20sp" />
+    <include layout="@layout/common_component_add_recipe_heading" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_marginTop="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Spice"
-                android:textColor="@color/gray"
-                android:textSize="15sp" />
+                android:text="SPICE"
+                android:textColor="@color/secondaryDarkText"
+                android:textSize="@dimen/secondary_text_size" />
 
             <LinearLayout
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="25dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -45,16 +38,16 @@
                 <ImageView
                     android:id="@+id/view_pager_ad_recipe_7_spice_1_iv"
                     android:tag="1"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_weight="1"
                     android:src="@drawable/spice_enabled"/>
 
                 <ImageView
                     android:id="@+id/view_pager_ad_recipe_7_spice_2_iv"
                     android:tag="2"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_weight="1"
                     android:src="@drawable/spice_enabled"/>
 
@@ -62,24 +55,24 @@
                 <ImageView
                     android:id="@+id/view_pager_ad_recipe_7_spice_3_iv"
                     android:tag="3"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_weight="1"
                     android:src="@drawable/spice_enabled"/>
 
                 <ImageView
                     android:id="@+id/view_pager_ad_recipe_7_spice_4_iv"
                     android:tag="4"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_weight="1"
                     android:src="@drawable/spice_disabled"/>
 
                 <ImageView
                     android:id="@+id/view_pager_ad_recipe_7_spice_5_iv"
                     android:tag="5"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_weight="1"
                     android:src="@drawable/spice_disabled"/>
 
@@ -87,23 +80,22 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="60dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sweet"
-                android:textColor="@color/gray"
-                android:textSize="15sp" />
+                android:text="SWEET"
+                android:textColor="@color/secondaryDarkText"
+                android:textSize="@dimen/secondary_text_size" />
 
             <LinearLayout
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="25dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -112,16 +104,16 @@
                 <ImageView
                     android:id="@+id/view_pager_ad_recipe_7_sweet_1_iv"
                     android:tag="1"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_weight="1"
                     android:src="@drawable/sweet_enabled"/>
 
                 <ImageView
                     android:id="@+id/view_pager_ad_recipe_7_sweet_2_iv"
                     android:tag="2"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_weight="1"
                     android:src="@drawable/sweet_enabled"/>
 
@@ -129,24 +121,24 @@
                 <ImageView
                     android:id="@+id/view_pager_ad_recipe_7_sweet_3_iv"
                     android:tag="3"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_weight="1"
                     android:src="@drawable/sweet_disabled"/>
 
                 <ImageView
                     android:id="@+id/view_pager_ad_recipe_7_sweet_4_iv"
                     android:tag="4"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_weight="1"
                     android:src="@drawable/sweet_disabled"/>
 
                 <ImageView
                     android:id="@+id/view_pager_ad_recipe_7_sweet_5_iv"
                     android:tag="5"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_weight="1"
                     android:src="@drawable/sweet_disabled"/>
 
@@ -154,5 +146,6 @@
         </LinearLayout>
 
     </LinearLayout>
+
 
 </LinearLayout>

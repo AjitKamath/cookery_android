@@ -2,15 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/food_type_gv_item_ll"
     android:gravity="center"
     android:orientation="vertical"
     android:paddingBottom="40dp">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
+        app:border_color="@color/app_color"
         android:id="@+id/food_type_gv_item_iv"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        app:border_width="1dp"
         android:src="@drawable/food"/>
 
     <LinearLayout
@@ -24,7 +27,7 @@
             android:id="@+id/food_type_gv_item_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Gray"
+            android:textColor="@color/secondaryDarkText"
             android:textSize="12sp"
             android:text="DINNER"/>
 

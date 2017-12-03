@@ -218,7 +218,13 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     }
 
     private void showAddRecipeFragment(MasterDataMO masterData) {
-        String fragmentNameStr = FRAGMENT_ADD_RECIPE;
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put(MASTER, masterData);
+        paramsMap.put(GENERIC_OBJECT, new RecipeMO());
+
+        Utility.showFragment(getFragmentManager(), null, FRAGMENT_ADD_RECIPE, new AddRecipeFragment(), paramsMap);
+
+        /*String fragmentNameStr = FRAGMENT_ADD_RECIPE;
         String parentFragmentNameStr = null;
 
         FragmentManager manager = getFragmentManager();
@@ -243,7 +249,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             fragment.setTargetFragment(parentFragment, 0);
         }
 
-        fragment.show(manager, fragmentNameStr);
+        fragment.show(manager, fragmentNameStr);*/
     }
 
     private void showFavRecipesFragment(Map<String, List<RecipeMO>> favRecipes) {

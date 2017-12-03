@@ -182,14 +182,14 @@ public class RecipeFragment extends DialogFragment {
         }
         else{
             common_fragment_recipe_comments_tv.setText(recipe.getComments().size()+" COMMENTS");
-
-            common_fragment_recipe_comments_tv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Utility.showRecipeCommentsFragment(getFragmentManager(), recipe);
-                }
-            });
         }
+
+        common_fragment_recipe_comments_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Utility.showRecipeCommentsFragment(getFragmentManager(), recipe);
+            }
+        });
 
         common_fragment_recipe_view_ll.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

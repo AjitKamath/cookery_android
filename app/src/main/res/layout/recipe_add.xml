@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:id="@+id/recipe_add_rl"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <RelativeLayout
+        android:id="@+id/recipe_add_header_rl"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/app_color"
+            android:textSize="@dimen/primary_text_size"
+            android:text="CREATE YOUR RECIPE"/>
+
+        <ImageView
+            android:id="@+id/recipe_add_close_iv"
+            android:layout_centerVertical="true"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_close_grey600_36dp"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@+id/recipe_add_header_rl"
+        android:id="@+id/recipe_add_fragment_images_rl"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/recipe_add_images_iv"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@drawable/placeholder"
+            android:scaleType="centerCrop"/>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/recipe_add_images_vp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/recipe_add_fragment_images_info_rl"
+        android:layout_below="@+id/recipe_add_fragment_images_rl"
+        android:layout_marginTop="5sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/recipe_add_images_count_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:layout_centerInParent="true"
+            android:textColor="@color/app_color"
+            android:text="0/0"/>
+
+
+        <TextView
+            android:id="@+id/recipe_add_images_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/app_color"
+            android:text="+ ADD PHOTOS"/>
+    </RelativeLayout>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/recipe_add_fragment_images_info_rl"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:background="@color/app_color"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/recipe_add_tl"
+                android:layout_width="match_parent"
+                android:background="@color/white"
+                android:layout_height="30dp"
+                app:tabGravity="fill"
+                app:tabIndicatorColor="@color/secondaryDarkText"
+                app:tabMaxWidth="0dp"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/secondaryDarkText"
+                app:tabTextColor="@color/tertiaryDarkText" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/recipe_add_tabs_vp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:padding="5dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </android.support.design.widget.CoordinatorLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/recipe_add_submit_fab"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="5dp"
+        app:fabSize="mini"
+        app:rippleColor="@color/Blue"
+        android:scaleType="centerInside"
+        android:backgroundTint="@color/app_color"
+        android:src="@drawable/ic_done_white_18dp" />
+
+</RelativeLayout>

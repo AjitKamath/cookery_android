@@ -24,20 +24,23 @@
         android:padding="1dp"
         android:background="@color/gray"
         android:layout_alignParentBottom="true"
-        android:layout_height="35dp">
+        android:minHeight="40dp"
+        android:layout_height="wrap_content">
 
         <EditText
             android:id="@+id/common_fragment_recipe_comments_comment_et"
             android:gravity="center"
-            android:layout_height="match_parent"
+            android:minHeight="40dp"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:textColor="@color/gray"
-            android:textSize="12sp"
-            android:textColorHint="@color/gray"
+            android:textColor="@color/primaryDarkText"
+            android:textSize="14sp"
+            android:textColorHint="@color/tertiaryDarkText"
             android:hint="add your comments .."
             android:textStyle="italic"
-            android:paddingLeft="25dp"
-            android:paddingRight="25dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="40dp"
+            android:maxLength="@integer/comment_text_limit"
             android:background="@color/white"/>
     </LinearLayout>
 
@@ -48,8 +51,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:src="@drawable/send"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"/>
-
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"/>
 
 </RelativeLayout>

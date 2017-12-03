@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
@@ -18,6 +19,7 @@ import com.cookery.adapters.CuisinesGridViewAdapter;
 import com.cookery.adapters.FoodTypeGridViewAdapter;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
+import com.cookery.utils.Utility;
 
 import java.util.List;
 
@@ -36,6 +38,9 @@ public class SelectionFragment extends DialogFragment {
     private Context mContext;
 
     //components
+    @InjectView(R.id.common_selection_rl)
+    RelativeLayout common_selection_rl;
+    
     @InjectView(R.id.common_selection_food_type_gv)
     GridView common_selection_food_type_gv;
     //end of components
@@ -78,6 +83,9 @@ public class SelectionFragment extends DialogFragment {
                         dismiss();
                         ((AddRecipeFragment)getTargetFragment()).setFoodType(foodType);
                     }
+                    else{
+                        Utility.showUnimplemetedActionSnacks(common_selection_rl);
+                    }
                 }
             });
 
@@ -93,6 +101,9 @@ public class SelectionFragment extends DialogFragment {
                     if(getTargetFragment() instanceof AddRecipeFragment){
                         dismiss();
                         ((AddRecipeFragment)getTargetFragment()).setCuisine(cuisine);
+                    }
+                    else{
+                        Utility.showUnimplemetedActionSnacks(common_selection_rl);
                     }
                 }
             });
@@ -122,7 +133,7 @@ public class SelectionFragment extends DialogFragment {
         Dialog d = getDialog();
         if (d!=null) {
             int width = ViewGroup.LayoutParams.WRAP_CONTENT;
-            int height = 900;
+            int height = 400;
             d.getWindow().setLayout(width, height);
         }
     }

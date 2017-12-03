@@ -16,9 +16,12 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.models.CommentMO;
+import com.cookery.utils.DateTimeUtility;
 import com.cookery.utils.Utility;
 
 import java.util.List;
+
+import static com.cookery.utils.Constants.DB_DATE_TIME;
 
 public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecipeCommentsRecyclerViewAdapter.ViewHolder> {
 
@@ -49,8 +52,11 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
             Utility.loadImageFromURL(mContext, comment.getUserImage(), holder.common_fragment_recipe_comments_comment_item_iv);
         }
 
+        //TODO: yet to implement ability for user to like/unlike comment on tapping on the comment heart
+
         holder.common_fragment_recipe_comments_comment_item_tv.setText(comment.getCOMMENT());
-        holder.common_fragment_recipe_comments_comment_item_likes_count_tv.setText(String.valueOf(comment.getLikeCount()));
+        holder.common_fragment_recipe_comments_comment_item_likes_count_tv.setText(Utility.getSmartNumber(comment.getLikeCount()));
+        holder.common_fragment_recipe_comments_comment_item_date_time_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(comment.getCREATE_DTM(), DB_DATE_TIME)));
     }
 
     @Override

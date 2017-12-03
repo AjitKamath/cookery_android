@@ -11,15 +11,16 @@ public final class Constants {
     private static final String COLON = ":";
     private static final String SERVER_PROTOCOL = "http";
     private static final String SERVER_PORT = "";
-    private static final String SERVER_PROJECT_DIRECTORY = "cookery"+SLASH;
-    private static final String SERVER_CODE_ANYWHERE_IP_AJIT = "cookery_php-ajitkamathk452607.codeanyapp.com";
-    private static final String SERVER_CODE_ANYWHERE_IP_VISHAL = "cookery_php-dial2vishal53897.codeanyapp.com";
-    private static final String SERVER_CODEANYWHERE_IP = SERVER_CODE_ANYWHERE_IP_AJIT+COLON+SERVER_PORT+SLASH;
-    private static final String SERVER_DADDY_IP = "192.168.43.173"+COLON+SERVER_PORT+SLASH+SERVER_PROJECT_DIRECTORY+SLASH;
 
-    private static final String SERVER_IP = SERVER_CODEANYWHERE_IP;
+    private static final String SERVER_CODE_ANYWHERE_ADDRESS_AJIT = "cookery_php-ajitkamathk452607.codeanyapp.com";
+    private static final String SERVER_CODE_ANYWHERE_ADDRESS_VISHAL = "cookery_php-dial2vishal53897.codeanyapp.com";
+    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_AJIT;
 
-    public static final String SERVER_ADDRESS = SERVER_PROTOCOL+COLON+SLASH+SLASH+SERVER_IP;
+    private static final String SERVER_CODEANYWHERE_PUBLIC_DIR = "public";
+
+    public static final String SERVER_ADDRESS = SERVER_PROTOCOL+COLON+SLASH+SLASH+SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE+SLASH;
+    public static final String SERVER_ADDRESS_PUBLIC = SERVER_ADDRESS+SERVER_CODEANYWHERE_PUBLIC_DIR+SLASH;
+
     public static final String SERVER_CHARSET = "UTF-8";
     public static final int SERVER_TIMEOUT = 5000;  //in milliseconds
 
@@ -41,12 +42,39 @@ public final class Constants {
     public static final String PHP_FETCH_USER_DETAILS = "fetchuserdetails.php";
     public static final String PHP_FETCH_USER_TIMELINE = "fetchusertimeline.php";
     public static final String PHP_FETCH_TIMELINE_DETAILS = "fetchusertimelinedetails.php";
-    public static final String PHP_SUBMIT_RECIPE = "addrecipe.php";
-    public static final String PHP_SUBMIT_RECIPE_COMMENT = "submitrecipecomment.php"; //NOT READY
+    public static final String PHP_FETCH_RECIPE_COMMENTS = "fetchrecipecomments.php";
+    public static final String PHP_SUBMIT_RECIPE = "submitrecipe.php";
+    public static final String PHP_SUBMIT_RECIPE_COMMENT = "submitcomment.php";
     public static final String PHP_SUBMIT_RECIPE_REVIEW = "submitrecipereview.php";
     public static final String PHP_SUBMIT_LIKE = "submitlike.php";
     public static final String PHP_USER_REGISTRATION = "register.php";
 
+    public static final String PHP_CONTROLLER = "Controller.php";
+
+    /*PHP function keys*/
+    public static final String PHP_FUNCTION_KEY = "function_key";
+    public static final String PHP_FUNCTION_KEY_FOOD_TYPE_FETCH_ALL = "FOOD_TYPE_FETCH_ALL";
+    public static final String PHP_FUNCTION_KEY_TASTE_FETCH_ALL = "TASTE_FETCH_ALL";
+    public static final String PHP_FUNCTION_KEY_RECIPE_FETCH = "RECIPE_FETCH";
+    public static final String PHP_FUNCTION_KEY_RECIPE_FAVORITE_FETCH = "RECIPE_FAVORITE_FETCH";
+    public static final String PHP_FUNCTION_KEY_RECIPE_USER_VIEWED_FETCH = "RECIPE_USER_VIEWED_FETCH";
+    public static final String PHP_FUNCTION_KEY_RECIPE_REVIEW_FETCH = "RECIPE_REVIEW_FETCH";
+    public static final String PHP_FUNCTION_KEY_INGREDIENT_FETCH = "INGREDIENT_FETCH";
+    public static final String PHP_FUNCTION_KEY_RECIPE_SUBMIT = "RECIPE_SUBMIT";
+    public static final String PHP_FUNCTION_KEY_COMMENT_SUBMIT = "COMMENT_SUBMIT";
+    public static final String PHP_FUNCTION_KEY_REVIEW_SUBMIT = "REVIEW_SUBMIT";
+    public static final String PHP_FUNCTION_KEY_LIKE_SUBMIT = "LIKE_SUBMIT";
+    public static final String PHP_FUNCTION_KEY_COMMENT_RECIPE_FETCH_ALL = "COMMENT_RECIPE_FETCH_ALL";
+    public static final String PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL = "QUANTITY_FETCH_ALL";
+    public static final String PHP_FUNCTION_KEY_FOOD_CUISINE_FETCH_ALL = "FOOD_CUISINE_FETCH_ALL";
+    public static final String PHP_FUNCTION_KEY_RECIPE_TRENDING_FETCH = "RECIPE_TRENDING_FETCH";
+    public static final String PHP_FUNCTION_KEY_RECIPE_USER_FETCH = "RECIPE_USER_FETCH";
+    public static final String PHP_FUNCTION_KEY_REVIEW_USER_FETCH = "REVIEW_USER_FETCH";
+    public static final String PHP_FUNCTION_KEY_TIMELINE_FETCH = "TIMELINE_FETCH";
+    public static final String PHP_FUNCTION_KEY_TIMELINE_USER_FETCH_ALL = "TIMELINE_USER_FETCH_ALL";
+    public static final String PHP_FUNCTION_KEY_USER_REGISTER = "USER_REGISTER";
+    public static final String PHP_FUNCTION_KEY_USER_LOGIN = "USER_LOGIN";
+    /*PHP function keys*/
 
     /*Timeline keys*/
     public static final String TIMELINE_RECIPE_ADD = "RECIPE_ADD";
@@ -76,6 +104,7 @@ public final class Constants {
     //fragment keys
     public static final int GALLERY_CHOICE = 1111;
     public static final int CAMERA_CHOICE = 2222;
+    public static final int CLOSE_CHOICE = 3333;
 
     /*Async Task Purpose Keys*/
     public static final String ASYNC_TASK_GET_ALL_CATEGORY_RECIPES = "ASYNC_TASK_GET_ALL_CATEGORY_RECIPES";
@@ -85,6 +114,10 @@ public final class Constants {
     //flag value for affirmative/non affirmative
     public static final String AFFIRMATIVE = "Y";
     public static final String NON_AFFIRMATIVE = "N";
+
+    //responses from php server
+    public static final String SUCCESS = "SUCCESS";
+    public static final String FAIL = "FAIL";
 
     public static final String UI_FONT = "Roboto-Light.ttf";
 

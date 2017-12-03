@@ -32,7 +32,7 @@
                 android:layout_height="30dp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/food_sample"
+                android:src="@drawable/placeholder"
                 app:border_color="@color/white"
                 app:border_width="1dp" />
 
@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="This recipe made my day. This chef is the best !! Would like to try more from him. I follow this chef and he is good lookig too ;) I do not know what to write here. But i am typing because i want to see how a big comment looks like on the screen."
-                android:textColor="@color/gray"
+                android:textColor="@color/secondaryDarkText"
                 android:textSize="10sp" />
 
 
@@ -63,8 +63,8 @@
 
                 <ImageView
                     android:id="@+id/common_fragment_recipe_comments_comment_likes_iv"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
                     android:src="@drawable/heart_unselected" />
@@ -76,8 +76,9 @@
                     android:layout_marginLeft="5dp"
                     android:layout_toRightOf="@+id/common_fragment_recipe_comments_comment_likes_iv"
                     android:gravity="center"
-                    android:text="12"
-                    android:textColor="@color/black"
+                    android:layout_centerInParent="true"
+                    android:text="0"
+                    android:textColor="@color/tertiaryDarkText"
                     android:textSize="12sp" />
 
                 <TextView

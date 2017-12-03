@@ -5,11 +5,14 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +31,13 @@ import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_COMMENTS;
+import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
 
@@ -111,20 +117,9 @@ public class RecipeCommentsFragment extends DialogFragment {
                     CommentMO commentObj = new CommentMO();
                     commentObj.setRCP_ID(recipe.getRCP_ID());
                     commentObj.setUSER_ID(loggedInUser.getUser_id());
+                    commentObj.setCOMMENT(comment);
 
-                    MessageMO message = InternetUtility.submitRecipeComment(commentObj);
-
-                    if(!message.isError()){
-                        common_fragment_recipe_comments_comment_et.setText("");
-
-                        //TODO: re fetch the comments for this recipe
-                    }
-                    else{
-                        message.setPurpose("ADD_RECIPE_COMMENT");
-
-                        Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_RECIPE_COMMENTS);
-                        Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
-                    }
+                    new AsyncTaskerSubmitRecipeComment().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, commentObj);
                 }
             }
         });
@@ -166,6 +161,66 @@ public class RecipeCommentsFragment extends DialogFragment {
             }
             else if(v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
+            }
+        }
+    }
+
+    class AsyncTaskerSubmitRecipeComment extends AsyncTask<Object, Void, Object> {
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            CommentMO comment = (CommentMO) objects[0];
+
+            if(comment == null){
+                Log.e(CLASS_NAME, "Error ! Comment object is null");
+                return null;
+            }
+
+            return InternetUtility.submitRecipeComment(comment);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            MessageMO message = (MessageMO) object;
+
+            if(message == null || message.isError()){
+                if(message == null){
+                    message = new MessageMO();
+
+                    message.setError(true);
+                    message.setErr_message("Something went wrong !");
+                }
+
+                message.setPurpose("ADD_RECIPE_COMMENT");
+
+                Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_RECIPE_COMMENTS);
+                Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
+            }
+            else{
+                new AsyncTaskerSubmitFetchRecipeComments().executeOnExecutor(THREAD_POOL_EXECUTOR);
+                common_fragment_recipe_comments_comment_et.setText("");
+                Utility.showSnacks(common_fragment_recipe_comments_rl, "Comment submitted", OK, Snackbar.LENGTH_SHORT);
+            }
+        }
+
+        class AsyncTaskerSubmitFetchRecipeComments extends AsyncTask<Void, Void, Object> {
+            @Override
+            protected void onPreExecute() {
+            }
+
+            @Override
+            protected Object doInBackground(Void... objects) {
+                return InternetUtility.fetchRecipeComments(recipe);
+            }
+
+            @Override
+            protected void onPostExecute(Object object) {
+                List<CommentMO> comments = (List<CommentMO>) object;
+                recipe.setComments(comments);
+                setupComments();
             }
         }
     }

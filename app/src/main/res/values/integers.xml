@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="comment_text_limit">500</integer>
+    <integer name="recipe_name_text_limit">50</integer>
+    <integer name="recipe_step_text_limit">500</integer>
+    
+</resources>

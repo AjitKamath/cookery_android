@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <include layout="@layout/common_component_add_recipe_heading" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/recipe_add_recipe_name_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/ic_mode_edit_grey600_36dp" />
+
+                <TextView
+                    android:id="@+id/recipe_add_recipe_main_recipe_name_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CHICKEN TANDOORI SHAHI STYLE"
+                    android:maxLines="1"
+                    android:maxLength="@integer/recipe_name_text_limit"
+                    android:textColor="@color/secondaryDarkText"
+                    android:textSize="@dimen/primary_text_size" />
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/recipe_add_recipe_main_recipe_name_et"
+                android:visibility="visible"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="@dimen/secondary_text_size"
+                android:textAllCaps="true"
+                android:maxLength="@integer/recipe_name_text_limit"
+                android:inputType="text|textCapWords"
+                android:background="@drawable/edit_text_border_white_bg"
+                android:textColorHint="@color/secondaryDarkText"
+                android:focusable="false"
+                android:textColor="@color/primaryDarkText"
+                android:hint="your recipe name"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:textStyle="italic"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:text="what's your recipe name ?"
+            android:textColor="@color/tertiaryDarkText"
+            android:textSize="@dimen/tertiary_text_size" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:id="@+id/recipe_add_recipe_main_recipe_type_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="5dp"
+                        android:src="@drawable/ic_list_grey600_48dp" />
+
+                    <TextView
+                        android:id="@+id/recipe_add_recipe_main_recipe_type_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="BREAKFAST"
+                        android:textColor="@color/secondaryDarkText"
+                        android:textSize="@dimen/secondary_text_size" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:textStyle="italic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="what's it served as ?"
+                    android:textColor="@color/tertiaryDarkText"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/recipe_add_recipe_main_recipe_cuisine_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="5dp"
+                        android:src="@drawable/ic_list_grey600_48dp" />
+
+                    <TextView
+                        android:id="@+id/recipe_add_recipe_main_recipe_cuisine_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CONTINENTAL"
+                        android:textColor="@color/secondaryDarkText"
+                        android:textSize="@dimen/secondary_text_size" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:textStyle="italic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="what's it's cuisine ?"
+                    android:textColor="@color/tertiaryDarkText"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

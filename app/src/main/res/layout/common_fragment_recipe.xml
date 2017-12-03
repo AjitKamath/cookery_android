@@ -7,40 +7,58 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:padding="5dp"
-        android:layout_alignParentTop="true"
-        android:id="@+id/common_fragment_recipe_username_ll"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/common_fragment_recipe_username_rl"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:padding="5dp"
+        android:layout_alignParentTop="true">
 
-        <TextView
-            android:id="@+id/common_fragment_recipe_username_tv"
+        <LinearLayout
+            android:layout_alignParentLeft="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Vishal Varshney"
-            android:textColor="@color/gray"
-            android:textSize="10sp" />
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_marginTop="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SUPER CHEF"
-            android:textColor="@color/DarkGray"
-            android:textSize="8sp" />
+            <TextView
+                android:id="@+id/common_fragment_recipe_username_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vishal Varshney"
+                android:textColor="@color/primaryDarkText"
+                android:textSize="14sp" />
 
-    </LinearLayout>
+            <TextView
+                android:layout_marginTop="2dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SUPER CHEF"
+                android:textColor="@color/secondaryDarkText"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_more_horiz_grey600_24dp"/>
+
+    </RelativeLayout>
+
 
     <android.support.v4.view.ViewPager
-        android:layout_below="@+id/common_fragment_recipe_username_ll"
+        android:layout_below="@+id/common_fragment_recipe_username_rl"
         android:id="@+id/common_fragment_recipe_vp"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         />
 
     <LinearLayout
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:id="@+id/common_fragment_recipe_recipe_ll"
         android:layout_below="@+id/common_fragment_recipe_vp"
         android:layout_width="match_parent"
@@ -55,8 +73,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="CHICKEN KOLHAPURI"
-            android:textColor="@color/gray"
-            android:textSize="10sp" />
+            android:textColor="@color/primaryDarkText"
+            android:textSize="12sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -69,8 +87,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="BREAKFAST"
-                android:textColor="@color/DarkGray"
-                android:textSize="8sp" />
+                android:textColor="@color/secondaryDarkText"
+                android:textSize="10sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -78,16 +96,16 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:text="."
-                android:textColor="@color/DarkGray"
-                android:textSize="8sp" />
+                android:textColor="@color/secondaryDarkText"
+                android:textSize="10sp" />
 
             <TextView
                 android:id="@+id/common_fragment_recipe_cuisine_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="INDIAN"
-                android:textColor="@color/DarkGray"
-                android:textSize="8sp" />
+                android:textColor="@color/secondaryDarkText"
+                android:textSize="10sp" />
 
         </LinearLayout>
 
@@ -119,8 +137,8 @@
 
                 <ImageView
                     android:id="@+id/common_fragment_recipe_rating_iv"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
                     android:src="@drawable/star" />
 
                 <TextView
@@ -129,7 +147,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="0"
-                    android:textColor="@color/black"
+                    android:textColor="@color/primaryDarkText"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -143,8 +161,8 @@
 
                 <ImageView
                     android:id="@+id/common_fragment_recipe_like_iv"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
                     android:src="@drawable/heart_unselected"
                     android:tag="UNSELECTED"/>
 
@@ -154,7 +172,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="0"
-                    android:textColor="@color/black"
+                    android:textColor="@color/primaryDarkText"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -167,8 +185,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
                     android:src="@drawable/eye"
                     android:tag="UNSELECTED"/>
 
@@ -178,7 +196,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="0"
-                    android:textColor="@color/black"
+                    android:textColor="@color/primaryDarkText"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -191,10 +209,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="10sp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
         android:text="32 COMMENTS"
+        android:textColor="@color/secondaryDarkText"
         android:layout_below="@+id/common_fragment_recipe_recipe_like_view_share_ll"/>
 
 
@@ -211,7 +230,7 @@
             <android.support.design.widget.TabLayout
                 android:id="@+id/common_fragment_recipe_tl"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="30dp"
                 app:tabGravity="fill"
                 app:tabIndicatorColor="@color/white"
                 app:tabMaxWidth="0dp"

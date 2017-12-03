@@ -30,6 +30,15 @@ public class RecipeMO extends CommonMO implements Serializable {
     private int likes;
     private int views;
     private String rating;
+    private List<String> steps;
+
+    public List<String> getSteps() {
+        return steps;
+    }
+
+    public void setSteps(List<String> steps) {
+        this.steps = steps;
+    }
 
     public List<CommentMO> getComments() {
         return comments;

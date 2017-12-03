@@ -1,0 +1,12 @@
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/common_component_add_recipe_heading_tv"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="30dp"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:layout_height="wrap_content"
+    android:text="TELL US ABOUT YOUR RECIPE"
+    android:textColor="@color/app_color"
+    android:textSize="@dimen/secondary_text_size" />

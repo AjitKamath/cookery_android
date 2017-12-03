@@ -34,8 +34,9 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
     private static final String CLASS_NAME = AutoCompleteAdapter.class.getName();
 
     public List<Object> filteredIngredients = new ArrayList<>();
-    private static String type;
-    private static int layout;
+    private String type;
+    private int layout;
+    private String query;
 
     public AutoCompleteAdapter(Context context, int layout, String type) {
         super(context, layout);
@@ -81,17 +82,20 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         convertView = inflater.inflate(layout, parent, false);
 
+        TextView autocomplete_tv = new TextView(mContext);
+        ImageView autocomplete_iv;
+
         if(filteredIngredients.get(position) instanceof IngredientMO){
             // Get the data item from filtered list.
             IngredientMO ingredient = (IngredientMO) filteredIngredients.get(position);
 
             LinearLayout autocomplete_ingredient_ll = convertView.findViewById(R.id.autocomplete_ingredient_ll);
 
-            TextView autocomplete_ingredient_tv = convertView.findViewById(R.id.autocomplete_ingredient_tv);
-            ImageView autocomplete_ingredient_iv = convertView.findViewById(R.id.autocomplete_ingredient_iv);
+            autocomplete_tv = convertView.findViewById(R.id.autocomplete_ingredient_tv);
+            autocomplete_iv = convertView.findViewById(R.id.autocomplete_ingredient_iv);
 
-            autocomplete_ingredient_tv.setText(ingredient.getING_NAME());
-            autocomplete_ingredient_iv.setImageResource(R.drawable.food);
+            autocomplete_tv.setText(ingredient.getING_NAME());
+            autocomplete_iv.setImageResource(R.drawable.food);
 
             convertView.setTag(ingredient);
 
@@ -103,14 +107,14 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
 
             RelativeLayout home_master_search_recipe_item_image_rl = convertView.findViewById(R.id.home_master_search_recipe_item_image_rl);
 
-            TextView home_master_search_recipe_item_recipe_name_tv = convertView.findViewById(R.id.home_master_search_recipe_item_recipe_name_tv);
-            ImageView home_master_search_recipe_item_image_iv = convertView.findViewById(R.id.home_master_search_recipe_item_image_iv);
+            autocomplete_tv = convertView.findViewById(R.id.home_master_search_recipe_item_recipe_name_tv);
+            autocomplete_iv = convertView.findViewById(R.id.home_master_search_recipe_item_image_iv);
             TextView home_master_search_recipe_item_user_name_tv = convertView.findViewById(R.id.home_master_search_recipe_item_user_name_tv);
 
-            home_master_search_recipe_item_recipe_name_tv.setText(recipe.getRCP_NAME().toUpperCase());
+            autocomplete_tv.setText(recipe.getRCP_NAME().toUpperCase());
 
             if(recipe.getRCP_IMGS() != null && recipe.getRCP_IMGS().get(0) != null){
-                Utility.loadImageFromURL(mContext, recipe.getRCP_IMGS().get(0), home_master_search_recipe_item_image_iv);
+                Utility.loadImageFromURL(mContext, recipe.getRCP_IMGS().get(0), autocomplete_iv);
             }
 
             home_master_search_recipe_item_user_name_tv.setText(recipe.getNAME());
@@ -122,6 +126,8 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
         else{
             Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+filteredIngredients.get(position));
         }
+
+        query = String.valueOf(autocomplete_tv.getText());
 
         return convertView;
     }

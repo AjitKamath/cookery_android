@@ -10,19 +10,24 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.component.ViewPagerCustom;
 import com.cookery.fragments.AddRecipeIngredientQuantityFragment;
 import com.cookery.fragments.SelectionFragment;
 import com.cookery.models.CuisineMO;
@@ -31,7 +36,6 @@ import com.cookery.models.IngredientMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.TasteMO;
-import com.cookery.utils.Utility;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,6 +48,7 @@ import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LIST_DATA;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_VIEW;
 
 public class AddRecipeViewPagerAdapter extends PagerAdapter {
     private Context mContext;
@@ -52,26 +57,50 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     private FragmentManager fragmentManager;
     private List<Integer> layoutsList;
 
-    private LinearLayout view_pager_add_recipe_2_food_type_ll;
-    private LinearLayout view_pager_add_recipe_3_cuisine_ll;
-    private AutoCompleteTextView view_pager_add_recipe_ingredients_av;
-    private ImageView view_pager_add_recipe_user_ingredients_iv;
-    private TextView view_pager_add_recipe_8_no_photos_tv;
-    private ViewPagerCustom view_pager_add_recipe_8_photos_vp;
+    /*components*/
+    /*common*/
+    private TextView common_component_add_recipe_heading_tv;
+    /*common*/
 
-    public EditText view_pager_add_recipe_1_recipe_name_et;
-    public GridView view_pager_add_recipe_4_ingedients_gv;
-    public EditText view_pager_add_recipe_5_recipe_et;
+    /*recipe main*/
+    private LinearLayout recipe_add_recipe_name_ll;
+    private TextView recipe_add_recipe_main_recipe_name_tv;
+    private EditText recipe_add_recipe_main_recipe_name_et;
+    private LinearLayout recipe_add_recipe_main_recipe_type_ll;
+    private TextView recipe_add_recipe_main_recipe_type_tv;
+    private LinearLayout recipe_add_recipe_main_recipe_cuisine_ll;
+    private TextView recipe_add_recipe_main_recipe_cuisine_tv;
+    /*recipe main*/
 
-    private View.OnClickListener clickListener;
+    /*ingredients*/
+    private AutoCompleteTextView recipe_add_ingredients_act;
+    private ImageView recipe_add_ingredients_iv;
+    private TextView recipe_add_ingredients_no_ingredients_tv;
+    private TextView recipe_add_ingredients_count_tv;
+    private RecyclerView recipe_add_ingredients_ingredients_rv;
+    /*ingredients*/
+
+    /*steps*/
+    private TextView recipe_add_recipe_step_tv;
+    private ImageView recipe_add_recipe_step_clear_iv;
+    private ImageView recipe_add_recipe_step_add_iv;
+    private EditText recipe_add_recipe_step_et;
+    private TextView recipe_add_recipe_step_text_count_tv;
+    private TextView recipe_add_recipe_steps_no_step_tv;
+    private TextView recipe_add_recipe_steps_count_tv;
+    private RecyclerView recipe_add_recipe_steps_rv;
+    /*steps*/
+
+    /*components*/
+
     private MasterDataMO masterData;
-    public RecipeMO recipe = new RecipeMO();
+    public RecipeMO recipe;
 
-    public AddRecipeViewPagerAdapter(Context context, FragmentManager fragmentManager, List<Integer> layoutsList, MasterDataMO masterData, View.OnClickListener clickListener) {
+    public AddRecipeViewPagerAdapter(Context context, FragmentManager fragmentManager, List<Integer> layoutsList, RecipeMO recipe, MasterDataMO masterData) {
         this.mContext = context;
         this.fragmentManager = fragmentManager;
         this.layoutsList = layoutsList;
-        this.clickListener = clickListener;
+        this.recipe = recipe;
         this.masterData = masterData;
     }
 
@@ -80,14 +109,13 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         ViewGroup layout = (ViewGroup) inflater.inflate(layoutsList.get(position), collection, false);
 
+        setupCommon(layout);
+
         switch(position){
-            case 0: setupAddRecipe1(layout); break;
-            case 1: setupAddRecipe2(layout); break;
-            case 2: setupAddRecipe3(layout); break;
-            case 3: setupAddRecipe4(layout); break;
-            case 4: setupAddRecipe5(layout); break;
-            case 6: setupAddRecipe7(layout); break;
-            case 7: setupAddRecipe8(layout); break;
+            case 0: setupAddRecipeMain(layout); break;
+            case 1: setupAddRecipeIngredients(layout); break;
+            case 2: setupAddRecipeSteps(layout); break;
+            case 3: setupAddRecipeTastes(layout); break;
         }
 
         setFont(layout);
@@ -97,15 +125,277 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         return layout;
     }
 
-    private void setupAddRecipe5(ViewGroup layout) {
-        view_pager_add_recipe_5_recipe_et = layout.findViewById(R.id.view_pager_add_recipe_5_recipe_et);
+    private void setupCommon(ViewGroup layout) {
+        common_component_add_recipe_heading_tv = layout.findViewById(R.id.common_component_add_recipe_heading_tv);
     }
 
-    private void setupAddRecipe1(ViewGroup layout) {
-        view_pager_add_recipe_1_recipe_name_et = layout.findViewById(R.id.view_pager_add_recipe_1_recipe_name_et);
+    private void setupAddRecipeSteps(ViewGroup layout) {
+        recipe_add_recipe_step_tv = layout.findViewById(R.id.recipe_add_recipe_step_tv);
+        recipe_add_recipe_step_add_iv = layout.findViewById(R.id.recipe_add_recipe_step_add_iv);
+        recipe_add_recipe_step_clear_iv = layout.findViewById(R.id.recipe_add_recipe_step_clear_iv);
+        recipe_add_recipe_step_et = layout.findViewById(R.id.recipe_add_recipe_step_et);
+        recipe_add_recipe_step_text_count_tv = layout.findViewById(R.id.recipe_add_recipe_step_text_count_tv);
+        recipe_add_recipe_steps_no_step_tv = layout.findViewById(R.id.recipe_add_recipe_steps_no_step_tv);
+        recipe_add_recipe_steps_count_tv = layout.findViewById(R.id.recipe_add_recipe_steps_count_tv);
+        recipe_add_recipe_steps_rv = layout.findViewById(R.id.recipe_add_recipe_steps_rv);
+
+        common_component_add_recipe_heading_tv.setText("WRITE UP YOUR RECIPE");
+
+        recipe_add_recipe_step_clear_iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetStep();
+            }
+        });
+
+        recipe_add_recipe_step_add_iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //user is trying to update a old step
+                if(view.getTag(R.id.recipe_add_recipe_step_add_iv) != null){
+                    String step[] = (String[])view.getTag(R.id.recipe_add_recipe_step_add_iv);
+                    step[1] = String.valueOf(recipe_add_recipe_step_et.getText()).trim();
+
+                    updateStep(step);
+                    resetStep();
+
+                    view.setTag(null);
+                }
+                //user is trying to add a new step
+                else{
+                    if(!String.valueOf(recipe_add_recipe_step_et.getText()).trim().isEmpty()){
+                        if(recipe.getSteps() == null){
+                            recipe.setSteps(new ArrayList<String>());
+                        }
+
+                        addStep(String.valueOf(recipe_add_recipe_step_et.getText()).trim());
+                        resetStep();
+                    }
+                }
+            }
+        });
+
+        recipe_add_recipe_step_et.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                updateStepCount();
+            }
+        });
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        recipe_add_recipe_steps_rv.setLayoutManager(mLayoutManager);
+        recipe_add_recipe_steps_rv.setItemAnimator(new DefaultItemAnimator());
+        recipe_add_recipe_steps_rv.setAdapter(new StepsRecyclerViewAdapter(mContext, new ArrayList<String>(), new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(R.id.recipe_add_recipe_steps_item_delete_iv == view.getId()){
+                    String step = String.valueOf(view.getTag());
+                    removeStep(step);
+                }
+                else if(R.id.recipe_add_recipe_steps_item_edit_iv == view.getId()){
+                    String step[] = (String[])view.getTag();
+                    recipe_add_recipe_step_add_iv.setTag(R.id.recipe_add_recipe_step_add_iv, step);
+                    recipe_add_recipe_step_et.setText(step[1]);
+                    recipe_add_recipe_step_tv.setText("STEP "+(Integer.parseInt(step[0])+1));
+
+                    updateStepCount();
+                }
+            }
+        }));
+
+        updateSteps();
+        updateStepCount();
     }
 
-    private void setupAddRecipe7(ViewGroup layout) {
+    private void updateSteps(){
+        if(recipe.getSteps() == null || recipe.getSteps().isEmpty()){
+            recipe_add_recipe_step_tv.setText("STEP 1");
+            recipe_add_recipe_steps_no_step_tv.setVisibility(View.VISIBLE);
+            recipe_add_recipe_steps_count_tv.setVisibility(View.GONE);
+            recipe_add_recipe_steps_rv.setVisibility(View.GONE);
+        }
+        else{
+            recipe_add_recipe_step_tv.setText("STEP "+(recipe.getSteps().size()+1));
+
+            if(recipe.getSteps().size() == 1){
+                recipe_add_recipe_steps_count_tv.setText(recipe.getSteps().size()+" STEP");
+            }
+            else{
+                recipe_add_recipe_steps_count_tv.setText(recipe.getSteps().size()+" STEPS");
+            }
+
+            recipe_add_recipe_steps_no_step_tv.setVisibility(View.GONE);
+            recipe_add_recipe_steps_count_tv.setVisibility(View.VISIBLE);
+            recipe_add_recipe_steps_rv.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void resetStep(){
+        recipe_add_recipe_step_et.setText("");
+        updateStepCount();
+    }
+
+    private void updateStepCount(){
+        recipe_add_recipe_step_text_count_tv.setText(recipe_add_recipe_step_et.getText().length()+"/"+mContext.getResources().getInteger(R.integer.recipe_step_text_limit));
+    }
+
+    private void addStep(String step){
+        StepsRecyclerViewAdapter adapter = (StepsRecyclerViewAdapter)recipe_add_recipe_steps_rv.getAdapter();
+        adapter.addData(step);
+
+        recipe.setSteps(adapter.steps);
+        updateSteps();
+    }
+
+    private void removeStep(String step){
+        StepsRecyclerViewAdapter adapter = (StepsRecyclerViewAdapter)recipe_add_recipe_steps_rv.getAdapter();
+        adapter.removeData(step);
+
+        recipe.setSteps(adapter.steps);
+        updateSteps();
+    }
+
+    private void updateStep(String[] step){
+        StepsRecyclerViewAdapter adapter = (StepsRecyclerViewAdapter)recipe_add_recipe_steps_rv.getAdapter();
+        adapter.updateData(step);
+
+        recipe.setSteps(adapter.steps);
+        updateSteps();
+    }
+
+    private void setupAddRecipeMain(ViewGroup layout) {
+        recipe_add_recipe_name_ll = layout.findViewById(R.id.recipe_add_recipe_name_ll);
+        recipe_add_recipe_main_recipe_name_tv = layout.findViewById(R.id.recipe_add_recipe_main_recipe_name_tv);
+        recipe_add_recipe_main_recipe_name_et = layout.findViewById(R.id.recipe_add_recipe_main_recipe_name_et);
+        recipe_add_recipe_main_recipe_type_ll = layout.findViewById(R.id.recipe_add_recipe_main_recipe_type_ll);
+        recipe_add_recipe_main_recipe_type_tv = layout.findViewById(R.id.recipe_add_recipe_main_recipe_type_tv);
+        recipe_add_recipe_main_recipe_cuisine_ll = layout.findViewById(R.id.recipe_add_recipe_main_recipe_cuisine_ll);
+        recipe_add_recipe_main_recipe_cuisine_tv = layout.findViewById(R.id.recipe_add_recipe_main_recipe_cuisine_tv);
+
+        common_component_add_recipe_heading_tv.setText("TELL US ABOUT YOUR RECIPE");
+
+        recipe_add_recipe_main_recipe_name_et.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.setFocusable(true);
+                v.setFocusableInTouchMode(true);
+                return false;
+            }
+        });
+
+        /*setup food type*/
+        final List<FoodTypeMO> foodTypes = masterData.getFoodTypes();
+        setFoodType(getDefaultFoodType(foodTypes));
+
+        recipe_add_recipe_main_recipe_type_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFoodTypeSelectionFragment(foodTypes);
+            }
+        });
+        /*setup food type*/
+
+        /*setup cuisine*/
+        final List<CuisineMO> cuisines = masterData.getCuisines();
+        setCuisine(getDefaultCuisine(cuisines));
+
+        recipe_add_recipe_main_recipe_cuisine_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCuisinesSelectionFragment(cuisines);
+            }
+        });
+        /*setup cuisine*/
+    }
+
+    private void setupAddRecipeIngredients(ViewGroup layout) {
+        recipe_add_ingredients_act = layout.findViewById(R.id.recipe_add_ingredients_act);
+        recipe_add_ingredients_no_ingredients_tv = layout.findViewById(R.id.recipe_add_ingredients_no_ingredients_tv);
+        recipe_add_ingredients_iv = layout.findViewById(R.id.recipe_add_ingredients_iv);
+        recipe_add_ingredients_count_tv = layout.findViewById(R.id.recipe_add_ingredients_count_tv);
+        recipe_add_ingredients_ingredients_rv = layout.findViewById(R.id.recipe_add_ingredients_ingredients_rv);
+
+        common_component_add_recipe_heading_tv.setText("WHAT GOES INTO YOUR RECIPE");
+
+        /*auto complete*/
+        recipe_add_ingredients_act.setAdapter(new AutoCompleteAdapter(mContext, R.layout.ingredient_autocomplete_item, "INGREDIENTS"));
+        recipe_add_ingredients_iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(recipe_add_ingredients_act.getText().length() == 0){
+                    return;
+                }
+
+                IngredientMO ingredient = new IngredientMO();
+                ingredient.setING_NAME(String.valueOf(recipe_add_ingredients_act.getText()));
+
+                showQuantityFragment(ingredient);
+            }
+        });
+        recipe_add_ingredients_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                showQuantityFragment((IngredientMO)view.getTag());
+            }
+        });
+        /*auto complete*/
+
+        /*ingredients list*/
+        IngredientsRecyclerViewAdapter adapter = new IngredientsRecyclerViewAdapter(mContext, new ArrayList<IngredientMO>(), new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(R.id.recipe_add_ingredients_item_delete_iv == view.getId()){
+                    removeIngredient((IngredientMO)view.getTag());
+                }
+                else if(R.id.recipe_add_ingredients_item_edit_iv == view.getId()){
+                    showQuantityFragment((IngredientMO)view.getTag());
+                }
+                else{
+                    Log.e(CLASS_NAME, UN_IDENTIFIED_VIEW+view);
+                }
+            }
+        });
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        mLayoutManager.scrollToPosition(adapter.getItemCount()-1);
+        recipe_add_ingredients_ingredients_rv.setLayoutManager(mLayoutManager);
+        recipe_add_ingredients_ingredients_rv.setItemAnimator(new DefaultItemAnimator());
+        recipe_add_ingredients_ingredients_rv.setAdapter(adapter);
+        /*ingredients list*/
+
+        updateIngredients();
+    }
+
+    private void updateIngredients(){
+        if(recipe.getIngredients() == null || recipe.getIngredients().isEmpty()){
+            recipe_add_ingredients_no_ingredients_tv.setVisibility(View.VISIBLE);
+            recipe_add_ingredients_ingredients_rv.setVisibility(View.GONE);
+            recipe_add_ingredients_count_tv.setVisibility(View.GONE);
+        }
+        else{
+            if(recipe.getIngredients() .size() == 1){
+                recipe_add_ingredients_count_tv.setText(recipe.getIngredients().size()+" INGREDIENT");
+            }
+            else{
+                recipe_add_ingredients_count_tv.setText(recipe.getIngredients().size()+" INGREDIENTS");
+            }
+
+            recipe_add_ingredients_no_ingredients_tv.setVisibility(View.GONE);
+            recipe_add_ingredients_ingredients_rv.setVisibility(View.VISIBLE);
+            recipe_add_ingredients_count_tv.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setupAddRecipeTastes(ViewGroup layout) {
         /*spice ratings*/
         final List<ImageView> spicyIVList = new ArrayList<>();
         spicyIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_spice_1_iv));
@@ -113,6 +403,8 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         spicyIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_spice_3_iv));
         spicyIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_spice_4_iv));
         spicyIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_spice_5_iv));
+
+        common_component_add_recipe_heading_tv.setText("DEFINE HOW YOUR RECIPE TASTES LIKE");
 
         //by default set spice rating as 3
         setSpiceRating(3, spicyIVList);
@@ -149,56 +441,19 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         /*sweet ratings*/
     }
 
-    private void setupAddRecipe3(ViewGroup layout) {
-        final List<CuisineMO> cuisines = masterData.getCuisines();
-
-        view_pager_add_recipe_3_cuisine_ll = layout.findViewById(R.id.view_pager_add_recipe_3_cuisine_ll);
-
-        setCuisine(getDefaultCuisine(cuisines));
-
-        view_pager_add_recipe_3_cuisine_ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showCuisinesSelectionFragment(cuisines);
-            }
-        });
-    }
-
-    private void setupAddRecipe4(ViewGroup layout) {
-        view_pager_add_recipe_ingredients_av = layout.findViewById(R.id.view_pager_add_recipe_ingredients_av);
-        AutoCompleteAdapter adapter = new AutoCompleteAdapter(mContext, R.layout.ingredient_autocomplete_item, "INGREDIENTS");
-        view_pager_add_recipe_ingredients_av.setAdapter(adapter);
-
-        view_pager_add_recipe_4_ingedients_gv = layout.findViewById(R.id.view_pager_add_recipe_4_ingedients_gv);
-        final IngredientsGridViewAdapter ingAdapter = new IngredientsGridViewAdapter(mContext, new ArrayList<IngredientMO>());
-        view_pager_add_recipe_4_ingedients_gv.setAdapter(ingAdapter);
-
-        view_pager_add_recipe_user_ingredients_iv = layout.findViewById(R.id.view_pager_add_recipe_user_ingredients_iv);
-        view_pager_add_recipe_user_ingredients_iv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(view_pager_add_recipe_ingredients_av.getText().length() == 0){
-                    return;
-                }
-
-                IngredientMO ingredient = new IngredientMO();
-                ingredient.setING_NAME(String.valueOf(view_pager_add_recipe_ingredients_av.getText()));
-
-                showQuantityFragment(ingredient);
-            }
-        });
-
-        view_pager_add_recipe_ingredients_av.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                showQuantityFragment((IngredientMO)view.getTag());
-            }
-        });
-    }
-
     public void addIngredient(IngredientMO ingredient){
-        ((IngredientsGridViewAdapter)view_pager_add_recipe_4_ingedients_gv.getAdapter()).updateDatalist(ingredient);
-        view_pager_add_recipe_ingredients_av.setText("");
+        IngredientsRecyclerViewAdapter adapter = (IngredientsRecyclerViewAdapter)recipe_add_ingredients_ingredients_rv.getAdapter();
+        adapter.addData(ingredient);
+        recipe.setIngredients(adapter.ingredients);
+        recipe_add_ingredients_act.setText("");
+        updateIngredients();
+    }
+
+    public void removeIngredient(IngredientMO ingredient){
+        IngredientsRecyclerViewAdapter adapter = (IngredientsRecyclerViewAdapter)recipe_add_ingredients_ingredients_rv.getAdapter();
+        adapter.removeData(ingredient);
+        recipe.setIngredients(adapter.ingredients);
+        updateIngredients();
     }
 
     private void showQuantityFragment(IngredientMO ingredient) {
@@ -228,62 +483,6 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         fragment.setArguments(bundle);
 
         fragment.show(fragmentManager, fragmentNameStr);
-    }
-
-
-    private void setupAddRecipe8(ViewGroup layout) {
-        view_pager_add_recipe_8_no_photos_tv = layout.findViewById(R.id.view_pager_add_recipe_8_no_photos_tv);
-        TextView view_pager_add_recipe_8_add_photos_tv = layout.findViewById(R.id.view_pager_add_recipe_8_add_photos_tv);
-        LinearLayout view_pager_add_recipe_8_finish_ll = layout.findViewById(R.id.view_pager_add_recipe_8_finish_ll);
-
-        view_pager_add_recipe_8_photos_vp = layout.findViewById(R.id.view_pager_add_recipe_8_photos_vp);
-        view_pager_add_recipe_8_photos_vp.setAdapter(new RecipeImagesViewPagerAdapter(mContext, null, false, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        }));
-
-        updateImages(null);
-
-        view_pager_add_recipe_8_add_photos_tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Utility.pickPhotos(fragmentManager, FRAGMENT_ADD_RECIPE);
-            }
-        });
-
-        view_pager_add_recipe_8_finish_ll.setOnClickListener(clickListener);
-    }
-
-    private void updateImages(String image){
-        if(image == null){
-            view_pager_add_recipe_8_no_photos_tv.setVisibility(View.VISIBLE);
-            view_pager_add_recipe_8_photos_vp.setVisibility(View.GONE);
-            return;
-        }
-
-        view_pager_add_recipe_8_no_photos_tv.setVisibility(View.GONE);
-        view_pager_add_recipe_8_photos_vp.setVisibility(View.VISIBLE);
-
-        RecipeImagesViewPagerAdapter adapter = (RecipeImagesViewPagerAdapter) view_pager_add_recipe_8_photos_vp.getAdapter();
-        adapter.updateData(image);
-        view_pager_add_recipe_8_photos_vp.setCurrentItem(adapter.getCount()-1);
-    }
-
-    private void setupAddRecipe2(ViewGroup layout) {
-        final List<FoodTypeMO> foodTypes = masterData.getFoodTypes();
-
-        view_pager_add_recipe_2_food_type_ll = layout.findViewById(R.id.view_pager_add_recipe_2_food_type_ll);
-
-        setFoodType(getDefaultFoodType(foodTypes));
-
-        view_pager_add_recipe_2_food_type_ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showFoodTypeSelectionFragment(foodTypes);
-            }
-        });
     }
 
     private void showCuisinesSelectionFragment(List<CuisineMO> cuisines) {
@@ -343,31 +542,17 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     }
 
     public  void setCuisine(final CuisineMO cuisine) {
-        final ImageView image = view_pager_add_recipe_3_cuisine_ll.findViewById(R.id.view_pager_add_recipe_3_cuisine_iv);
-        TextView text = view_pager_add_recipe_3_cuisine_ll.findViewById(R.id.view_pager_add_recipe_3_cuisine_tv);
-
+        TextView text = recipe_add_recipe_main_recipe_cuisine_ll.findViewById(R.id.recipe_add_recipe_main_recipe_cuisine_tv);
         text.setText(cuisine.getFOOD_CSN_NAME());
-
-        if(cuisine.getIMG() != null){
-            Utility.loadImageFromURL(mContext, cuisine.getIMG(), image);
-        }
-
-        view_pager_add_recipe_3_cuisine_ll.setTag(cuisine);
+        recipe_add_recipe_main_recipe_cuisine_ll.setTag(cuisine);
 
         recipe.setFOOD_CSN_ID(cuisine.getFOOD_CSN_ID());
     }
 
     public void setFoodType(FoodTypeMO foodType) {
-        ImageView image = view_pager_add_recipe_2_food_type_ll.findViewById(R.id.view_pager_add_recipe_2_food_type_iv);
-        TextView text = view_pager_add_recipe_2_food_type_ll.findViewById(R.id.view_pager_add_recipe_2_food_type_tv);
-
+        TextView text = recipe_add_recipe_main_recipe_type_ll.findViewById(R.id.recipe_add_recipe_main_recipe_type_tv);
         text.setText(foodType.getFOOD_TYP_NAME());
-
-        if(foodType.getIMG() != null){
-            Utility.loadImageFromURL(mContext, foodType.getIMG(), image);
-        }
-
-        view_pager_add_recipe_2_food_type_ll.setTag(foodType);
+        recipe_add_recipe_main_recipe_type_ll.setTag(foodType);
 
         recipe.setFOOD_TYP_ID(foodType.getFOOD_TYP_ID());
     }
@@ -417,31 +602,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     }
 
     public void setRecipeName(){
-        recipe.setRCP_NAME(String.valueOf(view_pager_add_recipe_1_recipe_name_et.getText()));
-    }
-
-    public void setRecipe() {
-        recipe.setRCP_PROC(String.valueOf(view_pager_add_recipe_5_recipe_et.getText()));
-    }
-
-    public void setPhotos(String photoPath) {
-        updateImages(photoPath);
-
-        List<String> images = recipe.getRCP_IMGS();
-        if(images == null){
-            images = new ArrayList<>();
-        }
-        images.add(photoPath);
-
-        recipe.setRCP_IMGS(images);
-    }
-
-    public void setIngredients() {
-        recipe.setIngredients(((IngredientsGridViewAdapter)view_pager_add_recipe_4_ingedients_gv.getAdapter()).dataList);
-    }
-
-    public FoodTypeMO getSelectedFoodType(){
-        return (FoodTypeMO) view_pager_add_recipe_2_food_type_ll.getTag();
+        recipe.setRCP_NAME(String.valueOf(recipe_add_recipe_main_recipe_name_et.getText()).trim());
     }
 
     private CuisineMO getDefaultCuisine(List<CuisineMO> cuisines) {
@@ -472,9 +633,14 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return mContext.getString(layoutsList.get(position));
+        switch(position){
+            case 0: return "RECIPE";
+            case 1: return "ING.";
+            case 2: return "STEPS";
+            case 3: return "TASTES";
+            default: return "UNIMPL";
+        }
     }
-
 
     @Override
     public int getCount() {

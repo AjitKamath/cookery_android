@@ -3,12 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/common_selection_rl"
     android:padding="@dimen/padding">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/common_selection_close_iv"
-        android:layout_width="@dimen/header_buttons_dimen"
-        android:layout_height="@dimen/header_buttons_dimen"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:layout_alignParentRight="true"
         android:src="@drawable/ic_close_grey600_36dp"/>
 
@@ -18,9 +19,8 @@
         android:id="@+id/common_selection_food_type_gv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="2"
+        android:numColumns="3"
         tools:listitem="@layout/cuisine_gv_item">
-
     </GridView>
 
 </RelativeLayout>

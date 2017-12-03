@@ -191,7 +191,7 @@
     <color name="app_color_light">#FF8C00</color>
 
     <!--divider-->
-    <color name="divider">#808080</color>
+    <color name="divider">#bdbdbd</color>
 
     <!--share,seek & wish-->
     <color name="share">#006400</color>

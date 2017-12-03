@@ -126,3 +126,15 @@
 
 7 nov 2017
 1. timeline implemented.
+
+-- git checkin on 8 nov 2017 --
+
+9 nov 2017
+1. partial implementation of recipe comments.
+2. user can now comment on a recipe.
+
+11 nov 2017
+1. ui design for new add recipe screens.
+
+3 dec 2017
+1. new design for add recipe implemented.

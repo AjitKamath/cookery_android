@@ -62,13 +62,13 @@ public class RecipeViewPagerAdapter extends PagerAdapter {
     }
 
     private void setupRecipeIngredients(ViewGroup layout) {
-        IngredientsRecyclerViewAdapter adapter = new IngredientsRecyclerViewAdapter(mContext, recipe.getIngredients());
+        /*IngredientsRecyclerViewAdapter adapter = new IngredientsRecyclerViewAdapter(mContext, recipe.getIngredients());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
 
         RecyclerView view_pager_recipe_ingredients_rv = layout.findViewById(R.id.view_pager_recipe_ingredients_rv);
         view_pager_recipe_ingredients_rv.setLayoutManager(mLayoutManager);
         view_pager_recipe_ingredients_rv.setItemAnimator(new DefaultItemAnimator());
-        view_pager_recipe_ingredients_rv.setAdapter(adapter);
+        view_pager_recipe_ingredients_rv.setAdapter(adapter);*/
     }
 
     private void setupRecipeProcedure(ViewGroup layout) {

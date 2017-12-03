@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.cookery.R;
+import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.CommonImagePickerFragment;
 import com.cookery.fragments.MessageFragment;
 import com.cookery.fragments.MyTimelinesFragment;
@@ -20,6 +21,7 @@ import com.cookery.fragments.RecipeFragment;
 import com.cookery.fragments.RecipeImagesFragment;
 import com.cookery.fragments.RecipeReviewFragment;
 import com.cookery.fragments.WaitFragment;
+import com.cookery.models.CommentMO;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientMO;
@@ -37,9 +39,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_WAIT;
@@ -55,7 +56,6 @@ import static com.cookery.utils.Constants.MY_TIMELINES;
 import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.SERVER_ADDRESS;
-import static com.cookery.utils.Constants.SERVER_TIMEOUT;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
 public class Utility extends Activity {
@@ -117,15 +117,8 @@ public class Utility extends Activity {
         snackbar.show();
     }
 
-    public static HttpURLConnection getHttpConnection(URL url, String method) throws Exception {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        urlConnection.setRequestMethod(method);
-        urlConnection.setRequestProperty("Content-length", "0");
-        urlConnection.setUseCaches(false);
-        urlConnection.setConnectTimeout(SERVER_TIMEOUT);
-        urlConnection.setAllowUserInteraction(false);
-        urlConnection.connect();
-        return urlConnection;
+    public static void showUnimplemetedActionSnacks(ViewGroup viewGroup){
+        showSnacks(viewGroup, UN_IDENTIFIED_OBJECT_TYPE, OK, Snackbar.LENGTH_INDEFINITE);
     }
 
     public static String obectToJson(Object object){
@@ -191,8 +184,12 @@ public class Utility extends Activity {
             else if(mappingClass.equals(TimelineMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<TimelineMO>>(){}.getType());
             }
+            else if(mappingClass.equals(CommentMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<List<CommentMO>>(){}.getType());
+            }
             else{
                 Log.e(CLASS_NAME, mappingClass+" is not identified for parsing JSON");
+                throw new Exception();
             }
         }
         catch (Exception e){
@@ -432,6 +429,38 @@ public class Utility extends Activity {
 
         return images;
     }*/
+
+    public static void showFragment(FragmentManager fragmentManager, String parentFragKey, String fragKey, Object fragment, Map<String, Object> params){
+        Fragment frag = fragmentManager.findFragmentByTag(fragKey);
+
+        if (frag != null) {
+            fragmentManager.beginTransaction().remove(frag).commit();
+        }
+
+        Fragment parentFragment = null;
+        if(parentFragKey != null && !parentFragKey.trim().isEmpty()){
+            parentFragment = fragmentManager.findFragmentByTag(parentFragKey);
+        }
+
+
+        Bundle bundle = new Bundle();
+
+        for(Map.Entry<String, Object> iterMap : params.entrySet()){
+            bundle.putSerializable(iterMap.getKey(), (Serializable) iterMap.getValue());
+        }
+
+        if(fragment instanceof AddRecipeFragment){
+            AddRecipeFragment currentFrag = (AddRecipeFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else{
+            Log.e(CLASS_NAME, "Error ! "+fragment+" fragment hasn't been configured in "+CLASS_NAME+" showFragment method yet.");
+        }
+    }
 
     public static int getPlaceHolder(){
         return R.drawable.placeholder;

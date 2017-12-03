@@ -25,7 +25,7 @@ public class RecipeImagesViewPagerAdapter extends PagerAdapter {
     private Context mContext;
     private static final String CLASS_NAME = RecipeImagesViewPagerAdapter.class.getName();
 
-    private List<String> images;
+    public List<String> images;
     private View.OnClickListener listener;
     private boolean loadFromUrl;
 
@@ -56,6 +56,9 @@ public class RecipeImagesViewPagerAdapter extends PagerAdapter {
         }
 
         ImageView view_pager_recipe_image_iv = layout.findViewById(R.id.view_pager_recipe_image_iv);
+        ImageView view_pager_recipe_close_iv = layout.findViewById(R.id.view_pager_recipe_close_iv);
+
+        view_pager_recipe_close_iv.setTag(images.get(position));
 
         if(loadFromUrl){
             Utility.loadImageFromURL(mContext, images.get(position), view_pager_recipe_image_iv);
@@ -65,6 +68,7 @@ public class RecipeImagesViewPagerAdapter extends PagerAdapter {
         }
 
         view_pager_recipe_image_iv.setOnClickListener(listener);
+        view_pager_recipe_close_iv.setOnClickListener(listener);
     }
 
     public void updateData(String newImage){

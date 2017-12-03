@@ -8,13 +8,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:textSize="20sp"
-            android:textColor="@color/gray"
-            android:text="30:00 MINS" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:textSize="8sp"
+                android:textColor="@color/secondaryDarkText"
+                android:text="COOKS APPROX. IN" />
+
+            <TextView
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:textSize="12sp"
+                android:textColor="@color/primaryDarkText"
+                android:text="30:00 MINS" />
+
+        </LinearLayout>
+
+
 
     </RelativeLayout>
 
@@ -24,13 +43,28 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <RelativeLayout
             android:layout_marginTop="10dp"
-            android:text="HOW TO MAKE"
-            android:textColor="@color/app_color"
-            android:textSize="10sp" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_alignParentLeft="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HOW TO MAKE"
+                android:textColor="@color/app_color"
+                android:textSize="10sp" />
+
+            <ImageView
+                android:layout_alignParentRight="true"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/fullscreen"/>
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/view_pager_recipe_recipe_proc_tv"
@@ -45,24 +79,23 @@
             android:paddingRight="5dp"
             android:paddingTop="5dp"
             android:text="Step 1
-        \n
 For preparing this chicken recipe, clean and wash the chicken three-four times and drain. Keep this cleaned chicken aside and make a paste of 2 pieces of ginger, garlic, mustard seeds, cumin seeds, and black peppercorn.
 
-\n\nStep 2\n
+Step 2
 Then take chilli powder, coriander powder, turmeric powder and a quarter cup of water. Grind them all and make a paste of it. Now grind together grated fresh coconut and poppy seeds and make a fine paste of them.
 
-\n\nStep 3\n
+Step 3
 Heat oil in a pressure cooker, fry onions till they turn golden brown. Then add curry leaves and salt, mix in the ginger-garlic spice paste and fry for three minutes.
 
-\n\nStep 4\n
+Step 4
 Now add chilli-coriander-turmeric powder paste. Mix thoroughly and add the chicken pieces. Fry for five minutes.
 
-\n\nStep 5\n
+Step 5
 Add tomatoes and fry for another five minutes with one and a half cups of water and cook for about 10-15 minutes. When the chicken is tender, mix in the coconut-poppy seed paste and cook over medium heat for five minutes.
 
-\n\nStep 6\n
+Step 6
 Finally, add coriander leaves, mix well and remove from heat. Serve it hot with butter naan and raita."
-            android:textColor="@color/gray"
+            android:textColor="@color/secondaryDarkText"
             android:textSize="10sp" />
 
     </LinearLayout>

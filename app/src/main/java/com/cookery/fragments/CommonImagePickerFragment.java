@@ -10,16 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cookery.R;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 import static com.cookery.utils.Constants.CAMERA_CHOICE;
+import static com.cookery.utils.Constants.CLOSE_CHOICE;
 import static com.cookery.utils.Constants.GALLERY_CHOICE;
 import static com.cookery.utils.Constants.UI_FONT;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_PARENT_FRAGMENT;
@@ -32,11 +31,7 @@ public class CommonImagePickerFragment extends DialogFragment {
     private Context mContext;
 
     /*components*/
-    @InjectView(R.id.common_fragment_navigation_header_back_iv)
-    ImageView common_fragment_navigation_header_back_iv;
 
-    @InjectView(R.id.common_fragment_navigation_header_forward_iv)
-    ImageView common_fragment_navigation_header_forward_iv;
     /*components*/
 
     private Integer choice = null;
@@ -55,17 +50,19 @@ public class CommonImagePickerFragment extends DialogFragment {
     }
 
     private void setupPage() {
-        common_fragment_navigation_header_back_iv.setVisibility(View.INVISIBLE);
-        common_fragment_navigation_header_forward_iv.setVisibility(View.INVISIBLE);
+
     }
 
-    @OnClick({R.id.common_image_picker_gallery_ll, R.id.common_image_picker_camera_ll})
+    @OnClick({R.id.common_image_picker_gallery_ll, R.id.common_image_picker_camera_ll, R.id.common_image_picker_close_iv})
     public void onImagePickerChoice(View view){
         if(R.id.common_image_picker_gallery_ll == view.getId()){
             choice = GALLERY_CHOICE;
         }
         else if(R.id.common_image_picker_camera_ll == view.getId()){
             choice = CAMERA_CHOICE;
+        }
+        else if(R.id.common_image_picker_close_iv == view.getId()){
+            choice = CLOSE_CHOICE;
         }
         dismiss();
     }
@@ -98,8 +95,8 @@ public class CommonImagePickerFragment extends DialogFragment {
 
         Dialog d = getDialog();
         if (d!=null) {
-            int width = ViewGroup.LayoutParams.MATCH_PARENT;
-            int height = 500;
+            int width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
             d.getWindow().setLayout(width, height);
         }
     }
