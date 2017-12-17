@@ -176,7 +176,7 @@ public class Utility extends Activity {
                 return gson.fromJson(jsonStr, new TypeToken<UserMO>(){}.getType());
             }
             else if(mappingClass.equals(ReviewMO.class)){
-                return gson.fromJson(jsonStr, new TypeToken<ReviewMO>(){}.getType());
+                return gson.fromJson(jsonStr, new TypeToken<List<ReviewMO>>(){}.getType());
             }
             else if(mappingClass.equals(LikesMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<LikesMO>(){}.getType());
@@ -276,9 +276,9 @@ public class Utility extends Activity {
         fragment.show(fragmentManager, fragmentNameStr);
     }
 
-    public static void showRecipeReviewFragment(FragmentManager fragmentManager, String parentFragmentNameStr, ReviewMO review){
-        if(review == null){
-            Log.e(CLASS_NAME, "Review is null");
+    public static void showRecipeReviewFragment(FragmentManager fragmentManager, String parentFragmentNameStr, RecipeMO recipe){
+        if(recipe == null){
+            Log.e(CLASS_NAME, "Recipe is null");
             return;
         }
 
@@ -297,7 +297,7 @@ public class Utility extends Activity {
 
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable(GENERIC_OBJECT, review);
+        bundle.putSerializable(GENERIC_OBJECT, recipe);
 
         RecipeReviewFragment fragment = new RecipeReviewFragment();
         fragment.setArguments(bundle);
@@ -309,14 +309,13 @@ public class Utility extends Activity {
         fragment.show(fragmentManager, fragmentNameStr);
     }
 
-    public static void showRecipeCommentsFragment(FragmentManager fragmentManager, RecipeMO recipe){
+    public static void showRecipeCommentsFragment(FragmentManager fragmentManager, String parentFragmentNameStr, RecipeMO recipe){
         if(recipe == null){
             Log.e(CLASS_NAME, "Recipe is null");
             return;
         }
 
         String fragmentNameStr = FRAGMENT_RECIPE_COMMENTS;
-        String parentFragmentNameStr = null;
 
         Fragment frag = fragmentManager.findFragmentByTag(fragmentNameStr);
 

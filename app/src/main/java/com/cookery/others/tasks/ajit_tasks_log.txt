@@ -138,3 +138,12 @@
 
 3 dec 2017
 1. new design for add recipe implemented.
+
+-- git checkin on 3 dec 2017 --
+
+17 dec 2017
+1. Recipe add/delete reviews
+2. View all reviews for a recipe.
+3. Removed comments/reviews from the recipe view tabs.
+4. Recipe add comments.
+5. View all comments for a recipe.

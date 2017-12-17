@@ -436,12 +436,24 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected Object doInBackground(RecipeMO... objects) {
-            return InternetUtility.fetchRecipe(objects[0], loggedInUser.getUser_id());
+            List<RecipeMO> recipes = (List<RecipeMO>) InternetUtility.fetchRecipe(objects[0], loggedInUser.getUser_id());
+
+            if(recipes != null && !recipes.isEmpty()){
+                recipes.get(0).setComments(InternetUtility.fetchRecipeComments(loggedInUser, recipes.get(0), 0));
+                recipes.get(0).setReviews(InternetUtility.fetchRecipeReviews(loggedInUser, recipes.get(0), 0));
+                return recipes.get(0);
+            }
+
+            return null;
         }
 
         @Override
         protected void onPostExecute(Object object) {
-            RecipeMO recipe = ((List<RecipeMO>) object).get(0);
+            if(object == null){
+                return;
+            }
+
+            RecipeMO recipe = (RecipeMO) object;
 
             if(recipe != null){
                 Utility.showRecipeFragment(getFragmentManager(), recipe);

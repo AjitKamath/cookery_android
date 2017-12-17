@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
-    android:id="@+id/view_pager_recipe_reviews_item_cv"
+    android:id="@+id/recipe_reviews_item_cv"
     android:background="@color/white"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
@@ -14,26 +14,26 @@
     <RelativeLayout
         android:background="@color/white"
         android:padding="5dp"
-        android:id="@+id/view_pager_recipe_reviews_rl"
+        android:id="@+id/recipe_reviews_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/view_pager_recipe_reviews_image_ll"
+            android:id="@+id/recipe_reviews_image_ll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:gravity="center_horizontal|top">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/view_pager_recipe_reviews_item_iv"
+                android:id="@+id/recipe_reviews_item_iv"
                 android:layout_alignParentTop="true"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/food_sample"
+                android:src="@drawable/placeholder"
                 app:border_color="@color/white"
                 app:border_width="1dp" />
 
@@ -43,16 +43,25 @@
             android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/view_pager_recipe_reviews_image_ll"
+            android:layout_toRightOf="@+id/recipe_reviews_image_ll"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/view_pager_recipe_reviews_item_tv"
+                android:id="@+id/recipe_reviews_item_user_name_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Vishal Varshney"
+                android:textColor="@color/primaryDarkText"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/recipe_reviews_item_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="This recipe made my day. This chef is the best !! Would like to try more from him. I follow this chef and he is good lookig too ;) I do not know what to write here. But i am typing because i want to see how a big comment looks like on the screen."
-                android:textColor="@color/gray"
+                android:textColor="@color/secondaryDarkText"
                 android:textSize="10sp" />
 
 
@@ -60,33 +69,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:layout_marginTop="10dp">
 
                 <ImageView
-                    android:id="@+id/view_pager_recipe_reviews_likes_iv"
+                    android:id="@+id/recipe_reviews_likes_iv"
                     android:layout_width="12dp"
                     android:layout_height="12dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
+                    android:layout_centerVertical="true"
                     android:src="@drawable/heart_unselected" />
 
 
                 <TextView
-                    android:id="@+id/view_pager_recipe_reviews_item_likes_count_tv"
+                    android:id="@+id/recipe_reviews_item_likes_count_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@+id/view_pager_recipe_reviews_likes_iv"
+                    android:layout_toRightOf="@+id/recipe_reviews_likes_iv"
                     android:layout_centerInParent="true"
                     android:layout_centerVertical="true"
                     android:gravity="center"
                     android:text="12"
-                    android:textColor="@color/black"
-                    android:textSize="12sp" />
+                    android:textColor="@color/tertiaryDarkText"
+                    android:textSize="@dimen/tertiary_text_size" />
 
                 <LinearLayout
+                    android:gravity="center"
                     android:layout_marginLeft="20dp"
-                    android:layout_toRightOf="@+id/view_pager_recipe_reviews_item_likes_count_tv"
+                    android:layout_toRightOf="@+id/recipe_reviews_item_likes_count_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:weightSum="5"
@@ -94,12 +106,13 @@
 
                     <ImageView
                         android:layout_weight="1"
-                        android:id="@+id/view_pager_recipe_reviews_item_star_iv"
+                        android:id="@+id/recipe_reviews_item_star_1_iv"
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:src="@drawable/star"/>
 
                     <ImageView
+                        android:id="@+id/recipe_reviews_item_star_2_iv"
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:layout_width="12dp"
@@ -107,6 +120,7 @@
                         android:src="@drawable/star"/>
 
                     <ImageView
+                        android:id="@+id/recipe_reviews_item_star_3_iv"
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:layout_width="12dp"
@@ -114,6 +128,7 @@
                         android:src="@drawable/star"/>
 
                     <ImageView
+                        android:id="@+id/recipe_reviews_item_star_4_iv"
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:layout_width="12dp"
@@ -121,6 +136,7 @@
                         android:src="@drawable/star"/>
 
                     <ImageView
+                        android:id="@+id/recipe_reviews_item_star_5_iv"
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:layout_width="12dp"
@@ -131,15 +147,15 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/view_pager_recipe_reviews_item_date_time_tv"
+                    android:id="@+id/recipe_reviews_item_date_time_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerInParent="true"
                     android:gravity="center"
                     android:text="25 Sep at 1:05 AM"
-                    android:textColor="@color/gray"
-                    android:textSize="7sp" />
+                    android:textColor="@color/tertiaryDarkText"
+                    android:textSize="@dimen/quaternary_text_size" />
 
             </RelativeLayout>
 

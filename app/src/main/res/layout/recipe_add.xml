@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/app_color"
-            android:textSize="@dimen/primary_text_size"
+            android:textSize="@dimen/secondary_text_size"
             android:text="CREATE YOUR RECIPE"/>
 
         <ImageView
@@ -35,7 +35,7 @@
     <RelativeLayout
         android:layout_below="@+id/recipe_add_header_rl"
         android:id="@+id/recipe_add_fragment_images_rl"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical">
@@ -43,14 +43,14 @@
         <ImageView
             android:id="@+id/recipe_add_images_iv"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="150dp"
             android:src="@drawable/placeholder"
             android:scaleType="centerCrop"/>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/recipe_add_images_vp"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="150dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </RelativeLayout>
@@ -76,7 +76,7 @@
             android:id="@+id/recipe_add_images_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="10sp"
+            android:textSize="@dimen/tertiary_text_size"
             android:layout_alignParentRight="true"
             android:textColor="@color/app_color"
             android:text="+ ADD PHOTOS"/>

@@ -13,6 +13,8 @@ public class CommentMO extends CommonMO implements Serializable {
 
     private String userImage;
     private int likeCount;
+    private boolean userLiked;
+    private String name;
 
     public int getLikeCount() {
         return likeCount;
@@ -52,5 +54,21 @@ public class CommentMO extends CommonMO implements Serializable {
 
     public void setCOMMENT(String COMMENT) {
         this.COMMENT = COMMENT;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isUserLiked() {
+        return userLiked;
+    }
+
+    public void setUserLiked(boolean userLiked) {
+        this.userLiked = userLiked;
     }
 }

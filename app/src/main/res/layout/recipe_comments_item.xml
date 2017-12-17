@@ -3,23 +3,23 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
-    android:id="@+id/common_fragment_recipe_comments_comment_item_cv"
+    android:id="@+id/recipe_comments_item_cv"
     android:background="@color/white"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     card_view:cardCornerRadius="5dp"
-    android:layout_marginTop="5dp"
+    android:layout_margin="5dp"
     card_view:cardPreventCornerOverlap="true">
 
     <RelativeLayout
         android:padding="5dp"
-        android:id="@+id/common_fragment_recipe_comments_comment_rl"
+        android:id="@+id/recipe_comments_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/common_fragment_recipe_comments_comment_image_ll"
+            android:id="@+id/recipe_comments_image_ll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -27,7 +27,7 @@
             android:orientation="vertical">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/common_fragment_recipe_comments_comment_item_iv"
+                android:id="@+id/recipe_comments_item_iv"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_centerHorizontal="true"
@@ -42,17 +42,39 @@
             android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/common_fragment_recipe_comments_comment_image_ll"
+            android:layout_toRightOf="@+id/recipe_comments_image_ll"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/recipe_comments_item_username_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Vishal Varshney"
+                    android:textColor="@color/primaryDarkText"
+                    android:textSize="@dimen/secondary_text_size" />
+
+                <ImageView
+                    android:id="@+id/recipe_comments_item_delete_iv"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/ic_delete_grey600_48dp"
+                    android:layout_alignParentRight="true"/>
+
+            </RelativeLayout>
+
             <TextView
-                android:id="@+id/common_fragment_recipe_comments_comment_item_tv"
+                android:layout_marginTop="5dp"
+                android:id="@+id/recipe_comments_item_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="This recipe made my day. This chef is the best !! Would like to try more from him. I follow this chef and he is good lookig too ;) I do not know what to write here. But i am typing because i want to see how a big comment looks like on the screen."
                 android:textColor="@color/secondaryDarkText"
-                android:textSize="10sp" />
+                android:textSize="@dimen/tertiary_text_size" />
 
 
             <RelativeLayout
@@ -62,7 +84,7 @@
                 android:layout_marginTop="10dp">
 
                 <ImageView
-                    android:id="@+id/common_fragment_recipe_comments_comment_likes_iv"
+                    android:id="@+id/recipe_comments_likes_iv"
                     android:layout_width="14dp"
                     android:layout_height="14dp"
                     android:layout_alignParentLeft="true"
@@ -70,27 +92,27 @@
                     android:src="@drawable/heart_unselected" />
 
                 <TextView
-                    android:id="@+id/common_fragment_recipe_comments_comment_item_likes_count_tv"
+                    android:id="@+id/recipe_comments_item_likes_count_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@+id/common_fragment_recipe_comments_comment_likes_iv"
+                    android:layout_toRightOf="@+id/recipe_comments_likes_iv"
                     android:gravity="center"
                     android:layout_centerInParent="true"
                     android:text="0"
                     android:textColor="@color/tertiaryDarkText"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/tertiary_text_size" />
 
                 <TextView
-                    android:id="@+id/common_fragment_recipe_comments_comment_item_date_time_tv"
+                    android:id="@+id/recipe_comments_item_date_time_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerInParent="true"
                     android:gravity="center"
                     android:text="25 Sep at 1:05 AM"
-                    android:textColor="@color/gray"
-                    android:textSize="8sp" />
+                    android:textColor="@color/tertiaryDarkText"
+                    android:textSize="@dimen/tertiary_text_size" />
 
             </RelativeLayout>
 

@@ -148,6 +148,29 @@ public class MessageFragment extends DialogFragment {
                 }
             });
         }
+        else if("DELETE_REVIEW".equalsIgnoreCase(mesage.getPurpose())){
+            common_message_iv.setImageResource(R.drawable.thinking);
+            common_message_message_tv.setText("Delete Review ?");
+            common_message_tv.setText(mesage.getErr_message());
+
+            common_message_ok_tv.setVisibility(View.VISIBLE);
+            common_message_cancel_tv.setVisibility(View.VISIBLE);
+
+            common_message_ok_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                    ((RecipeReviewFragment) getTargetFragment()).deleteReview();
+                }
+            });
+
+            common_message_cancel_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+        }
         else{
             common_message_message_tv.setText("UNIMPL");
             common_message_tv.setText(mesage.getErr_message());

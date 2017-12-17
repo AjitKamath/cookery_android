@@ -50,17 +50,20 @@ public class RecipeCommentsFragment extends DialogFragment {
     private FragmentActivity activity;
 
     //components
-    @InjectView(R.id.common_fragment_recipe_comments_rl)
-    RelativeLayout common_fragment_recipe_comments_rl;
+    @InjectView(R.id.recipe_comments_rl)
+    RelativeLayout recipe_comments_rl;
 
-    @InjectView(R.id.common_fragment_recipe_comments_rv)
-    RecyclerView common_fragment_recipe_comments_rv;
+    @InjectView(R.id.recipe_comments_close_iv)
+    ImageView recipe_comments_close_iv;
 
-    @InjectView(R.id.common_fragment_recipe_comments_comment_et)
-    EditText common_fragment_recipe_comments_comment_et;
+    @InjectView(R.id.recipe_comments_rv)
+    RecyclerView recipe_comments_rv;
 
-    @InjectView(R.id.common_fragment_recipe_comments_comment_iv)
-    ImageView common_fragment_recipe_comments_comment_iv;
+    @InjectView(R.id.recipe_comments_comment_et)
+    EditText recipe_comments_comment_et;
+
+    @InjectView(R.id.recipe_comments_comment_iv)
+    ImageView recipe_comments_comment_iv;
     //end of components
 
     private RecipeMO recipe;
@@ -68,7 +71,7 @@ public class RecipeCommentsFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.common_fragment_recipe_comments, container);
+        View view = inflater.inflate(R.layout.recipe_comments, container);
         ButterKnife.inject(this, view);
 
         Dialog d = getDialog();
@@ -79,7 +82,7 @@ public class RecipeCommentsFragment extends DialogFragment {
 
         setupPage();
 
-        setFont(common_fragment_recipe_comments_rl);
+        setFont(recipe_comments_rl);
 
         return view;
     }
@@ -93,25 +96,31 @@ public class RecipeCommentsFragment extends DialogFragment {
     }
 
     private void setupPage() {
+        recipe_comments_close_iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
+
         setupComments();
     }
 
     private void setupComments() {
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
-
-        common_fragment_recipe_comments_rv.setLayoutManager(mLayoutManager);
-        common_fragment_recipe_comments_rv.setItemAnimator(new DefaultItemAnimator());
-        common_fragment_recipe_comments_rv.setAdapter(new RecipeCommentsRecyclerViewAdapter(mContext, recipe.getComments(), new View.OnClickListener() {
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        recipe_comments_rv.setLayoutManager(mLayoutManager);
+        recipe_comments_rv.setItemAnimator(new DefaultItemAnimator());
+        recipe_comments_rv.setAdapter(new RecipeCommentsRecyclerViewAdapter(mContext, loggedInUser, recipe.getComments(), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
         }));
 
-        common_fragment_recipe_comments_comment_iv.setOnClickListener(new View.OnClickListener() {
+        recipe_comments_comment_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String comment = String.valueOf(common_fragment_recipe_comments_comment_et.getText());
+                String comment = String.valueOf(recipe_comments_comment_et.getText());
 
                 if(comment != null && !comment.trim().isEmpty()){
                     CommentMO commentObj = new CommentMO();
@@ -201,8 +210,8 @@ public class RecipeCommentsFragment extends DialogFragment {
             }
             else{
                 new AsyncTaskerSubmitFetchRecipeComments().executeOnExecutor(THREAD_POOL_EXECUTOR);
-                common_fragment_recipe_comments_comment_et.setText("");
-                Utility.showSnacks(common_fragment_recipe_comments_rl, "Comment submitted", OK, Snackbar.LENGTH_SHORT);
+                recipe_comments_comment_et.setText("");
+                Utility.showSnacks(recipe_comments_rl, "Comment submitted", OK, Snackbar.LENGTH_SHORT);
             }
         }
 
@@ -213,7 +222,7 @@ public class RecipeCommentsFragment extends DialogFragment {
 
             @Override
             protected Object doInBackground(Void... objects) {
-                return InternetUtility.fetchRecipeComments(recipe);
+                return InternetUtility.fetchRecipeComments(loggedInUser, recipe, 0);
             }
 
             @Override

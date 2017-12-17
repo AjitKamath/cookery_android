@@ -41,24 +41,13 @@ public class RecipeViewPagerAdapter extends PagerAdapter {
         ViewGroup layout = (ViewGroup) inflater.inflate(layouts.get(position), collection, false);
 
         switch(position){
-            case 0: setupRecipeProcedure(layout); break;
+            case 0: setupRecipeSteps(layout); break;
             case 1: setupRecipeIngredients(layout); break;
-            case 2: setupRecipeReviews(layout); break;
         }
 
         setFont(layout);
         collection.addView(layout);
         return layout;
-    }
-
-    private void setupRecipeReviews(ViewGroup layout) {
-        RecipeReviewsRecyclerViewAdapter adapter = new RecipeReviewsRecyclerViewAdapter(mContext, recipe.getReviews());
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
-
-        RecyclerView view_pager_recipe_reviews_rv = layout.findViewById(R.id.view_pager_recipe_reviews_rv);
-        view_pager_recipe_reviews_rv.setLayoutManager(mLayoutManager);
-        view_pager_recipe_reviews_rv.setItemAnimator(new DefaultItemAnimator());
-        view_pager_recipe_reviews_rv.setAdapter(adapter);
     }
 
     private void setupRecipeIngredients(ViewGroup layout) {
@@ -71,9 +60,18 @@ public class RecipeViewPagerAdapter extends PagerAdapter {
         view_pager_recipe_ingredients_rv.setAdapter(adapter);*/
     }
 
-    private void setupRecipeProcedure(ViewGroup layout) {
-        TextView view_pager_recipe_recipe_proc_tv = layout.findViewById(R.id.view_pager_recipe_recipe_proc_tv);
-        view_pager_recipe_recipe_proc_tv.setText(recipe.getRCP_PROC());
+    private void setupRecipeSteps(ViewGroup layout) {
+        RecyclerView recipe_view_recipe_proc_rv = layout.findViewById(R.id.recipe_view_recipe_proc_rv);
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        recipe_view_recipe_proc_rv.setLayoutManager(mLayoutManager);
+        recipe_view_recipe_proc_rv.setItemAnimator(new DefaultItemAnimator());
+        recipe_view_recipe_proc_rv.setAdapter(new StepsRecyclerViewAdapter(mContext, recipe.getSteps(), new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        }));
     }
 
     @Override
@@ -86,7 +84,6 @@ public class RecipeViewPagerAdapter extends PagerAdapter {
         switch(position){
             case 0: return "RECIPE";
             case 1: return "INGREDIENTS";
-            case 2: return "REVIEWS";
             default: return "UNIMPL";
         }
     }

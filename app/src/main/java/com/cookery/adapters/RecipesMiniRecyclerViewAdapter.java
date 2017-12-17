@@ -60,7 +60,7 @@ public class RecipesMiniRecyclerViewAdapter extends RecyclerView.Adapter<Recipes
         holder.view_pager_recipes_recipe_mini_tv.setText(recipe.getRCP_NAME().toUpperCase());
         holder.view_pager_recipes_recipe_mini_food_type_tv.setText(recipe.getFOOD_TYP_NAME().toUpperCase());
         holder.view_pager_recipes_recipe_mini_cuisine_tv.setText(recipe.getFOOD_CSN_NAME().toUpperCase());
-        holder.view_pager_recipes_recipe_mini_rating_tv.setText(recipe.getRating());
+        holder.view_pager_recipes_recipe_mini_rating_tv.setText(recipe.getUserReview().getRATING());
         holder.view_pager_recipes_recipe_mini_views_tv.setText(Utility.getSmartNumber(recipe.getViews()));
         holder.view_pager_recipes_recipe_mini_likes_tv.setText(Utility.getSmartNumber(recipe.getLikes()));
 

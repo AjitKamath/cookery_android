@@ -26,11 +26,15 @@ public class RecipeMO extends CommonMO implements Serializable {
     private List<CommentMO> comments;
     private List<ReviewMO> reviews;
     private boolean isLiked;
-    private boolean isReviewed;
+
     private int likes;
     private int views;
-    private String rating;
+
     private List<String> steps;
+
+    private String avgRating;
+    private boolean isReviewed;
+    private ReviewMO userReview;
 
     public List<String> getSteps() {
         return steps;
@@ -184,19 +188,27 @@ public class RecipeMO extends CommonMO implements Serializable {
         isLiked = liked;
     }
 
-    public String getRating() {
-        return rating;
-    }
-
-    public void setRating(String rating) {
-        this.rating = rating;
-    }
-
     public boolean isReviewed() {
         return isReviewed;
     }
 
     public void setReviewed(boolean reviewed) {
         isReviewed = reviewed;
+    }
+
+    public ReviewMO getUserReview() {
+        return userReview;
+    }
+
+    public void setUserReview(ReviewMO userReview) {
+        this.userReview = userReview;
+    }
+
+    public String getAvgRating() {
+        return avgRating;
+    }
+
+    public void setAvgRating(String avgRating) {
+        this.avgRating = avgRating;
     }
 }

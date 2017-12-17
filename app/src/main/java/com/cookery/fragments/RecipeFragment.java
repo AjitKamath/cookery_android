@@ -24,8 +24,8 @@ import com.cookery.R;
 import com.cookery.adapters.RecipeImagesViewPagerAdapter;
 import com.cookery.adapters.RecipeViewPagerAdapter;
 import com.cookery.models.LikesMO;
+import com.cookery.models.MessageMO;
 import com.cookery.models.RecipeMO;
-import com.cookery.models.ReviewMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
@@ -94,8 +94,14 @@ public class RecipeFragment extends DialogFragment {
     @InjectView(R.id.common_fragment_recipe_rating_tv)
     TextView common_fragment_recipe_rating_tv;
 
-    @InjectView(R.id.common_fragment_recipe_comments_tv)
-    TextView common_fragment_recipe_comments_tv;
+    @InjectView(R.id.common_fragment_recipe_comment_ll)
+    LinearLayout common_fragment_recipe_comment_ll;
+
+    @InjectView(R.id.common_fragment_recipe_comment_iv)
+    ImageView common_fragment_recipe_comment_iv;
+
+    @InjectView(R.id.common_fragment_recipe_comment_tv)
+    TextView common_fragment_recipe_comment_tv;
 
     @InjectView(R.id.common_fragment_recipe_rating_iv)
     ImageView common_fragment_recipe_rating_iv;
@@ -107,7 +113,7 @@ public class RecipeFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.common_fragment_recipe, container);
+        View view = inflater.inflate(R.layout.recipe_view, container);
         ButterKnife.inject(this, view);
 
         Dialog d = getDialog();
@@ -140,14 +146,9 @@ public class RecipeFragment extends DialogFragment {
         common_fragment_recipe_username_tv.setText(recipe.getNAME());
         common_fragment_recipe_views_tv.setText(Utility.getSmartNumber(recipe.getViews()));
 
-        if(recipe.getRating() != null && !recipe.getRating().trim().isEmpty()){
-            common_fragment_recipe_rating_tv.setText(recipe.getRating());
-        }
-
         final List<Integer> viewPagerTabsList = new ArrayList<>();
-        viewPagerTabsList.add(R.layout.view_pager_recipe_recipe);
+        viewPagerTabsList.add(R.layout.recipe_view_recipe);
         viewPagerTabsList.add(R.layout.view_pager_recipe_ingredients);
-        viewPagerTabsList.add(R.layout.view_pager_recipe_reviews);
 
         for(Integer iter : viewPagerTabsList){
             common_fragment_recipe_tl.addTab(common_fragment_recipe_tl.newTab());
@@ -177,19 +178,14 @@ public class RecipeFragment extends DialogFragment {
             }
         });
 
-        if(recipe.getComments() == null || recipe.getComments().isEmpty()){
-            common_fragment_recipe_comments_tv.setText("NO COMMENTS");
-        }
-        else{
-            common_fragment_recipe_comments_tv.setText(recipe.getComments().size()+" COMMENTS");
-        }
+        setRatingView();
+        setLikeView();
+        setViewView();
+        setCommentView();
+    }
 
-        common_fragment_recipe_comments_tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Utility.showRecipeCommentsFragment(getFragmentManager(), recipe);
-            }
-        });
+    private void setViewView() {
+        common_fragment_recipe_views_tv.setText(String.valueOf(recipe.getViews()));
 
         common_fragment_recipe_view_ll.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -199,13 +195,47 @@ public class RecipeFragment extends DialogFragment {
                 return false;
             }
         });
+    }
 
-        common_fragment_recipe_rating_ll.setOnClickListener(new View.OnClickListener() {
+    private void setCommentView() {
+        if(recipe.getComments() == null || recipe.getComments().isEmpty()){
+            common_fragment_recipe_comment_iv.setImageResource(R.drawable.comment_disabled);
+            common_fragment_recipe_comment_tv.setText("0");
+        }
+        else{
+            common_fragment_recipe_comment_iv.setImageResource(R.drawable.comment_enabled);
+            common_fragment_recipe_comment_tv.setText(String.valueOf(recipe.getComments().size()));
+        }
+
+        common_fragment_recipe_comment_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AsyncFetchReview().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new AsyncFetchComments().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
+    }
+
+    private void setupImages() {
+        common_fragment_recipe_vp.setAdapter(new RecipeImagesViewPagerAdapter(mContext, recipe.getRCP_IMGS(), true, new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                //TODO: do not re use showrecipefragment. implement another fragment
+                //Utility.showRecipeImagesFragment(getFragmentManager(), recipe);
+            }
+        }));
+    }
+
+    public void setLikeView(){
+        if(recipe.getLikes() != -1){
+            common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(recipe.getLikes()));
+        }
+
+        if(recipe.isLiked()){
+            common_fragment_recipe_like_iv.setImageResource(R.drawable.heart);
+        }
+        else{
+            common_fragment_recipe_like_iv.setImageResource(R.drawable.heart_unselected);
+        }
 
         common_fragment_recipe_like_ll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -222,45 +252,30 @@ public class RecipeFragment extends DialogFragment {
                 new AsyncSubmitLike().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
             }
         });
-
-        setLikeView(recipe.isLiked(), recipe.getLikes());
-        setRatingView(recipe.isReviewed(), recipe.getRating());
     }
 
-    private void setupImages() {
-        common_fragment_recipe_vp.setAdapter(new RecipeImagesViewPagerAdapter(mContext, recipe.getRCP_IMGS(), true, new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                //TODO: do not re use showrecipefragment. implement another fragment
-                //Utility.showRecipeImagesFragment(getFragmentManager(), recipe);
-            }
-        }));
-    }
-
-    public void setLikeView(boolean isLiked, int likes){
-        if(likes != -1){
-            common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(likes));
+    public void setRatingView(){
+        if(recipe.getAvgRating() != null && !recipe.getAvgRating().trim().isEmpty()){
+            common_fragment_recipe_rating_tv.setText(String.valueOf(recipe.getAvgRating()));
         }
 
-        if(isLiked){
-            common_fragment_recipe_like_iv.setImageResource(R.drawable.heart);
-        }
-        else{
-            common_fragment_recipe_like_iv.setImageResource(R.drawable.heart_unselected);
-        }
-    }
-
-    public void setRatingView(boolean isReviewed, String rating){
-        if(rating != null && !rating.trim().isEmpty()){
-            common_fragment_recipe_rating_tv.setText(rating);
-        }
-
-        if(isReviewed){
+        if(recipe.isReviewed()){
             common_fragment_recipe_rating_iv.setImageResource(R.drawable.star);
         }
         else{
             common_fragment_recipe_rating_iv.setImageResource(R.drawable.star_unselected);
         }
+
+        common_fragment_recipe_rating_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AsyncFetchReviews().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
+    }
+
+    public void updateRecipeView(){
+        new AsyncUpdateRecipe().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, recipe);
     }
 
     // Empty constructor required for DialogFragment
@@ -303,39 +318,6 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
-    class AsyncFetchReview extends AsyncTask<Object, Void, Object> {
-        Fragment frag = null;
-
-        @Override
-        protected void onPreExecute(){
-            frag = Utility.showWaitDialog(getFragmentManager(), "Getting your review ..");
-        }
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            ReviewMO review = new ReviewMO();
-            review.setRCP_ID(recipe.getRCP_ID());
-            review.setUSER_ID(loggerInUser.getUser_id());
-
-            return InternetUtility.fetchUsersRecipeReview(review);
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            ReviewMO review = (ReviewMO) object;
-            Utility.closeWaitDialog(getFragmentManager(), frag);
-
-            if(review == null){
-                review = new ReviewMO();
-            }
-
-            review.setRCP_ID(recipe.getRCP_ID());
-            review.setUSER_ID(loggerInUser.getUser_id());
-
-            Utility.showRecipeReviewFragment(getFragmentManager(), FRAGMENT_RECIPE, review);
-        }
-    }
-
     public class AsyncSubmitLike extends AsyncTask<Object, Void, Object> {
         @Override
         protected void onPreExecute(){
@@ -350,7 +332,112 @@ public class RecipeFragment extends DialogFragment {
         @Override
         protected void onPostExecute(Object object) {
             LikesMO like = (LikesMO) object;
-            setLikeView(like.isLiked(), like.getLikes());
+
+            if(like != null){
+                recipe.setLikes(like.getLikes());
+                recipe.setLiked(like.isLiked());
+
+                setLikeView();
+            }
+        }
+    }
+
+    public class AsyncFetchReviews extends AsyncTask<Object, Void, Object> {
+        private Fragment fragment;
+
+        @Override
+        protected void onPreExecute(){
+            fragment = Utility.showWaitDialog(getFragmentManager(), "Fetching Reviews ..");
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            recipe.setUserReview(InternetUtility.fetchUsersRecipeReview(loggerInUser, recipe));
+            recipe.setReviews(InternetUtility.fetchRecipeReviews(loggerInUser, recipe, 0));
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            Utility.closeWaitDialog(getFragmentManager(), fragment);
+
+            Utility.showRecipeReviewFragment(getFragmentManager(), FRAGMENT_RECIPE, recipe);
+        }
+    }
+
+    public class AsyncFetchComments extends AsyncTask<Object, Void, Object> {
+        private Fragment fragment;
+
+        @Override
+        protected void onPreExecute(){
+            fragment = Utility.showWaitDialog(getFragmentManager(), "Fetching Comments ..");
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            recipe.setComments(InternetUtility.fetchRecipeComments(loggerInUser, recipe, 0));
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            Utility.closeWaitDialog(getFragmentManager(), fragment);
+            Utility.showRecipeCommentsFragment(getFragmentManager(), FRAGMENT_RECIPE, recipe);
+        }
+    }
+
+    class AsyncUpdateRecipe extends AsyncTask<RecipeMO, Void, Object> {
+        private Fragment fragment;
+
+        @Override
+        protected void onPreExecute(){
+            fragment = Utility.showWaitDialog(getFragmentManager(), "Updating Recipe ..");
+        }
+
+        @Override
+        protected Object doInBackground(RecipeMO... objects) {
+            List<RecipeMO> recipes = (List<RecipeMO>) InternetUtility.fetchRecipe(recipe, loggerInUser.getUser_id());
+
+            if(recipes != null && !recipes.isEmpty()){
+                recipes.get(0).setComments(InternetUtility.fetchRecipeComments(loggerInUser, recipes.get(0), 0));
+                recipes.get(0).setReviews(InternetUtility.fetchRecipeReviews(loggerInUser, recipes.get(0), 0));
+                return recipes.get(0);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            if(object == null){
+                return;
+            }
+
+            RecipeMO updatedRecipe = (RecipeMO) object;
+
+            if(recipe != null){
+                recipe = updatedRecipe;
+
+                setRatingView();
+                setLikeView();
+                setViewView();
+                setCommentView();
+
+                Utility.closeWaitDialog(getFragmentManager(), fragment);
+
+                if(recipe.isReviewed()) {
+                    MessageMO message = new MessageMO();
+                    message.setPurpose("ADD_RECIPE_REVIEW");
+
+                    message.setError(false);
+                    message.setErr_message("Thank You for the review !");
+
+                    Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_RECIPE);
+                    Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
+                }
+            }
         }
     }
 }

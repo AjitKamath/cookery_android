@@ -63,6 +63,8 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_RECIPE_SUBMIT = "RECIPE_SUBMIT";
     public static final String PHP_FUNCTION_KEY_COMMENT_SUBMIT = "COMMENT_SUBMIT";
     public static final String PHP_FUNCTION_KEY_REVIEW_SUBMIT = "REVIEW_SUBMIT";
+    public static final String PHP_FUNCTION_KEY_REVIEW_DELETE = "REVIEW_DELETE";
+    public static final String PHP_FUNCTION_KEY_REVIEW_RECIPE = "REVIEW_RECIPE_FETCH";
     public static final String PHP_FUNCTION_KEY_LIKE_SUBMIT = "LIKE_SUBMIT";
     public static final String PHP_FUNCTION_KEY_COMMENT_RECIPE_FETCH_ALL = "COMMENT_RECIPE_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL = "QUANTITY_FETCH_ALL";

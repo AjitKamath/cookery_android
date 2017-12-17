@@ -13,6 +13,7 @@ import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.TasteMO;
 import com.cookery.models.TimelineMO;
+import com.cookery.models.UserMO;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +38,8 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_TRENDING_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_USER_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_USER_VIEWED_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_DELETE;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_RECIPE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_USER_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TASTE_FETCH_ALL;
@@ -216,19 +219,22 @@ public class InternetUtility {
         return null;
     }
 
-    public static Object fetchUsersRecipeReview(ReviewMO review) {
+    public static ReviewMO fetchUsersRecipeReview(UserMO loggedInUser, RecipeMO recipe) {
         if(USE_TEST_DATA){
             return TestData.getReviewsTestData().get(0);
         }
 
         Map<String, String> paramMap = new HashMap<>();
-        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_RECIPE_REVIEW_FETCH);
-        paramMap.put("user_id", String.valueOf(review.getUSER_ID()));
-        paramMap.put("rcp_id", String.valueOf(review.getRCP_ID()));
+        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_REVIEW_USER_FETCH);
+        paramMap.put("user_id", String.valueOf(loggedInUser.getUser_id()));
+        paramMap.put("rcp_id", String.valueOf(recipe.getRCP_ID()));
 
         try {
             String jsonStr = getResponseFromCookery(paramMap);
-            return Utility.jsonToObject(jsonStr, ReviewMO.class);
+            List<ReviewMO> reviews = (List<ReviewMO>) Utility.jsonToObject(jsonStr, ReviewMO.class);
+            if(reviews != null && !reviews.isEmpty()){
+                return reviews.get(0);
+            }
         }
         catch (Exception e){
             Log.e(CLASS_NAME, "Could not fetch Users Recipe Review from the server : "+e);
@@ -329,16 +335,35 @@ public class InternetUtility {
         return message;
     }
 
-    public static ReviewMO submitRecipeReview(ReviewMO review) {
+    public static Object submitRecipeReview(UserMO loggedInUser, RecipeMO recipe) {
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_REVIEW_SUBMIT);
-            paramMap.put("rcp_id", String.valueOf(review.getRCP_ID()));
-            paramMap.put("user_id", String.valueOf(review.getUSER_ID()));
-            paramMap.put("review", review.getREVIEW());
-            paramMap.put("rating", String.valueOf(review.getRATING()));
+            paramMap.put("rcp_id", String.valueOf(recipe.getRCP_ID()));
+            paramMap.put("user_id", String.valueOf(loggedInUser.getUser_id()));
+            paramMap.put("review", recipe.getUserReview().getREVIEW());
+            paramMap.put("rating", String.valueOf(recipe.getUserReview().getRATING()));
 
-            return  (ReviewMO) Utility.jsonToObject(getResponseFromCookery(paramMap), ReviewMO.class);
+            return  Utility.jsonToObject(getResponseFromCookery(paramMap), ReviewMO.class);
+        }
+        catch(SocketException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch(Exception e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+
+        return null;
+    }
+
+    public static Object deleteRecipeReview(UserMO loggedInUser, ReviewMO review) {
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_REVIEW_DELETE);
+            paramMap.put("rev_id", String.valueOf(review.getREV_ID()));
+            paramMap.put("user_id", String.valueOf(loggedInUser.getUser_id()));
+
+            return  Utility.jsonToObject(getResponseFromCookery(paramMap), MessageMO.class);
         }
         catch(SocketException e){
             Log.e(CLASS_NAME, e.getMessage());
@@ -370,7 +395,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<CommentMO> fetchRecipeComments(RecipeMO recipe) {
+    public static List<CommentMO> fetchRecipeComments(UserMO loggedInUser, RecipeMO recipe, int index) {
         if(USE_TEST_DATA){
             return null;
         }
@@ -378,10 +403,37 @@ public class InternetUtility {
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_COMMENT_RECIPE_FETCH_ALL);
+            paramMap.put("user_id", String.valueOf(loggedInUser.getUser_id()));
             paramMap.put("rcp_id", String.valueOf(recipe.getRCP_ID()));
+            paramMap.put("index", String.valueOf(index));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return (List<CommentMO>) Utility.jsonToObject(jsonStr, CommentMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch recipe comments from the server : "+e);
+        }
+
+        return null;
+    }
+
+    public static List<ReviewMO> fetchRecipeReviews(UserMO loggedInUser, RecipeMO recipe, int index) {
+        if(USE_TEST_DATA){
+            return null;
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_REVIEW_RECIPE);
+            paramMap.put("user_id", String.valueOf(loggedInUser.getUser_id()));
+            paramMap.put("rcp_id", String.valueOf(recipe.getRCP_ID()));
+            paramMap.put("index", String.valueOf(index));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return (List<ReviewMO>) Utility.jsonToObject(jsonStr, ReviewMO.class);
         }
         catch (IOException e){
             Log.e(CLASS_NAME, e.getMessage());

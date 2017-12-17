@@ -16,6 +16,8 @@ public class ReviewMO extends CommonMO implements Serializable {
     private int likeCount;
     private boolean isReviewed;
     private String rating;
+    private boolean userLiked;
+    private String name;
 
     public int getREV_ID() {
         return REV_ID;
@@ -79,5 +81,21 @@ public class ReviewMO extends CommonMO implements Serializable {
 
     public void setRating(String rating) {
         this.rating = rating;
+    }
+
+    public boolean isUserLiked() {
+        return userLiked;
+    }
+
+    public void setUserLiked(boolean userLiked) {
+        this.userLiked = userLiked;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
