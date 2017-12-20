@@ -58,6 +58,7 @@
                 android:textSize="@dimen/tertiary_text_size" />
 
             <ImageView
+                android:id="@+id/recipe_view_recipe_steps_fullscreen_iv"
                 android:layout_alignParentRight="true"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
@@ -66,7 +67,7 @@
         </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recipe_view_recipe_proc_rv"
+            android:id="@+id/recipe_view_recipe_steps_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"

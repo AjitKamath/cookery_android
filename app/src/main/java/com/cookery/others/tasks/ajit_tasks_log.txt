@@ -147,3 +147,18 @@
 3. Removed comments/reviews from the recipe view tabs.
 4. Recipe add comments.
 5. View all comments for a recipe.
+
+-- git checkin on 17 dec 2017 --
+
+18 dec 2017
+1. Browse through recipe images in full screen mode in Recipe View Screen by clicking on any image.
+2. Counter for recipe images in Recipe View screen.
+3. Added user image in Recipe View Screen.
+
+19 dec 2017
+1. Recipe steps are now displayed in Recipe View screen.
+
+20 dec 2017
+1. Recipe View - show recipe steps.
+2. Recipe View - show recipe steps in full screen.
+3. Recipe View - show recipe ingredients.

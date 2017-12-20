@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +13,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.adapters.RecipeAddImagesViewPagerAdapter;
-import com.cookery.models.RecipeMO;
-import com.cookery.utils.Utility;
+import com.cookery.adapters.RecipeViewImagesFullscreenViewPagerAdapter;
 
 import java.util.List;
 
@@ -29,20 +26,23 @@ import static com.cookery.utils.Constants.UI_FONT;
 /**
  * Created by ajit on 21/3/16.
  */
-public class RecipeImagesFragment extends DialogFragment {
+public class RecipeViewImagesFragment extends DialogFragment {
     private final String CLASS_NAME = this.getClass().getName();
     private Context mContext;
 
     //components
-    @InjectView(R.id.common_fragment_recipe_images_vp)
-    ViewPager common_fragment_recipe_images_vp;
+    @InjectView(R.id.recipe_view_images_fullscreen_vp)
+    ViewPager recipe_view_images_fullscreen_vp;
+
+    @InjectView(R.id.recipe_view_images_fullscreen_count_tv)
+    TextView recipe_view_images_fullscreen_count_tv;
     //end of components
 
-    private List<String> imagesList;
+    private Object object;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.common_fragment_recipe_images, container);
+        View view = inflater.inflate(R.layout.recipe_view_images_fullscreen, container);
         ButterKnife.inject(this, view);
 
         Dialog d = getDialog();
@@ -56,28 +56,50 @@ public class RecipeImagesFragment extends DialogFragment {
     }
 
     private void getDataFromBundle() {
-        imagesList = ((RecipeMO)getArguments().get(GENERIC_OBJECT)).getRCP_IMGS();
+        object = getArguments().get(GENERIC_OBJECT);
     }
 
     private void setupPage() {
-        if(imagesList == null || imagesList.isEmpty()){
-            Log.e(CLASS_NAME, "Error ! Object is null");
-            return;
-        }
+        Object array[] = (Object[])object;
 
-        common_fragment_recipe_images_vp.setAdapter(new RecipeAddImagesViewPagerAdapter(mContext, imagesList, false, new View.OnClickListener(){
+        int imageIndex = (Integer)array[0];
+        final List<String> images = (List<String>) array[1];
+
+        recipe_view_images_fullscreen_vp.setAdapter(new RecipeViewImagesFullscreenViewPagerAdapter(mContext, images, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RecipeMO temp = new RecipeMO();
-                temp.setRCP_IMGS(imagesList);
 
-                Utility.showRecipeImagesFragment(getFragmentManager(), temp);
             }
         }));
+        recipe_view_images_fullscreen_vp.setCurrentItem(imageIndex);
+
+        recipe_view_images_fullscreen_vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                updateImageCounter(++position, images.size());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        updateImageCounter(++imageIndex, images.size());
+    }
+
+    private void updateImageCounter(int index, int maxCount){
+        recipe_view_images_fullscreen_count_tv.setText(index+"/"+maxCount);
     }
 
     // Empty constructor required for DialogFragment
-    public RecipeImagesFragment() {}
+    public RecipeViewImagesFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,9 +112,9 @@ public class RecipeImagesFragment extends DialogFragment {
         super.onStart();
 
         Dialog d = getDialog();
-        if (d!=null) {
+        if (d != null) {
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
-            int height = ViewGroup.LayoutParams.MATCH_PARENT;;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
             d.getWindow().setLayout(width, height);
         }
     }
@@ -105,12 +127,11 @@ public class RecipeImagesFragment extends DialogFragment {
         int count = group.getChildCount();
         View v;
 
-        for(int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             v = group.getChildAt(i);
-            if(v instanceof TextView) {
+            if (v instanceof TextView) {
                 ((TextView) v).setTypeface(robotoCondensedLightFont);
-            }
-            else if(v instanceof ViewGroup) {
+            } else if (v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
             }
         }

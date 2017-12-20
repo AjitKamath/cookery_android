@@ -50,9 +50,9 @@ import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_VIEW;
 
-public class AddRecipeViewPagerAdapter extends PagerAdapter {
+public class RecipeAddViewPagerAdapter extends PagerAdapter {
     private Context mContext;
-    private static final String CLASS_NAME = AddRecipeViewPagerAdapter.class.getName();
+    private static final String CLASS_NAME = RecipeAddViewPagerAdapter.class.getName();
 
     private FragmentManager fragmentManager;
     private List<Integer> layoutsList;
@@ -96,7 +96,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     private MasterDataMO masterData;
     public RecipeMO recipe;
 
-    public AddRecipeViewPagerAdapter(Context context, FragmentManager fragmentManager, List<Integer> layoutsList, RecipeMO recipe, MasterDataMO masterData) {
+    public RecipeAddViewPagerAdapter(Context context, FragmentManager fragmentManager, List<Integer> layoutsList, RecipeMO recipe, MasterDataMO masterData) {
         this.mContext = context;
         this.fragmentManager = fragmentManager;
         this.layoutsList = layoutsList;
@@ -195,7 +195,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         recipe_add_recipe_steps_rv.setLayoutManager(mLayoutManager);
         recipe_add_recipe_steps_rv.setItemAnimator(new DefaultItemAnimator());
-        recipe_add_recipe_steps_rv.setAdapter(new StepsRecyclerViewAdapter(mContext, new ArrayList<String>(), new View.OnClickListener() {
+        recipe_add_recipe_steps_rv.setAdapter(new RecipeAddStepsRecyclerViewAdapter(mContext, new ArrayList<String>(), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(R.id.recipe_add_recipe_steps_item_delete_iv == view.getId()){
@@ -250,7 +250,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     }
 
     private void addStep(String step){
-        StepsRecyclerViewAdapter adapter = (StepsRecyclerViewAdapter)recipe_add_recipe_steps_rv.getAdapter();
+        RecipeAddStepsRecyclerViewAdapter adapter = (RecipeAddStepsRecyclerViewAdapter)recipe_add_recipe_steps_rv.getAdapter();
         adapter.addData(step);
 
         recipe.setSteps(adapter.steps);
@@ -258,7 +258,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     }
 
     private void removeStep(String step){
-        StepsRecyclerViewAdapter adapter = (StepsRecyclerViewAdapter)recipe_add_recipe_steps_rv.getAdapter();
+        RecipeAddStepsRecyclerViewAdapter adapter = (RecipeAddStepsRecyclerViewAdapter)recipe_add_recipe_steps_rv.getAdapter();
         adapter.removeData(step);
 
         recipe.setSteps(adapter.steps);
@@ -266,7 +266,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     }
 
     private void updateStep(String[] step){
-        StepsRecyclerViewAdapter adapter = (StepsRecyclerViewAdapter)recipe_add_recipe_steps_rv.getAdapter();
+        RecipeAddStepsRecyclerViewAdapter adapter = (RecipeAddStepsRecyclerViewAdapter)recipe_add_recipe_steps_rv.getAdapter();
         adapter.updateData(step);
 
         recipe.setSteps(adapter.steps);
@@ -351,7 +351,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
         /*auto complete*/
 
         /*ingredients list*/
-        IngredientsRecyclerViewAdapter adapter = new IngredientsRecyclerViewAdapter(mContext, new ArrayList<IngredientMO>(), new View.OnClickListener() {
+        RecipeAddIngredientsRecyclerViewAdapter adapter = new RecipeAddIngredientsRecyclerViewAdapter(mContext, new ArrayList<IngredientMO>(), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(R.id.recipe_add_ingredients_item_delete_iv == view.getId()){
@@ -442,7 +442,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     }
 
     public void addIngredient(IngredientMO ingredient){
-        IngredientsRecyclerViewAdapter adapter = (IngredientsRecyclerViewAdapter)recipe_add_ingredients_ingredients_rv.getAdapter();
+        RecipeAddIngredientsRecyclerViewAdapter adapter = (RecipeAddIngredientsRecyclerViewAdapter)recipe_add_ingredients_ingredients_rv.getAdapter();
         adapter.addData(ingredient);
         recipe.setIngredients(adapter.ingredients);
         recipe_add_ingredients_act.setText("");
@@ -450,7 +450,7 @@ public class AddRecipeViewPagerAdapter extends PagerAdapter {
     }
 
     public void removeIngredient(IngredientMO ingredient){
-        IngredientsRecyclerViewAdapter adapter = (IngredientsRecyclerViewAdapter)recipe_add_ingredients_ingredients_rv.getAdapter();
+        RecipeAddIngredientsRecyclerViewAdapter adapter = (RecipeAddIngredientsRecyclerViewAdapter)recipe_add_ingredients_ingredients_rv.getAdapter();
         adapter.removeData(ingredient);
         recipe.setIngredients(adapter.ingredients);
         updateIngredients();

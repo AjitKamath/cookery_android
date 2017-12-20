@@ -36,6 +36,8 @@ public class RecipeMO extends CommonMO implements Serializable {
     private boolean isReviewed;
     private ReviewMO userReview;
 
+    private String userImage;
+
     public List<String> getSteps() {
         return steps;
     }
@@ -210,5 +212,13 @@ public class RecipeMO extends CommonMO implements Serializable {
 
     public void setAvgRating(String avgRating) {
         this.avgRating = avgRating;
+    }
+
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
     }
 }

@@ -29,8 +29,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.adapters.AddRecipeViewPagerAdapter;
-import com.cookery.adapters.RecipeImagesViewPagerAdapter;
+import com.cookery.adapters.RecipeAddImagesViewPagerAdapter;
+import com.cookery.adapters.RecipeAddViewPagerAdapter;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientMO;
@@ -198,7 +198,7 @@ public class AddRecipeFragment extends DialogFragment {
         recipe_add_submit_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddRecipeViewPagerAdapter adapter = (AddRecipeViewPagerAdapter)recipe_add_tabs_vp.getAdapter();
+                RecipeAddViewPagerAdapter adapter = (RecipeAddViewPagerAdapter)recipe_add_tabs_vp.getAdapter();
                 adapter.setRecipeName();
 
                 updateRecipeObject(adapter.recipe);
@@ -234,7 +234,7 @@ public class AddRecipeFragment extends DialogFragment {
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        recipe_add_tabs_vp.setAdapter(new AddRecipeViewPagerAdapter(mContext, getFragmentManager(), viewPagerTabsList, recipe, masterData));
+        recipe_add_tabs_vp.setAdapter(new RecipeAddViewPagerAdapter(mContext, getFragmentManager(), viewPagerTabsList, recipe, masterData));
         recipe_add_tabs_vp.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(recipe_add_tl));
         recipe_add_tabs_vp.setOffscreenPageLimit(viewPagerTabsList.size());
 
@@ -258,12 +258,12 @@ public class AddRecipeFragment extends DialogFragment {
     }
 
     private void setupImages(List<String> images) {
-        recipe_add_images_vp.setAdapter(new RecipeImagesViewPagerAdapter(mContext, images, false, new View.OnClickListener() {
+        recipe_add_images_vp.setAdapter(new RecipeAddImagesViewPagerAdapter(mContext, images, false, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(view.getId() == R.id.view_pager_recipe_close_iv){
+                if(view.getId() == R.id.recipe_add_images_item_close_iv){
                     String imageStr = String.valueOf(view.getTag());
-                    List<String> images = ((RecipeImagesViewPagerAdapter)recipe_add_images_vp.getAdapter()).images;
+                    List<String> images = ((RecipeAddImagesViewPagerAdapter)recipe_add_images_vp.getAdapter()).images;
 
                     for(String image : images){
                         if(image.equalsIgnoreCase(imageStr)){
@@ -300,26 +300,26 @@ public class AddRecipeFragment extends DialogFragment {
             }
         });
 
-        recipe.setRCP_IMGS(((RecipeImagesViewPagerAdapter)recipe_add_images_vp.getAdapter()).images);
+        recipe.setRCP_IMGS(((RecipeAddImagesViewPagerAdapter)recipe_add_images_vp.getAdapter()).images);
         updateImagesCount();
     }
 
     public void setFoodType(FoodTypeMO foodType) {
-        ((AddRecipeViewPagerAdapter) recipe_add_tabs_vp.getAdapter()).setFoodType(foodType);
+        ((RecipeAddViewPagerAdapter) recipe_add_tabs_vp.getAdapter()).setFoodType(foodType);
     }
 
     public void setCuisine(CuisineMO cuisine) {
-        ((AddRecipeViewPagerAdapter) recipe_add_tabs_vp.getAdapter()).setCuisine(cuisine);
+        ((RecipeAddViewPagerAdapter) recipe_add_tabs_vp.getAdapter()).setCuisine(cuisine);
     }
 
     private void setPhoto(String photoPath){
-        ((RecipeImagesViewPagerAdapter) recipe_add_images_vp.getAdapter()).updateData(photoPath);
+        ((RecipeAddImagesViewPagerAdapter) recipe_add_images_vp.getAdapter()).updateData(photoPath);
         recipe_add_images_vp.setCurrentItem(recipe_add_images_vp.getChildCount()-1);
         updateImagesCount();
     }
 
     public void addIngredient(IngredientMO ingredient){
-        ((AddRecipeViewPagerAdapter) recipe_add_tabs_vp.getAdapter()).addIngredient(ingredient);
+        ((RecipeAddViewPagerAdapter) recipe_add_tabs_vp.getAdapter()).addIngredient(ingredient);
     }
 
     private void updateImagesCount(){

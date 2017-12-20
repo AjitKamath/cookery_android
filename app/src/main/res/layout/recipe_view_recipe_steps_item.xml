@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/recipe_view_recipe_steps_item_cv"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:background="@color/white"
+    app:cardBackgroundColor="@color/cardview_dark_background"
+    card_view:cardCornerRadius="5dp"
+    android:padding="2dp"
+    card_view:cardPreventCornerOverlap="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+        <RelativeLayout
+            android:id="@+id/recipe_view_recipe_steps_item_buttons_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true">
+
+            <TextView
+                android:layout_alignParentLeft="true"
+                android:id="@+id/recipe_view_recipe_steps_item_step_count_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="STEP 1"
+                android:gravity="center"
+                android:textColor="@color/primaryDarkText"
+                android:textSize="@dimen/tertiary_text_size" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/recipe_view_recipe_steps_item_buttons_ll"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:id="@+id/recipe_view_recipe_steps_item_step_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="This recipe made my day. This chef is the best !! Would like to try more from him. I follow this chef and he is good lookig too ;) I do not know what to write here. But i am typing because i want to see how a big comment looks like on the screen."
+                android:textColor="@color/secondaryDarkText"
+                android:textSize="@dimen/secondary_text_size" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
+
+

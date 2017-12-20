@@ -1,0 +1,24 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <TextView
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:id="@+id/recipe_view_recipe_steps_fullscreen_cooking_time_tv"
+        android:textColor="@color/secondaryDarkText"
+        android:text="30:00 min"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/recipe_view_recipe_steps_fullscreen_cooking_time_tv"
+        android:id="@+id/recipe_view_recipe_steps_fullscreen_steps_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:scrollbars="vertical"/>
+
+</RelativeLayout>

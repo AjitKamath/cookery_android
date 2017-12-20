@@ -22,15 +22,15 @@ import java.util.List;
 
 import static com.cookery.utils.Constants.UI_FONT;
 
-public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAdapter.ViewHolder> {
+public class RecipeAddStepsRecyclerViewAdapter extends RecyclerView.Adapter<RecipeAddStepsRecyclerViewAdapter.ViewHolder> {
 
-    private static final String CLASS_NAME = StepsRecyclerViewAdapter.class.getName();
+    private static final String CLASS_NAME = RecipeAddStepsRecyclerViewAdapter.class.getName();
     private Context mContext;
 
     public List<String> steps = new ArrayList<>();
     private View.OnClickListener listener;
 
-    public StepsRecyclerViewAdapter(Context mContext, List<String> steps, View.OnClickListener listener) {
+    public RecipeAddStepsRecyclerViewAdapter(Context mContext, List<String> steps, View.OnClickListener listener) {
         this.mContext = mContext;
         this.steps = steps;
         this.listener = listener;

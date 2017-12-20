@@ -21,15 +21,15 @@ import java.util.List;
 
 import static com.cookery.utils.Constants.UI_FONT;
 
-public class RecipeImagesViewPagerAdapter extends PagerAdapter {
+public class RecipeAddImagesViewPagerAdapter extends PagerAdapter {
     private Context mContext;
-    private static final String CLASS_NAME = RecipeImagesViewPagerAdapter.class.getName();
+    private static final String CLASS_NAME = RecipeAddImagesViewPagerAdapter.class.getName();
 
     public List<String> images;
     private View.OnClickListener listener;
     private boolean loadFromUrl;
 
-    public RecipeImagesViewPagerAdapter(Context context, List<String> images, boolean loadFromUrl, View.OnClickListener listener) {
+    public RecipeAddImagesViewPagerAdapter(Context context, List<String> images, boolean loadFromUrl, View.OnClickListener listener) {
         this.mContext = context;
         this.images = images;
         this.loadFromUrl = loadFromUrl;
@@ -39,7 +39,7 @@ public class RecipeImagesViewPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup collection, int position) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.view_pager_recipe_image, collection, false);
+        ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.recipe_add_images_item, collection, false);
 
         setupPage(layout, position);
 
@@ -55,20 +55,20 @@ public class RecipeImagesViewPagerAdapter extends PagerAdapter {
             return;
         }
 
-        ImageView view_pager_recipe_image_iv = layout.findViewById(R.id.view_pager_recipe_image_iv);
-        ImageView view_pager_recipe_close_iv = layout.findViewById(R.id.view_pager_recipe_close_iv);
+        ImageView recipe_add_images_item_image_iv = layout.findViewById(R.id.recipe_add_images_item_image_iv);
+        ImageView recipe_add_images_item_close_iv = layout.findViewById(R.id.recipe_add_images_item_close_iv);
 
-        view_pager_recipe_close_iv.setTag(images.get(position));
+        recipe_add_images_item_close_iv.setTag(images.get(position));
 
         if(loadFromUrl){
-            Utility.loadImageFromURL(mContext, images.get(position), view_pager_recipe_image_iv);
+            Utility.loadImageFromURL(mContext, images.get(position), recipe_add_images_item_image_iv);
         }
         else{
-            Utility.loadImageFromPath(mContext, images.get(position), view_pager_recipe_image_iv);
+            Utility.loadImageFromPath(mContext, images.get(position), recipe_add_images_item_image_iv);
         }
 
-        view_pager_recipe_image_iv.setOnClickListener(listener);
-        view_pager_recipe_close_iv.setOnClickListener(listener);
+        recipe_add_images_item_image_iv.setOnClickListener(listener);
+        recipe_add_images_item_close_iv.setOnClickListener(listener);
     }
 
     public void updateData(String newImage){

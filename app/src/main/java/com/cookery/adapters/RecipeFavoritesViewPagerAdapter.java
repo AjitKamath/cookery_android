@@ -24,14 +24,14 @@ import java.util.Map;
 
 import static com.cookery.utils.Constants.UI_FONT;
 
-public class FavRecipesViewPagerAdapter extends PagerAdapter {
+public class RecipeFavoritesViewPagerAdapter extends PagerAdapter {
     private Context mContext;
-    private static final String CLASS_NAME = FavRecipesViewPagerAdapter.class.getName();
+    private static final String CLASS_NAME = RecipeFavoritesViewPagerAdapter.class.getName();
 
     private Map<String, List<RecipeMO>> favRecipes;
     private View.OnClickListener listener;
 
-    public FavRecipesViewPagerAdapter(Context context, Map<String, List<RecipeMO>> favRecipes, View.OnClickListener listener) {
+    public RecipeFavoritesViewPagerAdapter(Context context, Map<String, List<RecipeMO>> favRecipes, View.OnClickListener listener) {
         this.mContext = context;
         this.favRecipes = favRecipes;
         this.listener = listener;

@@ -18,7 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.adapters.FavRecipesViewPagerAdapter;
+import com.cookery.adapters.RecipeFavoritesViewPagerAdapter;
 import com.cookery.models.RecipeMO;
 import com.cookery.utils.Utility;
 
@@ -87,7 +87,7 @@ public class FavoriteRecipesFragment extends DialogFragment {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        common_fragment_fav_recipes_tab_vp.setAdapter(new FavRecipesViewPagerAdapter(mContext, favRecipesMap, new View.OnClickListener() {
+        common_fragment_fav_recipes_tab_vp.setAdapter(new RecipeFavoritesViewPagerAdapter(mContext, favRecipesMap, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 RecipeMO recipe = (RecipeMO) view.getTag();

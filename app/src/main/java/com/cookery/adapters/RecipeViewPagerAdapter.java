@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cookery.R;
@@ -28,11 +29,13 @@ public class RecipeViewPagerAdapter extends PagerAdapter {
 
     private List<Integer> layouts;
     public RecipeMO recipe;
+    private View.OnClickListener listener;
 
-    public RecipeViewPagerAdapter(Context context, List<Integer> layouts, RecipeMO recipe) {
+    public RecipeViewPagerAdapter(Context context, List<Integer> layouts, RecipeMO recipe, View.OnClickListener listener) {
         this.mContext = context;
         this.layouts = layouts;
         this.recipe = recipe;
+        this.listener = listener;
     }
 
     @Override
@@ -51,27 +54,35 @@ public class RecipeViewPagerAdapter extends PagerAdapter {
     }
 
     private void setupRecipeIngredients(ViewGroup layout) {
-        /*IngredientsRecyclerViewAdapter adapter = new IngredientsRecyclerViewAdapter(mContext, recipe.getIngredients());
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
+        RecipeViewIngredientsRecyclerViewAdapter adapter = new RecipeViewIngredientsRecyclerViewAdapter(mContext, recipe.getIngredients(), new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        RecyclerView view_pager_recipe_ingredients_rv = layout.findViewById(R.id.view_pager_recipe_ingredients_rv);
+            }
+        });
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+
+        RecyclerView view_pager_recipe_ingredients_rv = layout.findViewById(R.id.recipe_view_ingredients_rv);
         view_pager_recipe_ingredients_rv.setLayoutManager(mLayoutManager);
         view_pager_recipe_ingredients_rv.setItemAnimator(new DefaultItemAnimator());
-        view_pager_recipe_ingredients_rv.setAdapter(adapter);*/
+        view_pager_recipe_ingredients_rv.setAdapter(adapter);
     }
 
     private void setupRecipeSteps(ViewGroup layout) {
-        RecyclerView recipe_view_recipe_proc_rv = layout.findViewById(R.id.recipe_view_recipe_proc_rv);
+        ImageView recipe_view_recipe_steps_fullscreen_iv = layout.findViewById(R.id.recipe_view_recipe_steps_fullscreen_iv);
+        RecyclerView recipe_view_recipe_steps_rv = layout.findViewById(R.id.recipe_view_recipe_steps_rv);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-        recipe_view_recipe_proc_rv.setLayoutManager(mLayoutManager);
-        recipe_view_recipe_proc_rv.setItemAnimator(new DefaultItemAnimator());
-        recipe_view_recipe_proc_rv.setAdapter(new StepsRecyclerViewAdapter(mContext, recipe.getSteps(), new View.OnClickListener() {
+        recipe_view_recipe_steps_rv.setLayoutManager(mLayoutManager);
+        recipe_view_recipe_steps_rv.setItemAnimator(new DefaultItemAnimator());
+        recipe_view_recipe_steps_rv.setAdapter(new RecipeViewStepsRecyclerViewAdapter(mContext, recipe.getSteps(), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
         }));
+
+        recipe_view_recipe_steps_fullscreen_iv.setOnClickListener(listener);
     }
 
     @Override

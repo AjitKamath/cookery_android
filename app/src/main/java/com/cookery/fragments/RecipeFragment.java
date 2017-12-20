@@ -21,7 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.adapters.RecipeImagesViewPagerAdapter;
+import com.cookery.adapters.RecipeViewImagesFullscreenViewPagerAdapter;
 import com.cookery.adapters.RecipeViewPagerAdapter;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
@@ -31,12 +31,17 @@ import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE_STEPS;
+import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
 
@@ -54,6 +59,9 @@ public class RecipeFragment extends DialogFragment {
 
     @InjectView(R.id.common_fragment_recipe_vp)
     ViewPager common_fragment_recipe_vp;
+
+    @InjectView(R.id.recipe_view_images_count_tv)
+    TextView recipe_view_images_count_tv;
 
     @InjectView(R.id.common_fragment_recipe_like_iv)
     ImageView common_fragment_recipe_like_iv;
@@ -84,6 +92,9 @@ public class RecipeFragment extends DialogFragment {
 
     @InjectView(R.id.common_fragment_recipe_cuisine_name_tv)
     TextView common_fragment_recipe_cuisine_name_tv;
+
+    @InjectView(R.id.recipe_view_user_iv)
+    ImageView recipe_view_user_iv;
 
     @InjectView(R.id.common_fragment_recipe_username_tv)
     TextView common_fragment_recipe_username_tv;
@@ -140,6 +151,10 @@ public class RecipeFragment extends DialogFragment {
     private void setupPage() {
         setupImages();
 
+        if(recipe.getUserImage() != null && !recipe.getUserImage().trim().isEmpty()){
+            Utility.loadImageFromURL(mContext, recipe.getUserImage().trim(), recipe_view_user_iv);
+        }
+
         common_fragment_recipe_recipe_name_tv.setText(recipe.getRCP_NAME().toUpperCase());
         common_fragment_recipe_food_type_tv.setText(recipe.getFOOD_TYP_NAME().toUpperCase());
         common_fragment_recipe_cuisine_name_tv.setText(recipe.getFOOD_CSN_NAME());
@@ -148,7 +163,7 @@ public class RecipeFragment extends DialogFragment {
 
         final List<Integer> viewPagerTabsList = new ArrayList<>();
         viewPagerTabsList.add(R.layout.recipe_view_recipe);
-        viewPagerTabsList.add(R.layout.view_pager_recipe_ingredients);
+        viewPagerTabsList.add(R.layout.recipe_view_ingredients);
 
         for(Integer iter : viewPagerTabsList){
             common_fragment_recipe_tl.addTab(common_fragment_recipe_tl.newTab());
@@ -157,7 +172,17 @@ public class RecipeFragment extends DialogFragment {
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        common_fragment_recipe_tab_vp.setAdapter(new RecipeViewPagerAdapter(mContext, viewPagerTabsList, recipe));
+        common_fragment_recipe_tab_vp.setAdapter(new RecipeViewPagerAdapter(mContext, viewPagerTabsList, recipe, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(view.getId() == R.id.recipe_view_recipe_steps_fullscreen_iv){
+                    Map<String, Object> bundleMap = new HashMap<String, Object>();
+                    bundleMap.put(GENERIC_OBJECT, recipe.getSteps());
+
+                    Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE, FRAGMENT_RECIPE_STEPS, new RecipeViewStepsFragment(), bundleMap);
+                }
+            }
+        }));
         common_fragment_recipe_tab_vp.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(common_fragment_recipe_tl));
 
         common_fragment_recipe_tl.setupWithViewPager(common_fragment_recipe_tab_vp);
@@ -216,13 +241,40 @@ public class RecipeFragment extends DialogFragment {
     }
 
     private void setupImages() {
-        common_fragment_recipe_vp.setAdapter(new RecipeImagesViewPagerAdapter(mContext, recipe.getRCP_IMGS(), true, new View.OnClickListener(){
+        common_fragment_recipe_vp.setAdapter(new RecipeViewImagesFullscreenViewPagerAdapter(mContext, recipe.getRCP_IMGS(), new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                //TODO: do not re use showrecipefragment. implement another fragment
-                //Utility.showRecipeImagesFragment(getFragmentManager(), recipe);
+                Object array[] = new Object[]{common_fragment_recipe_vp.getCurrentItem(), recipe.getRCP_IMGS()};
+
+                Map<String, Object> bundleMap = new HashMap<String, Object>();
+                bundleMap.put(GENERIC_OBJECT, array);
+
+                Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE, FRAGMENT_RECIPE_IMAGES, new RecipeViewImagesFragment(), bundleMap);
             }
         }));
+
+        common_fragment_recipe_vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                updateImageCounter(++position, recipe.getRCP_IMGS().size());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        updateImageCounter(1, recipe.getRCP_IMGS().size());
+    }
+
+    private void updateImageCounter(int index, int maxCount){
+        recipe_view_images_count_tv.setText(index+"/"+maxCount);
     }
 
     public void setLikeView(){

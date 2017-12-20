@@ -20,6 +20,8 @@ import com.cookery.fragments.RecipeCommentsFragment;
 import com.cookery.fragments.RecipeFragment;
 import com.cookery.fragments.RecipeImagesFragment;
 import com.cookery.fragments.RecipeReviewFragment;
+import com.cookery.fragments.RecipeViewImagesFragment;
+import com.cookery.fragments.RecipeViewStepsFragment;
 import com.cookery.fragments.WaitFragment;
 import com.cookery.models.CommentMO;
 import com.cookery.models.CuisineMO;
@@ -450,6 +452,22 @@ public class Utility extends Activity {
 
         if(fragment instanceof AddRecipeFragment){
             AddRecipeFragment currentFrag = (AddRecipeFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof RecipeViewImagesFragment){
+            RecipeViewImagesFragment currentFrag = (RecipeViewImagesFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof RecipeViewStepsFragment){
+            RecipeViewStepsFragment currentFrag = (RecipeViewStepsFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);

@@ -5,14 +5,14 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/view_pager_recipe_image_iv"
+        android:id="@+id/recipe_add_images_item_image_iv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/food_sample"/>
+        android:src="@drawable/placeholder"/>
 
     <ImageView
-        android:id="@+id/view_pager_recipe_close_iv"
+        android:id="@+id/recipe_add_images_item_close_iv"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:src="@drawable/ic_close_white_36dp"

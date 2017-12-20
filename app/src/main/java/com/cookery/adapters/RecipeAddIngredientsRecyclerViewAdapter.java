@@ -22,15 +22,15 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<IngredientsRecyclerViewAdapter.ViewHolder> {
+public class RecipeAddIngredientsRecyclerViewAdapter extends RecyclerView.Adapter<RecipeAddIngredientsRecyclerViewAdapter.ViewHolder> {
 
-    private static final String CLASS_NAME = IngredientsRecyclerViewAdapter.class.getName();
+    private static final String CLASS_NAME = RecipeAddIngredientsRecyclerViewAdapter.class.getName();
     private Context mContext;
 
     public List<IngredientMO> ingredients;
     private View.OnClickListener listener;
 
-    public IngredientsRecyclerViewAdapter(Context mContext, List<IngredientMO> ingredients, View.OnClickListener listener) {
+    public RecipeAddIngredientsRecyclerViewAdapter(Context mContext, List<IngredientMO> ingredients, View.OnClickListener listener) {
         this.mContext = mContext;
         this.ingredients = ingredients;
         this.listener = listener;
