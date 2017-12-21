@@ -29,6 +29,7 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FOOD_CUISINE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FOOD_TYPE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_INGREDIENT_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_FETCH_USERS;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_FAVORITE_FETCH;
@@ -47,6 +48,7 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_USER_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_LOGIN;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_REGISTER;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_VIEW_FETCH_USERS;
 import static com.cookery.utils.Constants.SERVER_ADDRESS_PUBLIC;
 import static com.cookery.utils.Constants.SERVER_CHARSET;
 import static com.cookery.utils.Constants.SUCCESS;
@@ -251,8 +253,8 @@ public class InternetUtility {
             //images
             //Note: image upload doesnt work if you do not add form field to multipart.
             //form field should be added to multipart only after file part
-            for(int i=0; i<recipe.getRCP_IMGS().size(); i++){
-                multipart.addFilePart("images["+i+"]", new File(recipe.getRCP_IMGS().get(i)));
+            for(int i=0; i<recipe.getImages().size(); i++){
+                multipart.addFilePart("images["+i+"]", new File(recipe.getImages().get(i)));
             }
 
             multipart.addFormField(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_RECIPE_SUBMIT);
@@ -415,6 +417,53 @@ public class InternetUtility {
         }
         catch (Exception e){
             Log.e(CLASS_NAME, "Could not fetch recipe comments from the server : "+e);
+        }
+
+        return null;
+    }
+
+    public static List<UserMO> fetchLikedUsers(RecipeMO recipe) {
+        if(USE_TEST_DATA){
+            return null;
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_LIKE_FETCH_USERS);
+            paramMap.put("type", "RECIPE");
+            paramMap.put("type_id", String.valueOf(recipe.getRCP_ID()));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return (List<UserMO>) Utility.jsonToObject(jsonStr, UserMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch user who liked recipe from the server : "+e);
+        }
+
+        return null;
+    }
+
+    public static List<UserMO> fetchViewedUsers(RecipeMO recipe) {
+        if(USE_TEST_DATA){
+            return null;
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_VIEW_FETCH_USERS);
+            paramMap.put("rcp_id", String.valueOf(recipe.getRCP_ID()));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return (List<UserMO>) Utility.jsonToObject(jsonStr, UserMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch user who viewed recipe from the server : "+e);
         }
 
         return null;

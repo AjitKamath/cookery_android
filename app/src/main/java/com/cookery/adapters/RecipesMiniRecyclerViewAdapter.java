@@ -53,16 +53,16 @@ public class RecipesMiniRecyclerViewAdapter extends RecyclerView.Adapter<Recipes
     public void onBindViewHolder(ViewHolder holder, int position) {
         final RecipeMO recipe = recipes.get(position);
 
-        if(recipe.getRCP_IMGS() != null && !recipe.getRCP_IMGS().isEmpty()){
-            Utility.loadImageFromURL(mContext, recipe.getRCP_IMGS().get(0), holder.view_pager_recipes_recipe_mini_iv);
+        if(recipe.getImages() != null && !recipe.getImages().isEmpty()){
+            Utility.loadImageFromURL(mContext, recipe.getImages().get(0), holder.view_pager_recipes_recipe_mini_iv);
         }
 
         holder.view_pager_recipes_recipe_mini_tv.setText(recipe.getRCP_NAME().toUpperCase());
-        holder.view_pager_recipes_recipe_mini_food_type_tv.setText(recipe.getFOOD_TYP_NAME().toUpperCase());
-        holder.view_pager_recipes_recipe_mini_cuisine_tv.setText(recipe.getFOOD_CSN_NAME().toUpperCase());
+        holder.view_pager_recipes_recipe_mini_food_type_tv.setText(recipe.getFoodTypeName().toUpperCase());
+        holder.view_pager_recipes_recipe_mini_cuisine_tv.setText(recipe.getFoodCuisineName().toUpperCase());
         holder.view_pager_recipes_recipe_mini_rating_tv.setText(recipe.getUserReview().getRATING());
-        holder.view_pager_recipes_recipe_mini_views_tv.setText(Utility.getSmartNumber(recipe.getViews()));
-        holder.view_pager_recipes_recipe_mini_likes_tv.setText(Utility.getSmartNumber(recipe.getLikes()));
+        holder.view_pager_recipes_recipe_mini_views_tv.setText(Utility.getSmartNumber(recipe.getViewedUsers() == null ? 0: recipe.getViewedUsers().size()));
+        holder.view_pager_recipes_recipe_mini_likes_tv.setText(Utility.getSmartNumber(recipe.getLikedUsers() == null ? 0: recipe.getLikedUsers().size()));
 
         if(recipe.getMOD_DTM() != null && !recipe.getMOD_DTM().trim().isEmpty()){
             Date date = DateTimeUtility.convertStringToDateTime(recipe.getMOD_DTM(), DB_DATE_TIME);
@@ -78,7 +78,7 @@ public class RecipesMiniRecyclerViewAdapter extends RecyclerView.Adapter<Recipes
         }
         else{
             holder.view_pager_recipes_recipe_mini_username_tv.setVisibility(View.VISIBLE);
-            holder.view_pager_recipes_recipe_mini_username_tv.setText(recipe.getNAME());
+            holder.view_pager_recipes_recipe_mini_username_tv.setText(recipe.getUserName());
         }
 
         holder.view_pager_recipes_recipe_mini_rl.setTag(recipe);

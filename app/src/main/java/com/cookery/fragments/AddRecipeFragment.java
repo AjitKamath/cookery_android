@@ -152,7 +152,7 @@ public class AddRecipeFragment extends DialogFragment {
             return false;
         }
 
-        if(recipe.getRCP_IMGS() == null || recipe.getRCP_IMGS().isEmpty()){
+        if(recipe.getImages() == null || recipe.getImages().isEmpty()){
             Utility.showSnacks(recipe_add_rl, "Add atleast one recipe image !", OK, Snackbar.LENGTH_SHORT);
             return false;
         }
@@ -300,7 +300,7 @@ public class AddRecipeFragment extends DialogFragment {
             }
         });
 
-        recipe.setRCP_IMGS(((RecipeAddImagesViewPagerAdapter)recipe_add_images_vp.getAdapter()).images);
+        recipe.setImages(((RecipeAddImagesViewPagerAdapter)recipe_add_images_vp.getAdapter()).images);
         updateImagesCount();
     }
 

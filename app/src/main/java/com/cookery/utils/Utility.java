@@ -21,6 +21,7 @@ import com.cookery.fragments.RecipeFragment;
 import com.cookery.fragments.RecipeImagesFragment;
 import com.cookery.fragments.RecipeReviewFragment;
 import com.cookery.fragments.RecipeViewImagesFragment;
+import com.cookery.fragments.RecipeViewLikedViewedUsersFragment;
 import com.cookery.fragments.RecipeViewStepsFragment;
 import com.cookery.fragments.WaitFragment;
 import com.cookery.models.CommentMO;
@@ -41,6 +42,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -65,7 +67,13 @@ public class Utility extends Activity {
 
     public static UserMO getUserFromUserSecurity(Context context){
         UserSecurity userSecurity = new UserSecurity(context);
-        return (UserMO) userSecurity.read(LOGGED_IN_USER);
+        List<UserMO> users = (List<UserMO>) userSecurity.read(LOGGED_IN_USER);
+
+        if(users != null && !users.isEmpty()){
+            return users.get(0);
+        }
+
+        return null;
     }
 
     public static void writeIntoUserSecurity(Context context, String key, Object value){
@@ -128,7 +136,10 @@ public class Utility extends Activity {
 
         try {
             if (object instanceof UserMO) {
-                return gson.toJson(object, new TypeToken<UserMO>(){}.getType());
+                List<UserMO> users = new ArrayList<UserMO>();
+                users.add((UserMO) object);
+
+                return gson.toJson(users, new TypeToken<List<UserMO>>(){}.getType());
             }
             else{
                 Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+object.getClass().getName());
@@ -175,7 +186,7 @@ public class Utility extends Activity {
                 return gson.fromJson(jsonStr, new TypeToken<MessageMO>(){}.getType());
             }
             else if(mappingClass.equals(UserMO.class)){
-                return gson.fromJson(jsonStr, new TypeToken<UserMO>(){}.getType());
+                return gson.fromJson(jsonStr, new TypeToken<List<UserMO>>(){}.getType());
             }
             else if(mappingClass.equals(ReviewMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<ReviewMO>>(){}.getType());
@@ -468,6 +479,14 @@ public class Utility extends Activity {
         }
         else if(fragment instanceof RecipeViewStepsFragment){
             RecipeViewStepsFragment currentFrag = (RecipeViewStepsFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof RecipeViewLikedViewedUsersFragment){
+            RecipeViewLikedViewedUsersFragment currentFrag = (RecipeViewLikedViewedUsersFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);

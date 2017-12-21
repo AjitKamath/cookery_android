@@ -113,11 +113,11 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
 
             autocomplete_tv.setText(recipe.getRCP_NAME().toUpperCase());
 
-            if(recipe.getRCP_IMGS() != null && recipe.getRCP_IMGS().get(0) != null){
-                Utility.loadImageFromURL(mContext, recipe.getRCP_IMGS().get(0), autocomplete_iv);
+            if(recipe.getImages() != null && recipe.getImages().get(0) != null){
+                Utility.loadImageFromURL(mContext, recipe.getImages().get(0), autocomplete_iv);
             }
 
-            home_master_search_recipe_item_user_name_tv.setText(recipe.getNAME());
+            home_master_search_recipe_item_user_name_tv.setText(recipe.getUserName());
 
             convertView.setTag(recipe);
 

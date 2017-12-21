@@ -52,8 +52,8 @@ public class ReviewsMiniRecyclerViewAdapter extends RecyclerView.Adapter<Reviews
     public void onBindViewHolder(ViewHolder holder, int position) {
         final RecipeMO recipe = reviews.get(position);
 
-        if(recipe.getRCP_IMGS() != null && !recipe.getRCP_IMGS().isEmpty()){
-            Utility.loadImageFromURL(mContext, recipe.getRCP_IMGS().get(0), holder.fragment_reviews_review_mini_item_iv);
+        if(recipe.getImages() != null && !recipe.getImages().isEmpty()){
+            Utility.loadImageFromURL(mContext, recipe.getImages().get(0), holder.fragment_reviews_review_mini_item_iv);
         }
 
         /*stars*/
@@ -66,9 +66,9 @@ public class ReviewsMiniRecyclerViewAdapter extends RecyclerView.Adapter<Reviews
         /*stars*/
 
         holder.fragment_reviews_review_mini_item_recipe_name_tv.setText(recipe.getRCP_NAME().toUpperCase());
-        holder.fragment_reviews_review_mini_item_food_type_tv.setText(recipe.getFOOD_TYP_NAME().toUpperCase());
-        holder.fragment_reviews_review_mini_item_cuisine_tv.setText(recipe.getFOOD_CSN_NAME().toUpperCase());
-        holder.fragment_reviews_review_mini_item_likes_count_tv.setText(String.valueOf(recipe.getLikes()));
+        holder.fragment_reviews_review_mini_item_food_type_tv.setText(recipe.getFoodTypeName().toUpperCase());
+        holder.fragment_reviews_review_mini_item_cuisine_tv.setText(recipe.getFoodCuisineName().toUpperCase());
+        holder.fragment_reviews_review_mini_item_likes_count_tv.setText(String.valueOf(recipe.getLikedUsers() == null ? 0 : recipe.getLikedUsers().size()));
 
         if(recipe.getReviews() != null || !recipe.getReviews().isEmpty()){
             holder.fragment_reviews_review_mini_item_review_tv.setText(recipe.getReviews().get(0).getREVIEW());
@@ -84,7 +84,7 @@ public class ReviewsMiniRecyclerViewAdapter extends RecyclerView.Adapter<Reviews
             holder.view_pager_recipes_recipe_mini_date_time_tv.setText(DateTimeUtility.getSmartDateTime(date));
         }
 
-        holder.fragment_reviews_review_mini_item_username_tv.setText(recipe.getNAME());
+        holder.fragment_reviews_review_mini_item_username_tv.setText(recipe.getUserName());
 
         holder.fragment_reviews_review_mini_item_rl.setTag(recipe);
         holder.fragment_reviews_review_mini_item_rl.setOnClickListener(listener);

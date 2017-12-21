@@ -47,38 +47,35 @@ public class TestData {
 
         recipe = new RecipeMO();
         recipe.setRCP_NAME("CHICKEN TANDORI");
-        recipe.setFOOD_TYP_NAME("DINNER");
-        recipe.setFOOD_CSN_NAME("INDIAN");
-        recipe.setNAME("Vishal Varhney");
+        recipe.setFoodTypeName("DINNER");
+        recipe.setFoodCuisineName("INDIAN");
+        recipe.setUserName("Vishal Varhney");
         recipe.setRCP_PROC("Kill it. boil it. eat it.");
         recipe.setIngredients(ingredients);
         recipe.setReviews(reviews);
         recipe.setComments(comments);
-        recipe.setLikes(34);
         recipes.add(recipe);
 
         recipe = new RecipeMO();
         recipe.setRCP_NAME("MUSHROOM NOODLES");
-        recipe.setFOOD_TYP_NAME("BREAKFAST");
-        recipe.setFOOD_CSN_NAME("CHINESE");
+        recipe.setFoodTypeName("BREAKFAST");
+        recipe.setFoodCuisineName("CHINESE");
         recipe.setRCP_PROC("Boil water. Burn chicken. Cut tomatoes. Eat and dance.");
         recipe.setIngredients(ingredients);
         recipe.setComments(comments);
         recipe.setReviews(reviews);
-        recipe.setNAME("Ajit Kamath");
-        recipe.setLikes(86);
+        recipe.setUserName("Ajit Kamath");
         recipes.add(recipe);
 
         recipe = new RecipeMO();
         recipe.setRCP_NAME("MASALA DOSA");
-        recipe.setFOOD_TYP_NAME("BREAKFAST");
-        recipe.setFOOD_CSN_NAME("SOUTH INDIAN");
+        recipe.setFoodTypeName("BREAKFAST");
+        recipe.setFoodCuisineName("SOUTH INDIAN");
         recipe.setRCP_PROC("Water + salt + sugar + lemon = lemon juice");
         recipe.setIngredients(ingredients);
         recipe.setComments(comments);
         recipe.setReviews(reviews);
-        recipe.setNAME("Ashish Bhargav");
-        recipe.setLikes(58);
+        recipe.setUserName("Ashish Bhargav");
         recipes.add(recipe);
 
         return recipes;

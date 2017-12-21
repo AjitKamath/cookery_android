@@ -11,6 +11,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,10 +41,13 @@ import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE_LIKED_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_STEPS;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE_VIEWED_USERS;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
 /**
  * Created by ajit on 21/3/16.
@@ -156,10 +160,10 @@ public class RecipeFragment extends DialogFragment {
         }
 
         common_fragment_recipe_recipe_name_tv.setText(recipe.getRCP_NAME().toUpperCase());
-        common_fragment_recipe_food_type_tv.setText(recipe.getFOOD_TYP_NAME().toUpperCase());
-        common_fragment_recipe_cuisine_name_tv.setText(recipe.getFOOD_CSN_NAME());
-        common_fragment_recipe_username_tv.setText(recipe.getNAME());
-        common_fragment_recipe_views_tv.setText(Utility.getSmartNumber(recipe.getViews()));
+        common_fragment_recipe_food_type_tv.setText(recipe.getFoodTypeName().toUpperCase());
+        common_fragment_recipe_cuisine_name_tv.setText(recipe.getFoodCuisineName());
+        common_fragment_recipe_username_tv.setText(recipe.getUserName());
+        common_fragment_recipe_views_tv.setText(Utility.getSmartNumber(recipe.getViewedUsers() == null ? 0 : recipe.getViewedUsers().size()));
 
         final List<Integer> viewPagerTabsList = new ArrayList<>();
         viewPagerTabsList.add(R.layout.recipe_view_recipe);
@@ -210,14 +214,13 @@ public class RecipeFragment extends DialogFragment {
     }
 
     private void setViewView() {
-        common_fragment_recipe_views_tv.setText(String.valueOf(recipe.getViews()));
+        common_fragment_recipe_views_tv.setText(String.valueOf(recipe.getViewedUsers() == null ? 0 : recipe.getViewedUsers().size()));
 
         common_fragment_recipe_view_ll.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                //TODO: show people who have viewed this recipe
-
-                return false;
+                new AsyncFetchLikedViewedUsers("VIEW").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                return true;
             }
         });
     }
@@ -241,10 +244,10 @@ public class RecipeFragment extends DialogFragment {
     }
 
     private void setupImages() {
-        common_fragment_recipe_vp.setAdapter(new RecipeViewImagesFullscreenViewPagerAdapter(mContext, recipe.getRCP_IMGS(), new View.OnClickListener(){
+        common_fragment_recipe_vp.setAdapter(new RecipeViewImagesFullscreenViewPagerAdapter(mContext, recipe.getImages(), new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Object array[] = new Object[]{common_fragment_recipe_vp.getCurrentItem(), recipe.getRCP_IMGS()};
+                Object array[] = new Object[]{common_fragment_recipe_vp.getCurrentItem(), recipe.getImages()};
 
                 Map<String, Object> bundleMap = new HashMap<String, Object>();
                 bundleMap.put(GENERIC_OBJECT, array);
@@ -261,7 +264,7 @@ public class RecipeFragment extends DialogFragment {
 
             @Override
             public void onPageSelected(int position) {
-                updateImageCounter(++position, recipe.getRCP_IMGS().size());
+                updateImageCounter(++position, recipe.getImages().size());
             }
 
             @Override
@@ -270,7 +273,7 @@ public class RecipeFragment extends DialogFragment {
             }
         });
 
-        updateImageCounter(1, recipe.getRCP_IMGS().size());
+        updateImageCounter(1, recipe.getImages().size());
     }
 
     private void updateImageCounter(int index, int maxCount){
@@ -278,11 +281,9 @@ public class RecipeFragment extends DialogFragment {
     }
 
     public void setLikeView(){
-        if(recipe.getLikes() != -1){
-            common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(recipe.getLikes()));
-        }
+        common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(recipe.getLikedUsers() == null ? 0 : recipe.getLikedUsers().size()));
 
-        if(recipe.isLiked()){
+        if(recipe.isUserLiked()){
             common_fragment_recipe_like_iv.setImageResource(R.drawable.heart);
         }
         else{
@@ -304,6 +305,14 @@ public class RecipeFragment extends DialogFragment {
                 new AsyncSubmitLike().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
             }
         });
+
+        common_fragment_recipe_like_ll.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                new AsyncFetchLikedViewedUsers("LIKE").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                return true;
+            }
+        });
     }
 
     public void setRatingView(){
@@ -311,7 +320,7 @@ public class RecipeFragment extends DialogFragment {
             common_fragment_recipe_rating_tv.setText(String.valueOf(recipe.getAvgRating()));
         }
 
-        if(recipe.isReviewed()){
+        if(recipe.isUserReviewed()){
             common_fragment_recipe_rating_iv.setImageResource(R.drawable.star);
         }
         else{
@@ -386,8 +395,8 @@ public class RecipeFragment extends DialogFragment {
             LikesMO like = (LikesMO) object;
 
             if(like != null){
-                recipe.setLikes(like.getLikes());
-                recipe.setLiked(like.isLiked());
+                recipe.setUserLiked(like.isLiked());
+                recipe.setUserLiked(like.isLiked());
 
                 setLikeView();
             }
@@ -479,7 +488,7 @@ public class RecipeFragment extends DialogFragment {
 
                 Utility.closeWaitDialog(getFragmentManager(), fragment);
 
-                if(recipe.isReviewed()) {
+                if(recipe.isUserReviewed()) {
                     MessageMO message = new MessageMO();
                     message.setPurpose("ADD_RECIPE_REVIEW");
 
@@ -489,6 +498,84 @@ public class RecipeFragment extends DialogFragment {
                     Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_RECIPE);
                     Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
                 }
+            }
+        }
+    }
+
+    class AsyncFetchLikedViewedUsers extends AsyncTask<Void, Void, Object> {
+        private Fragment fragment;
+        private String purpose;
+
+        public AsyncFetchLikedViewedUsers(String purpose){
+            this.purpose = purpose;
+        }
+
+        @Override
+        protected void onPreExecute(){
+            if("LIKE".equalsIgnoreCase(purpose)){
+                fragment = Utility.showWaitDialog(getFragmentManager(), "fetching users who liked the Recipe ..");
+            }
+            else if("VIEW".equalsIgnoreCase(purpose)){
+                fragment = Utility.showWaitDialog(getFragmentManager(), "fetching users who viewed the Recipe ..");
+            }
+            else{
+                fragment = Utility.showWaitDialog(getFragmentManager(), "unknown");
+            }
+        }
+
+        @Override
+        protected Object doInBackground(Void... objects) {
+            if("LIKE".equalsIgnoreCase(purpose)){
+                return InternetUtility.fetchLikedUsers(recipe);
+            }
+            else if("VIEW".equalsIgnoreCase(purpose)){
+                return InternetUtility.fetchViewedUsers(recipe);
+            }
+            else{
+                Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+purpose);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            if(object == null){
+                return;
+            }
+
+            List<UserMO> users = (List<UserMO>) object;
+
+            if(users != null){
+                Utility.closeWaitDialog(getFragmentManager(), fragment);
+
+                if("LIKE".equalsIgnoreCase(purpose)){
+                    recipe.setLikedUsers(users);
+                    setLikeView();
+
+                    if(recipe.getLikedUsers() != null && !recipe.getLikedUsers().isEmpty()) {
+                        Object array[] = new Object[]{"LIKE", recipe.getLikedUsers()};
+
+                        Map<String, Object> bundleMap = new HashMap<String, Object>();
+                        bundleMap.put(GENERIC_OBJECT, array);
+
+                        Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE, FRAGMENT_RECIPE_LIKED_USERS, new RecipeViewLikedViewedUsersFragment(), bundleMap);
+                    }
+                }
+                else if("VIEW".equalsIgnoreCase(purpose)){
+                    recipe.setViewedUsers(users);
+                    setViewView();
+
+                    if(recipe.getViewedUsers() != null && !recipe.getViewedUsers().isEmpty()) {
+                        Object array[] = new Object[]{"VIEW", recipe.getViewedUsers()};
+
+                        Map<String, Object> bundleMap = new HashMap<String, Object>();
+                        bundleMap.put(GENERIC_OBJECT, array);
+
+                        Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE, FRAGMENT_RECIPE_VIEWED_USERS, new RecipeViewLikedViewedUsersFragment(), bundleMap);
+                    }
+                }
+
             }
         }
     }

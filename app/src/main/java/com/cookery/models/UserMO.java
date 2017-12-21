@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by vishal on 10/10/17.
  */
 
-public class UserMO implements Serializable {
+public class UserMO extends CommonMO implements Serializable {
     private String NAME;
     private String EMAIL;
     private String PASSWORD;
@@ -14,6 +14,7 @@ public class UserMO implements Serializable {
     private String MOBILE;
     private int user_id;
     private String name;
+    private String IMG;
 
     public String getNAME() {
         return NAME;
@@ -69,5 +70,13 @@ public class UserMO implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getIMG() {
+        return IMG;
+    }
+
+    public void setIMG(String IMG) {
+        this.IMG = IMG;
     }
 }

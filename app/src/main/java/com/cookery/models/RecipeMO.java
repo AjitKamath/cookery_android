@@ -16,27 +16,25 @@ public class RecipeMO extends CommonMO implements Serializable {
     private String RCP_PLATING;
     private String RCP_NOTE;
 
-    private String FOOD_TYP_NAME;
-    private String FOOD_CSN_NAME;
-    private String NAME;
+    private String foodTypeName;
+    private String foodCuisineName;
 
     private List<IngredientMO> ingredients;
     private List<TasteMO> tastes;
-    private List<String> RCP_IMGS;
+    private List<String> images;
     private List<CommentMO> comments;
     private List<ReviewMO> reviews;
-    private boolean isLiked;
-
-    private int likes;
-    private int views;
-
     private List<String> steps;
+    private List<UserMO> likedUsers;
+    private List<UserMO> viewedUsers;
 
     private String avgRating;
-    private boolean isReviewed;
-    private ReviewMO userReview;
 
+    private String userName;
     private String userImage;
+    private ReviewMO userReview;
+    private boolean userLiked;
+    private boolean userReviewed;
 
     public List<String> getSteps() {
         return steps;
@@ -54,12 +52,12 @@ public class RecipeMO extends CommonMO implements Serializable {
         this.comments = comments;
     }
 
-    public List<String> getRCP_IMGS() {
-        return RCP_IMGS;
+    public List<String> getImages() {
+        return images;
     }
 
-    public void setRCP_IMGS(List<String> RCP_IMGS) {
-        this.RCP_IMGS = RCP_IMGS;
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 
     public int getRCP_ID() {
@@ -70,20 +68,12 @@ public class RecipeMO extends CommonMO implements Serializable {
         this.RCP_ID = RCP_ID;
     }
 
-    public String getNAME() {
-        return NAME;
+    public String getFoodCuisineName() {
+        return foodCuisineName;
     }
 
-    public void setNAME(String NAME) {
-        this.NAME = NAME;
-    }
-
-    public String getFOOD_CSN_NAME() {
-        return FOOD_CSN_NAME;
-    }
-
-    public void setFOOD_CSN_NAME(String FOOD_CSN_NAME) {
-        this.FOOD_CSN_NAME = FOOD_CSN_NAME;
+    public void setFoodCuisineName(String foodCuisineName) {
+        this.foodCuisineName = foodCuisineName;
     }
 
     public List<TasteMO> getTastes() {
@@ -150,12 +140,12 @@ public class RecipeMO extends CommonMO implements Serializable {
         this.RCP_NOTE = RCP_NOTE;
     }
 
-    public String getFOOD_TYP_NAME() {
-        return FOOD_TYP_NAME;
+    public String getFoodTypeName() {
+        return foodTypeName;
     }
 
-    public void setFOOD_TYP_NAME(String FOOD_TYP_NAME) {
-        this.FOOD_TYP_NAME = FOOD_TYP_NAME;
+    public void setFoodTypeName(String foodTypeName) {
+        this.foodTypeName = foodTypeName;
     }
 
     public List<ReviewMO> getReviews() {
@@ -164,38 +154,6 @@ public class RecipeMO extends CommonMO implements Serializable {
 
     public void setReviews(List<ReviewMO> reviews) {
         this.reviews = reviews;
-    }
-
-    public int getLikes() {
-        return likes;
-    }
-
-    public void setLikes(int likes) {
-        this.likes = likes;
-    }
-
-    public int getViews() {
-        return views;
-    }
-
-    public void setViews(int views) {
-        this.views = views;
-    }
-
-    public boolean isLiked() {
-        return isLiked;
-    }
-
-    public void setLiked(boolean liked) {
-        isLiked = liked;
-    }
-
-    public boolean isReviewed() {
-        return isReviewed;
-    }
-
-    public void setReviewed(boolean reviewed) {
-        isReviewed = reviewed;
     }
 
     public ReviewMO getUserReview() {
@@ -220,5 +178,45 @@ public class RecipeMO extends CommonMO implements Serializable {
 
     public void setUserImage(String userImage) {
         this.userImage = userImage;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public boolean isUserLiked() {
+        return userLiked;
+    }
+
+    public void setUserLiked(boolean userLiked) {
+        this.userLiked = userLiked;
+    }
+
+    public boolean isUserReviewed() {
+        return userReviewed;
+    }
+
+    public void setUserReviewed(boolean userReviewed) {
+        this.userReviewed = userReviewed;
+    }
+
+    public List<UserMO> getLikedUsers() {
+        return likedUsers;
+    }
+
+    public void setLikedUsers(List<UserMO> likedUsers) {
+        this.likedUsers = likedUsers;
+    }
+
+    public List<UserMO> getViewedUsers() {
+        return viewedUsers;
+    }
+
+    public void setViewedUsers(List<UserMO> viewedUsers) {
+        this.viewedUsers = viewedUsers;
     }
 }

@@ -149,7 +149,7 @@ public class RecipeReviewFragment extends DialogFragment {
     }
 
     private void setupReview() {
-        if(recipe.isReviewed()){
+        if(recipe.isUserReviewed()){
             recipe_reviews_delete_iv.setVisibility(View.VISIBLE);
             recipe_reviews_review_rl.setVisibility(View.VISIBLE);
             recipe_reviews_review_et.setVisibility(View.GONE);
@@ -231,7 +231,7 @@ public class RecipeReviewFragment extends DialogFragment {
     }
 
     public void deleteReview(){
-        if(recipe.isReviewed()){
+        if(recipe.isUserReviewed()){
             new AsyncDeleteReview().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, recipe.getUserReview());
         }
         else{
@@ -262,7 +262,7 @@ public class RecipeReviewFragment extends DialogFragment {
             }
         }
 
-        if(!recipe.isReviewed()) {
+        if(!recipe.isUserReviewed()) {
             for (ImageView iterStars : stars) {
                 iterStars.setOnClickListener(new View.OnClickListener() {
                     @Override

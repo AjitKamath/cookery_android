@@ -162,3 +162,9 @@
 1. Recipe View - show recipe steps.
 2. Recipe View - show recipe steps in full screen.
 3. Recipe View - show recipe ingredients.
+
+-- git checkin on 20 dec 2017 --
+
+21 dec 2017
+1. Recipe View - show users who have liked the recipe on long click on like button.
+1. Recipe View - show users who have viewed the recipe on long click on view button.

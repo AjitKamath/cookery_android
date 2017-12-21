@@ -57,15 +57,15 @@ public class HomeCateoryRecipesViewPagerAdapter extends PagerAdapter {
 
         RecipeMO recipe = recipes.get(position);
 
-        if(recipe.getRCP_IMGS() != null && !recipe.getRCP_IMGS().isEmpty()){
-            Utility.loadImageFromURL(mContext, recipe.getRCP_IMGS().get(0), home_categorized_recipes_recipe_item_image_iv);
+        if(recipe.getImages() != null && !recipe.getImages().isEmpty()){
+            Utility.loadImageFromURL(mContext, recipe.getImages().get(0), home_categorized_recipes_recipe_item_image_iv);
         }
 
         home_categorized_recipes_recipe_item_recipe_name_tv.setText(recipe.getRCP_NAME().toUpperCase());
-        home_categorized_recipes_recipe_item_food_type_tv.setText(recipe.getFOOD_TYP_NAME().toUpperCase());
-        home_categorized_recipes_recipe_item_food_cuisine_tv.setText(recipe.getFOOD_CSN_NAME());
-        home_categorized_recipes_recipe_item_user_name_tv.setText(recipe.getNAME());
-        home_categorized_recipes_recipe_item_views_tv.setText(Utility.getSmartNumber(recipe.getViews()));
+        home_categorized_recipes_recipe_item_food_type_tv.setText(recipe.getFoodTypeName().toUpperCase());
+        home_categorized_recipes_recipe_item_food_cuisine_tv.setText(recipe.getFoodCuisineName());
+        home_categorized_recipes_recipe_item_user_name_tv.setText(recipe.getUserName());
+        home_categorized_recipes_recipe_item_views_tv.setText(Utility.getSmartNumber(recipe.getViewedUsers() == null ? 0: recipe.getViewedUsers().size()));
 
         layout.setOnClickListener(clickListener);
 

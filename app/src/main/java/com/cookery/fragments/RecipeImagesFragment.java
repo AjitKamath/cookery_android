@@ -56,7 +56,7 @@ public class RecipeImagesFragment extends DialogFragment {
     }
 
     private void getDataFromBundle() {
-        imagesList = ((RecipeMO)getArguments().get(GENERIC_OBJECT)).getRCP_IMGS();
+        imagesList = ((RecipeMO)getArguments().get(GENERIC_OBJECT)).getImages();
     }
 
     private void setupPage() {
@@ -69,7 +69,7 @@ public class RecipeImagesFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 RecipeMO temp = new RecipeMO();
-                temp.setRCP_IMGS(imagesList);
+                temp.setImages(imagesList);
 
                 Utility.showRecipeImagesFragment(getFragmentManager(), temp);
             }

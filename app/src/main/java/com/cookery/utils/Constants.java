@@ -67,6 +67,8 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_REVIEW_RECIPE = "REVIEW_RECIPE_FETCH";
     public static final String PHP_FUNCTION_KEY_LIKE_SUBMIT = "LIKE_SUBMIT";
     public static final String PHP_FUNCTION_KEY_COMMENT_RECIPE_FETCH_ALL = "COMMENT_RECIPE_FETCH_ALL";
+    public static final String PHP_FUNCTION_KEY_LIKE_FETCH_USERS = "LIKE_FETCH_USERS";
+    public static final String PHP_FUNCTION_KEY_VIEW_FETCH_USERS = "VIEW_FETCH_USERS";
     public static final String PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL = "QUANTITY_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_FOOD_CUISINE_FETCH_ALL = "FOOD_CUISINE_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_RECIPE_TRENDING_FETCH = "RECIPE_TRENDING_FETCH";
@@ -132,6 +134,8 @@ public final class Constants {
     public static final String FRAGMENT_RECIPE_REVIEW = "FRAGMENT_RECIPE_REVIEW";
     public static final String FRAGMENT_RECIPE_REVIEWS = "FRAGMENT_RECIPE_REVIEWS";
     public static final String FRAGMENT_RECIPE_IMAGES = "FRAGMENT_RECIPE_IMAGES";
+    public static final String FRAGMENT_RECIPE_LIKED_USERS = "FRAGMENT_RECIPE_LIKED_USERS";
+    public static final String FRAGMENT_RECIPE_VIEWED_USERS = "FRAGMENT_RECIPE_VIEWED_USERS";
     public static final String FRAGMENT_RECIPE_STEPS = "FRAGMENT_RECIPE_STEPS";
     public static final String FRAGMENT_COMMON_SELECTION = "FRAGMENT_COMMON_SELECTION";
     public static final String FRAGMENT_COMMON_WAIT = "FRAGMENT_COMMON_WAIT";
