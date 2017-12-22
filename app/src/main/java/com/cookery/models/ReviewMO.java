@@ -1,6 +1,7 @@
 package com.cookery.models;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by ajit on 9/10/17.
@@ -13,11 +14,11 @@ public class ReviewMO extends CommonMO implements Serializable {
     private int RATING;
 
     private String userImage;
-    private int likeCount;
-    private boolean isReviewed;
-    private String rating;
     private boolean userLiked;
-    private String name;
+    private String userName;
+    private boolean userReviewed;
+
+    private List<UserMO> likedUsers;
 
     public int getREV_ID() {
         return REV_ID;
@@ -59,28 +60,12 @@ public class ReviewMO extends CommonMO implements Serializable {
         this.userImage = userImage;
     }
 
-    public int getLikeCount() {
-        return likeCount;
+    public boolean isUserReviewed() {
+        return userReviewed;
     }
 
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
-    }
-
-    public boolean isReviewed() {
-        return isReviewed;
-    }
-
-    public void setReviewed(boolean reviewed) {
-        isReviewed = reviewed;
-    }
-
-    public String getRating() {
-        return rating;
-    }
-
-    public void setRating(String rating) {
-        this.rating = rating;
+    public void setUserReviewed(boolean userReviewed) {
+        this.userReviewed = userReviewed;
     }
 
     public boolean isUserLiked() {
@@ -91,11 +76,19 @@ public class ReviewMO extends CommonMO implements Serializable {
         this.userLiked = userLiked;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public List<UserMO> getLikedUsers() {
+        return likedUsers;
+    }
+
+    public void setLikedUsers(List<UserMO> likedUsers) {
+        this.likedUsers = likedUsers;
     }
 }

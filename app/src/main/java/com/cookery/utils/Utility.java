@@ -16,12 +16,12 @@ import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.CommonImagePickerFragment;
 import com.cookery.fragments.MessageFragment;
 import com.cookery.fragments.MyTimelinesFragment;
-import com.cookery.fragments.RecipeCommentsFragment;
-import com.cookery.fragments.RecipeFragment;
 import com.cookery.fragments.RecipeImagesFragment;
-import com.cookery.fragments.RecipeReviewFragment;
+import com.cookery.fragments.RecipeViewCommentsFragment;
+import com.cookery.fragments.RecipeViewFragment;
 import com.cookery.fragments.RecipeViewImagesFragment;
 import com.cookery.fragments.RecipeViewLikedViewedUsersFragment;
+import com.cookery.fragments.RecipeViewReviewsFragment;
 import com.cookery.fragments.RecipeViewStepsFragment;
 import com.cookery.fragments.WaitFragment;
 import com.cookery.models.CommentMO;
@@ -245,7 +245,7 @@ public class Utility extends Activity {
         Bundle bundle = new Bundle();
         bundle.putSerializable(SELECTED_ITEM, recipe);
 
-        RecipeFragment fragment = new RecipeFragment();
+        RecipeViewFragment fragment = new RecipeViewFragment();
         fragment.setArguments(bundle);
 
         if (parentFragment != null) {
@@ -312,7 +312,7 @@ public class Utility extends Activity {
         Bundle bundle = new Bundle();
         bundle.putSerializable(GENERIC_OBJECT, recipe);
 
-        RecipeReviewFragment fragment = new RecipeReviewFragment();
+        RecipeViewReviewsFragment fragment = new RecipeViewReviewsFragment();
         fragment.setArguments(bundle);
 
         if (parentFragment != null) {
@@ -345,7 +345,7 @@ public class Utility extends Activity {
         Bundle bundle = new Bundle();
         bundle.putSerializable(SELECTED_ITEM, recipe);
 
-        RecipeCommentsFragment fragment = new RecipeCommentsFragment();
+        RecipeViewCommentsFragment fragment = new RecipeViewCommentsFragment();
         fragment.setArguments(bundle);
 
         if (parentFragment != null) {

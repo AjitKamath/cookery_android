@@ -23,15 +23,15 @@ import java.util.List;
 
 import static com.cookery.utils.Constants.UI_FONT;
 
-public class RecipeViewPagerAdapter extends PagerAdapter {
+public class RecipeViewViewPagerAdapter extends PagerAdapter {
     private Context mContext;
-    private static final String CLASS_NAME = RecipeViewPagerAdapter.class.getName();
+    private static final String CLASS_NAME = RecipeViewViewPagerAdapter.class.getName();
 
     private List<Integer> layouts;
     public RecipeMO recipe;
     private View.OnClickListener listener;
 
-    public RecipeViewPagerAdapter(Context context, List<Integer> layouts, RecipeMO recipe, View.OnClickListener listener) {
+    public RecipeViewViewPagerAdapter(Context context, List<Integer> layouts, RecipeMO recipe, View.OnClickListener listener) {
         this.mContext = context;
         this.layouts = layouts;
         this.recipe = recipe;

@@ -247,25 +247,21 @@ public class TestData {
 
         comment = new CommentMO();
         comment.setCOM_ID(1);
-        comment.setLikeCount(3);
         comment.setCOMMENT(getBigStringTestData());
         comments.add(comment);
 
         comment = new CommentMO();
         comment.setCOM_ID(3);
-        comment.setLikeCount(0);
         comment.setCOMMENT(getBigStringTestData());
         comments.add(comment);
 
         comment = new CommentMO();
         comment.setCOM_ID(2);
-        comment.setLikeCount(5);
         comment.setCOMMENT(getBigStringTestData());
         comments.add(comment);
 
         comment = new CommentMO();
         comment.setCOM_ID(9);
-        comment.setLikeCount(96);
         comment.setCOMMENT(getBigStringTestData());
         comments.add(comment);
 

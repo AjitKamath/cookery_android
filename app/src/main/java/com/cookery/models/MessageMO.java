@@ -12,6 +12,7 @@ public class MessageMO implements Serializable {
     private boolean isError;
 
     private String purpose;
+    private Object object;
 
     public String getErr_message() {
         return err_message;
@@ -44,5 +45,13 @@ public class MessageMO implements Serializable {
 
     public void setPurpose(String purpose) {
         this.purpose = purpose;
+    }
+
+    public Object getObject() {
+        return object;
+    }
+
+    public void setObject(Object object) {
+        this.object = object;
     }
 }

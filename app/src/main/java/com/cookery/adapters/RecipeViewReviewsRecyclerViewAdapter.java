@@ -6,6 +6,7 @@ package com.cookery.adapters;
 
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,8 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.models.LikesMO;
 import com.cookery.models.ReviewMO;
+import com.cookery.models.UserMO;
 import com.cookery.utils.DateTimeUtility;
+import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
@@ -24,16 +28,18 @@ import java.util.List;
 
 import static com.cookery.utils.Constants.DB_DATE_TIME;
 
-public class RecipeReviewsRecyclerViewAdapter extends RecyclerView.Adapter<RecipeReviewsRecyclerViewAdapter.ViewHolder> {
+public class RecipeViewReviewsRecyclerViewAdapter extends RecyclerView.Adapter<RecipeViewReviewsRecyclerViewAdapter.ViewHolder> {
 
-    private static final String CLASS_NAME = RecipeReviewsRecyclerViewAdapter.class.getName();
+    private static final String CLASS_NAME = RecipeViewReviewsRecyclerViewAdapter.class.getName();
     private Context mContext;
 
     private List<ReviewMO> reviews;
-    private View.OnClickListener listener;
+    private View.OnLongClickListener listener;
+    private UserMO loggedInUser;
 
-    public RecipeReviewsRecyclerViewAdapter(Context mContext, List<ReviewMO> reviews) {
+    public RecipeViewReviewsRecyclerViewAdapter(Context mContext, UserMO loggedInUser, List<ReviewMO> reviews, View.OnLongClickListener listener) {
         this.mContext = mContext;
+        this.loggedInUser = loggedInUser;
         this.reviews = reviews;
         this.listener = listener;
     }
@@ -46,16 +52,16 @@ public class RecipeReviewsRecyclerViewAdapter extends RecyclerView.Adapter<Recip
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final ReviewMO review = reviews.get(position);
 
         if(review.getUserImage() != null && !review.getUserImage().trim().isEmpty()){
             Utility.loadImageFromURL(mContext, review.getUserImage(), holder.recipe_reviews_item_iv);
         }
 
-        holder.recipe_reviews_item_user_name_tv.setText(review.getName());
+        holder.recipe_reviews_item_user_name_tv.setText(review.getUserName());
         holder.recipe_reviews_item_tv.setText(review.getREVIEW());
-        holder.recipe_reviews_item_likes_count_tv.setText(String.valueOf(review.getLikeCount()));
+        holder.recipe_reviews_item_likes_count_tv.setText(String.valueOf(review.getLikedUsers() == null ? 0 : review.getLikedUsers().size()));
 
         if(review.isUserLiked()){
             holder.recipe_reviews_likes_iv.setImageResource(R.drawable.heart);
@@ -72,9 +78,35 @@ public class RecipeReviewsRecyclerViewAdapter extends RecyclerView.Adapter<Recip
         else{
             holder.recipe_reviews_item_date_time_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(review.getCREATE_DTM(), DB_DATE_TIME)));
         }
+
+        holder.recipe_reviews_likes_iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LikesMO like = new LikesMO();
+                like.setUSER_ID(loggedInUser.getUser_id());
+                like.setTYPE("REVIEW");
+                like.setTYPE_ID(review.getREV_ID());
+
+                new AsyncSubmitLike().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like, holder);
+            }
+        });
+
+        holder.recipe_reviews_likes_iv.setTag(review);
+        holder.recipe_reviews_likes_iv.setOnLongClickListener(listener);
     }
 
-    private void setupStars(ViewHolder holder, ReviewMO review) {
+    private void setupLike(ViewHolder holder, LikesMO like){
+        if(like.isLiked()){
+            holder.recipe_reviews_likes_iv.setImageResource(R.drawable.heart);
+        }
+        else{
+            holder.recipe_reviews_likes_iv.setImageResource(R.drawable.heart_unselected);
+        }
+
+        holder.recipe_reviews_item_likes_count_tv.setText(String.valueOf(like.getLikes()));
+    }
+
+    private void setupStars(ViewHolder holder, final ReviewMO review) {
         List<ImageView> stars = new ArrayList<>();
         stars.add(holder.recipe_reviews_item_star_1_iv);
         stars.add(holder.recipe_reviews_item_star_2_iv);
@@ -130,6 +162,32 @@ public class RecipeReviewsRecyclerViewAdapter extends RecyclerView.Adapter<Recip
             recipe_reviews_item_star_4_iv = view.findViewById(R.id.recipe_reviews_item_star_4_iv);
             recipe_reviews_item_star_5_iv = view.findViewById(R.id.recipe_reviews_item_star_5_iv);
             recipe_reviews_item_date_time_tv = view.findViewById(R.id.recipe_reviews_item_date_time_tv);
+        }
+    }
+
+    public class AsyncSubmitLike extends AsyncTask<Object, Void, Object> {
+        private ViewHolder holder;
+
+        @Override
+        protected void onPreExecute(){
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            LikesMO like = (LikesMO) objects[0];
+            holder = (ViewHolder) objects[1];
+
+
+            return InternetUtility.submitLike(like);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            LikesMO like = (LikesMO) object;
+
+            if(like != null){
+                setupLike(holder, like);
+            }
         }
     }
 }

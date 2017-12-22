@@ -24,6 +24,7 @@ import java.util.Map;
 
 import static com.cookery.utils.Constants.PHP_CONTROLLER;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_DELETE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_RECIPE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FOOD_CUISINE_FETCH_ALL;
@@ -377,6 +378,25 @@ public class InternetUtility {
         return null;
     }
 
+    public static Object deleteRecipeComment(UserMO loggedInUser, CommentMO comment) {
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_COMMENT_DELETE);
+            paramMap.put("com_id", String.valueOf(comment.getCOM_ID()));
+            paramMap.put("user_id", String.valueOf(loggedInUser.getUser_id()));
+
+            return  Utility.jsonToObject(getResponseFromCookery(paramMap), MessageMO.class);
+        }
+        catch(SocketException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch(Exception e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+
+        return null;
+    }
+
     public static LikesMO submitLike(LikesMO like) {
         try {
             Map<String, String> paramMap = new HashMap<>();
@@ -422,7 +442,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<UserMO> fetchLikedUsers(RecipeMO recipe) {
+    public static List<UserMO> fetchLikedUsers(String type, int type_id) {
         if(USE_TEST_DATA){
             return null;
         }
@@ -430,8 +450,8 @@ public class InternetUtility {
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_LIKE_FETCH_USERS);
-            paramMap.put("type", "RECIPE");
-            paramMap.put("type_id", String.valueOf(recipe.getRCP_ID()));
+            paramMap.put("type", type);
+            paramMap.put("type_id", String.valueOf(type_id));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return (List<UserMO>) Utility.jsonToObject(jsonStr, UserMO.class);

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,20 +30,23 @@ import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_COMMENTS;
-import static com.cookery.utils.Constants.OK;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE_LIKED_USERS;
+import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
 
 /**
  * Created by ajit on 21/3/16.
  */
-public class RecipeCommentsFragment extends DialogFragment {
+public class RecipeViewCommentsFragment extends DialogFragment {
     private final String CLASS_NAME = this.getClass().getName();
     private Context mContext;
     private FragmentActivity activity;
@@ -52,9 +54,6 @@ public class RecipeCommentsFragment extends DialogFragment {
     //components
     @InjectView(R.id.recipe_comments_rl)
     RelativeLayout recipe_comments_rl;
-
-    @InjectView(R.id.recipe_comments_close_iv)
-    ImageView recipe_comments_close_iv;
 
     @InjectView(R.id.recipe_comments_rv)
     RecyclerView recipe_comments_rv;
@@ -71,7 +70,7 @@ public class RecipeCommentsFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.recipe_comments, container);
+        View view = inflater.inflate(R.layout.recipe_view_comments, container);
         ButterKnife.inject(this, view);
 
         Dialog d = getDialog();
@@ -96,13 +95,6 @@ public class RecipeCommentsFragment extends DialogFragment {
     }
 
     private void setupPage() {
-        recipe_comments_close_iv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismiss();
-            }
-        });
-
         setupComments();
     }
 
@@ -113,7 +105,24 @@ public class RecipeCommentsFragment extends DialogFragment {
         recipe_comments_rv.setAdapter(new RecipeCommentsRecyclerViewAdapter(mContext, loggedInUser, recipe.getComments(), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(view.getId() == R.id.recipe_comments_item_delete_iv){
+                    MessageMO message = new MessageMO();
+                    message.setErr_message("Comment will be deleted !");
+                    message.setPurpose("RECIPE_VIEW_DELETE_COMMENT");
+                    message.setError(false);
+                    message.setObject(view.getTag());
 
+                    Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_RECIPE_COMMENTS);
+                    Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
+                }
+            }
+        }, new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(view.getId() == R.id.recipe_comments_likes_iv){
+                    new AsyncFetchLikedUsers().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (CommentMO) view.getTag());
+                }
+                return true;
             }
         }));
 
@@ -134,8 +143,17 @@ public class RecipeCommentsFragment extends DialogFragment {
         });
     }
 
+    public void deleteComment(CommentMO comment){
+        if(recipe.isUserReviewed()){
+            new AsyncDeleteComment().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, comment);
+        }
+        else{
+            Log.e(CLASS_NAME, "Error ! Recipe.isUserReviewed is expected to be true.");
+        }
+    }
+
     // Empty constructor required for DialogFragment
-    public RecipeCommentsFragment() {}
+    public RecipeViewCommentsFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -203,7 +221,7 @@ public class RecipeCommentsFragment extends DialogFragment {
                     message.setErr_message("Something went wrong !");
                 }
 
-                message.setPurpose("ADD_RECIPE_COMMENT");
+                message.setPurpose("RECIPE_VIEW_COMMENT_ADD");
 
                 Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_RECIPE_COMMENTS);
                 Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
@@ -211,7 +229,7 @@ public class RecipeCommentsFragment extends DialogFragment {
             else{
                 new AsyncTaskerSubmitFetchRecipeComments().executeOnExecutor(THREAD_POOL_EXECUTOR);
                 recipe_comments_comment_et.setText("");
-                Utility.showSnacks(recipe_comments_rl, "Comment submitted", OK, Snackbar.LENGTH_SHORT);
+                /*Utility.showSnacks(recipe_comments_rl, "Comment submitted", OK, Snackbar.LENGTH_SHORT);*/
             }
         }
 
@@ -230,6 +248,79 @@ public class RecipeCommentsFragment extends DialogFragment {
                 List<CommentMO> comments = (List<CommentMO>) object;
                 recipe.setComments(comments);
                 setupComments();
+
+                if(getTargetFragment() instanceof RecipeViewFragment){
+                    ((RecipeViewFragment)getTargetFragment()).updateRecipeView();
+                }
+            }
+        }
+    }
+
+    public class AsyncDeleteComment extends AsyncTask<Object, Void, Object> {
+        Fragment frag;
+
+        @Override
+        protected void onPreExecute() {
+            frag = Utility.showWaitDialog(getFragmentManager(), "Deleting your comment ..");
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            CommentMO comment = (CommentMO) objects[0];
+            return InternetUtility.deleteRecipeComment(loggedInUser, comment);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            Utility.closeWaitDialog(getFragmentManager(), frag);
+
+            MessageMO message = (MessageMO) object;
+
+            if (message != null && !message.isError()) {
+                dismiss();
+
+                if(getTargetFragment() instanceof RecipeViewFragment){
+                    ((RecipeViewFragment)getTargetFragment()).updateRecipeView();
+                    ((RecipeViewFragment)getTargetFragment()).showCommentDeletedMessage();
+                }
+            }
+            else{
+                Log.e(CLASS_NAME, "Error ! Could not delete Review");
+            }
+        }
+    }
+
+    class AsyncFetchLikedUsers extends AsyncTask<CommentMO, Void, Object> {
+        private Fragment fragment;
+
+        @Override
+        protected void onPreExecute(){
+            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching users who liked the Comment ..");
+        }
+
+        @Override
+        protected Object doInBackground(CommentMO... objects) {
+            CommentMO comment = objects[0];
+            return InternetUtility.fetchLikedUsers("COMMENT", comment.getCOM_ID());
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            Utility.closeWaitDialog(getFragmentManager(), fragment);
+
+            if(object == null){
+                return;
+            }
+
+            List<UserMO> users = (List<UserMO>) object;
+
+            if(users != null && !users.isEmpty()){
+                Object array[] = new Object[]{"LIKE", users};
+
+                Map<String, Object> bundleMap = new HashMap<String, Object>();
+                bundleMap.put(GENERIC_OBJECT, array);
+
+                Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE_COMMENTS, FRAGMENT_RECIPE_LIKED_USERS, new RecipeViewLikedViewedUsersFragment(), bundleMap);
             }
         }
     }

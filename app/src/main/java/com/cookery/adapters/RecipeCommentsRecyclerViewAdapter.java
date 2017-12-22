@@ -7,6 +7,7 @@ package com.cookery.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,8 +18,10 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.models.CommentMO;
+import com.cookery.models.LikesMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.DateTimeUtility;
+import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import java.util.List;
@@ -33,34 +36,39 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
 
     private List<CommentMO> comments;
     private View.OnClickListener listener;
+    private View.OnLongClickListener longClickListener;
     private UserMO loggedInUser;
 
-    public RecipeCommentsRecyclerViewAdapter(Context mContext, UserMO loggedInUser, List<CommentMO> comments, View.OnClickListener listener) {
+    public RecipeCommentsRecyclerViewAdapter(Context mContext, UserMO loggedInUser, List<CommentMO> comments, View.OnClickListener listener, View.OnLongClickListener longClickListener) {
         this.mContext = mContext;
         this.loggedInUser = loggedInUser;
         this.comments = comments;
         this.listener = listener;
+        this.longClickListener = longClickListener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_comments_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_view_comments_item, parent, false);
 
         return new ViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final CommentMO comment = comments.get(position);
 
         if(comment.getUserImage() != null && !comment.getUserImage().trim().isEmpty()){
             Utility.loadImageFromURL(mContext, comment.getUserImage(), holder.recipe_comments_item_iv);
         }
 
-        holder.recipe_comments_item_username_tv.setText(comment.getName().trim());
+        holder.recipe_comments_item_username_tv.setText(comment.getUserName().trim());
 
         if(loggedInUser.getUser_id() == comment.getUSER_ID()){
             holder.recipe_comments_item_delete_iv.setVisibility(View.VISIBLE);
+
+            holder.recipe_comments_item_delete_iv.setTag(comment);
+            holder.recipe_comments_item_delete_iv.setOnClickListener(listener);
         }
         else{
             holder.recipe_comments_item_delete_iv.setVisibility(View.GONE);
@@ -73,10 +81,8 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
             holder.recipe_comments_likes_iv.setImageResource(R.drawable.heart_unselected);
         }
 
-        //TODO: yet to implement ability for user to like/unlike comment on tapping on the comment heart
-
         holder.recipe_comments_item_tv.setText(comment.getCOMMENT());
-        holder.recipe_comments_item_likes_count_tv.setText(Utility.getSmartNumber(comment.getLikeCount()));
+        holder.recipe_comments_item_likes_count_tv.setText(Utility.getSmartNumber(comment.getLikedUsers() == null ? 0 : comment.getLikedUsers().size()));
 
         if(comment.getMOD_DTM() != null && !comment.getMOD_DTM().trim().isEmpty()){
             holder.recipe_comments_item_date_time_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(comment.getMOD_DTM(), DB_DATE_TIME)));
@@ -85,7 +91,33 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
             holder.recipe_comments_item_date_time_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(comment.getCREATE_DTM(), DB_DATE_TIME)));
         }
 
+        holder.recipe_comments_likes_iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LikesMO like = new LikesMO();
+                like.setUSER_ID(loggedInUser.getUser_id());
+                like.setTYPE("COMMENT");
+                like.setTYPE_ID(comment.getCOM_ID());
+
+                new AsyncSubmitLike().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like, holder);
+            }
+        });
+
+        holder.recipe_comments_likes_iv.setTag(comment);
+        holder.recipe_comments_likes_iv.setOnLongClickListener(longClickListener);
+
         setFont(holder.recipe_comments_item_cv);
+    }
+
+    private void setupLike(ViewHolder holder, LikesMO like){
+        if(like.isLiked()){
+            holder.recipe_comments_likes_iv.setImageResource(R.drawable.heart);
+        }
+        else{
+            holder.recipe_comments_likes_iv.setImageResource(R.drawable.heart_unselected);
+        }
+
+        holder.recipe_comments_item_likes_count_tv.setText(String.valueOf(like.getLikes()));
     }
 
     @Override
@@ -136,6 +168,32 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
             recipe_comments_likes_iv = view.findViewById(R.id.recipe_comments_likes_iv);
             recipe_comments_item_likes_count_tv = view.findViewById(R.id.recipe_comments_item_likes_count_tv);
             recipe_comments_item_date_time_tv = view.findViewById(R.id.recipe_comments_item_date_time_tv);
+        }
+    }
+
+    public class AsyncSubmitLike extends AsyncTask<Object, Void, Object> {
+        private ViewHolder holder;
+
+        @Override
+        protected void onPreExecute(){
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            LikesMO like = (LikesMO) objects[0];
+            holder = (ViewHolder) objects[1];
+
+
+            return InternetUtility.submitLike(like);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            LikesMO like = (LikesMO) object;
+
+            if(like != null){
+                setupLike(holder, like);
+            }
         }
     }
 }

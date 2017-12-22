@@ -119,29 +119,6 @@
                         android:textSize="@dimen/tertiary_text_size"
                         android:maxLength="@integer/recipe_review_text_limit"/>
 
-                    <ImageView
-                        android:layout_marginTop="5dp"
-                        android:layout_below="@+id/recipe_reviews_review_tv"
-                        android:layout_alignParentLeft="true"
-                        android:id="@+id/recipe_reviews_review_likes_iv"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:src="@drawable/heart_unselected"/>
-
-                    <TextView
-                        android:gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_below="@+id/recipe_reviews_review_tv"
-                        android:layout_toRightOf="@+id/recipe_reviews_review_likes_iv"
-                        android:id="@+id/recipe_reviews_review_likes_count_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:text="0"
-                        android:textColor="@color/secondaryDarkText"
-                        android:textSize="@dimen/secondary_text_size"/>
-
                     <TextView
                         android:layout_below="@+id/recipe_reviews_review_tv"
                         android:layout_marginTop="5dp"

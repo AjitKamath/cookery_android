@@ -1,6 +1,7 @@
 package com.cookery.models;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by ajit on 27/9/17.
@@ -12,17 +13,10 @@ public class CommentMO extends CommonMO implements Serializable {
     private String COMMENT;
 
     private String userImage;
-    private int likeCount;
     private boolean userLiked;
-    private String name;
+    private String userName;
 
-    public int getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
-    }
+    private List<UserMO> likedUsers;
 
     public String getUserImage() {
         return userImage;
@@ -56,12 +50,12 @@ public class CommentMO extends CommonMO implements Serializable {
         this.COMMENT = COMMENT;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public boolean isUserLiked() {
@@ -70,5 +64,13 @@ public class CommentMO extends CommonMO implements Serializable {
 
     public void setUserLiked(boolean userLiked) {
         this.userLiked = userLiked;
+    }
+
+    public List<UserMO> getLikedUsers() {
+        return likedUsers;
+    }
+
+    public void setLikedUsers(List<UserMO> likedUsers) {
+        this.likedUsers = likedUsers;
     }
 }

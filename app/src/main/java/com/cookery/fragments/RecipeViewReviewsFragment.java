@@ -24,7 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.adapters.RecipeReviewsRecyclerViewAdapter;
+import com.cookery.adapters.RecipeViewReviewsRecyclerViewAdapter;
 import com.cookery.models.MessageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
@@ -34,12 +34,15 @@ import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.DB_DATE_TIME;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE_LIKED_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.OK;
@@ -48,7 +51,7 @@ import static com.cookery.utils.Constants.UI_FONT;
 /**
  * Created by ajit on 21/3/16.
  */
-public class RecipeReviewFragment extends DialogFragment {
+public class RecipeViewReviewsFragment extends DialogFragment {
     private final String CLASS_NAME = this.getClass().getName();
     private Context mContext;
 
@@ -85,12 +88,6 @@ public class RecipeReviewFragment extends DialogFragment {
 
     @InjectView(R.id.recipe_reviews_review_tv)
     TextView recipe_reviews_review_tv;
-
-    @InjectView(R.id.recipe_reviews_review_likes_iv)
-    ImageView recipe_reviews_review_likes_iv;
-
-    @InjectView(R.id.recipe_reviews_review_likes_count_tv)
-    TextView recipe_reviews_review_likes_count_tv;
 
     @InjectView(R.id.recipe_reviews_review_datetime_tv)
     TextView recipe_reviews_review_datetime_tv;
@@ -153,6 +150,7 @@ public class RecipeReviewFragment extends DialogFragment {
             recipe_reviews_delete_iv.setVisibility(View.VISIBLE);
             recipe_reviews_review_rl.setVisibility(View.VISIBLE);
             recipe_reviews_review_et.setVisibility(View.GONE);
+            recipe_review_submit_fab.setVisibility(View.GONE);
 
             if(recipe.getUserReview() != null){
                 recipe_reviews_delete_iv.setOnClickListener(new View.OnClickListener() {
@@ -160,7 +158,7 @@ public class RecipeReviewFragment extends DialogFragment {
                     public void onClick(View view) {
                         MessageMO message = new MessageMO();
                         message.setError(false);
-                        message.setPurpose("DELETE_REVIEW");
+                        message.setPurpose("RECIPE_VIEW_DELETE_REVIEW");
                         message.setErr_message("Do You Want To Delete Your Review ?");
 
                         Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_RECIPE_REVIEW);
@@ -169,15 +167,6 @@ public class RecipeReviewFragment extends DialogFragment {
                 });
 
                 recipe_reviews_review_tv.setText(recipe.getUserReview().getREVIEW().trim());
-
-                if(recipe.getUserReview().isUserLiked()){
-                    recipe_reviews_review_likes_iv.setImageResource(R.drawable.heart);
-                }
-                else{
-                    recipe_reviews_review_likes_iv.setImageResource(R.drawable.heart_unselected);
-                }
-
-                recipe_reviews_review_likes_count_tv.setText(String.valueOf(recipe.getUserReview().getLikeCount()));
 
                 if(recipe.getUserReview().getMOD_DTM() != null && !recipe.getUserReview().getMOD_DTM().isEmpty()){
                     recipe_reviews_review_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(recipe.getUserReview().getMOD_DTM(), DB_DATE_TIME)));
@@ -218,7 +207,13 @@ public class RecipeReviewFragment extends DialogFragment {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         recipe_reviews_reviews_rv.setLayoutManager(mLayoutManager);
         recipe_reviews_reviews_rv.setItemAnimator(new DefaultItemAnimator());
-        recipe_reviews_reviews_rv.setAdapter(new RecipeReviewsRecyclerViewAdapter(mContext, recipe.getReviews()));
+        recipe_reviews_reviews_rv.setAdapter(new RecipeViewReviewsRecyclerViewAdapter(mContext, loggedInUser, recipe.getReviews(), new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                new AsyncFetchLikedUsers().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (ReviewMO) view.getTag());
+                return true;
+            }
+        }));
     }
 
     private void setupStars() {
@@ -235,7 +230,7 @@ public class RecipeReviewFragment extends DialogFragment {
             new AsyncDeleteReview().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, recipe.getUserReview());
         }
         else{
-            Log.e(CLASS_NAME, "Error ! Recipe.isReviewed is expected to be true.");
+            Log.e(CLASS_NAME, "Error ! Recipe.isUserReviewed is expected to be true.");
         }
     }
 
@@ -275,7 +270,7 @@ public class RecipeReviewFragment extends DialogFragment {
     }
 
     // Empty constructor required for DialogFragment
-    public RecipeReviewFragment() {
+    public RecipeViewReviewsFragment() {
     }
 
     @Override
@@ -334,11 +329,12 @@ public class RecipeReviewFragment extends DialogFragment {
 
             List<ReviewMO> review = (List<ReviewMO>) object;
 
-            if(review != null && !review.isEmpty() && review.get(0) != null && review.get(0).isReviewed()){
+            if(review != null && !review.isEmpty() && review.get(0) != null && review.get(0).isUserReviewed()){
                 dismiss();
 
-                if(getTargetFragment() instanceof RecipeFragment){
-                    ((RecipeFragment)getTargetFragment()).updateRecipeView();
+                if(getTargetFragment() instanceof RecipeViewFragment){
+                    ((RecipeViewFragment)getTargetFragment()).updateRecipeView();
+                    ((RecipeViewFragment)getTargetFragment()).showReviewAddMessage();
                 }
             }
         }
@@ -367,12 +363,48 @@ public class RecipeReviewFragment extends DialogFragment {
             if (message != null && !message.isError()) {
                 dismiss();
 
-                if(getTargetFragment() instanceof RecipeFragment){
-                    ((RecipeFragment)getTargetFragment()).updateRecipeView();
+                if(getTargetFragment() instanceof RecipeViewFragment){
+                    ((RecipeViewFragment)getTargetFragment()).updateRecipeView();
+                    ((RecipeViewFragment)getTargetFragment()).showReviewDeleteMessage();
                 }
             }
             else{
                 Log.e(CLASS_NAME, "Error ! Could not delete Review");
+            }
+        }
+    }
+
+    class AsyncFetchLikedUsers extends AsyncTask<ReviewMO, Void, Object> {
+        private Fragment fragment;
+
+        @Override
+        protected void onPreExecute(){
+            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching users who liked the Review ..");
+        }
+
+        @Override
+        protected Object doInBackground(ReviewMO... objects) {
+            ReviewMO review = objects[0];
+            return InternetUtility.fetchLikedUsers("REVIEW", review.getREV_ID());
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            Utility.closeWaitDialog(getFragmentManager(), fragment);
+
+            if(object == null){
+                return;
+            }
+
+            List<UserMO> users = (List<UserMO>) object;
+
+            if(users != null && !users.isEmpty()){
+                Object array[] = new Object[]{"LIKE", users};
+
+                Map<String, Object> bundleMap = new HashMap<String, Object>();
+                bundleMap.put(GENERIC_OBJECT, array);
+
+                Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE_REVIEW, FRAGMENT_RECIPE_LIKED_USERS, new RecipeViewLikedViewedUsersFragment(), bundleMap);
             }
         }
     }

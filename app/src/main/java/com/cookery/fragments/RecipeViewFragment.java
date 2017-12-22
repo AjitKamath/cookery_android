@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.adapters.RecipeViewImagesFullscreenViewPagerAdapter;
-import com.cookery.adapters.RecipeViewPagerAdapter;
+import com.cookery.adapters.RecipeViewViewPagerAdapter;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.RecipeMO;
@@ -52,7 +52,7 @@ import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 /**
  * Created by ajit on 21/3/16.
  */
-public class RecipeFragment extends DialogFragment {
+public class RecipeViewFragment extends DialogFragment {
     private final String CLASS_NAME = this.getClass().getName();
     private Context mContext;
     private FragmentActivity activity;
@@ -176,7 +176,7 @@ public class RecipeFragment extends DialogFragment {
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        common_fragment_recipe_tab_vp.setAdapter(new RecipeViewPagerAdapter(mContext, viewPagerTabsList, recipe, new View.OnClickListener() {
+        common_fragment_recipe_tab_vp.setAdapter(new RecipeViewViewPagerAdapter(mContext, viewPagerTabsList, recipe, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(view.getId() == R.id.recipe_view_recipe_steps_fullscreen_iv){
@@ -280,6 +280,17 @@ public class RecipeFragment extends DialogFragment {
         recipe_view_images_count_tv.setText(index+"/"+maxCount);
     }
 
+    public void updateLikeView(LikesMO like){
+        common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(like.getLikes()));
+
+        if(recipe.isUserLiked()){
+            common_fragment_recipe_like_iv.setImageResource(R.drawable.heart);
+        }
+        else{
+            common_fragment_recipe_like_iv.setImageResource(R.drawable.heart_unselected);
+        }
+    }
+
     public void setLikeView(){
         common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(recipe.getLikedUsers() == null ? 0 : recipe.getLikedUsers().size()));
 
@@ -339,8 +350,40 @@ public class RecipeFragment extends DialogFragment {
         new AsyncUpdateRecipe().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, recipe);
     }
 
+    public void showReviewDeleteMessage(){
+        MessageMO message = new MessageMO();
+        message.setError(false);
+        message.setPurpose("RECIPE_VIEW_REVIEW_DELETED");
+        message.setErr_message("Your review has been deleted !");
+
+        Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_RECIPE);
+        Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
+    }
+
+    public void showReviewAddMessage(){
+        MessageMO message = new MessageMO();
+        message.setError(false);
+        message.setPurpose("RECIPE_VIEW_REVIEW_ADD");
+        message.setErr_message("Thank You for the review !");
+
+        Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_RECIPE);
+        Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
+    }
+
+    public void showCommentDeletedMessage(){
+        MessageMO message = new MessageMO();
+        message.setError(false);
+
+        message.setPurpose("RECIPE_VIEW_COMMENT_DELETED");
+        message.setErr_message("Your comment has been deleted !");
+
+        Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_RECIPE);
+        Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
+    }
+
+
     // Empty constructor required for DialogFragment
-    public RecipeFragment() {}
+    public RecipeViewFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -396,9 +439,7 @@ public class RecipeFragment extends DialogFragment {
 
             if(like != null){
                 recipe.setUserLiked(like.isLiked());
-                recipe.setUserLiked(like.isLiked());
-
-                setLikeView();
+                updateLikeView(like);
             }
         }
     }
@@ -472,6 +513,8 @@ public class RecipeFragment extends DialogFragment {
 
         @Override
         protected void onPostExecute(Object object) {
+            Utility.closeWaitDialog(getFragmentManager(), fragment);
+
             if(object == null){
                 return;
             }
@@ -485,19 +528,6 @@ public class RecipeFragment extends DialogFragment {
                 setLikeView();
                 setViewView();
                 setCommentView();
-
-                Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-                if(recipe.isUserReviewed()) {
-                    MessageMO message = new MessageMO();
-                    message.setPurpose("ADD_RECIPE_REVIEW");
-
-                    message.setError(false);
-                    message.setErr_message("Thank You for the review !");
-
-                    Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_RECIPE);
-                    Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
-                }
             }
         }
     }
@@ -526,7 +556,7 @@ public class RecipeFragment extends DialogFragment {
         @Override
         protected Object doInBackground(Void... objects) {
             if("LIKE".equalsIgnoreCase(purpose)){
-                return InternetUtility.fetchLikedUsers(recipe);
+                return InternetUtility.fetchLikedUsers("RECIPE", recipe.getRCP_ID());
             }
             else if("VIEW".equalsIgnoreCase(purpose)){
                 return InternetUtility.fetchViewedUsers(recipe);
@@ -540,6 +570,8 @@ public class RecipeFragment extends DialogFragment {
 
         @Override
         protected void onPostExecute(Object object) {
+            Utility.closeWaitDialog(getFragmentManager(), fragment);
+
             if(object == null){
                 return;
             }
@@ -547,8 +579,6 @@ public class RecipeFragment extends DialogFragment {
             List<UserMO> users = (List<UserMO>) object;
 
             if(users != null){
-                Utility.closeWaitDialog(getFragmentManager(), fragment);
-
                 if("LIKE".equalsIgnoreCase(purpose)){
                     recipe.setLikedUsers(users);
                     setLikeView();
@@ -575,7 +605,6 @@ public class RecipeFragment extends DialogFragment {
                         Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE, FRAGMENT_RECIPE_VIEWED_USERS, new RecipeViewLikedViewedUsersFragment(), bundleMap);
                     }
                 }
-
             }
         }
     }

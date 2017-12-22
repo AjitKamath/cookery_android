@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.models.CommentMO;
 import com.cookery.models.MessageMO;
 
 import butterknife.ButterKnife;
@@ -67,7 +68,7 @@ public class MessageFragment extends DialogFragment {
     }
 
     private void setupPage() {
-        MessageMO mesage = (MessageMO) object;
+        final MessageMO mesage = (MessageMO) object;
 
         hideAllButtons();
 
@@ -115,7 +116,7 @@ public class MessageFragment extends DialogFragment {
                 }
             });
         }
-        else if("ADD_RECIPE_COMMENT".equalsIgnoreCase(mesage.getPurpose())){
+        else if("RECIPE_VIEW_COMMENT_ADD".equalsIgnoreCase(mesage.getPurpose())){
             common_message_iv.setImageResource(R.drawable.scared);
             common_message_message_tv.setText("Sorry :(");
             common_message_tv.setText(mesage.getErr_message());
@@ -128,7 +129,7 @@ public class MessageFragment extends DialogFragment {
                 }
             });
         }
-        else if("ADD_RECIPE_REVIEW".equalsIgnoreCase(mesage.getPurpose())){
+        else if("RECIPE_VIEW_REVIEW_ADD".equalsIgnoreCase(mesage.getPurpose())){
             if(mesage.isError()){
                 common_message_iv.setImageResource(R.drawable.scared);
                 common_message_message_tv.setText("Sorry :(");
@@ -148,7 +149,35 @@ public class MessageFragment extends DialogFragment {
                 }
             });
         }
-        else if("DELETE_REVIEW".equalsIgnoreCase(mesage.getPurpose())){
+        else if("RECIPE_VIEW_REVIEW_DELETED".equalsIgnoreCase(mesage.getPurpose())){
+            common_message_message_tv.setText("Review deleted !");
+            common_message_iv.setImageResource(R.drawable.happy);
+
+            common_message_tv.setText(mesage.getErr_message());
+
+            common_message_ok_tv.setVisibility(View.VISIBLE);
+            common_message_ok_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+        }
+        else if("RECIPE_VIEW_COMMENT_DELETED".equalsIgnoreCase(mesage.getPurpose())){
+            common_message_message_tv.setText("Comment deleted !");
+            common_message_iv.setImageResource(R.drawable.happy);
+
+            common_message_tv.setText(mesage.getErr_message());
+
+            common_message_ok_tv.setVisibility(View.VISIBLE);
+            common_message_ok_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+        }
+        else if("RECIPE_VIEW_DELETE_REVIEW".equalsIgnoreCase(mesage.getPurpose())){
             common_message_iv.setImageResource(R.drawable.thinking);
             common_message_message_tv.setText("Delete Review ?");
             common_message_tv.setText(mesage.getErr_message());
@@ -160,7 +189,30 @@ public class MessageFragment extends DialogFragment {
                 @Override
                 public void onClick(View view) {
                     dismiss();
-                    ((RecipeReviewFragment) getTargetFragment()).deleteReview();
+                    ((RecipeViewReviewsFragment) getTargetFragment()).deleteReview();
+                }
+            });
+
+            common_message_cancel_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+        }
+        else if("RECIPE_VIEW_DELETE_COMMENT".equalsIgnoreCase(mesage.getPurpose())){
+            common_message_iv.setImageResource(R.drawable.thinking);
+            common_message_message_tv.setText("Delete Comment ?");
+            common_message_tv.setText(mesage.getErr_message());
+
+            common_message_ok_tv.setVisibility(View.VISIBLE);
+            common_message_cancel_tv.setVisibility(View.VISIBLE);
+
+            common_message_ok_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                    ((RecipeViewCommentsFragment) getTargetFragment()).deleteComment((CommentMO) mesage.getObject());
                 }
             });
 

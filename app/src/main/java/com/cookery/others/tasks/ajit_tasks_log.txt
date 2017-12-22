@@ -168,3 +168,13 @@
 21 dec 2017
 1. Recipe View - show users who have liked the recipe on long click on like button.
 1. Recipe View - show users who have viewed the recipe on long click on view button.
+
+-- git checkin on 21 dec 2017 --
+
+22 dec 2017
+1. Recipe View Screen - user can like a review.
+2. Recipe View Screen - user can like a comment.
+3. Recipe View Screen - user can delete a review.
+4. Recipe View Screen - user can delete a comment.
+5. Recipe View Screen - user can see people who liked a review.
+6. Recipe View Screen - user can see people who liked a comment.
