@@ -6,30 +6,24 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.cookery.R;
-import com.cookery.adapters.HomeCategoriesRecipesRecyclerViewAdapter;
+import com.cookery.adapters.HomeTimelinesTrendsViewPagerAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
 import com.cookery.models.RecipeMO;
-import com.cookery.utils.InternetUtility;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
-import static com.cookery.utils.Constants.TOP_RECIPES_CHEF;
-import static com.cookery.utils.Constants.TOP_RECIPES_MONTH;
-import static com.cookery.utils.Constants.TRENDING_RECIPES;
 
 public class HomeActivity extends CommonActivity{
 
@@ -58,8 +52,11 @@ public class HomeActivity extends CommonActivity{
     @InjectView(R.id.fab)
     FloatingActionButton fab;
 
-    @InjectView(R.id.content_home_rv)
-    RecyclerView content_home_rv;
+    @InjectView(R.id.content_home_timelines_trends_tl)
+    TabLayout content_home_timelines_trends_tl;
+
+    @InjectView(R.id.content_home_timelines_trends_vp)
+    ViewPager content_home_timelines_trends_vp;
     /*components*/
 
     @Override
@@ -67,39 +64,52 @@ public class HomeActivity extends CommonActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.inject(this);
-
-        setupScreen();
     }
 
-    private void setupScreen() {
-        fetchAllCategoriesRecipes();
-    }
+    private void setupTabs(Object array[]) {
+        final List<Integer> viewPagerTabsList = new ArrayList<>();
+        viewPagerTabsList.add(R.layout.home_timelines);
+        viewPagerTabsList.add(R.layout.home_trends);
 
-    private void fetchAllCategoriesRecipes() {
-        new AsyncTaskerHomeRecipes().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        new AsyncTaskerFetchMasterData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "JUST_FETCH");
-    }
+        for(Integer iter : viewPagerTabsList){
+            content_home_timelines_trends_tl.addTab(content_home_timelines_trends_tl.newTab());
+        }
 
-    private void setupAllCategoriesRecipes(Map<String, List<RecipeMO>> categoriesRecipes){
-        HomeCategoriesRecipesRecyclerViewAdapter adapter = new HomeCategoriesRecipesRecyclerViewAdapter(mContext, categoriesRecipes, new View.OnClickListener() {
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        content_home_timelines_trends_vp.setAdapter(new HomeTimelinesTrendsViewPagerAdapter(mContext, viewPagerTabsList, loggedInUser, array, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RecipeMO recipe = (RecipeMO) view.getTag();
-
-                if(recipe == null){
-                    Log.e(CLASS_NAME, "Selected Recipe object is null");
-                    return;
+                if (view.getTag() != null && view.getTag() instanceof RecipeMO) {
+                    new AsyncTaskerFetchRecipe().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (RecipeMO) view.getTag());
                 }
+            }
+        }, new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchHomeContent();
+            }
+        }));
+        content_home_timelines_trends_vp.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(content_home_timelines_trends_tl));
 
-                new AsyncTaskerFetchRecipe().execute(recipe);
+        content_home_timelines_trends_tl.setupWithViewPager(content_home_timelines_trends_vp);
+        content_home_timelines_trends_tl.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                content_home_timelines_trends_vp.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
-        mLayoutManager.scrollToPosition(categoriesRecipes.size()-1);
-
-        content_home_rv.setLayoutManager(mLayoutManager);
-        content_home_rv.setItemAnimator(new DefaultItemAnimator());
-        content_home_rv.setAdapter(adapter);
     }
 
     @Override
@@ -137,33 +147,8 @@ public class HomeActivity extends CommonActivity{
         return common_header_search_iv;
     }
 
-    class AsyncTaskerHomeRecipes extends AsyncTask<Object, Void, Object> {
-        //private Fragment fragment;
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            Map<String, List<RecipeMO>> allCategoriesRecipes = new HashMap<>();
-
-            allCategoriesRecipes.put(TRENDING_RECIPES, InternetUtility.fetchTrendingRecipes());
-            allCategoriesRecipes.put(TOP_RECIPES_MONTH, InternetUtility.fetchTrendingRecipes());
-            allCategoriesRecipes.put(TOP_RECIPES_CHEF, InternetUtility.fetchTrendingRecipes());
-
-            return allCategoriesRecipes;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            //fragment = Utility.showWaitDialog(getFragmentManager(), "loading recipes ..");
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            Map<String, List<RecipeMO>> categoryRecipesMap = (Map<String, List<RecipeMO>>) object;
-
-            if(categoryRecipesMap != null || !categoryRecipesMap.isEmpty()){
-                setupAllCategoriesRecipes((Map<String, List<RecipeMO>>) object);
-                //Utility.closeWaitDialog(getFragmentManager(), fragment);
-            }
-        }
+    @Override
+    protected void setUpTabs(Object array[]) {
+        this.setupTabs(array);
     }
 }

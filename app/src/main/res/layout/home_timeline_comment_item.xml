@@ -33,7 +33,7 @@
 
                     <include
                         android:id="@+id/common_component_round_image_mini_layout"
-                        layout="@layout/common_component_round_image_mini" />
+                        layout="@layout/home_timeline_user_image_mini" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -82,13 +82,11 @@
 
                         </LinearLayout>
 
-                        <include
-                            android:id="@+id/common_component_text_datetime_layout"
-                            layout="@layout/common_component_text_datetime" />
+                        <include layout="@layout/home_timeline_datetime" />
 
                     </LinearLayout>
 
-                    <include layout="@layout/common_component_image_options_mini" />
+                    <include layout="@layout/home_timeline_options_image_mini" />
 
                 </RelativeLayout>
 
@@ -109,7 +107,7 @@
 
                 </RelativeLayout>
 
-                <include layout="@layout/common_component_card_timeline_recipe" />
+                <include layout="@layout/home_timeline_recipe_card" />
 
             </LinearLayout>
 

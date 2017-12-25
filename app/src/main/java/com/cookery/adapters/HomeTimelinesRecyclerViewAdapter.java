@@ -7,7 +7,6 @@ package com.cookery.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.TimelineMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.DateTimeUtility;
-import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
@@ -48,9 +46,9 @@ import static com.cookery.utils.Constants.TIMELINE_USER_ADD;
 import static com.cookery.utils.Constants.UI_FONT;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
-public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<TimelinesRecyclerViewAdapter.ViewHolder> {
+public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeTimelinesRecyclerViewAdapter.ViewHolder> {
 
-    private static final String CLASS_NAME = TimelinesRecyclerViewAdapter.class.getName();
+    private static final String CLASS_NAME = HomeTimelinesRecyclerViewAdapter.class.getName();
     private Context mContext;
 
     private List<TimelineMO> timelines;
@@ -58,7 +56,7 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
     private OnBottomReachedListener onBottomReachedListener;
     private UserMO loggedInUser;
 
-    public TimelinesRecyclerViewAdapter(Context mContext, List<TimelineMO> timelines, View.OnClickListener listener) {
+    public HomeTimelinesRecyclerViewAdapter(Context mContext, List<TimelineMO> timelines, View.OnClickListener listener) {
         this.mContext = mContext;
         this.timelines = timelines;
         this.listener = listener;
@@ -83,21 +81,21 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
         }
 
         if(TIMELINE_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_RECIPE_MODIFY.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
-            return R.layout.fragment_timelines_timeline_recipe;
+            return R.layout.home_timeline_recipe_item;
         }
         else if(TIMELINE_LIKE_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE()) ||
                 TIMELINE_LIKE_COMMENT_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_COMMENT_REMOVE.equalsIgnoreCase(timeline.getTYPE()) ||
                 TIMELINE_LIKE_REVIEW_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_REVIEW_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
-            return R.layout.fragment_timelines_timeline_like;
+            return R.layout.home_timeline_like_item;
         }
         else if(TIMELINE_COMMENT_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_COMMENT_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
-            return R.layout.fragment_timelines_timeline_comment;
+            return R.layout.home_timeline_comment_item;
         }
         else if(TIMELINE_REVIEW_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_REVIEW_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
-            return R.layout.fragment_timelines_timeline_review;
+            return R.layout.home_timeline_review_item;
         }
         else if(TIMELINE_USER_ADD.equalsIgnoreCase(timeline.getTYPE())){
-            return R.layout.fragment_timelines_timeline_user;
+            return R.layout.home_timeline_user_item;
         }
         else{
             Log.e(CLASS_NAME, "The timeline type("+timeline.getTYPE()+") could not be understood. New type of timeline ?");
@@ -128,17 +126,30 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final TimelineMO timeline = timelines.get(position);
+        if (position == timelines.size() - 1){
+            onBottomReachedListener.onBottomReached(position);
+        }
 
-        new AsyncTaskerFetchTimelineDetails(holder).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, timeline);
+        setupLayout(holder, timelines.get(position));
     }
 
     private void setupLayout(ViewHolder holder, TimelineMO timeline){
         //commons
         if(timeline.getWhoUserImage() != null && !timeline.getWhoUserImage().trim().isEmpty()){
-            Utility.loadImageFromURL(mContext, timeline.getWhoUserImage(), holder.common_component_round_image_mini_iv);
+            if(holder.common_component_round_image_mini_iv == null){
+                Log.e(CLASS_NAME, "Error ! ImageView object is null !");
+            }
+            else{
+                Utility.loadImageFromURL(mContext, timeline.getWhoUserImage(), holder.common_component_round_image_mini_iv);
+            }
         }
-        holder.common_component_text_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(timeline.getCREATE_DTM(), DB_DATE_TIME)));
+
+        if(timeline.getCREATE_DTM() != null && !timeline.getCREATE_DTM().trim().isEmpty()){
+            holder.common_component_text_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(timeline.getCREATE_DTM(), DB_DATE_TIME)));
+        }
+        else{
+            Log.e(CLASS_NAME, "Error ! CreateDtm is null !");
+        }
         //commons
 
         if(TIMELINE_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_RECIPE_MODIFY.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
@@ -228,17 +239,17 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
         }
         else if(TIMELINE_COMMENT_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_COMMENT_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
             if(timeline.getWhoUserId() == loggedInUser.getUser_id()){
-                holder.fragment_timelines_timeline_like_who_tv.setText("You");
+                holder.fragment_timelines_timeline_comment_who_tv.setText("You");
             }
             else{
-                holder.fragment_timelines_timeline_like_who_tv.setText(timeline.getWhoName());
+                holder.fragment_timelines_timeline_comment_who_tv.setText(timeline.getWhoName());
             }
 
             if(timeline.getWhoseUserId() == loggedInUser.getUser_id()){
-                holder.fragment_timelines_timeline_like_whose_tv.setText("your");
+                holder.fragment_timelines_timeline_comment_whose_tv.setText("your");
             }
             else{
-                holder.fragment_timelines_timeline_like_whose_tv.setText(timeline.getWhoseName()+"'s");
+                holder.fragment_timelines_timeline_comment_whose_tv.setText(timeline.getWhoseName()+"'s");
             }
 
             holder.fragment_timelines_timeline_comment_comment_tv.setText(timeline.getComment());
@@ -262,17 +273,17 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
         }
         else if(TIMELINE_REVIEW_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_REVIEW_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
             if(timeline.getWhoUserId() == loggedInUser.getUser_id()){
-                holder.fragment_timelines_timeline_like_who_tv.setText("You");
+                holder.fragment_timelines_timeline_review_who_tv.setText("You");
             }
             else{
-                holder.fragment_timelines_timeline_like_who_tv.setText(timeline.getWhoName());
+                holder.fragment_timelines_timeline_review_who_tv.setText(timeline.getWhoName());
             }
 
             if(timeline.getWhoseUserId() == loggedInUser.getUser_id()){
-                holder.fragment_timelines_timeline_like_whose_tv.setText("your");
+                holder.fragment_timelines_timeline_review_whose_tv.setText("your");
             }
             else{
-                holder.fragment_timelines_timeline_like_whose_tv.setText(timeline.getWhoseName()+"'s");
+                holder.fragment_timelines_timeline_review_whose_tv.setText(timeline.getWhoseName()+"'s");
             }
 
             /*review*/
@@ -343,33 +354,33 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
         public ImageView common_component_card_timeline_recipe_recipe_iv;
         /*common*/
 
-        /*fragment_timelines_timeline_comment.xml*/
+        /*home_timeline_comment_item.xml*/
         public RelativeLayout fragment_timelines_timeline_comment_rl;
         public TextView fragment_timelines_timeline_comment_who_tv;
         public TextView fragment_timelines_timeline_comment_what_tv;
         public TextView fragment_timelines_timeline_comment_whose_tv;
         public TextView fragment_timelines_timeline_comment_comment_tv;
-        /*fragment_timelines_timeline_comment.xml*/
+        /*home_timeline_comment_item.xml*/
 
-        /*fragment_timelines_timeline_like.xml*/
+        /*home_timeline_like_item.xml*/
         public RelativeLayout fragment_timelines_timeline_like_rl;
         public TextView fragment_timelines_timeline_like_who_tv;
         public TextView fragment_timelines_timeline_like_what_tv;
         public TextView fragment_timelines_timeline_like_whose_tv;
         public TextView fragment_timelines_timeline_like_on_tv;
         public TextView fragment_timelines_timeline_like_review_tv;
-        /*fragment_timelines_timeline_like.xml*/
+        /*home_timeline_like_item.xml*/
 
-        /*fragment_timelines_timeline_recipe.xml*/
+        /*home_timeline_recipe_item*/
         public RelativeLayout fragment_timelines_timeline_recipe_rl;
         public TextView fragment_timelines_timeline_recipe_msg_tv;
         public TextView fragment_timelines_timeline_recipe_recipe_name_tv;
         public TextView fragment_timelines_timeline_recipe_recipe_type_tv;
         public TextView fragment_timelines_timeline_recipe_recipe_cuisine_tv;
         public ImageView fragment_timelines_timeline_recipe_recipe_iv;
-        /*fragment_timelines_timeline_recipe.xml*/
+        /*home_timeline_recipe_item*/
 
-        /*fragment_timelines_timeline_review.xml*/
+        /*home_timeline_review_item.xml*/
         public RelativeLayout fragment_timelines_timeline_review_rl;
         public TextView fragment_timelines_timeline_review_who_tv;
         public TextView fragment_timelines_timeline_review_what_tv;
@@ -380,18 +391,18 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
         public ImageView fragment_timelines_timeline_review_star3_iv;
         public ImageView fragment_timelines_timeline_review_star4_iv;
         public ImageView fragment_timelines_timeline_review_star5_iv;
-        /*fragment_timelines_timeline_review.xml*/
+        /*home_timeline_review_item*/
 
-        /*fragment_timelines_timeline_user.xml*/
+        /*home_timeline_user_item.xml*/
         public RelativeLayout fragment_timelines_timeline_user_rl;
         public TextView fragment_timelines_timeline_user_msg_tv;
-        /*fragment_timelines_timeline_user.xml*/
+        /*home_timeline_user_item.xml*/
 
         public ViewHolder(View view, int layout) {
             super(view);
 
             /*commons*/
-            common_component_round_image_mini_iv = view.findViewById(R.id.common_component_round_image_mini_iv);
+            common_component_round_image_mini_iv = view.findViewById(R.id.common_component_round_image_mini_layout);
             common_component_text_datetime_tv = view.findViewById(R.id.common_component_text_datetime_tv);
             common_component_image_options_mini_iv = view.findViewById(R.id.common_component_image_options_mini_iv);
             common_component_round_image_micro_iv = view.findViewById(R.id.common_component_round_image_micro_iv);
@@ -401,30 +412,27 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
             common_component_card_timeline_recipe_recipe_iv = view.findViewById(R.id.common_component_card_timeline_recipe_recipe_iv);
             /*commons*/
 
-            if(R.layout.fragment_timelines_timeline_comment == layout){
+            if (R.layout.home_timeline_comment_item == layout) {
                 fragment_timelines_timeline_comment_rl = view.findViewById(R.id.fragment_timelines_timeline_comment_rl);
                 fragment_timelines_timeline_comment_who_tv = view.findViewById(R.id.fragment_timelines_timeline_comment_who_tv);
                 fragment_timelines_timeline_comment_comment_tv = view.findViewById(R.id.fragment_timelines_timeline_comment_comment_tv);
                 fragment_timelines_timeline_comment_what_tv = view.findViewById(R.id.fragment_timelines_timeline_comment_what_tv);
                 fragment_timelines_timeline_comment_whose_tv = view.findViewById(R.id.fragment_timelines_timeline_comment_whose_tv);
-            }
-            else if(R.layout.fragment_timelines_timeline_like == layout){
+            } else if (R.layout.home_timeline_like_item == layout) {
                 fragment_timelines_timeline_like_rl = view.findViewById(R.id.fragment_timelines_timeline_like_rl);
                 fragment_timelines_timeline_like_who_tv = view.findViewById(R.id.fragment_timelines_timeline_like_who_tv);
                 fragment_timelines_timeline_like_what_tv = view.findViewById(R.id.fragment_timelines_timeline_like_what_tv);
                 fragment_timelines_timeline_like_whose_tv = view.findViewById(R.id.fragment_timelines_timeline_like_whose_tv);
                 fragment_timelines_timeline_like_on_tv = view.findViewById(R.id.fragment_timelines_timeline_like_on_tv);
                 fragment_timelines_timeline_like_review_tv = view.findViewById(R.id.fragment_timelines_timeline_like_review_tv);
-            }
-            else if(R.layout.fragment_timelines_timeline_recipe == layout){
+            } else if (R.layout.home_timeline_recipe_item == layout) {
                 fragment_timelines_timeline_recipe_rl = view.findViewById(R.id.fragment_timelines_timeline_recipe_rl);
                 fragment_timelines_timeline_recipe_msg_tv = view.findViewById(R.id.fragment_timelines_timeline_recipe_msg_tv);
                 fragment_timelines_timeline_recipe_recipe_name_tv = view.findViewById(R.id.fragment_timelines_timeline_recipe_recipe_name_tv);
                 fragment_timelines_timeline_recipe_recipe_type_tv = view.findViewById(R.id.fragment_timelines_timeline_recipe_recipe_type_tv);
                 fragment_timelines_timeline_recipe_recipe_cuisine_tv = view.findViewById(R.id.fragment_timelines_timeline_recipe_recipe_cuisine_tv);
                 fragment_timelines_timeline_recipe_recipe_iv = view.findViewById(R.id.fragment_timelines_timeline_recipe_recipe_iv);
-            }
-            else if(R.layout.fragment_timelines_timeline_review == layout){
+            } else if (R.layout.home_timeline_review_item == layout) {
                 fragment_timelines_timeline_review_rl = view.findViewById(R.id.fragment_timelines_timeline_review_rl);
                 fragment_timelines_timeline_review_who_tv = view.findViewById(R.id.fragment_timelines_timeline_review_who_tv);
                 fragment_timelines_timeline_review_what_tv = view.findViewById(R.id.fragment_timelines_timeline_review_what_tv);
@@ -435,12 +443,10 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
                 fragment_timelines_timeline_review_star3_iv = view.findViewById(R.id.fragment_timelines_timeline_review_star3_iv);
                 fragment_timelines_timeline_review_star4_iv = view.findViewById(R.id.fragment_timelines_timeline_review_star4_iv);
                 fragment_timelines_timeline_review_star5_iv = view.findViewById(R.id.fragment_timelines_timeline_review_star5_iv);
-            }
-            else if(R.layout.fragment_timelines_timeline_user == layout){
+            } else if (R.layout.home_timeline_user_item == layout) {
                 fragment_timelines_timeline_user_rl = view.findViewById(R.id.fragment_timelines_timeline_user_rl);
                 fragment_timelines_timeline_user_msg_tv = view.findViewById(R.id.fragment_timelines_timeline_user_msg_tv);
-            }
-            else{
+            } else {
                 Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE);
             }
         }
@@ -459,32 +465,6 @@ public class TimelinesRecyclerViewAdapter extends RecyclerView.Adapter<Timelines
             }
             else if(v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
-            }
-        }
-    }
-
-    class AsyncTaskerFetchTimelineDetails extends AsyncTask<TimelineMO, Void, Object> {
-        private ViewHolder holder;
-
-        public AsyncTaskerFetchTimelineDetails(ViewHolder holder){
-            this.holder = holder;
-        }
-
-        @Override
-        protected void onPreExecute(){
-        }
-
-        @Override
-        protected Object doInBackground(TimelineMO... objects) {
-            return InternetUtility.getFetchTimelineDetails(objects[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            List<TimelineMO> timeline = (List<TimelineMO>)object;
-
-            if(timeline != null && !timeline.isEmpty()){
-                setupLayout(holder, timeline.get(0));
             }
         }
     }

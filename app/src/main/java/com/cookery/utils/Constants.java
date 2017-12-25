@@ -76,7 +76,7 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_RECIPE_USER_FETCH = "RECIPE_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_REVIEW_USER_FETCH = "REVIEW_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_TIMELINE_FETCH = "TIMELINE_FETCH";
-    public static final String PHP_FUNCTION_KEY_TIMELINE_USER_FETCH_ALL = "TIMELINE_USER_FETCH_ALL";
+    public static final String PHP_FUNCTION_KEY_TIMELINE_USER_FETCH = "TIMELINE_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_USER_REGISTER = "USER_REGISTER";
     public static final String PHP_FUNCTION_KEY_USER_LOGIN = "USER_LOGIN";
     /*PHP function keys*/
@@ -114,7 +114,6 @@ public final class Constants {
     /*Async Task Purpose Keys*/
     public static final String ASYNC_TASK_GET_ALL_CATEGORY_RECIPES = "ASYNC_TASK_GET_ALL_CATEGORY_RECIPES";
     /*Async Task Purpose Keys*/
-
 
     //flag value for affirmative/non affirmative
     public static final String AFFIRMATIVE = "Y";

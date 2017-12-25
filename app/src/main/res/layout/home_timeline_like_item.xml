@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
-    android:id="@+id/fragment_timelines_timeline_review_rl"
+    android:id="@+id/fragment_timelines_timeline_like_rl"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp">
@@ -21,7 +21,7 @@
             android:padding="5dp">
 
             <LinearLayout
-                android:id="@+id/fragment_timelines_timeline_review_ll"
+                android:id="@+id/fragment_timelines_timeline_like_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <include layout="@layout/common_component_round_image_mini"
+                    <include layout="@layout/home_timeline_user_image_mini"
                         android:id="@+id/common_component_round_image_mini_layout"/>
 
                     <LinearLayout
@@ -48,7 +48,7 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/fragment_timelines_timeline_review_who_tv"
+                                android:id="@+id/fragment_timelines_timeline_like_who_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="WHO"
@@ -58,36 +58,37 @@
                             <TextView
                                 android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp"
-                                android:id="@+id/fragment_timelines_timeline_review_what_tv"
+                                android:id="@+id/fragment_timelines_timeline_like_what_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=" WHAT "
+                                android:textColor="@color/primaryDarkText"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:id="@+id/fragment_timelines_timeline_like_whose_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="WHO's"
+                                android:textColor="@color/app_color"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:layout_marginLeft="5dp"
+                                android:id="@+id/fragment_timelines_timeline_like_on_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="WHAT"
                                 android:textColor="@color/primaryDarkText"
                                 android:textSize="10sp" />
 
-                            <TextView
-                                android:id="@+id/fragment_timelines_timeline_review_whose_tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="YYYY's"
-                                android:textColor="@color/app_color"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:layout_marginLeft="5dp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=" recipe"
-                                android:textColor="@color/primaryDarkText"
-                                android:textSize="10sp" />
-
                         </LinearLayout>
 
-                        <include layout="@layout/common_component_text_datetime" />
+                        <include layout="@layout/home_timeline_datetime" />
 
                     </LinearLayout>
 
-                    <include layout="@layout/common_component_image_options_mini" />
+                    <include layout="@layout/home_timeline_options_image_mini" />
 
                 </RelativeLayout>
 
@@ -98,7 +99,7 @@
                     android:layout_marginTop="15dp">
 
                     <TextView
-                        android:id="@+id/fragment_timelines_timeline_review_review_tv"
+                        android:id="@+id/fragment_timelines_timeline_like_review_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLength="150"
@@ -106,61 +107,10 @@
                         android:textColor="@color/tertiaryDarkText"
                         android:textSize="10sp" />
 
-                    <LinearLayout
-                        android:layout_marginTop="2dp"
-                        android:layout_below="@+id/fragment_timelines_timeline_review_review_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:weightSum="5"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:maxLength="150"
-                            android:text="You rated "
-                            android:textColor="@color/primaryDarkText"
-                            android:textSize="9sp" />
-
-                        <ImageView
-                            android:layout_weight="1"
-                            android:id="@+id/fragment_timelines_timeline_review_star1_iv"
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:src="@drawable/star"/>
-
-                        <ImageView
-                            android:id="@+id/fragment_timelines_timeline_review_star2_iv"
-                            android:layout_weight="1"
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:src="@drawable/star"/>
-
-                        <ImageView
-                            android:id="@+id/fragment_timelines_timeline_review_star3_iv"
-                            android:layout_weight="1"
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:src="@drawable/star"/>
-
-                        <ImageView
-                            android:id="@+id/fragment_timelines_timeline_review_star4_iv"
-                            android:layout_weight="1"
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:src="@drawable/star"/>
-
-                        <ImageView
-                            android:id="@+id/fragment_timelines_timeline_review_star5_iv"
-                            android:layout_weight="1"
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:src="@drawable/star"/>
-                    </LinearLayout>
-
                 </RelativeLayout>
 
-                <include layout="@layout/common_component_card_timeline_recipe" />
+                <include layout="@layout/home_timeline_recipe_card" />
+
             </LinearLayout>
 
         </RelativeLayout>

@@ -21,7 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.adapters.TimelinesRecyclerViewAdapter;
+import com.cookery.adapters.HomeTimelinesRecyclerViewAdapter;
 import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.TimelineMO;
 import com.cookery.utils.InternetUtility;
@@ -86,7 +86,7 @@ public class MyTimelinesFragment extends DialogFragment {
             return;
         }
 
-        final TimelinesRecyclerViewAdapter adapter = new TimelinesRecyclerViewAdapter(mContext, myTimelines, new View.OnClickListener() {
+        final HomeTimelinesRecyclerViewAdapter adapter = new HomeTimelinesRecyclerViewAdapter(mContext, myTimelines, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(R.id.view_pager_recipes_recipe_options_iv == view.getId()){
@@ -152,12 +152,12 @@ public class MyTimelinesFragment extends DialogFragment {
     }
 
     private void updateTopTimeline(List<TimelineMO> timelines){
-        TimelinesRecyclerViewAdapter adapter = (TimelinesRecyclerViewAdapter) fragment_my_timeline_rv.getAdapter();
+        HomeTimelinesRecyclerViewAdapter adapter = (HomeTimelinesRecyclerViewAdapter) fragment_my_timeline_rv.getAdapter();
         adapter.updateTopTimelines(timelines);
     }
 
     private void updateBottomTimeline(List<TimelineMO> timelines){
-        TimelinesRecyclerViewAdapter adapter = (TimelinesRecyclerViewAdapter) fragment_my_timeline_rv.getAdapter();
+        HomeTimelinesRecyclerViewAdapter adapter = (HomeTimelinesRecyclerViewAdapter) fragment_my_timeline_rv.getAdapter();
         adapter.updateBottomTimelines(timelines);
     }
 

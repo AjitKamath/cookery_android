@@ -31,13 +31,13 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <include layout="@layout/common_component_round_image_mini"
+                    <include layout="@layout/home_timeline_user_image_mini"
                         android:id="@+id/common_component_round_image_mini_layout"/>
 
                     <LinearLayout
                         android:layout_marginLeft="5dp"
                         android:layout_centerInParent="true"
-                        android:layout_toRightOf="@+id/common_component_round_image_mini_layout"
+                        android:layout_toRightOf="@+id/common_component_round_image_mini_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -51,11 +51,11 @@
                             android:textColor="@color/primaryDarkText"
                             android:textSize="10sp" />
 
-                        <include layout="@layout/common_component_text_datetime" />
+                        <include layout="@layout/home_timeline_datetime" />
 
                     </LinearLayout>
 
-                    <include layout="@layout/common_component_image_options_mini" />
+                    <include layout="@layout/home_timeline_options_image_mini" />
 
                 </RelativeLayout>
             </LinearLayout>

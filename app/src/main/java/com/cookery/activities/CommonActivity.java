@@ -58,14 +58,17 @@ import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.MY_RECIPES;
 import static com.cookery.utils.Constants.MY_REVIEWS;
 import static com.cookery.utils.Constants.OK;
+import static com.cookery.utils.Constants.TOP_RECIPES_CHEF;
+import static com.cookery.utils.Constants.TOP_RECIPES_MONTH;
+import static com.cookery.utils.Constants.TRENDING_RECIPES;
 
 
 public abstract class CommonActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener{
     private static final String CLASS_NAME = CommonActivity.class.getName();
     private Context mContext = this;
-    private MasterDataMO masterData;
 
-    private UserMO loggedInUser;
+    private MasterDataMO masterData;
+    public UserMO loggedInUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +83,8 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         setupSearch();
         setupFab();
         verifyLoggedInUser();
+
+        fetchContent();
     }
 
     private void verifyLoggedInUser() {
@@ -88,6 +93,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             //TODO: show login/signup screen
             loggedInUser = TestData.getUserTestData();
             Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, loggedInUser);
+            verifyLoggedInUser();
         }
     }
 
@@ -311,6 +317,18 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         fragment.show(manager, fragmentNameStr);
     }
 
+    private void fetchContent() {
+        fetchHomeContent();
+        fetchMasterContent();
+    }
+
+    public void fetchHomeContent(){
+        new AsyncTaskerHomeContent().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private void fetchMasterContent(){
+        new AsyncTaskerFetchMasterData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "JUST_FETCH");
+    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -349,6 +367,8 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     protected abstract DelayAutoCompleteTextView getCommon_header_search_av();
 
     protected abstract ImageView getCommon_header_search_iv();
+
+    protected abstract void setUpTabs(Object array[]);
 
 
 
@@ -538,6 +558,40 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             if(myReviews != null || !myReviews.isEmpty()){
                 setupMyReviewsFragment((List<RecipeMO>) object);
                 Utility.closeWaitDialog(getFragmentManager(), fragment);
+            }
+        }
+    }
+
+    class AsyncTaskerHomeContent extends AsyncTask<Object, Void, Object> {
+        //private Fragment fragment;
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            //fetch timelines
+            List<TimelineMO> timelines = InternetUtility.getFetchUserTimeline(loggedInUser.getUser_id(), 0);
+
+            //fetch trends
+            Map<String, List<RecipeMO>> allCategoriesRecipes = new HashMap<>();
+            allCategoriesRecipes.put(TRENDING_RECIPES, InternetUtility.fetchTrendingRecipes());
+            allCategoriesRecipes.put(TOP_RECIPES_MONTH, InternetUtility.fetchTrendingRecipes());
+            allCategoriesRecipes.put(TOP_RECIPES_CHEF, InternetUtility.fetchTrendingRecipes());
+
+            Object array[] = new Object[]{timelines, allCategoriesRecipes};
+
+            return array;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //fragment = Utility.showWaitDialog(getFragmentManager(), "loading recipes ..");
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            Object array[] = (Object[]) object;
+
+            if(array != null){
+                setUpTabs(array);
             }
         }
     }
