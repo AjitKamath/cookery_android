@@ -88,7 +88,7 @@ public class HomeActivity extends CommonActivity{
         }, new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                fetchHomeContent();
+                fetchTimelineContent();
             }
         }));
         content_home_timelines_trends_vp.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(content_home_timelines_trends_tl));

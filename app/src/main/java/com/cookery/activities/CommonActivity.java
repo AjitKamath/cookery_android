@@ -69,6 +69,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
     private MasterDataMO masterData;
     public UserMO loggedInUser;
+    private Object homeContent[] = new Object[2];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -326,6 +327,10 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         new AsyncTaskerHomeContent().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
+    public void fetchTimelineContent(){
+        new AsyncTaskerTimelineContent().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
     private void fetchMasterContent(){
         new AsyncTaskerFetchMasterData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "JUST_FETCH");
     }
@@ -340,9 +345,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         }
         else if(R.id.activity_home_drawer_my_reviews == item.getItemId()){
             new AsyncTaskerFetchMyReviews().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
-        else if(R.id.navigation_drawer_timeline == item.getItemId()){
-            new AsyncTaskerFetchMyTimelines().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         else{
             Utility.showSnacks(getDrawer_layout(), "NOT IMPLEMENTED YET", OK, Snackbar.LENGTH_LONG);
@@ -417,32 +419,8 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         }
     }
 
-    class AsyncTaskerFetchMyTimelines extends AsyncTask<Void, Void, List<TimelineMO>> {
-        private Fragment fragment;
-
-        @Override
-        protected void onPreExecute(){
-            fragment = Utility.showWaitDialog(getFragmentManager(), "Fetching your timelines ..");
-        }
-
-        @Override
-        protected List<TimelineMO> doInBackground(Void... objects) {
-            return InternetUtility.getFetchUserTimeline(loggedInUser.getUser_id(), 0);
-        }
-
-        @Override
-        protected void onPostExecute(List<TimelineMO> objectList) {
-            List<TimelineMO> timelines = objectList;
-
-            if(timelines != null && !timelines.isEmpty()){
-                Utility.showMyTimelinesFragment(getFragmentManager(), timelines);
-            }
-            else{
-                Log.e(CLASS_NAME, "Error ! Timeline cannot be empty ! Ideally there should atleast be one timeline which is when the user registered.");
-            }
-
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
-        }
+    private List<TimelineMO> fetchTimelines(){
+        return InternetUtility.getFetchUserTimeline(loggedInUser.getUser_id(), 0);
     }
 
 
@@ -568,7 +546,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         @Override
         protected Object doInBackground(Object... objects) {
             //fetch timelines
-            List<TimelineMO> timelines = InternetUtility.getFetchUserTimeline(loggedInUser.getUser_id(), 0);
+            homeContent[0] = fetchTimelines();
 
             //fetch trends
             Map<String, List<RecipeMO>> allCategoriesRecipes = new HashMap<>();
@@ -576,9 +554,9 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             allCategoriesRecipes.put(TOP_RECIPES_MONTH, InternetUtility.fetchTrendingRecipes());
             allCategoriesRecipes.put(TOP_RECIPES_CHEF, InternetUtility.fetchTrendingRecipes());
 
-            Object array[] = new Object[]{timelines, allCategoriesRecipes};
+            homeContent[1] = allCategoriesRecipes;
 
-            return array;
+            return homeContent;
         }
 
         @Override
@@ -588,10 +566,33 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected void onPostExecute(Object object) {
-            Object array[] = (Object[]) object;
+            if(homeContent != null){
+                setUpTabs(homeContent);
+            }
+        }
+    }
 
-            if(array != null){
-                setUpTabs(array);
+    class AsyncTaskerTimelineContent extends AsyncTask<Object, Void, Object> {
+        //private Fragment fragment;
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            //fetch timelines
+            return fetchTimelines();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //fragment = Utility.showWaitDialog(getFragmentManager(), "loading recipes ..");
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            List<TimelineMO> timelines = (List<TimelineMO>) object;
+
+            if(timelines != null){
+                homeContent[0] = timelines;
+                setUpTabs(homeContent);
             }
         }
     }

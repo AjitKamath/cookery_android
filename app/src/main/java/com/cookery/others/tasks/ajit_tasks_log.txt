@@ -186,3 +186,8 @@
 2. User can see his timelines on launching the app.
 3. Fetch latest timelines on "pull to refresh" action.
 4. Load more timelines on reaching bottom of the screen.
+
+-- git checkin on 24 dec 2017 --
+
+26 dec 2017
+1. Optimize timelines to fetch only timelines on "pull to refresh"
