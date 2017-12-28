@@ -16,11 +16,6 @@
             android:title="My Reviews" />
 
         <item
-            android:id="@+id/navigation_drawer_timeline"
-            android:icon="@drawable/timeline"
-            android:title="My Timeline" />
-
-        <item
             android:id="@+id/navigation_drawer_list"
             android:icon="@drawable/my_list"
             android:title="My List" />

@@ -60,6 +60,7 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_RECIPE_USER_VIEWED_FETCH = "RECIPE_USER_VIEWED_FETCH";
     public static final String PHP_FUNCTION_KEY_RECIPE_REVIEW_FETCH = "RECIPE_REVIEW_FETCH";
     public static final String PHP_FUNCTION_KEY_INGREDIENT_FETCH = "INGREDIENT_FETCH";
+    public static final String PHP_FUNCTION_KEY_RECIPE_SEARCH = "RECIPE_SEARCH";
     public static final String PHP_FUNCTION_KEY_RECIPE_SUBMIT = "RECIPE_SUBMIT";
     public static final String PHP_FUNCTION_KEY_COMMENT_SUBMIT = "COMMENT_SUBMIT";
     public static final String PHP_FUNCTION_KEY_REVIEW_SUBMIT = "REVIEW_SUBMIT";

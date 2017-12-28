@@ -36,6 +36,7 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_FAVORITE_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_REVIEW_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_SEARCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_TRENDING_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_USER_FETCH;
@@ -182,19 +183,18 @@ public class InternetUtility {
         return null;
     }
 
-    public static Object fetchMasterSearch(String query) {
+    public static Object searchRecipes(String query) {
         if(USE_TEST_DATA){
             return TestData.getRecipesTestData();
         }
 
         try {
             Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_RECIPE_SEARCH);
             paramMap.put("search_query", query);
 
-            //TODO:YET TO IMPLEMENT
-
-            //String jsonStr = getResponseFromCookery(SERVER_ADDRESS_PUBLIC+PHP_FETCH_MASTER_SEARCH, paramMap);
-            //return Utility.jsonToObject(jsonStr, RecipeMO.class);
+            String jsonStr = getResponseFromCookery(paramMap);
+            return Utility.jsonToObject(jsonStr, RecipeMO.class);
         }
         catch (Exception e){
             Log.e(CLASS_NAME, "Could not fetch Recipes from the server : "+e);

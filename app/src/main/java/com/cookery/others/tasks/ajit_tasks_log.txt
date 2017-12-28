@@ -191,3 +191,9 @@
 
 26 dec 2017
 1. Optimize timelines to fetch only timelines on "pull to refresh"
+
+-- git checkin on 26 dec 2017 --
+
+28 dec 2017
+1. #67 - Home Search - User can search for recipes with its name, ingredients in it or user who posted the recipe.
+2. Home Navigation Drawer - remove My Timeline from the menu as it is part of Home Screen now.

@@ -1,9 +1,8 @@
 package com.cookery.filters;
 
-import android.util.Log;
 import android.widget.Filter;
 
-import com.cookery.adapters.AutoCompleteAdapter;
+import com.cookery.adapters.HomeSearchAutoCompleteAdapter;
 import com.cookery.utils.InternetUtility;
 
 import java.util.ArrayList;
@@ -13,17 +12,15 @@ import java.util.List;
  * Created by ajit on 27/8/17.
  */
 
-public class AutocompleteFilter extends Filter {
+public class HomeSearchAutoCompleteFilter extends Filter {
 
-    private AutoCompleteAdapter adapter;
+    private HomeSearchAutoCompleteAdapter adapter;
     private List<Object> filteredList;
-    private String type;
 
-    public AutocompleteFilter(AutoCompleteAdapter adapter, String type) {
+    public HomeSearchAutoCompleteFilter(HomeSearchAutoCompleteAdapter adapter) {
         super();
         this.adapter = adapter;
         this.filteredList = new ArrayList<>();
-        this.type = type;
     }
 
     @Override
@@ -43,12 +40,7 @@ public class AutocompleteFilter extends Filter {
         }
 
         //fetch from database
-        if("INGREDIENTS".equalsIgnoreCase(type)){
-           filteredList = (List<Object>) InternetUtility.fetchIngredients(filterPattern);
-        }
-        else{
-            Log.e(AutocompleteFilter.class.getName(), "Error ! Could not identify auto complete type : "+type);
-        }
+        filteredList = (List<Object>) InternetUtility.searchRecipes(filterPattern);
 
         if(filteredList != null){
             results.values = filteredList;
@@ -60,12 +52,13 @@ public class AutocompleteFilter extends Filter {
 
     @Override
     protected void publishResults(CharSequence constraint, FilterResults results) {
-        if(adapter.filteredIngredients != null){
-            adapter.filteredIngredients.clear();
+        if(adapter.filteredRecipes != null){
+            adapter.filteredRecipes.clear();
         }
 
         if(results.values != null && !((List<Object>)results.values).isEmpty()){
-            adapter.filteredIngredients.addAll((List<Object>) results.values);
+            adapter.filteredRecipes.addAll((List<Object>) results.values);
+            adapter.query = String.valueOf(constraint);
             adapter.notifyDataSetChanged();
         }
         else{

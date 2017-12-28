@@ -25,7 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 
 import com.cookery.R;
-import com.cookery.adapters.AutoCompleteAdapter;
+import com.cookery.adapters.HomeSearchAutoCompleteAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
 import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.FavoriteRecipesFragment;
@@ -99,7 +99,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     }
 
     private void setupSearch() {
-        AutoCompleteAdapter adapter = new AutoCompleteAdapter(mContext, R.layout.master_search_recipe_autocomplete_item, "MASTER SEARCH");
+        HomeSearchAutoCompleteAdapter adapter = new HomeSearchAutoCompleteAdapter(mContext);
         getCommon_header_search_av().setThreshold(2);
         getCommon_header_search_av().setAutoCompleteDelay(1000);
         getCommon_header_search_av().setAdapter(adapter);

@@ -10,14 +10,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.filters.AutocompleteFilter;
 import com.cookery.models.IngredientMO;
-import com.cookery.models.RecipeMO;
-import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,28 +97,6 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
             convertView.setTag(ingredient);
 
             setFont(autocomplete_ingredient_ll);
-        }
-        else if(filteredIngredients.get(position) instanceof RecipeMO){
-            // Get the data item from filtered list.
-            RecipeMO recipe = (RecipeMO) filteredIngredients.get(position);
-
-            RelativeLayout home_master_search_recipe_item_image_rl = convertView.findViewById(R.id.home_master_search_recipe_item_image_rl);
-
-            autocomplete_tv = convertView.findViewById(R.id.home_master_search_recipe_item_recipe_name_tv);
-            autocomplete_iv = convertView.findViewById(R.id.home_master_search_recipe_item_image_iv);
-            TextView home_master_search_recipe_item_user_name_tv = convertView.findViewById(R.id.home_master_search_recipe_item_user_name_tv);
-
-            autocomplete_tv.setText(recipe.getRCP_NAME().toUpperCase());
-
-            if(recipe.getImages() != null && recipe.getImages().get(0) != null){
-                Utility.loadImageFromURL(mContext, recipe.getImages().get(0), autocomplete_iv);
-            }
-
-            home_master_search_recipe_item_user_name_tv.setText(recipe.getUserName());
-
-            convertView.setTag(recipe);
-
-            setFont(home_master_search_recipe_item_image_rl);
         }
         else{
             Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+filteredIngredients.get(position));
