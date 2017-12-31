@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:id="@+id/mylist_add_ll"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:weightSum="1">
+
+    <RelativeLayout
+        android:id="@+id/mylist_add_header_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/app_color"
+            android:textSize="@dimen/primary_text_size"
+            android:text="MY LIST"/>
+
+        <ImageView
+            android:id="@+id/mylist_close_iv"
+            android:layout_centerVertical="true"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_close_grey600_36dp"
+            android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/recipe_add_header_rl2"
+            android:layout_width="match_parent"
+            android:layout_height="428dp"
+            android:gravity="center_vertical"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_weight="0.45">
+
+        <TextView
+            android:id="@+id/mylist_add_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/app_color"
+            android:text="+ ADD NEW LIST"/>
+
+
+    <TextView
+        android:id="@+id/mylist_no_list_tv"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="100dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NO LIST EXISTS YET"
+        android:textColor="@color/secondaryDarkText"
+        android:textSize="@dimen/secondary_text_size" />
+
+    <GridView
+        android:id="@+id/user_lists_gv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:verticalSpacing="10dp"
+        android:numColumns="3"
+        tools:listitem="@layout/mylist_gv_item"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
+    </GridView>
+
+        </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/mylist_add_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="5dp"
+        android:backgroundTint="@color/app_color"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_add_white_18dp"
+        app:fabSize="mini" />
+
+</LinearLayout>

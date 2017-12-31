@@ -149,6 +149,26 @@ public class MessageFragment extends DialogFragment {
                 }
             });
         }
+        else if("ADD_LIST".equalsIgnoreCase(mesage.getPurpose())){
+            if(mesage.isError()){
+                common_message_iv.setImageResource(R.drawable.scared);
+                common_message_message_tv.setText("Sorry :(");
+            }
+            else{
+                common_message_message_tv.setText("Awesome !");
+                common_message_iv.setImageResource(R.drawable.happy);
+            }
+
+            common_message_tv.setText(mesage.getErr_message());
+
+            common_message_ok_tv.setVisibility(View.VISIBLE);
+            common_message_ok_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+        }
         else if("RECIPE_VIEW_REVIEW_DELETED".equalsIgnoreCase(mesage.getPurpose())){
             common_message_message_tv.setText("Review deleted !");
             common_message_iv.setImageResource(R.drawable.happy);

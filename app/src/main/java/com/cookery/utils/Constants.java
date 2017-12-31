@@ -14,7 +14,7 @@ public final class Constants {
 
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_AJIT = "cookery_php-ajitkamathk452607.codeanyapp.com";
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_VISHAL = "cookery_php-dial2vishal53897.codeanyapp.com";
-    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_AJIT;
+    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_VISHAL;
 
     private static final String SERVER_CODEANYWHERE_PUBLIC_DIR = "public";
 
@@ -67,6 +67,8 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_REVIEW_DELETE = "REVIEW_DELETE";
     public static final String PHP_FUNCTION_KEY_COMMENT_DELETE = "COMMENT_DELETE";
     public static final String PHP_FUNCTION_KEY_REVIEW_RECIPE = "REVIEW_RECIPE_FETCH";
+    public static final String PHP_FUNCTION_KEY_MYLIST_SUBMIT = "PHP_FUNCTION_KEY_MYLIST_SUBMIT";
+    public static final String PHP_FUNCTION_KEY_MYLIST_VIEW = "PHP_FUNCTION_KEY_MYLIST_VIEW";
     public static final String PHP_FUNCTION_KEY_LIKE_SUBMIT = "LIKE_SUBMIT";
     public static final String PHP_FUNCTION_KEY_COMMENT_RECIPE_FETCH_ALL = "COMMENT_RECIPE_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_LIKE_FETCH_USERS = "LIKE_FETCH_USERS";
@@ -103,6 +105,10 @@ public final class Constants {
     public static final String TIMELINE_USER_ADD = "USER_ADD";
     /*Timeline keys*/
 
+    /* My List Keys */
+    public static final String PHP_FUNCTION_KEY_MYLIST_FETCH = "MYLIST_FETCH";
+    /* My List Keys */
+
     /*Date Time*/
     public static final String DB_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
     /*Date Time*/
@@ -115,6 +121,7 @@ public final class Constants {
     /*Async Task Purpose Keys*/
     public static final String ASYNC_TASK_GET_ALL_CATEGORY_RECIPES = "ASYNC_TASK_GET_ALL_CATEGORY_RECIPES";
     /*Async Task Purpose Keys*/
+
 
     //flag value for affirmative/non affirmative
     public static final String AFFIRMATIVE = "Y";
@@ -143,6 +150,7 @@ public final class Constants {
     public static final String FRAGMENT_COMMON_MESSAGE = "FRAGMENT_COMMON_MESSAGE";
     public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
     public static final String FRAGMENT_MY_RECIPE = "FRAGMENT_MY_RECIPE";
+    public static final String FRAGMENT_MY_LIST = "FRAGMENT_MY_LIST";
     public static final String FRAGMENT_MY_REVIEWS = "FRAGMENT_MY_REVIEWS";
     public static final String FRAGMENT_MY_TIMELINES = "FRAGMENT_MY_TIMELINES";
 
@@ -160,6 +168,10 @@ public final class Constants {
     public static final String MY_RECIPES = "MY RECIPES";
     public static final String MY_REVIEWS = "MY REVIEWS";
     public static final String MY_TIMELINES = "MY TIMELINES";
+    public static final String MY_LISTS = "MY_LISTS";
+    public static final String MY_INGREDIENTS = "MY_INGREDIENTS";
+    public static final String MY_LISTS_EXISTS = "MY_LISTS_EXISTS";
+    public static final String LIST_ID = "LIST_ID";
 
     //check master keys
     public static final String CHECK_MASTER_FOR_CATEGORIES = "CHECK_MASTER_FOR_CATEGORIES";

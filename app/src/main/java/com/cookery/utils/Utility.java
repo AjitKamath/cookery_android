@@ -30,6 +30,7 @@ import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
+import com.cookery.models.MyListMO;
 import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
@@ -199,6 +200,9 @@ public class Utility extends Activity {
             }
             else if(mappingClass.equals(CommentMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<CommentMO>>(){}.getType());
+            }
+            else if(mappingClass.equals(MyListMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<List<MyListMO>>(){}.getType());
             }
             else{
                 Log.e(CLASS_NAME, mappingClass+" is not identified for parsing JSON");

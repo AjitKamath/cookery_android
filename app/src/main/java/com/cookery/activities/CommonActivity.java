@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import com.cookery.R;
 import com.cookery.adapters.HomeSearchAutoCompleteAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
+import com.cookery.fragments.AddMyListFragment;
 import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.FavoriteRecipesFragment;
 import com.cookery.fragments.MyRecipesFragment;
@@ -34,6 +35,7 @@ import com.cookery.fragments.MyReviewsFragment;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.MasterDataMO;
+import com.cookery.models.MyListMO;
 import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.TasteMO;
@@ -50,11 +52,13 @@ import java.util.Map;
 
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_MY_FAVORITES;
+import static com.cookery.utils.Constants.FRAGMENT_MY_LIST;
 import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_MY_REVIEWS;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.MASTER;
+import static com.cookery.utils.Constants.MY_LISTS_EXISTS;
 import static com.cookery.utils.Constants.MY_RECIPES;
 import static com.cookery.utils.Constants.MY_REVIEWS;
 import static com.cookery.utils.Constants.OK;
@@ -66,7 +70,6 @@ import static com.cookery.utils.Constants.TRENDING_RECIPES;
 public abstract class CommonActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener{
     private static final String CLASS_NAME = CommonActivity.class.getName();
     private Context mContext = this;
-
     private MasterDataMO masterData;
     public UserMO loggedInUser;
     private Object homeContent[] = new Object[2];
@@ -298,6 +301,41 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         fragment.show(manager, fragmentNameStr);
     }
 
+    private void setupMyListFragment(List<MyListMO> mylists){
+        Bundle bundle = new Bundle();
+        boolean listsexits = false;
+        if(mylists.size() == 0 || mylists == null)
+        {
+            // show no list exists yet
+            bundle.putSerializable(MY_LISTS_EXISTS, (Serializable) listsexits);
+        }
+        else
+        {
+            listsexits = true;
+            bundle.putSerializable(MY_LISTS_EXISTS, (Serializable) listsexits);
+        }
+
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put(MASTER, masterData);
+        paramsMap.put(GENERIC_OBJECT, mylists);
+
+        for (Map.Entry<String, Object> iterMap : paramsMap.entrySet()) {
+            bundle.putSerializable(iterMap.getKey(), (Serializable) iterMap.getValue());
+        }
+
+        AddMyListFragment fragment = new AddMyListFragment();
+        fragment.setArguments(bundle);
+        String fragmentNameStr = FRAGMENT_MY_LIST;
+        FragmentManager manager = getFragmentManager();
+        Fragment frag = manager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            manager.beginTransaction().remove(frag).commit();
+        }
+
+        fragment.show(manager, fragmentNameStr);
+    }
+
     private void setupMyReviewsFragment(List<RecipeMO> reviews){
 
         Bundle bundle = new Bundle();
@@ -345,6 +383,9 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         }
         else if(R.id.activity_home_drawer_my_reviews == item.getItemId()){
             new AsyncTaskerFetchMyReviews().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+        else if(R.id.navigation_drawer_list == item.getItemId()){
+            new AsyncTaskerFetchMyLists().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         else{
             Utility.showSnacks(getDrawer_layout(), "NOT IMPLEMENTED YET", OK, Snackbar.LENGTH_LONG);
@@ -423,6 +464,27 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         return InternetUtility.getFetchUserTimeline(loggedInUser.getUser_id(), 0);
     }
 
+
+    class AsyncTaskerFetchMyLists extends AsyncTask<Void, Void, List<MyListMO>> {
+        private Fragment fragment;
+
+        @Override
+        protected void onPreExecute(){
+            fragment = Utility.showWaitDialog(getFragmentManager(), "Fetching your Lists ..");
+        }
+
+        @Override
+        protected List<MyListMO> doInBackground(Void... objects) {
+            return InternetUtility.fetchUserList(loggedInUser.getUser_id(), 0);
+        }
+
+        @Override
+        protected void onPostExecute(List<MyListMO> objectList) {
+            List<MyListMO> mylists = objectList;
+            setupMyListFragment(mylists);
+            Utility.closeWaitDialog(getFragmentManager(), fragment);
+        }
+    }
 
     class AsyncTaskerFetchRecipe extends AsyncTask<RecipeMO, Void, Object> {
         private Fragment fragment;

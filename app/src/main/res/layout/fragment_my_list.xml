@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_my_list_ll"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/common_fragment_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <EditText
+            android:id="@+id/add_my_list_et"
+            android:visibility="visible"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="15dp"
+            android:textSize="@dimen/secondary_text_size"
+            android:textAllCaps="true"
+            android:maxLength="@integer/recipe_name_text_limit"
+            android:inputType="text|textCapWords"
+            android:background="@drawable/edit_text_border_white_bg"
+            android:textColorHint="@color/secondaryDarkText"
+            android:focusable="true"
+            android:textColor="@color/primaryDarkText"
+            android:hint="your list name"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <AutoCompleteTextView
+            android:id="@+id/recipe_add_ingredients_list_act"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edit_text_height"
+            android:layout_marginTop="15dp"
+            android:paddingRight="30dp"
+            android:background="@drawable/edit_text_border_white_bg"
+            android:gravity="center"
+            android:maxLines="1"
+            android:inputType="textCapWords"
+            android:hint="sugar, spice &amp; everything nice .."
+            android:textColor="@color/secondaryDarkText"
+            android:textColorHint="@color/secondaryDarkText"
+            android:textSize="@dimen/secondary_text_size" />
+
+        <ImageView
+            android:id="@+id/recipe_add_ingredients_iv"
+            android:layout_width="@dimen/header_buttons_dimen"
+            android:layout_height="@dimen/header_buttons_dimen"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_add_grey600_36dp" />
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/recipe_add_ingredients_no_items_tv"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NO ITEMS IN LIST"
+        android:textColor="@color/secondaryDarkText"
+        android:textSize="@dimen/secondary_text_size" />
+
+    <TextView
+        android:gravity="center"
+        android:id="@+id/recipe_add_ingredients_count_tv"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0 ITEM"
+        android:textColor="@color/app_color"
+        android:textSize="@dimen/quaternary_text_size" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recipe_add_ingredients_list_rv"
+        android:layout_gravity="top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="35dp"
+        android:scrollbars="vertical"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="right"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/mylist_save_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="550dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="5dp"
+            android:backgroundTint="@color/app_color"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_done_white_18dp"
+            app:fabSize="mini" />
+    </LinearLayout>
+
+</LinearLayout>

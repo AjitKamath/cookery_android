@@ -8,6 +8,7 @@ import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
+import com.cookery.models.MyListMO;
 import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
@@ -32,6 +33,9 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FOOD_TYPE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_INGREDIENT_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_FETCH_USERS;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_SUBMIT;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_SUBMIT;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_VIEW;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_FAVORITE_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_FETCH;
@@ -306,6 +310,66 @@ public class InternetUtility {
 
         return message;
     }
+
+    public static Object viewMyList(int id) {
+        MessageMO message = new MessageMO();
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_VIEW);
+            paramMap.put("list_id", Integer.toString(id));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return Utility.jsonToObject(jsonStr, MyListMO.class);
+        }
+        catch(SocketException e){
+            Log.e(CLASS_NAME, e.getMessage());
+
+            message.setError(true);
+            message.setErr_message("Check your internet");
+        }
+        catch(Exception e){
+            Log.e(CLASS_NAME, e.getMessage());
+
+            message.setError(true);
+            message.setErr_message("Something went wrong");
+        }
+
+        return message;
+    }
+
+    public static MessageMO saveList(MyListMO mylistObj) {
+        MessageMO message = new MessageMO();
+        try {
+            MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS_PUBLIC+PHP_CONTROLLER, SERVER_CHARSET);
+            multipart.addFormField(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_SUBMIT);
+
+            multipart.addFormField("list_name", String.valueOf(mylistObj.getLIST_NAME()));
+            multipart.addFormField("user_id", String.valueOf(mylistObj.getUSER_ID()));
+
+            //ingredients
+            for(int i =0; i<mylistObj.getListofingredients().size(); i++){
+                multipart.addFormField("ing_id["+i+"]", String.valueOf(mylistObj.getListofingredients().get(i).getING_ID()));
+                multipart.addFormField("ing_nm["+i+"]", String.valueOf(mylistObj.getListofingredients().get(i).getING_NAME()));
+            }
+
+            return (MessageMO) Utility.jsonToObject(multipart.finish(), MessageMO.class);
+        }
+        catch(SocketException e){
+            Log.e(CLASS_NAME, e.getMessage());
+
+            message.setError(true);
+            message.setErr_message("Check your internet");
+        }
+        catch(Exception e){
+            Log.e(CLASS_NAME, e.getMessage());
+
+            message.setError(true);
+            message.setErr_message("Something went wrong");
+        }
+
+        return message;
+    }
+
 
     public static MessageMO submitRecipeComment(CommentMO comment) {
         MessageMO message = new MessageMO();
@@ -650,6 +714,31 @@ public class InternetUtility {
         }
         catch (Exception e){
             Log.e(CLASS_NAME, "Could not fetch Cuisines from the server : "+e);
+        }
+
+        return null;
+    }
+
+
+    public static List<MyListMO> fetchUserList(int userId, int index) {
+        if(USE_TEST_DATA){
+            return null;
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_FETCH);
+            paramMap.put("user_id", String.valueOf(userId));
+            paramMap.put("index", String.valueOf(index));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return (List<MyListMO>) Utility.jsonToObject(jsonStr, MyListMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch user timeline from the server : "+e);
         }
 
         return null;
