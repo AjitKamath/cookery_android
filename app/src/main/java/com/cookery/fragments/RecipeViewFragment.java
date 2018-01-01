@@ -304,12 +304,12 @@ public class RecipeViewFragment extends DialogFragment {
         common_fragment_recipe_like_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(recipe.getUSER_ID() == loggerInUser.getUser_id()){
+                if(recipe.getUSER_ID() == loggerInUser.getUSER_ID()){
                     return;
                 }
 
                 LikesMO like = new LikesMO();
-                like.setUSER_ID(loggerInUser.getUser_id());
+                like.setUSER_ID(loggerInUser.getUSER_ID());
                 like.setTYPE("RECIPE");
                 like.setTYPE_ID(recipe.getRCP_ID());
 
@@ -500,7 +500,7 @@ public class RecipeViewFragment extends DialogFragment {
 
         @Override
         protected Object doInBackground(RecipeMO... objects) {
-            List<RecipeMO> recipes = (List<RecipeMO>) InternetUtility.fetchRecipe(recipe, loggerInUser.getUser_id());
+            List<RecipeMO> recipes = (List<RecipeMO>) InternetUtility.fetchRecipe(recipe, loggerInUser.getUSER_ID());
 
             if(recipes != null && !recipes.isEmpty()){
                 recipes.get(0).setComments(InternetUtility.fetchRecipeComments(loggerInUser, recipes.get(0), 0));

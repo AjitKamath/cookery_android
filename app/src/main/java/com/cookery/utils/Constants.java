@@ -14,7 +14,7 @@ public final class Constants {
 
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_AJIT = "cookery_php-ajitkamathk452607.codeanyapp.com";
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_VISHAL = "cookery_php-dial2vishal53897.codeanyapp.com";
-    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_VISHAL;
+    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_AJIT;
 
     private static final String SERVER_CODEANYWHERE_PUBLIC_DIR = "public";
 
@@ -82,6 +82,13 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_TIMELINE_USER_FETCH = "TIMELINE_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_USER_REGISTER = "USER_REGISTER";
     public static final String PHP_FUNCTION_KEY_USER_LOGIN = "USER_LOGIN";
+    public static final String PHP_FUNCTION_KEY_USER_FETCH = "USER_FETCH";
+    public static final String PHP_FUNCTION_KEY_USER_UPDATE_NAME = "USER_UPDATE_NAME";
+    public static final String PHP_FUNCTION_KEY_USER_UPDATE_EMAIL = "USER_UPDATE_EMAIL";
+    public static final String PHP_FUNCTION_KEY_USER_UPDATE_PASSWORD = "USER_UPDATE_PASSWORD";
+    public static final String PHP_FUNCTION_KEY_USER_UPDATE_PHONE = "USER_UPDATE_PHONE";
+    public static final String PHP_FUNCTION_KEY_USER_UPDATE_GENDER = "USER_UPDATE_GENDER";
+    public static final String PHP_FUNCTION_KEY_USER_UPDATE_IMAGE = "USER_UPDATE_IMAGE";
     /*PHP function keys*/
 
     /*Timeline keys*/
@@ -153,6 +160,13 @@ public final class Constants {
     public static final String FRAGMENT_MY_LIST = "FRAGMENT_MY_LIST";
     public static final String FRAGMENT_MY_REVIEWS = "FRAGMENT_MY_REVIEWS";
     public static final String FRAGMENT_MY_TIMELINES = "FRAGMENT_MY_TIMELINES";
+    public static final String FRAGMENT_TEMP_LOGIN = "FRAGMENT_TEMP_LOGIN";
+    public static final String FRAGMENT_PROFILE_VIEW = "FRAGMENT_PROFILE_VIEW";
+    public static final String FRAGMENT_PROFILE_VIEW_NAME = "FRAGMENT_PROFILE_VIEW_NAME";
+    public static final String FRAGMENT_PROFILE_VIEW_EMAIL = "FRAGMENT_PROFILE_VIEW_EMAIL";
+    public static final String FRAGMENT_PROFILE_VIEW_PASSWORD = "FRAGMENT_PROFILE_VIEW_PASSWORD";
+    public static final String FRAGMENT_PROFILE_VIEW_PHONE = "FRAGMENT_PROFILE_VIEW_PHONE";
+    public static final String FRAGMENT_PROFILE_VIEW_GENDER = "FRAGMENT_PROFILE_VIEW_GENDER";
 
 
     //FRAGMENT OBJECT KEYS

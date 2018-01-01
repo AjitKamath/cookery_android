@@ -12,9 +12,11 @@ public class UserMO extends CommonMO implements Serializable {
     private String PASSWORD;
     private String GENDER;
     private String MOBILE;
-    private int user_id;
-    private String name;
     private String IMG;
+
+    private int followersCount;
+    private int followingCount;
+    private String newPassword;
 
     public String getNAME() {
         return NAME;
@@ -56,27 +58,35 @@ public class UserMO extends CommonMO implements Serializable {
         this.MOBILE = MOBILE;
     }
 
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getIMG() {
         return IMG;
     }
 
     public void setIMG(String IMG) {
         this.IMG = IMG;
+    }
+
+    public int getFollowersCount() {
+        return followersCount;
+    }
+
+    public void setFollowersCount(int followersCount) {
+        this.followersCount = followersCount;
+    }
+
+    public int getFollowingCount() {
+        return followingCount;
+    }
+
+    public void setFollowingCount(int followingCount) {
+        this.followingCount = followingCount;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
 }

@@ -160,14 +160,14 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
                 TIMELINE_LIKE_COMMENT_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_COMMENT_REMOVE.equalsIgnoreCase(timeline.getTYPE()) ||
                 TIMELINE_LIKE_REVIEW_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_REVIEW_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
 
-            if(timeline.getWhoUserId() == loggedInUser.getUser_id()){
+            if(timeline.getWhoUserId() == loggedInUser.getUSER_ID()){
                 holder.fragment_timelines_timeline_like_who_tv.setText("You");
             }
             else{
                 holder.fragment_timelines_timeline_like_who_tv.setText(timeline.getWhoName());
             }
 
-            if(timeline.getWhoseUserId() == loggedInUser.getUser_id()){
+            if(timeline.getWhoseUserId() == loggedInUser.getUSER_ID()){
                 holder.fragment_timelines_timeline_like_whose_tv.setText("your");
             }
             else{
@@ -203,14 +203,14 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             setFont(holder.fragment_timelines_timeline_like_rl);
         }
         else if(TIMELINE_COMMENT_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_COMMENT_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
-            if(timeline.getWhoUserId() == loggedInUser.getUser_id()){
+            if(timeline.getWhoUserId() == loggedInUser.getUSER_ID()){
                 holder.fragment_timelines_timeline_comment_who_tv.setText("You");
             }
             else{
                 holder.fragment_timelines_timeline_comment_who_tv.setText(timeline.getWhoName());
             }
 
-            if(timeline.getWhoseUserId() == loggedInUser.getUser_id()){
+            if(timeline.getWhoseUserId() == loggedInUser.getUSER_ID()){
                 holder.fragment_timelines_timeline_comment_whose_tv.setText("your");
             }
             else{
@@ -226,14 +226,14 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             setFont(holder.fragment_timelines_timeline_comment_rl);
         }
         else if(TIMELINE_REVIEW_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_REVIEW_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
-            if(timeline.getWhoUserId() == loggedInUser.getUser_id()){
+            if(timeline.getWhoUserId() == loggedInUser.getUSER_ID()){
                 holder.fragment_timelines_timeline_review_who_tv.setText("You");
             }
             else{
                 holder.fragment_timelines_timeline_review_who_tv.setText(timeline.getWhoName());
             }
 
-            if(timeline.getWhoseUserId() == loggedInUser.getUser_id()){
+            if(timeline.getWhoseUserId() == loggedInUser.getUSER_ID()){
                 holder.fragment_timelines_timeline_review_whose_tv.setText("your");
             }
             else{

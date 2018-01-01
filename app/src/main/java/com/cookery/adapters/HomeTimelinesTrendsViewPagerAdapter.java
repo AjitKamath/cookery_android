@@ -167,7 +167,7 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
         protected Object doInBackground(Object... objects) {
             //fetch timelines
             int index = adapter.getItemCount();
-            List<TimelineMO> timelines = InternetUtility.getFetchUserTimeline(loggedInUser.getUser_id(), index);
+            List<TimelineMO> timelines = InternetUtility.getFetchUserTimeline(loggedInUser.getUSER_ID(), index);
 
             /*if(timelines != null){
                 if(array[0] == null){

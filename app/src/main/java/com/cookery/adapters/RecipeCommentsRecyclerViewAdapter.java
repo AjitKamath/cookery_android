@@ -64,7 +64,7 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
 
         holder.recipe_comments_item_username_tv.setText(comment.getUserName().trim());
 
-        if(loggedInUser.getUser_id() == comment.getUSER_ID()){
+        if(loggedInUser.getUSER_ID() == comment.getUSER_ID()){
             holder.recipe_comments_item_delete_iv.setVisibility(View.VISIBLE);
 
             holder.recipe_comments_item_delete_iv.setTag(comment);
@@ -95,7 +95,7 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
             @Override
             public void onClick(View view) {
                 LikesMO like = new LikesMO();
-                like.setUSER_ID(loggedInUser.getUser_id());
+                like.setUSER_ID(loggedInUser.getUSER_ID());
                 like.setTYPE("COMMENT");
                 like.setTYPE_ID(comment.getCOM_ID());
 

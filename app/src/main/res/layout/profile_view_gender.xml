@@ -1,0 +1,70 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/profile_view_gender_ll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/app_color_light"
+        android:textSize="@dimen/primary_text_size"
+        android:text="YOUR GENDER"/>
+
+    <RadioGroup
+        android:id="@+id/profile_view_gender_rg"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3">
+
+        <RadioButton
+            android:id="@+id/profile_view_gender_he_rb"
+            android:layout_weight="1"
+            android:tag="M"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/app_color"
+            android:text="HE"
+            android:checked="true"/>
+
+        <RadioButton
+            android:id="@+id/profile_view_gender_she_rb"
+            android:layout_weight="1"
+            android:tag="F"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/app_color"
+            android:text="SHE"/>
+
+        <RadioButton
+            android:id="@+id/profile_view_gender_other_rb"
+            android:layout_weight="1"
+            android:tag="O"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/app_color"
+            android:text="OTHER"/>
+
+    </RadioGroup>
+
+
+
+    <TextView
+        android:id="@+id/profile_view_gender_ok_tv"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/app_color"
+        android:textSize="@dimen/primary_text_size"
+        android:text="OK"
+        android:textColor="@color/white"
+        android:gravity="center"/>
+
+</LinearLayout>

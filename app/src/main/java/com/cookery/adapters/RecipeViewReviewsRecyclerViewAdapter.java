@@ -83,7 +83,7 @@ public class RecipeViewReviewsRecyclerViewAdapter extends RecyclerView.Adapter<R
             @Override
             public void onClick(View view) {
                 LikesMO like = new LikesMO();
-                like.setUSER_ID(loggedInUser.getUser_id());
+                like.setUSER_ID(loggedInUser.getUSER_ID());
                 like.setTYPE("REVIEW");
                 like.setTYPE_ID(review.getREV_ID());
 

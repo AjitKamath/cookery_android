@@ -202,7 +202,7 @@ public class MyTimelinesFragment extends DialogFragment {
 
         @Override
         protected List<TimelineMO> doInBackground(Integer... objects) {
-            return InternetUtility.getFetchUserTimeline(Utility.getUserFromUserSecurity(mContext).getUser_id(), myTimelines.size());
+            return InternetUtility.getFetchUserTimeline(Utility.getUserFromUserSecurity(mContext).getUSER_ID(), myTimelines.size());
         }
 
         @Override

@@ -52,8 +52,15 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_USER_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TASTE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_USER_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_LOGIN;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_REGISTER;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_EMAIL;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_GENDER;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_IMAGE;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_NAME;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_PASSWORD;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_PHONE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_VIEW_FETCH_USERS;
 import static com.cookery.utils.Constants.SERVER_ADDRESS_PUBLIC;
 import static com.cookery.utils.Constants.SERVER_CHARSET;
@@ -233,7 +240,7 @@ public class InternetUtility {
 
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_REVIEW_USER_FETCH);
-        paramMap.put("user_id", String.valueOf(loggedInUser.getUser_id()));
+        paramMap.put("user_id", String.valueOf(loggedInUser.getUSER_ID()));
         paramMap.put("rcp_id", String.valueOf(recipe.getRCP_ID()));
 
         try {
@@ -407,7 +414,7 @@ public class InternetUtility {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_REVIEW_SUBMIT);
             paramMap.put("rcp_id", String.valueOf(recipe.getRCP_ID()));
-            paramMap.put("user_id", String.valueOf(loggedInUser.getUser_id()));
+            paramMap.put("user_id", String.valueOf(loggedInUser.getUSER_ID()));
             paramMap.put("review", recipe.getUserReview().getREVIEW());
             paramMap.put("rating", String.valueOf(recipe.getUserReview().getRATING()));
 
@@ -428,7 +435,7 @@ public class InternetUtility {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_REVIEW_DELETE);
             paramMap.put("rev_id", String.valueOf(review.getREV_ID()));
-            paramMap.put("user_id", String.valueOf(loggedInUser.getUser_id()));
+            paramMap.put("user_id", String.valueOf(loggedInUser.getUSER_ID()));
 
             return  Utility.jsonToObject(getResponseFromCookery(paramMap), MessageMO.class);
         }
@@ -447,7 +454,7 @@ public class InternetUtility {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_COMMENT_DELETE);
             paramMap.put("com_id", String.valueOf(comment.getCOM_ID()));
-            paramMap.put("user_id", String.valueOf(loggedInUser.getUser_id()));
+            paramMap.put("user_id", String.valueOf(loggedInUser.getUSER_ID()));
 
             return  Utility.jsonToObject(getResponseFromCookery(paramMap), MessageMO.class);
         }
@@ -489,7 +496,7 @@ public class InternetUtility {
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_COMMENT_RECIPE_FETCH_ALL);
-            paramMap.put("user_id", String.valueOf(loggedInUser.getUser_id()));
+            paramMap.put("user_id", String.valueOf(loggedInUser.getUSER_ID()));
             paramMap.put("rcp_id", String.valueOf(recipe.getRCP_ID()));
             paramMap.put("index", String.valueOf(index));
 
@@ -561,7 +568,7 @@ public class InternetUtility {
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_REVIEW_RECIPE);
-            paramMap.put("user_id", String.valueOf(loggedInUser.getUser_id()));
+            paramMap.put("user_id", String.valueOf(loggedInUser.getUSER_ID()));
             paramMap.put("rcp_id", String.valueOf(recipe.getRCP_ID()));
             paramMap.put("index", String.valueOf(index));
 
@@ -815,17 +822,15 @@ public class InternetUtility {
         return null;
     }
 
-    public static Object userLogin(String email, String password)
-    {
+    public static Object userLogin(String email, String password){
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_LOGIN);
-            paramMap.put("code", "");
             paramMap.put("email", email);
             paramMap.put("password", password);
 
             String jsonStr = getResponseFromCookery(paramMap);
-            return Utility.jsonToObject(jsonStr, MessageMO.class);
+            return Utility.jsonToObject(jsonStr, UserMO.class);
 
         }
         catch (Exception e){
@@ -835,4 +840,126 @@ public class InternetUtility {
         return null;
     }
 
+    public static Object fetchUser(int userId){
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_FETCH);
+            paramMap.put("user_id", String.valueOf(userId));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return Utility.jsonToObject(jsonStr, UserMO.class);
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch the user : "+e);
+        }
+
+        return null;
+    }
+
+    public static Object updateUserName(UserMO user){
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_UPDATE_NAME);
+            paramMap.put("user_id", String.valueOf(user.getUSER_ID()));
+            paramMap.put("name", String.valueOf(user.getNAME()));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return Utility.jsonToObject(jsonStr, MessageMO.class);
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not update the name of the user : "+e);
+        }
+
+        return null;
+    }
+
+    public static Object updateUserEmail(UserMO user){
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_UPDATE_EMAIL);
+            paramMap.put("user_id", String.valueOf(user.getUSER_ID()));
+            paramMap.put("email", String.valueOf(user.getEMAIL()));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return Utility.jsonToObject(jsonStr, MessageMO.class);
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not update the email of the user : "+e);
+        }
+
+        return null;
+    }
+
+    public static Object updateUserPassword(UserMO user){
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_UPDATE_PASSWORD);
+            paramMap.put("user_id", String.valueOf(user.getUSER_ID()));
+            paramMap.put("password", String.valueOf(user.getPASSWORD()));
+            paramMap.put("new_password", String.valueOf(user.getNewPassword()));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return Utility.jsonToObject(jsonStr, MessageMO.class);
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not update the email of the user : "+e);
+        }
+
+        return null;
+    }
+
+    public static Object updateUserPhone(UserMO user){
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_UPDATE_PHONE);
+            paramMap.put("user_id", String.valueOf(user.getUSER_ID()));
+            paramMap.put("mobile", String.valueOf(user.getMOBILE()));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return Utility.jsonToObject(jsonStr, MessageMO.class);
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not update the phone number of the user : "+e);
+        }
+
+        return null;
+    }
+
+    public static Object updateUserGender(UserMO user){
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_UPDATE_GENDER);
+            paramMap.put("user_id", String.valueOf(user.getUSER_ID()));
+            paramMap.put("gender", user.getGENDER());
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return Utility.jsonToObject(jsonStr, MessageMO.class);
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not update the gender of the user : "+e);
+        }
+
+        return null;
+    }
+
+    public static Object updateUserImage(UserMO user) {
+        try {
+            MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS_PUBLIC+PHP_CONTROLLER, SERVER_CHARSET);
+
+            //images
+            //Note: image upload doesnt work if you do not add form field to multipart.
+            //form field should be added to multipart only after file part
+            multipart.addFilePart("image[0]", new File(user.getIMG()));
+            multipart.addFormField(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_UPDATE_IMAGE);
+            multipart.addFormField("user_id", String.valueOf(user.getUSER_ID()));
+
+            String jsonStr = multipart.finish();
+            return Utility.jsonToObject(jsonStr, MessageMO.class);
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not update the image of the user : "+e);
+        }
+
+        return null;
+    }
 }
