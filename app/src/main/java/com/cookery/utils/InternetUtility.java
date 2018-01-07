@@ -371,6 +371,40 @@ public class InternetUtility {
     }
 
 
+    public static MessageMO updateList(MyListMO mylistObj) {
+        MessageMO message = new MessageMO();
+        try {
+            MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS_PUBLIC+PHP_CONTROLLER, SERVER_CHARSET);
+            multipart.addFormField(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_SUBMIT);
+
+            multipart.addFormField("list_name", String.valueOf(mylistObj.getLIST_NAME()));
+            multipart.addFormField("user_id", String.valueOf(mylistObj.getUSER_ID()));
+
+            //ingredients
+            for(int i =0; i<mylistObj.getListofingredients().size(); i++){
+                multipart.addFormField("ing_id["+i+"]", String.valueOf(mylistObj.getListofingredients().get(i).getING_ID()));
+                multipart.addFormField("ing_nm["+i+"]", String.valueOf(mylistObj.getListofingredients().get(i).getING_NAME()));
+            }
+
+            return (MessageMO) Utility.jsonToObject(multipart.finish(), MessageMO.class);
+        }
+        catch(SocketException e){
+            Log.e(CLASS_NAME, e.getMessage());
+
+            message.setError(true);
+            message.setErr_message("Check your internet");
+        }
+        catch(Exception e){
+            Log.e(CLASS_NAME, e.getMessage());
+
+            message.setError(true);
+            message.setErr_message("Something went wrong");
+        }
+
+        return message;
+    }
+
+
     public static MessageMO submitRecipeComment(CommentMO comment) {
         MessageMO message = new MessageMO();
         try {

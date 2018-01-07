@@ -160,17 +160,21 @@ public class MyListFragment extends DialogFragment {
 
     /*ingredients list*/
     IngredientMO ingobj;
-        ArrayList<IngredientMO> inglists = new ArrayList();
         for(MyListMO obj:mylistobj)
         {
             ingobj = new IngredientMO();
             ingobj.setING_ID(obj.getING_ID());
             ingobj.setING_NAME(obj.getING_NAME());
-            inglists.add(ingobj);
+
+            if(mylist.getListofingredients() == null){
+                mylist.setListofingredients(new ArrayList<IngredientMO>());
+            }
+
+            mylist.getListofingredients().add(ingobj);
         }
 
 
-        MyListIngredientsRecyclerViewAdapter adapter = new MyListIngredientsRecyclerViewAdapter(mContext, inglists, new View.OnClickListener() {
+        MyListIngredientsRecyclerViewAdapter adapter = new MyListIngredientsRecyclerViewAdapter(mContext, mylist.getListofingredients(), new View.OnClickListener() {
 
             @Override
                 public void onClick(View view) {
@@ -195,31 +199,34 @@ public class MyListFragment extends DialogFragment {
             mylist_save_fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String listname = String.valueOf(add_my_list_et.getText());
-                    MyListIngredientsRecyclerViewAdapter adapter = (MyListIngredientsRecyclerViewAdapter) recipe_add_ingredients_list_rv.getAdapter();
-
-                    if (listname != null && !listname.trim().isEmpty()) {
-                        MyListMO mylistObj = new MyListMO();
-                        mylistObj.setLIST_NAME(listname);
-                        //mylistObj.setUSER_ID(loggedInUser.getUser_id());
-                        mylistObj.setUSER_ID(1);
-                        mylistObj.setListofingredients(adapter.ingredients);
-
-                        new MyListFragment.AsyncTaskerSubmitMyList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mylistObj);
+                    MyListMO mylistObj = new MyListMO();
+                    // GET LIST ID TO CHECK WHETHER ITS UPDATE OR SAVE
+                    if(mylistObj.getLIST_ID() != 0)
+                    {
+                        new MyListFragment.AsyncTaskerUpdateMyList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mylistObj);
                     }
+                    else {
+                        String listname = String.valueOf(add_my_list_et.getText());
+                        MyListIngredientsRecyclerViewAdapter adapter = (MyListIngredientsRecyclerViewAdapter) recipe_add_ingredients_list_rv.getAdapter();
 
+                        if (listname != null && !listname.trim().isEmpty()) {
+                            mylistObj.setLIST_NAME(listname);
+                            //mylistObj.setUSER_ID(loggedInUser.getUser_id());
+                            mylistObj.setUSER_ID(1);
+                            mylistObj.setListofingredients(adapter.ingredients);
+
+                            new MyListFragment.AsyncTaskerSubmitMyList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mylistObj);
+                        }
+                    }
                 }
             });
         }
 
     private void setupMyListFragment() {
 
-        if (listid != 0)
-        {
+        if (listid != 0) {
             new MyListFragment.AsyncTaskerViewMyList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, listid);
-        }
-        else
-            {
+        } else {
 
             common_fragment_header_tv.setText("MY LIST");
 
@@ -288,7 +295,6 @@ public class MyListFragment extends DialogFragment {
 
                         new MyListFragment.AsyncTaskerSubmitMyList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mylistObj);
                     }
-
                 }
             });
         }
@@ -325,6 +331,46 @@ public class MyListFragment extends DialogFragment {
                 }
                 else {
                 setupMyListViewFragment(mylistobj);
+            }
+        }
+    }
+
+    class AsyncTaskerUpdateMyList extends AsyncTask<Object, Void, Object> {
+        Fragment frag = null;
+        @Override
+        protected void onPreExecute() {
+            frag = Utility.showWaitDialog(getFragmentManager(), "Updating your List ..");
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            MyListMO mylistObj = (MyListMO) objects[0];
+
+            if (mylistObj == null) {
+                Log.e(CLASS_NAME, "Error ! mylistObj object is null");
+                return null;
+            }
+
+            return InternetUtility.updateList(mylistObj);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+
+            MessageMO message = (MessageMO) object;
+            message.setPurpose("ADD_LIST");
+
+            Utility.closeWaitDialog(getFragmentManager(), frag);
+
+            Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_MY_LIST);
+            Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
+
+            if(message.isError()){
+                Log.e(CLASS_NAME, "Error : "+message.getErr_message());
+            }
+            else{
+                Log.i(CLASS_NAME, message.getErr_message());
+                dismiss();
             }
         }
     }

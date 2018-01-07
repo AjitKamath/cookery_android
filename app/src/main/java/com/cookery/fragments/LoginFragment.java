@@ -1,21 +1,22 @@
 package com.cookery.fragments;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.activities.HomeActivity;
 import com.cookery.models.MessageMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
@@ -24,12 +25,14 @@ import com.cookery.utils.Utility;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
+import static com.cookery.utils.Constants.FRAGMENT_REGISTER;
 import static com.cookery.utils.Constants.OK;
 
 /**
  * Created by vishal on 08/10/17.
  */
-public class LoginFragment extends AppCompatActivity {
+public class LoginFragment extends DialogFragment {
     private final String CLASS_NAME = this.getClass().getName();
     private Context mContext;
 
@@ -55,10 +58,11 @@ public class LoginFragment extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_login);
-        ButterKnife.inject(this);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_login, container);
+        ButterKnife.inject(this, view);
+
+        fragment_my_recipe_header_tv.setText("LOGIN");
 
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,8 +78,28 @@ public class LoginFragment extends AppCompatActivity {
             }
         });
 
+        return view;
     }
 
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mContext = getActivity().getApplicationContext();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Dialog d = getDialog();
+        if (d!=null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            d.getWindow().setLayout(width, height);
+            d.setCanceledOnTouchOutside(false);
+        }
+    }
 
     private void login()
     {
@@ -112,10 +136,19 @@ public class LoginFragment extends AppCompatActivity {
 
     private void register()
     {
-        Intent i = new Intent(LoginFragment.this, MyAccountFragment.class);
-        //finish();  //Kill the activity from which you will go to next activity
-        startActivity(i);
 
+        String fragmentNameStr = FRAGMENT_REGISTER;
+
+        FragmentManager manager = getFragmentManager();
+        Fragment frag = manager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null)
+        {
+            manager.beginTransaction().remove(frag).commit();
+        }
+        MyAccountFragment fragment = new MyAccountFragment();
+
+        fragment.show(manager, fragmentNameStr);
     }
 
 
@@ -139,9 +172,14 @@ public class LoginFragment extends AppCompatActivity {
 
             if(status.equalsIgnoreCase("login success"))
             {
-                Intent i = new Intent(LoginFragment.this, HomeActivity.class);
-                //finish();  //Kill the activity from which you will go to next activity
-                startActivity(i);
+                String fragmentNameStr = FRAGMENT_LOGIN;
+
+                FragmentManager manager = getFragmentManager();
+                Fragment frag = manager.findFragmentByTag(fragmentNameStr);
+
+                if (frag != null) {
+                    manager.beginTransaction().remove(frag).commit();
+                }
             }
             else
             {

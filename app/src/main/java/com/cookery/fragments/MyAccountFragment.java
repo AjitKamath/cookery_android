@@ -1,14 +1,16 @@
 package com.cookery.fragments;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -24,13 +26,14 @@ import com.cookery.utils.Utility;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
 
 /**
  * Created by vishal on 08/10/17.
  */
-public class MyAccountFragment extends AppCompatActivity {
+public class MyAccountFragment extends DialogFragment {
     private final String CLASS_NAME = this.getClass().getName();
     private Context mContext;
 
@@ -63,11 +66,11 @@ public class MyAccountFragment extends AppCompatActivity {
     ToggleButton gender_toggle;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_my_account);
-        ButterKnife.inject(this);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_my_account, container);
+        ButterKnife.inject(this, view);
 
+        fragment_my_recipe_header_tv.setText("My Account");
 
         tv_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,13 +86,43 @@ public class MyAccountFragment extends AppCompatActivity {
             }
         });
 
+        return view;
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mContext = getActivity().getApplicationContext();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Dialog d = getDialog();
+        if (d!=null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            d.getWindow().setLayout(width, height);
+            d.setCanceledOnTouchOutside(false);
+        }
     }
 
     private void login()
     {
-        Intent i = new Intent(MyAccountFragment.this, LoginFragment.class);
-        //finish();  //Kill the activity from which you will go to next activity
-        startActivity(i);
+        String fragmentNameStr = FRAGMENT_LOGIN;
+
+        FragmentManager manager = getFragmentManager();
+        Fragment frag = manager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null)
+        {
+            manager.beginTransaction().remove(frag).commit();
+        }
+        LoginFragment fragment = new LoginFragment();
+
+        fragment.show(manager, fragmentNameStr);
 
     }
 

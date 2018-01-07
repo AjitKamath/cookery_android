@@ -30,6 +30,7 @@ import com.cookery.component.DelayAutoCompleteTextView;
 import com.cookery.fragments.AddMyListFragment;
 import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.FavoriteRecipesFragment;
+import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MyRecipesFragment;
 import com.cookery.fragments.MyReviewsFragment;
 import com.cookery.models.CuisineMO;
@@ -51,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.FRAGMENT_MY_FAVORITES;
 import static com.cookery.utils.Constants.FRAGMENT_MY_LIST;
 import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
@@ -94,7 +96,20 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     private void verifyLoggedInUser() {
         loggedInUser = Utility.getUserFromUserSecurity(mContext);
         if(loggedInUser == null || loggedInUser.getUser_id() == 0){
-            //TODO: show login/signup screen
+
+            String fragmentNameStr = FRAGMENT_LOGIN;
+
+            FragmentManager manager = getFragmentManager();
+            Fragment frag = manager.findFragmentByTag(fragmentNameStr);
+
+            if (frag != null)
+            {
+                manager.beginTransaction().remove(frag).commit();
+            }
+            LoginFragment fragment = new LoginFragment();
+
+            fragment.show(manager, fragmentNameStr);
+
             loggedInUser = TestData.getUserTestData();
             Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, loggedInUser);
             verifyLoggedInUser();
@@ -225,6 +240,24 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
                 }
             }
         });
+    }
+
+    private void logout()
+    {
+        Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, null);
+
+        String fragmentNameStr = FRAGMENT_LOGIN;
+
+        FragmentManager manager = getFragmentManager();
+        Fragment frag = manager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null)
+        {
+            manager.beginTransaction().remove(frag).commit();
+        }
+        LoginFragment fragment = new LoginFragment();
+
+        fragment.show(manager, fragmentNameStr);
     }
 
     private void showAddRecipeFragment(MasterDataMO masterData) {
@@ -386,6 +419,9 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         }
         else if(R.id.navigation_drawer_list == item.getItemId()){
             new AsyncTaskerFetchMyLists().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+        else if(R.id.navigation_drawer_logout == item.getItemId()){
+                logout();
         }
         else{
             Utility.showSnacks(getDrawer_layout(), "NOT IMPLEMENTED YET", OK, Snackbar.LENGTH_LONG);

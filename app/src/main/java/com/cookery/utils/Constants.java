@@ -153,6 +153,8 @@ public final class Constants {
     public static final String FRAGMENT_MY_LIST = "FRAGMENT_MY_LIST";
     public static final String FRAGMENT_MY_REVIEWS = "FRAGMENT_MY_REVIEWS";
     public static final String FRAGMENT_MY_TIMELINES = "FRAGMENT_MY_TIMELINES";
+    public static final String FRAGMENT_LOGIN = "FRAGMENT_LOGIN";
+    public static final String FRAGMENT_REGISTER = "FRAGMENT_REGISTER";
 
 
     //FRAGMENT OBJECT KEYS
