@@ -211,7 +211,7 @@ public class AddRecipeFragment extends DialogFragment {
     }
 
     private void updateRecipeObject(RecipeMO recipe) {
-        this.recipe.setUSER_ID(Utility.getUserFromUserSecurity(mContext).getUser_id());
+        this.recipe.setUSER_ID(Utility.getUserFromUserSecurity(mContext).getUSER_ID());
         this.recipe.setRCP_NAME(recipe.getRCP_NAME());
         this.recipe.setFOOD_TYP_ID(recipe.getFOOD_TYP_ID());
         this.recipe.setFOOD_CSN_ID(recipe.getFOOD_CSN_ID());

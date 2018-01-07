@@ -197,3 +197,11 @@
 28 dec 2017
 1. #67 - Home Search - User can search for recipes with its name, ingredients in it or user who posted the recipe.
 2. Home Navigation Drawer - remove My Timeline from the menu as it is part of Home Screen now.
+
+-- git checkin on 28 dec 2017 --
+
+1 jan 2018
+1. #68 - Profile View - User can update his profile details.
+2. #69 - Profile View - User can change his email.
+3. #70 - Profile View - User can change his profile photo.
+4. #88 - Profile View - User can see his profile details.

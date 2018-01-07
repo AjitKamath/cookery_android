@@ -134,7 +134,7 @@ public class RecipeViewCommentsFragment extends DialogFragment {
                 if(comment != null && !comment.trim().isEmpty()){
                     CommentMO commentObj = new CommentMO();
                     commentObj.setRCP_ID(recipe.getRCP_ID());
-                    commentObj.setUSER_ID(loggedInUser.getUser_id());
+                    commentObj.setUSER_ID(loggedInUser.getUSER_ID());
                     commentObj.setCOMMENT(comment);
 
                     new AsyncTaskerSubmitRecipeComment().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, commentObj);

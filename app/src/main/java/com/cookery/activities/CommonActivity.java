@@ -23,6 +23,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.adapters.HomeSearchAutoCompleteAdapter;
@@ -33,6 +34,8 @@ import com.cookery.fragments.FavoriteRecipesFragment;
 import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MyRecipesFragment;
 import com.cookery.fragments.MyReviewsFragment;
+import com.cookery.fragments.ProfileViewFragment;
+import com.cookery.fragments.TempLoginFragment;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.MasterDataMO;
@@ -57,6 +60,8 @@ import static com.cookery.utils.Constants.FRAGMENT_MY_FAVORITES;
 import static com.cookery.utils.Constants.FRAGMENT_MY_LIST;
 import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_MY_REVIEWS;
+import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
+import static com.cookery.utils.Constants.FRAGMENT_TEMP_LOGIN;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.MASTER;
@@ -85,12 +90,10 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     protected void onResume(){
         super.onResume();
 
-        setupNavigator();
         setupSearch();
         setupFab();
-        verifyLoggedInUser();
 
-        fetchContent();
+        verifyLoggedInUser();
     }
 
     private void verifyLoggedInUser() {
@@ -200,6 +203,24 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         getDrawer_layout().addDrawerListener(toggle);
         //toggle.syncState();
 
+        if(loggedInUser.getIMG() != null && !loggedInUser.getIMG().trim().isEmpty()){
+            Utility.loadImageFromURL(mContext, loggedInUser.getIMG(), (ImageView) getNav_view().findViewById(R.id.navigation_header_iv));
+        }
+
+        if(loggedInUser.getNAME() != null && !loggedInUser.getNAME().trim().isEmpty()){
+            ((TextView)getNav_view().findViewById(R.id.navigation_header_name_tv)).setText(loggedInUser.getNAME());
+        }
+
+        if(loggedInUser.getEMAIL() != null && !loggedInUser.getEMAIL().trim().isEmpty()){
+            ((TextView)getNav_view().findViewById(R.id.navigation_header_email_tv)).setText(loggedInUser.getEMAIL());
+        }
+
+        getNav_view().findViewById(R.id.navigation_header_user_details_ll).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AsyncTaskerFetchUserDetails().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
 
         getCommon_header_navigation_drawer_iv().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -315,7 +336,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     }
 
     private void setupMyRecipesFragment(List<RecipeMO> recipes){
-
         Bundle bundle = new Bundle();
         bundle.putSerializable(MY_RECIPES, (Serializable) recipes);
 
@@ -370,7 +390,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     }
 
     private void setupMyReviewsFragment(List<RecipeMO> reviews){
-
         Bundle bundle = new Bundle();
         bundle.putSerializable(MY_REVIEWS, (Serializable) reviews);
 
@@ -449,8 +468,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
     protected abstract void setUpTabs(Object array[]);
 
-
-
     class AsyncTaskerFetchMasterData extends AsyncTask<String, Void, Object> {
         String whatToDo;
         Fragment fragment;
@@ -497,7 +514,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     }
 
     private List<TimelineMO> fetchTimelines(){
-        return InternetUtility.getFetchUserTimeline(loggedInUser.getUser_id(), 0);
+        return InternetUtility.getFetchUserTimeline(loggedInUser.getUSER_ID(), 0);
     }
 
 
@@ -511,7 +528,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected List<MyListMO> doInBackground(Void... objects) {
-            return InternetUtility.fetchUserList(loggedInUser.getUser_id(), 0);
+            return InternetUtility.fetchUserList(loggedInUser.getUSER_ID(), 0);
         }
 
         @Override
@@ -532,7 +549,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected Object doInBackground(RecipeMO... objects) {
-            List<RecipeMO> recipes = (List<RecipeMO>) InternetUtility.fetchRecipe(objects[0], loggedInUser.getUser_id());
+            List<RecipeMO> recipes = (List<RecipeMO>) InternetUtility.fetchRecipe(objects[0], loggedInUser.getUSER_ID());
 
             if(recipes != null && !recipes.isEmpty()){
                 recipes.get(0).setComments(InternetUtility.fetchRecipeComments(loggedInUser, recipes.get(0), 0));
@@ -571,9 +588,9 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         protected Object doInBackground(Void... objects) {
             Map<String, List<RecipeMO>> favRecipes = new HashMap<>();
 
-            favRecipes.put("FAVORITES", (List<RecipeMO>)InternetUtility.fetchFavRecipes(loggedInUser.getUser_id()));
-            favRecipes.put("VIEWED", (List<RecipeMO>)InternetUtility.fetchViewedRecipes(loggedInUser.getUser_id()));
-            favRecipes.put("REVIEWED", (List<RecipeMO>)InternetUtility.fetchReviewedRecipes(loggedInUser.getUser_id()));
+            favRecipes.put("FAVORITES", (List<RecipeMO>)InternetUtility.fetchFavRecipes(loggedInUser.getUSER_ID()));
+            favRecipes.put("VIEWED", (List<RecipeMO>)InternetUtility.fetchViewedRecipes(loggedInUser.getUSER_ID()));
+            favRecipes.put("REVIEWED", (List<RecipeMO>)InternetUtility.fetchReviewedRecipes(loggedInUser.getUSER_ID()));
 
             return favRecipes;
         }
@@ -595,7 +612,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected Object doInBackground(Object... objects) {
-            return InternetUtility.fetchMyRecipes(loggedInUser.getUser_id());
+            return InternetUtility.fetchMyRecipes(loggedInUser.getUSER_ID());
         }
 
         @Override
@@ -619,7 +636,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected Object doInBackground(Object... objects) {
-            return InternetUtility.fetchMyReviews(loggedInUser.getUser_id());
+            return InternetUtility.fetchMyReviews(loggedInUser.getUSER_ID());
         }
 
         @Override
@@ -631,7 +648,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         protected void onPostExecute(Object object) {
             List<RecipeMO> myReviews = (List<RecipeMO>) object;
 
-            if(myReviews != null || !myReviews.isEmpty()){
+            if(myReviews != null && !myReviews.isEmpty()){
                 setupMyReviewsFragment((List<RecipeMO>) object);
                 Utility.closeWaitDialog(getFragmentManager(), fragment);
             }
@@ -691,6 +708,61 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             if(timelines != null){
                 homeContent[0] = timelines;
                 setUpTabs(homeContent);
+            }
+        }
+    }
+
+    class AsyncTaskerFetchUser extends AsyncTask<Object, Void, Object> {
+        private Fragment fragment;
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            return InternetUtility.fetchUser(loggedInUser.getUSER_ID());
+        }
+
+        @Override
+        protected void onPreExecute() {
+            fragment = Utility.showWaitDialog(getFragmentManager(), "logging in 2..");
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            List<UserMO> user = (List<UserMO>) object;
+
+            if(user != null && !user.isEmpty()) {
+                loggedInUser = user.get(0);
+                Utility.closeWaitDialog(getFragmentManager(), fragment);
+
+                setupNavigator();
+                fetchContent();
+            }
+        }
+    }
+
+    class AsyncTaskerFetchUserDetails extends AsyncTask<Object, Void, Object> {
+        private Fragment fragment;
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            return InternetUtility.fetchUser(loggedInUser.getUSER_ID());
+        }
+
+        @Override
+        protected void onPreExecute() {
+            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching profile..");
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            List<UserMO> user = (List<UserMO>) object;
+
+            if(user != null && !user.isEmpty()) {
+                loggedInUser = user.get(0);
+                Utility.closeWaitDialog(getFragmentManager(), fragment);
+
+                Map<String, Object> params = new HashMap<>();
+                params.put(GENERIC_OBJECT, loggedInUser);
+                Utility.showFragment(getFragmentManager(), null, FRAGMENT_PROFILE_VIEW, new ProfileViewFragment(), params);
             }
         }
     }

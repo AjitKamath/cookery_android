@@ -31,8 +31,8 @@ public class TestData {
 
     public static UserMO getUserTestData(){
         user = new UserMO();
-        user.setUser_id(1);
-        user.setName("Vishal");
+        user.setUSER_ID(1);
+        user.setNAME("Vishal Varshney");
 
         return user;
     }
@@ -275,28 +275,28 @@ public class TestData {
         reviews = new ArrayList<>();
 
         review = new ReviewMO();
-        review.setUSER_ID(user.getUser_id());
+        review.setUSER_ID(user.getUSER_ID());
         review.setRCP_ID(1);
         review.setREVIEW("Food worth dying for.");
         review.setRATING(4);
         reviews.add(review);
 
         review = new ReviewMO();
-        review.setUSER_ID(user.getUser_id());
+        review.setUSER_ID(user.getUSER_ID());
         review.setRCP_ID(2);
         review.setREVIEW("Amazing recipe");
         review.setRATING(3);
         reviews.add(review);
 
         review = new ReviewMO();
-        review.setUSER_ID(user.getUser_id());
+        review.setUSER_ID(user.getUSER_ID());
         review.setRCP_ID(4);
         review.setREVIEW("Simple yet ravishing taste.");
         review.setRATING(4);
         reviews.add(review);
 
         review = new ReviewMO();
-        review.setUSER_ID(user.getUser_id());
+        review.setUSER_ID(user.getUSER_ID());
         review.setRCP_ID(3);
         review.setREVIEW("Have always been a fan of mediterranean food. Loved it.");
         review.setRATING(3);

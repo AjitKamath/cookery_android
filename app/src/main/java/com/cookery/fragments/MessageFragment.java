@@ -243,6 +243,132 @@ public class MessageFragment extends DialogFragment {
                 }
             });
         }
+        else if("USER_UPDATE_NAME_FAILED".equalsIgnoreCase(mesage.getPurpose())){
+            common_message_message_tv.setText("That's Weird !");
+            common_message_iv.setImageResource(R.drawable.scared);
+
+            common_message_tv.setText(mesage.getErr_message());
+
+            common_message_ok_tv.setVisibility(View.VISIBLE);
+            common_message_ok_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+        }
+        else if("USER_UPDATE_EMAIL_SUCCESS".equalsIgnoreCase(mesage.getPurpose())){
+            common_message_message_tv.setText("Email Changed !");
+            common_message_iv.setImageResource(R.drawable.happy);
+
+            common_message_tv.setText(mesage.getErr_message());
+
+            common_message_ok_tv.setVisibility(View.VISIBLE);
+            common_message_ok_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+        }
+        else if("USER_UPDATE_EMAIL_FAILED".equalsIgnoreCase(mesage.getPurpose())){
+            common_message_message_tv.setText("That's Weird !");
+            common_message_iv.setImageResource(R.drawable.scared);
+
+            common_message_tv.setText(mesage.getErr_message());
+
+            common_message_ok_tv.setVisibility(View.VISIBLE);
+            common_message_ok_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+        }
+        else if("USER_UPDATE_PASSWORD_SUCCESS".equalsIgnoreCase(mesage.getPurpose())){
+            common_message_message_tv.setText("Password Changed !");
+            common_message_iv.setImageResource(R.drawable.happy);
+
+            common_message_tv.setText(mesage.getErr_message());
+
+            common_message_ok_tv.setVisibility(View.VISIBLE);
+            common_message_ok_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+        }
+        else if("USER_UPDATE_PASSWORD_FAILED".equalsIgnoreCase(mesage.getPurpose())){
+            common_message_message_tv.setText("Oops !");
+            common_message_iv.setImageResource(R.drawable.scared);
+
+            common_message_tv.setText(mesage.getErr_message());
+
+            common_message_ok_tv.setVisibility(View.VISIBLE);
+            common_message_ok_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+        }
+        else if("USER_UPDATE_PHONE_SUCCESS".equalsIgnoreCase(mesage.getPurpose())){
+            common_message_message_tv.setText("Phone Number Changed !");
+            common_message_iv.setImageResource(R.drawable.happy);
+
+            common_message_tv.setText(mesage.getErr_message());
+
+            common_message_ok_tv.setVisibility(View.VISIBLE);
+            common_message_ok_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+        }
+        else if("USER_UPDATE_PHONE_FAILED".equalsIgnoreCase(mesage.getPurpose())){
+            common_message_message_tv.setText("This is bad !");
+            common_message_iv.setImageResource(R.drawable.scared);
+
+            common_message_tv.setText(mesage.getErr_message());
+
+            common_message_ok_tv.setVisibility(View.VISIBLE);
+            common_message_ok_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+        }
+        else if("USER_UPDATE_GENDER_FAILED".equalsIgnoreCase(mesage.getPurpose())){
+            common_message_message_tv.setText("This is strange !");
+            common_message_iv.setImageResource(R.drawable.scared);
+
+            common_message_tv.setText(mesage.getErr_message());
+
+            common_message_ok_tv.setVisibility(View.VISIBLE);
+            common_message_ok_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+        }
+        else if("USER_UPDATE_IMAGE_FAILED".equalsIgnoreCase(mesage.getPurpose())){
+            common_message_message_tv.setText("Oh no !");
+            common_message_iv.setImageResource(R.drawable.scared);
+
+            common_message_tv.setText(mesage.getErr_message());
+
+            common_message_ok_tv.setVisibility(View.VISIBLE);
+            common_message_ok_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+        }
         else{
             common_message_message_tv.setText("UNIMPL");
             common_message_tv.setText(mesage.getErr_message());

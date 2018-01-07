@@ -16,6 +16,12 @@ import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.CommonImagePickerFragment;
 import com.cookery.fragments.MessageFragment;
 import com.cookery.fragments.MyTimelinesFragment;
+import com.cookery.fragments.ProfileViewEmailFragment;
+import com.cookery.fragments.ProfileViewFragment;
+import com.cookery.fragments.ProfileViewGenderFragment;
+import com.cookery.fragments.ProfileViewNameFragment;
+import com.cookery.fragments.ProfileViewPasswordFragment;
+import com.cookery.fragments.ProfileViewPhoneFragment;
 import com.cookery.fragments.RecipeImagesFragment;
 import com.cookery.fragments.RecipeViewCommentsFragment;
 import com.cookery.fragments.RecipeViewFragment;
@@ -23,6 +29,7 @@ import com.cookery.fragments.RecipeViewImagesFragment;
 import com.cookery.fragments.RecipeViewLikedViewedUsersFragment;
 import com.cookery.fragments.RecipeViewReviewsFragment;
 import com.cookery.fragments.RecipeViewStepsFragment;
+import com.cookery.fragments.TempLoginFragment;
 import com.cookery.fragments.WaitFragment;
 import com.cookery.models.CommentMO;
 import com.cookery.models.CuisineMO;
@@ -75,6 +82,18 @@ public class Utility extends Activity {
         }
 
         return null;
+    }
+
+    public static String getGender(String gender){
+        if(gender.equalsIgnoreCase("m")){
+            return "HE";
+        }
+        else if(gender.equalsIgnoreCase("f")){
+            return "SHE";
+        }
+        else{
+            return "OTHER";
+        }
     }
 
     public static void writeIntoUserSecurity(Context context, String key, Object value){
@@ -461,9 +480,12 @@ public class Utility extends Activity {
 
         Bundle bundle = new Bundle();
 
-        for(Map.Entry<String, Object> iterMap : params.entrySet()){
-            bundle.putSerializable(iterMap.getKey(), (Serializable) iterMap.getValue());
+        if(params != null){
+            for(Map.Entry<String, Object> iterMap : params.entrySet()){
+                bundle.putSerializable(iterMap.getKey(), (Serializable) iterMap.getValue());
+            }
         }
+
 
         if(fragment instanceof AddRecipeFragment){
             AddRecipeFragment currentFrag = (AddRecipeFragment) fragment;
@@ -491,6 +513,62 @@ public class Utility extends Activity {
         }
         else if(fragment instanceof RecipeViewLikedViewedUsersFragment){
             RecipeViewLikedViewedUsersFragment currentFrag = (RecipeViewLikedViewedUsersFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof TempLoginFragment){
+            TempLoginFragment currentFrag = (TempLoginFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof ProfileViewFragment){
+            ProfileViewFragment currentFrag = (ProfileViewFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof ProfileViewNameFragment){
+            ProfileViewNameFragment currentFrag = (ProfileViewNameFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof ProfileViewEmailFragment){
+            ProfileViewEmailFragment currentFrag = (ProfileViewEmailFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof ProfileViewPasswordFragment){
+            ProfileViewPasswordFragment currentFrag = (ProfileViewPasswordFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof ProfileViewPhoneFragment){
+            ProfileViewPhoneFragment currentFrag = (ProfileViewPhoneFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof ProfileViewGenderFragment){
+            ProfileViewGenderFragment currentFrag = (ProfileViewGenderFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);
