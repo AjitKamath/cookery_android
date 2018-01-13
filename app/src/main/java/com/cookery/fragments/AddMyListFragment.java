@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
@@ -21,8 +22,11 @@ import com.cookery.adapters.MyListGridViewAdapter;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.MasterDataMO;
+import com.cookery.models.MessageMO;
 import com.cookery.models.MyListMO;
 import com.cookery.models.RecipeMO;
+import com.cookery.utils.InternetUtility;
+import com.cookery.utils.Utility;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -115,10 +119,69 @@ public class AddMyListFragment extends DialogFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 int listid = (Integer) view.getTag();
-                System.out.println(listid);
+                if(R.id.grid_view_mylist_delete_iv == view.getId())
+                {
+                    deleteList(listid);
+                }
                 openViewListFragment(listid);
             }
         });
+    }
+
+    private void deleteList(int listid)
+    {
+        MessageMO message = new MessageMO();
+        message.setErr_message("Are you sure you want to delete your list");
+        message.setPurpose("CANCEL_DELETE_MYLIST");
+        message.setError(false);
+
+        Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_MY_LIST);
+        Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
+
+        //new AddMyListFragment.AsyncTaskerDeleteMyList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, listid);
+    }
+
+    class AsyncTaskerDeleteMyList extends AsyncTask<Object, Void, Object> {
+        Fragment frag = null;
+        @Override
+        protected void onPreExecute() {
+            frag = Utility.showWaitDialog(getFragmentManager(), "Deleting your List ..");
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            int listid = (Integer) objects[0];
+
+            if (listid == 0) {
+                Log.e(CLASS_NAME, "Error ! listid object is null");
+                return null;
+            }
+
+            // TODO: Delete List method
+            //return InternetUtility.deleteList(mylistObj);
+            MyListMO mylistObj = new MyListMO();
+            return InternetUtility.saveList(mylistObj);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+
+            MessageMO message = (MessageMO) object;
+            message.setPurpose("ADD_LIST");
+
+            Utility.closeWaitDialog(getFragmentManager(), frag);
+
+            Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_MY_LIST);
+            Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
+
+            if(message.isError()){
+                Log.e(CLASS_NAME, "Error : "+message.getErr_message());
+            }
+            else{
+                Log.i(CLASS_NAME, message.getErr_message());
+                dismiss();
+            }
+        }
     }
 
     private void setUpUserAllListCards(List<MyListMO> mylists)

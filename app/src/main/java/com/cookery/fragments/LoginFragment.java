@@ -17,16 +17,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.models.MessageMO;
+import com.cookery.activities.HomeActivity;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.FRAGMENT_REGISTER;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
 
 /**
@@ -167,26 +169,21 @@ public class LoginFragment extends DialogFragment {
 
         @Override
         protected void onPostExecute(Object object) {
-            MessageMO msg = (MessageMO)object;
-            String status = msg.getErr_message();
+            List<UserMO> userList = (List<UserMO>)object;
 
-            if(status.equalsIgnoreCase("login success"))
+            if(userList != null && !userList.isEmpty() && userList.get(0) != null)
             {
-                String fragmentNameStr = FRAGMENT_LOGIN;
+                dismiss();
+                Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, userList.get(0));
 
-                FragmentManager manager = getFragmentManager();
-                Fragment frag = manager.findFragmentByTag(fragmentNameStr);
-
-                if (frag != null) {
-                    manager.beginTransaction().remove(frag).commit();
-                }
+                ((HomeActivity)getActivity()).updateLoggedInUser();
             }
             else
             {
                 et_email.setText("");
                 et_password.setText("");
 
-                Utility.showSnacks(fragment_my_recipe_header_rl, status, OK, Snackbar.LENGTH_LONG);
+                Utility.showSnacks(fragment_my_recipe_header_rl, "Login failed !", OK, Snackbar.LENGTH_LONG);
             }
 
             Utility.closeWaitDialog(getFragmentManager(), fragment);

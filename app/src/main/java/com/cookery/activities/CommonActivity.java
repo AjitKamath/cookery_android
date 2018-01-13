@@ -35,7 +35,6 @@ import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MyRecipesFragment;
 import com.cookery.fragments.MyReviewsFragment;
 import com.cookery.fragments.ProfileViewFragment;
-import com.cookery.fragments.TempLoginFragment;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.MasterDataMO;
@@ -46,7 +45,6 @@ import com.cookery.models.TasteMO;
 import com.cookery.models.TimelineMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
-import com.cookery.utils.TestData;
 import com.cookery.utils.Utility;
 
 import java.io.Serializable;
@@ -61,7 +59,6 @@ import static com.cookery.utils.Constants.FRAGMENT_MY_LIST;
 import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_MY_REVIEWS;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
-import static com.cookery.utils.Constants.FRAGMENT_TEMP_LOGIN;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.MASTER;
@@ -98,7 +95,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
     private void verifyLoggedInUser() {
         loggedInUser = Utility.getUserFromUserSecurity(mContext);
-        if(loggedInUser == null || loggedInUser.getUser_id() == 0){
+        if(loggedInUser == null || loggedInUser.getUSER_ID() == 0){
 
             String fragmentNameStr = FRAGMENT_LOGIN;
 
@@ -112,11 +109,17 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             LoginFragment fragment = new LoginFragment();
 
             fragment.show(manager, fragmentNameStr);
-
-            loggedInUser = TestData.getUserTestData();
-            Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, loggedInUser);
-            verifyLoggedInUser();
         }
+        else{
+            new AsyncTaskerFetchUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+
+
+    }
+
+    public void updateLoggedInUser(){
+        Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, null);
+        verifyLoggedInUser();
     }
 
     private void setupSearch() {

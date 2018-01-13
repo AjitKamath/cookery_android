@@ -102,7 +102,7 @@ public class TempLoginFragment extends DialogFragment {
                 Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, user.get(0));
 
                 if(getActivity() instanceof HomeActivity){
-                    ((HomeActivity) getActivity()).verifyLoggedInUser();
+                    //((HomeActivity) getActivity()).verifyLoggedInUser();
                     dismiss();
                 }
 

@@ -127,7 +127,7 @@ public class MyListFragment extends DialogFragment {
         }
     }
 
-    private void setupMyListViewFragment(List<MyListMO> mylistobj)
+    private void setupMyListViewFragment(final List<MyListMO> mylistobj)
     {
       common_fragment_header_tv.setText(mylistobj.get(0).getLIST_NAME());
         add_my_list_et.setText(mylistobj.get(0).getLIST_NAME());
@@ -178,7 +178,7 @@ public class MyListFragment extends DialogFragment {
 
             @Override
                 public void onClick(View view) {
-                    if (R.id.recipe_add_ingredients_item_delete_iv == view.getId()) {
+                    if (R.id.mylist_add_ingredients_item_delete_iv == view.getId()) {
                         removeIngredient((IngredientMO) view.getTag());
                     } else {
                         Log.e(CLASS_NAME, UN_IDENTIFIED_VIEW + view);
@@ -199,25 +199,13 @@ public class MyListFragment extends DialogFragment {
             mylist_save_fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    MyListMO mylistObj = new MyListMO();
-                    // GET LIST ID TO CHECK WHETHER ITS UPDATE OR SAVE
-                    if(mylistObj.getLIST_ID() != 0)
+                    mylist.setLIST_ID(listid);
+                    mylist.setLIST_NAME(String.valueOf(add_my_list_et.getText()));
+                    if(mylist.getLIST_ID() != 0)
                     {
-                        new MyListFragment.AsyncTaskerUpdateMyList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mylistObj);
+                        new MyListFragment.AsyncTaskerUpdateMyList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mylist);
                     }
-                    else {
-                        String listname = String.valueOf(add_my_list_et.getText());
-                        MyListIngredientsRecyclerViewAdapter adapter = (MyListIngredientsRecyclerViewAdapter) recipe_add_ingredients_list_rv.getAdapter();
 
-                        if (listname != null && !listname.trim().isEmpty()) {
-                            mylistObj.setLIST_NAME(listname);
-                            //mylistObj.setUSER_ID(loggedInUser.getUser_id());
-                            mylistObj.setUSER_ID(1);
-                            mylistObj.setListofingredients(adapter.ingredients);
-
-                            new MyListFragment.AsyncTaskerSubmitMyList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mylistObj);
-                        }
-                    }
                 }
             });
         }
@@ -262,7 +250,7 @@ public class MyListFragment extends DialogFragment {
             MyListIngredientsRecyclerViewAdapter adapter = new MyListIngredientsRecyclerViewAdapter(mContext, new ArrayList<IngredientMO>(), new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (R.id.recipe_add_ingredients_item_delete_iv == view.getId()) {
+                    if (R.id.mylist_add_ingredients_item_delete_iv == view.getId()) {
                         removeIngredient((IngredientMO) view.getTag());
                     } else if (R.id.recipe_add_ingredients_item_edit_iv == view.getId()) {
                     } else {
