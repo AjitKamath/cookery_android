@@ -116,6 +116,30 @@ public class MessageFragment extends DialogFragment {
                 }
             });
         }
+        else if("CANCEL_DELETE_MYLIST".equalsIgnoreCase(mesage.getPurpose())){
+            common_message_iv.setImageResource(R.drawable.thinking);
+            common_message_message_tv.setText("Sure Delete ?");
+            common_message_tv.setText(mesage.getErr_message());
+
+            common_message_ok_tv.setVisibility(View.VISIBLE);
+            common_message_cancel_tv.setVisibility(View.VISIBLE);
+
+            common_message_ok_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+
+                    ((AddMyListFragment) getTargetFragment()).dismiss();
+                }
+            });
+
+            common_message_cancel_tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+        }
         else if("RECIPE_VIEW_COMMENT_ADD".equalsIgnoreCase(mesage.getPurpose())){
             common_message_iv.setImageResource(R.drawable.scared);
             common_message_message_tv.setText("Sorry :(");

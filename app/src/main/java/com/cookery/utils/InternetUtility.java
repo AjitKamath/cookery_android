@@ -36,6 +36,7 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_FETCH_USERS;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_SUBMIT;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_UPDATE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_VIEW;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_FAVORITE_FETCH;
@@ -389,8 +390,9 @@ public class InternetUtility {
         MessageMO message = new MessageMO();
         try {
             MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS_PUBLIC+PHP_CONTROLLER, SERVER_CHARSET);
-            multipart.addFormField(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_SUBMIT);
+            multipart.addFormField(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_UPDATE);
 
+            multipart.addFormField("list_id", String.valueOf(mylistObj.getLIST_ID()));
             multipart.addFormField("list_name", String.valueOf(mylistObj.getLIST_NAME()));
             multipart.addFormField("user_id", String.valueOf(mylistObj.getUSER_ID()));
 

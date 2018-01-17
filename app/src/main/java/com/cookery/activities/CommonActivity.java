@@ -113,11 +113,8 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         else{
             new AsyncTaskerFetchUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
-    }
 
-    public void loginSuccess(){
-        setupNavigator();
-        fetchContent();
+
     }
 
     public void updateLoggedInUser(){

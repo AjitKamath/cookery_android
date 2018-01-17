@@ -45,6 +45,7 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_REVIEW_RECIPE = "REVIEW_RECIPE_FETCH";
     public static final String PHP_FUNCTION_KEY_MYLIST_SUBMIT = "PHP_FUNCTION_KEY_MYLIST_SUBMIT";
     public static final String PHP_FUNCTION_KEY_MYLIST_VIEW = "PHP_FUNCTION_KEY_MYLIST_VIEW";
+    public static final String PHP_FUNCTION_KEY_MYLIST_UPDATE = "PHP_FUNCTION_KEY_MYLIST_UPDATE";
     public static final String PHP_FUNCTION_KEY_LIKE_SUBMIT = "LIKE_SUBMIT";
     public static final String PHP_FUNCTION_KEY_COMMENT_RECIPE_FETCH_ALL = "COMMENT_RECIPE_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_LIKE_FETCH_USERS = "LIKE_FETCH_USERS";

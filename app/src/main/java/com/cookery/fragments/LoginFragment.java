@@ -22,10 +22,11 @@ import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.FRAGMENT_REGISTER;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
@@ -168,23 +169,14 @@ public class LoginFragment extends DialogFragment {
 
         @Override
         protected void onPostExecute(Object object) {
-            UserMO user = (UserMO) object;
+            List<UserMO> userList = (List<UserMO>)object;
 
-            if(user != null && user.getUSER_ID() != 0)
+            if(userList != null && !userList.isEmpty() && userList.get(0) != null)
             {
-                String fragmentNameStr = FRAGMENT_LOGIN;
+                dismiss();
+                Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, userList.get(0));
 
-                FragmentManager manager = getFragmentManager();
-                Fragment frag = manager.findFragmentByTag(fragmentNameStr);
-
-                if (frag != null) {
-                    manager.beginTransaction().remove(frag).commit();
-                }
-
-                Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, user);
                 ((HomeActivity)getActivity()).updateLoggedInUser();
-                ((HomeActivity)getActivity()).loginSuccess();
-
             }
             else
             {
