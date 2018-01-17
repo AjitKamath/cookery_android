@@ -15,7 +15,6 @@ import com.cookery.R;
 import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.CommonImagePickerFragment;
 import com.cookery.fragments.MessageFragment;
-import com.cookery.fragments.MyTimelinesFragment;
 import com.cookery.fragments.ProfileViewEmailFragment;
 import com.cookery.fragments.ProfileViewFragment;
 import com.cookery.fragments.ProfileViewGenderFragment;
@@ -26,10 +25,12 @@ import com.cookery.fragments.RecipeImagesFragment;
 import com.cookery.fragments.RecipeViewCommentsFragment;
 import com.cookery.fragments.RecipeViewFragment;
 import com.cookery.fragments.RecipeViewImagesFragment;
-import com.cookery.fragments.RecipeViewLikedViewedUsersFragment;
 import com.cookery.fragments.RecipeViewReviewsFragment;
 import com.cookery.fragments.RecipeViewStepsFragment;
-import com.cookery.fragments.TempLoginFragment;
+import com.cookery.fragments.TimelineDeleteFragment;
+import com.cookery.fragments.TimelineHideFragment;
+import com.cookery.fragments.UserViewFragment;
+import com.cookery.fragments.UsersFragment;
 import com.cookery.fragments.WaitFragment;
 import com.cookery.models.CommentMO;
 import com.cookery.models.CuisineMO;
@@ -56,7 +57,6 @@ import java.util.Map;
 
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_WAIT;
-import static com.cookery.utils.Constants.FRAGMENT_MY_TIMELINES;
 import static com.cookery.utils.Constants.FRAGMENT_PICK_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_COMMENTS;
@@ -64,7 +64,6 @@ import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
-import static com.cookery.utils.Constants.MY_TIMELINES;
 import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.SERVER_ADDRESS;
@@ -237,10 +236,31 @@ public class Utility extends Activity {
     }
 
     public static void loadImageFromURL(Context context, String imageAddress, ImageView imageView){
+        if(imageView == null){
+            Log.e(CLASS_NAME, "Image View is null !");
+            return;
+        }
+
+        if(imageAddress == null || imageAddress.trim().isEmpty()){
+            Log.e(CLASS_NAME, "Error ! Image url is null/empty !");
+            imageView.setImageResource(R.drawable.placeholder);
+            return;
+        }
+
         Picasso.with(context).load(SERVER_ADDRESS+imageAddress).placeholder(R.drawable.placeholder).into(imageView);
     }
 
     public static void loadImageFromPath(Context context, String imageAddress, ImageView imageView){
+        if(imageAddress == null || imageAddress.trim().isEmpty()){
+            Log.e(CLASS_NAME, "Error ! Image url is null/empty !");
+            return;
+        }
+
+        if(imageView == null){
+            Log.e(CLASS_NAME, "Image View is null !");
+            return;
+        }
+
         Picasso.with(context).load(new File(imageAddress)).into(imageView);
     }
 
@@ -269,40 +289,6 @@ public class Utility extends Activity {
         bundle.putSerializable(SELECTED_ITEM, recipe);
 
         RecipeViewFragment fragment = new RecipeViewFragment();
-        fragment.setArguments(bundle);
-
-        if (parentFragment != null) {
-            fragment.setTargetFragment(parentFragment, 0);
-        }
-
-        fragment.show(fragmentManager, fragmentNameStr);
-    }
-
-    public static void showMyTimelinesFragment(FragmentManager fragmentManager, List<TimelineMO> timelines){
-        if(timelines == null || timelines.isEmpty()){
-            Log.e(CLASS_NAME, "Timelines are null");
-            return;
-        }
-
-        String fragmentNameStr = FRAGMENT_MY_TIMELINES;
-        String parentFragmentNameStr = null;
-
-        Fragment frag = fragmentManager.findFragmentByTag(fragmentNameStr);
-
-        if (frag != null) {
-            fragmentManager.beginTransaction().remove(frag).commit();
-        }
-
-        Fragment parentFragment = null;
-        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
-            parentFragment = fragmentManager.findFragmentByTag(parentFragmentNameStr);
-        }
-
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(MY_TIMELINES, (Serializable) timelines);
-
-        MyTimelinesFragment fragment = new MyTimelinesFragment();
         fragment.setArguments(bundle);
 
         if (parentFragment != null) {
@@ -511,16 +497,8 @@ public class Utility extends Activity {
             }
             currentFrag.show(fragmentManager, fragKey);
         }
-        else if(fragment instanceof RecipeViewLikedViewedUsersFragment){
-            RecipeViewLikedViewedUsersFragment currentFrag = (RecipeViewLikedViewedUsersFragment) fragment;
-            currentFrag.setArguments(bundle);
-            if (parentFragment != null) {
-                currentFrag.setTargetFragment(parentFragment, 0);
-            }
-            currentFrag.show(fragmentManager, fragKey);
-        }
-        else if(fragment instanceof TempLoginFragment){
-            TempLoginFragment currentFrag = (TempLoginFragment) fragment;
+        else if(fragment instanceof UsersFragment){
+            UsersFragment currentFrag = (UsersFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);
@@ -569,6 +547,30 @@ public class Utility extends Activity {
         }
         else if(fragment instanceof ProfileViewGenderFragment){
             ProfileViewGenderFragment currentFrag = (ProfileViewGenderFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof UserViewFragment){
+            UserViewFragment currentFrag = (UserViewFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof TimelineHideFragment){
+            TimelineHideFragment currentFrag = (TimelineHideFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof TimelineDeleteFragment){
+            TimelineDeleteFragment currentFrag = (TimelineDeleteFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);

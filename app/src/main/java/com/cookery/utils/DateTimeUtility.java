@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.cookery.utils.Constants.DB_DATE_TIME;
+
 public class DateTimeUtility {
     private static final String CLASS_NAME = DateTimeUtility.class.getName();
 
@@ -20,6 +22,18 @@ public class DateTimeUtility {
         }
 
         return null;
+    }
+
+    public static String getCreateOrModifiedTime(String createDtm, String modifiedDtm){
+        if(modifiedDtm != null && !modifiedDtm.trim().isEmpty()){
+            return DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(modifiedDtm, DB_DATE_TIME));
+        }
+        else if(createDtm != null && !createDtm.trim().isEmpty()){
+            return DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(createDtm, DB_DATE_TIME));
+        }
+        else{
+            return "ERROR";
+        }
     }
 
     public static String getSmartDateTime(Date dateTime) {

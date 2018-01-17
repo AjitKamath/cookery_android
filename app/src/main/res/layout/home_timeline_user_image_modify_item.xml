@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
-    android:id="@+id/fragment_timelines_timeline_like_rl"
+    android:id="@+id/home_timeline_user_image_modify_item_rl"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp">
@@ -21,7 +21,7 @@
             android:padding="5dp">
 
             <LinearLayout
-                android:id="@+id/fragment_timelines_timeline_like_ll"
+                android:id="@+id/home_timeline_user_image_modify_item_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -48,7 +48,7 @@
 
                             <TextView
                                 android:layout_centerVertical="true"
-                                android:id="@+id/fragment_timelines_timeline_like_who_tv"
+                                android:id="@+id/home_timeline_user_image_modify_item_who_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="WHO"
@@ -57,41 +57,18 @@
 
                             <TextView
                                 android:layout_centerVertical="true"
-                                android:layout_toRightOf="@+id/fragment_timelines_timeline_like_who_tv"
+                                android:layout_toRightOf="@+id/home_timeline_user_image_modify_item_who_tv"
                                 android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
-                                android:id="@+id/fragment_timelines_timeline_like_what_tv"
+                                android:id="@+id/home_timeline_user_image_modify_item_on_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text=" WHAT "
-                                android:textColor="@color/primaryDarkText"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:layout_centerVertical="true"
-                                android:layout_toRightOf="@+id/fragment_timelines_timeline_like_what_tv"
-                                android:id="@+id/fragment_timelines_timeline_like_whose_tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="WHO's"
-                                android:textColor="@color/app_color"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:layout_centerVertical="true"
-                                android:layout_toRightOf="@+id/fragment_timelines_timeline_like_whose_tv"
-                                android:layout_marginLeft="5dp"
-                                android:id="@+id/fragment_timelines_timeline_like_on_tv"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="WHAT"
+                                android:text="changed the profile picture"
                                 android:textColor="@color/primaryDarkText"
                                 android:textSize="10sp" />
 
                             <include
-                                android:layout_centerVertical="true"
-                                android:layout_height="wrap_content"
                                 android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
                                 layout="@layout/home_timeline_options" />
 
@@ -103,24 +80,15 @@
 
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="35dp"
-                    android:layout_marginTop="15dp">
-
-                    <TextView
-                        android:id="@+id/fragment_timelines_timeline_like_review_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLength="150"
-                        android:text="@string/sample_commnet"
-                        android:textColor="@color/tertiaryDarkText"
-                        android:textSize="10sp" />
-
-                </RelativeLayout>
-
-                <include layout="@layout/home_timeline_recipe_card" />
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/home_timeline_user_image_modify_item_photo_iv"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:src="@drawable/placeholder"
+                    app:border_color="@color/white"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"
+                    app:border_width="1dp" />
 
             </LinearLayout>
 

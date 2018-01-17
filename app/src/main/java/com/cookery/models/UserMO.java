@@ -17,6 +17,16 @@ public class UserMO extends CommonMO implements Serializable {
     private int followersCount;
     private int followingCount;
     private String newPassword;
+    private int recipesCount;
+    private boolean following;
+
+    public int getRecipesCount() {
+        return recipesCount;
+    }
+
+    public void setRecipesCount(int recipesCount) {
+        this.recipesCount = recipesCount;
+    }
 
     public String getNAME() {
         return NAME;
@@ -88,5 +98,13 @@ public class UserMO extends CommonMO implements Serializable {
 
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
+    }
+
+    public boolean isFollowing() {
+        return following;
+    }
+
+    public void setFollowing(boolean following) {
+        this.following = following;
     }
 }

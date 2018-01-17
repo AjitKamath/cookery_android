@@ -17,7 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.models.MessageMO;
+import com.cookery.activities.HomeActivity;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
@@ -27,6 +27,7 @@ import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.FRAGMENT_REGISTER;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
 
 /**
@@ -167,10 +168,9 @@ public class LoginFragment extends DialogFragment {
 
         @Override
         protected void onPostExecute(Object object) {
-            MessageMO msg = (MessageMO)object;
-            String status = msg.getErr_message();
+            UserMO user = (UserMO) object;
 
-            if(status.equalsIgnoreCase("login success"))
+            if(user != null && user.getUSER_ID() != 0)
             {
                 String fragmentNameStr = FRAGMENT_LOGIN;
 
@@ -180,13 +180,18 @@ public class LoginFragment extends DialogFragment {
                 if (frag != null) {
                     manager.beginTransaction().remove(frag).commit();
                 }
+
+                Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, user);
+                ((HomeActivity)getActivity()).updateLoggedInUser();
+                ((HomeActivity)getActivity()).loginSuccess();
+
             }
             else
             {
                 et_email.setText("");
                 et_password.setText("");
 
-                Utility.showSnacks(fragment_my_recipe_header_rl, status, OK, Snackbar.LENGTH_LONG);
+                Utility.showSnacks(fragment_my_recipe_header_rl, "Login failed !", OK, Snackbar.LENGTH_LONG);
             }
 
             Utility.closeWaitDialog(getFragmentManager(), fragment);

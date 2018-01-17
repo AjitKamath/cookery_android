@@ -15,8 +15,10 @@ public class TimelineMO extends CommonMO implements Serializable {
     private String whoName;
     private int whoUserId;
     private String whoUserImage;
+
     private String whoseName;
     private int whoseUserId;
+    private String whoseUserImage;
 
     /*recipe*/
     private int recipeId;
@@ -35,6 +37,17 @@ public class TimelineMO extends CommonMO implements Serializable {
     private String review;
     private int rating;
     /*review*/
+
+    private String scopeName;
+    private int scopeId;
+
+    public String getScopeName() {
+        return scopeName;
+    }
+
+    public void setScopeName(String scopeName) {
+        this.scopeName = scopeName;
+    }
 
     public int getTMLN_ID() {
         return TMLN_ID;
@@ -178,5 +191,21 @@ public class TimelineMO extends CommonMO implements Serializable {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    public String getWhoseUserImage() {
+        return whoseUserImage;
+    }
+
+    public void setWhoseUserImage(String whoseUserImage) {
+        this.whoseUserImage = whoseUserImage;
+    }
+
+    public int getScopeId() {
+        return scopeId;
+    }
+
+    public void setScopeId(int scopeId) {
+        this.scopeId = scopeId;
     }
 }

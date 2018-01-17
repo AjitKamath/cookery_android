@@ -37,15 +37,18 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
     private UserMO loggedInUser;
     private Object array[];
     private View.OnClickListener listener;
+    private android.support.v7.widget.PopupMenu.OnMenuItemClickListener menuItemListener;
     private SwipeRefreshLayout.OnRefreshListener refreshListener;
+    private RecyclerView home_timelines_rv;
 
-    public HomeTimelinesTrendsViewPagerAdapter(Context context, List<Integer> layouts, UserMO loggedInUser, Object array[], View.OnClickListener listener, SwipeRefreshLayout.OnRefreshListener refreshListener) {
+    public HomeTimelinesTrendsViewPagerAdapter(Context context, List<Integer> layouts, UserMO loggedInUser, Object array[], View.OnClickListener listener, SwipeRefreshLayout.OnRefreshListener refreshListener, android.support.v7.widget.PopupMenu.OnMenuItemClickListener menuItemListener) {
         this.mContext = context;
         this.layouts = layouts;
         this.loggedInUser = loggedInUser;
         this.array = array;
         this.listener = listener;
         this.refreshListener = refreshListener;
+        this.menuItemListener = menuItemListener;
     }
 
     @Override
@@ -71,14 +74,9 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
         }
 
         SwipeRefreshLayout home_timelines_srl = layout.findViewById(R.id.home_timelines_srl);
-        RecyclerView home_timelines_rv = layout.findViewById(R.id.home_timelines_rv);
+        home_timelines_rv = layout.findViewById(R.id.home_timelines_rv);
 
-        final HomeTimelinesRecyclerViewAdapter adapter = new HomeTimelinesRecyclerViewAdapter(mContext, timelines, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+        final HomeTimelinesRecyclerViewAdapter adapter = new HomeTimelinesRecyclerViewAdapter(mContext, timelines, listener, menuItemListener);
         adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
             @Override
             public void onBottomReached(int position) {
@@ -154,6 +152,14 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
                 setFont((ViewGroup) v);
             }
         }
+    }
+
+    public void updateTimelinePrivacy(TimelineMO timeline) {
+        ((HomeTimelinesRecyclerViewAdapter)home_timelines_rv.getAdapter()).updateTimelinePrivacy(timeline);
+    }
+
+    public void deleteTimeline(TimelineMO timeline) {
+        ((HomeTimelinesRecyclerViewAdapter)home_timelines_rv.getAdapter()).deleteTimeline(timeline);
     }
 
     class AsyncTaskerTimelines extends AsyncTask<Object, Void, Object> {

@@ -14,7 +14,7 @@ public final class Constants {
 
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_AJIT = "cookery_php-ajitkamathk452607.codeanyapp.com";
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_VISHAL = "cookery_php-dial2vishal53897.codeanyapp.com";
-    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_VISHAL;
+    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_AJIT;
 
     private static final String SERVER_CODEANYWHERE_PUBLIC_DIR = "public";
 
@@ -25,30 +25,6 @@ public final class Constants {
     public static final int SERVER_TIMEOUT = 5000;  //in milliseconds
 
     //PHP
-    public static final String PHP_FETCH_ALL_FOOD_TYPES = "fetchfoodtype.php";
-    public static final String PHP_FETCH_ALL_CUISINES = "fetchcuisine.php";
-    public static final String PHP_FETCH_INGREDIENTS = "autocompleteingredient.php";
-    public static final String PHP_FETCH_ALL_TASTES = "fetchtastes.php";
-    public static final String PHP_FETCH_ALL_QUANTITIES = "fetchqty.php";
-    public static final String PHP_FETCH_TRENDING_RECIPES = "fetchtrendingrecipes.php";
-    public static final String PHP_FETCH_MASTER_SEARCH = "mastersearch.php";
-    public static final String PHP_FETCH_RECIPE = "fetchrecipedetails.php";
-    public static final String PHP_FETCH_FAV_RECIPES = "fetchuserfavrecipes.php";
-    public static final String PHP_FETCH_VIEWED_RECIPES = "fetchuserviewedrecipes.php";
-    public static final String PHP_FETCH_REVIEWED_RECIPES = "fetchuserreviewedrecipes.php";
-    public static final String PHP_FETCH_RECIPE_REVIEW = "fetchrecipereview.php";
-    public static final String PHP_FETCH_MY_RECIPES = "fetchuserrecipes.php";
-    public static final String PHP_FETCH_MY_REVIEWS = "fetchuserrecipesreviews.php";
-    public static final String PHP_FETCH_USER_DETAILS = "fetchuserdetails.php";
-    public static final String PHP_FETCH_USER_TIMELINE = "fetchusertimeline.php";
-    public static final String PHP_FETCH_TIMELINE_DETAILS = "fetchusertimelinedetails.php";
-    public static final String PHP_FETCH_RECIPE_COMMENTS = "fetchrecipecomments.php";
-    public static final String PHP_SUBMIT_RECIPE = "submitrecipe.php";
-    public static final String PHP_SUBMIT_RECIPE_COMMENT = "submitcomment.php";
-    public static final String PHP_SUBMIT_RECIPE_REVIEW = "submitrecipereview.php";
-    public static final String PHP_SUBMIT_LIKE = "submitlike.php";
-    public static final String PHP_USER_REGISTRATION = "register.php";
-
     public static final String PHP_CONTROLLER = "Controller.php";
 
     /*PHP function keys*/
@@ -82,13 +58,19 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_TIMELINE_USER_FETCH = "TIMELINE_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_USER_REGISTER = "USER_REGISTER";
     public static final String PHP_FUNCTION_KEY_USER_LOGIN = "USER_LOGIN";
-    public static final String PHP_FUNCTION_KEY_USER_FETCH = "USER_FETCH";
+    public static final String PHP_FUNCTION_KEY_USER_FETCH_SELF = "USER_FETCH_SELF";
+    public static final String PHP_FUNCTION_KEY_USER_FETCH_PUBLIC = "USER_FETCH_PUBLIC";
+    public static final String PHP_FUNCTION_KEY_USER_FOLLOW_SUBMIT = "USER_FOLLOW_SUBMIT";
     public static final String PHP_FUNCTION_KEY_USER_UPDATE_NAME = "USER_UPDATE_NAME";
     public static final String PHP_FUNCTION_KEY_USER_UPDATE_EMAIL = "USER_UPDATE_EMAIL";
     public static final String PHP_FUNCTION_KEY_USER_UPDATE_PASSWORD = "USER_UPDATE_PASSWORD";
     public static final String PHP_FUNCTION_KEY_USER_UPDATE_PHONE = "USER_UPDATE_PHONE";
     public static final String PHP_FUNCTION_KEY_USER_UPDATE_GENDER = "USER_UPDATE_GENDER";
     public static final String PHP_FUNCTION_KEY_USER_UPDATE_IMAGE = "USER_UPDATE_IMAGE";
+    public static final String PHP_FUNCTION_KEY_USER_FOLLOWERS_FETCH = "USER_FOLLOWERS_FETCH";
+    public static final String PHP_FUNCTION_KEY_USER_FOLLOWINGS_FETCH = "USER_FOLLOWINGS_FETCH";
+    public static final String PHP_FUNCTION_KEY_TIMELINE_SCOPE_MODIFY = "TIMELINE_SCOPE_MODIFY";
+    public static final String PHP_FUNCTION_KEY_TIMELINE_DELETE = "TIMELINE_DELETE";
     /*PHP function keys*/
 
     /*Timeline keys*/
@@ -110,6 +92,10 @@ public final class Constants {
     public static final String TIMELINE_REVIEW_RECIPE_REMOVE = "REVIEW_RECIPE_REMOVE";
 
     public static final String TIMELINE_USER_ADD = "USER_ADD";
+    public static final String TIMELINE_USER_PHOTO_MODIFY = "USER_PHOTO_MODIFY";
+
+    public static final String TIMELINE_USER_FOLLOW = "USER_FOLLOW";
+    public static final String TIMELINE_USER_UNFOLLOW = "USER_UNFOLLOW";
     /*Timeline keys*/
 
     /* My List Keys */
@@ -169,7 +155,10 @@ public final class Constants {
     public static final String FRAGMENT_PROFILE_VIEW_GENDER = "FRAGMENT_PROFILE_VIEW_GENDER";
     public static final String FRAGMENT_LOGIN = "FRAGMENT_LOGIN";
     public static final String FRAGMENT_REGISTER = "FRAGMENT_REGISTER";
-
+    public static final String FRAGMENT_USER_VIEW = "FRAGMENT_USER_VIEW";
+    public static final String FRAGMENT_USERS = "FRAGMENT_USERS";
+    public static final String FRAGMENT_TIMELINE_HIDE = "FRAGMENT_TIMELINE_HIDE";
+    public static final String FRAGMENT_TIMELINE_DELETE = "FRAGMENT_TIMELINE_DELETE";
 
     //FRAGMENT OBJECT KEYS
     public static final String LOGGED_IN_USER = "LOGGED_IN_USER";
@@ -215,6 +204,8 @@ public final class Constants {
     public static final int REQUEST_TAKE_PHOTO = 1;
     public static final int REQUEST_GALLERY_PHOTO = 2;
 
-    //Discount factor
-    public static final Double DISCOUNT_FACTOR = 0.15;
+    //scopes
+    public static final String SCOPE_PUBLIC = "PUBLIC";
+    public static final String SCOPE_FOLLOWERS = "FOLLOWERS";
+    public static final String SCOPE_SELF = "SELF";
 }

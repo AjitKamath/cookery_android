@@ -205,3 +205,22 @@
 2. #69 - Profile View - User can change his email.
 3. #70 - Profile View - User can change his profile photo.
 4. #88 - Profile View - User can see his profile details.
+
+-- git checkin on 1 jan 2018 --
+
+5 jan 2018
+1. fixed null pointer in timeline for recipe add/delete/modify.
+
+7 jan 2018
+1. #7 - user can see a user's public profile.
+
+12 jan 2018
+1. #7 - user can see people who are following and whom the user follows.
+
+13 jan 2018
+1. #107 - user photo modify are shown in timeline.
+2. #75 - user follows/unfollows someone & someone follows/unfollows user are shown in timeline.
+
+17 jan 2018
+1. #75 - user can now set privacy to an individual timeline to restrict visibility to himself, followers or to the public.
+2. #101 - user can delete a specific timeline permanently.

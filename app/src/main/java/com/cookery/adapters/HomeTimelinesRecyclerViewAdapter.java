@@ -7,6 +7,7 @@ package com.cookery.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,12 +24,16 @@ import com.cookery.models.UserMO;
 import com.cookery.utils.DateTimeUtility;
 import com.cookery.utils.Utility;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.cookery.utils.Constants.DB_DATE_TIME;
+import static com.cookery.utils.Constants.SCOPE_FOLLOWERS;
+import static com.cookery.utils.Constants.SCOPE_PUBLIC;
+import static com.cookery.utils.Constants.SCOPE_SELF;
 import static com.cookery.utils.Constants.TIMELINE_COMMENT_RECIPE_ADD;
 import static com.cookery.utils.Constants.TIMELINE_COMMENT_RECIPE_REMOVE;
 import static com.cookery.utils.Constants.TIMELINE_LIKE_COMMENT_ADD;
@@ -43,6 +48,9 @@ import static com.cookery.utils.Constants.TIMELINE_RECIPE_REMOVE;
 import static com.cookery.utils.Constants.TIMELINE_REVIEW_RECIPE_ADD;
 import static com.cookery.utils.Constants.TIMELINE_REVIEW_RECIPE_REMOVE;
 import static com.cookery.utils.Constants.TIMELINE_USER_ADD;
+import static com.cookery.utils.Constants.TIMELINE_USER_FOLLOW;
+import static com.cookery.utils.Constants.TIMELINE_USER_PHOTO_MODIFY;
+import static com.cookery.utils.Constants.TIMELINE_USER_UNFOLLOW;
 import static com.cookery.utils.Constants.UI_FONT;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
@@ -53,13 +61,15 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
 
     private List<TimelineMO> timelines;
     private View.OnClickListener listener;
+    private PopupMenu.OnMenuItemClickListener menuItemClickListener;
     private OnBottomReachedListener onBottomReachedListener;
     private UserMO loggedInUser;
 
-    public HomeTimelinesRecyclerViewAdapter(Context mContext, List<TimelineMO> timelines, View.OnClickListener listener) {
+    public HomeTimelinesRecyclerViewAdapter(Context mContext, List<TimelineMO> timelines, View.OnClickListener listener, PopupMenu.OnMenuItemClickListener menuItemClickListener) {
         this.mContext = mContext;
         this.timelines = timelines;
         this.listener = listener;
+        this.menuItemClickListener = menuItemClickListener;
 
         this.loggedInUser = Utility.getUserFromUserSecurity(mContext);
     }
@@ -96,6 +106,12 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         }
         else if(TIMELINE_USER_ADD.equalsIgnoreCase(timeline.getTYPE())){
             return R.layout.home_timeline_user_item;
+        }
+        else if(TIMELINE_USER_PHOTO_MODIFY.equalsIgnoreCase(timeline.getTYPE())){
+            return R.layout.home_timeline_user_image_modify_item;
+        }
+        else if(TIMELINE_USER_FOLLOW.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_USER_UNFOLLOW.equalsIgnoreCase(timeline.getTYPE())){
+            return R.layout.home_timeline_user_follow_unfollow_item;
         }
         else{
             Log.e(CLASS_NAME, "The timeline type("+timeline.getTYPE()+") could not be understood. New type of timeline ?");
@@ -134,11 +150,28 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         setupLayout(holder, timelines.get(position));
     }
 
-    private void setupLayout(ViewHolder holder, TimelineMO timeline){
+    private void setupLayout(ViewHolder holder, final TimelineMO timeline){
         if(TIMELINE_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_RECIPE_MODIFY.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
-            holder.fragment_timelines_timeline_recipe_recipe_name_tv.setText(timeline.getRecipeName().toUpperCase());
-            holder.fragment_timelines_timeline_recipe_recipe_type_tv.setText(timeline.getRecipeTypeName().toUpperCase());
-            holder.fragment_timelines_timeline_recipe_recipe_cuisine_tv.setText(timeline.getRecipeCuisineName().toUpperCase());
+            if(timeline.getRecipeName() != null){
+                holder.fragment_timelines_timeline_recipe_recipe_name_tv.setText(timeline.getRecipeName().toUpperCase());
+            }
+            else{
+                Log.e(CLASS_NAME, "Error ! Possible data corruption due to non enforced foreign key violation ! tmln_id("+timeline.getTMLN_ID()+") type("+timeline.getTYPE()+") type_id("+timeline.getTYPE_ID()+")");
+            }
+
+            if(timeline.getRecipeTypeName() != null){
+                holder.fragment_timelines_timeline_recipe_recipe_type_tv.setText(timeline.getRecipeTypeName().toUpperCase());
+            }
+            else{
+                Log.e(CLASS_NAME, "Error ! Possible data corruption due to non enforced foreign key violation ! tmln_id("+timeline.getTMLN_ID()+") type("+timeline.getTYPE()+") type_id("+timeline.getTYPE_ID()+")");
+            }
+
+            if(timeline.getRecipeCuisineName() != null){
+                holder.fragment_timelines_timeline_recipe_recipe_cuisine_tv.setText(timeline.getRecipeCuisineName().toUpperCase());
+            }
+            else{
+                Log.e(CLASS_NAME, "Error ! Possible data corruption due to non enforced foreign key violation ! tmln_id("+timeline.getTMLN_ID()+") type("+timeline.getTYPE()+") type_id("+timeline.getTYPE_ID()+")");
+            }
 
             if(TIMELINE_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE())){
                 holder.fragment_timelines_timeline_recipe_msg_tv.setText("You posted a Recipe !");
@@ -150,9 +183,14 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
                 holder.fragment_timelines_timeline_recipe_msg_tv.setText("You deleted your Recipe !");
             }
 
-            /*recipe*/
-            setupRecipeView(holder, timeline);
-            /*recipe*/
+            if(timeline.getRecipeImage() != null && !timeline.getRecipeImage().trim().isEmpty()){
+                if(holder.fragment_timelines_timeline_recipe_recipe_iv == null){
+                    Log.e(CLASS_NAME, "Error ! ImageView object is null !");
+                }
+                else{
+                    Utility.loadImageFromURL(mContext, timeline.getRecipeImage(), holder.fragment_timelines_timeline_recipe_recipe_iv);
+                }
+            }
 
             setFont(holder.fragment_timelines_timeline_recipe_rl);
         }
@@ -197,7 +235,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             }
 
             /*recipe*/
-            setupRecipeView(holder, timeline);
+            setupRecipeCommonView(holder, timeline);
             /*recipe*/
 
             setFont(holder.fragment_timelines_timeline_like_rl);
@@ -220,7 +258,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             holder.fragment_timelines_timeline_comment_comment_tv.setText(timeline.getComment());
 
             /*recipe*/
-            setupRecipeView(holder, timeline);
+            setupRecipeCommonView(holder, timeline);
             /*recipe*/
 
             setFont(holder.fragment_timelines_timeline_comment_rl);
@@ -254,13 +292,55 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             /*review*/
 
             /*recipe*/
-            setupRecipeView(holder, timeline);
+            setupRecipeCommonView(holder, timeline);
             /*recipe*/
 
             setFont(holder.fragment_timelines_timeline_review_rl);
         }
         else if(TIMELINE_USER_ADD.equalsIgnoreCase(timeline.getTYPE())){
             setFont(holder.fragment_timelines_timeline_user_rl);
+        }
+        else if(TIMELINE_USER_PHOTO_MODIFY.equalsIgnoreCase(timeline.getTYPE())){
+            if(timeline.getWhoUserId() == loggedInUser.getUSER_ID()){
+                holder.home_timeline_user_image_modify_item_who_tv.setText("You");
+            }
+            else{
+                holder.home_timeline_user_image_modify_item_who_tv.setText(timeline.getWhoName().trim());
+            }
+
+            Utility.loadImageFromURL(mContext, timeline.getWhoUserImage(), holder.home_timeline_user_image_modify_item_photo_iv);
+
+            setFont(holder.home_timeline_user_image_modify_item_rl);
+        }
+        else if(TIMELINE_USER_FOLLOW.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_USER_UNFOLLOW.equalsIgnoreCase(timeline.getTYPE())){
+            if(timeline.getWhoUserId() == loggedInUser.getUSER_ID()){
+                holder.home_timeline_user_follow_unfollow_item_who_tv.setText("You");
+
+                if(TIMELINE_USER_FOLLOW.equalsIgnoreCase(timeline.getTYPE())){
+                    holder.home_timeline_user_follow_unfollow_item_what_tv.setText("followed");
+                }
+                else if(TIMELINE_USER_UNFOLLOW.equalsIgnoreCase(timeline.getTYPE())){
+                    holder.home_timeline_user_follow_unfollow_item_what_tv.setText("unfollowed");
+                }
+
+                Utility.loadImageFromURL(mContext, timeline.getWhoseUserImage(), holder.home_timeline_user_follow_unfollow_item_photo_iv);
+                holder.home_timeline_user_follow_unfollow_item_whose_tv.setText(timeline.getWhoseName().trim());
+            }
+            else{
+                holder.home_timeline_user_follow_unfollow_item_who_tv.setText(timeline.getWhoName().trim());
+
+                if(TIMELINE_USER_FOLLOW.equalsIgnoreCase(timeline.getTYPE())){
+                    holder.home_timeline_user_follow_unfollow_item_what_tv.setText("followed you");
+                }
+                else if(TIMELINE_USER_UNFOLLOW.equalsIgnoreCase(timeline.getTYPE())){
+                    holder.home_timeline_user_follow_unfollow_item_what_tv.setText("unfollowed you");
+                }
+
+                holder.home_timeline_user_follow_unfollow_item_photo_iv.setVisibility(View.GONE);
+                holder.home_timeline_user_follow_unfollow_item_whose_tv.setVisibility(View.GONE);
+            }
+
+            setFont(holder.home_timeline_user_follow_unfollow_item_rl);
         }
         else{
             Log.e(CLASS_NAME, "The timeline type("+timeline.getTYPE()+") could not be understood. New type of timeline ?");
@@ -278,6 +358,28 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             }
         }
 
+        if(SCOPE_PUBLIC.equalsIgnoreCase(timeline.getScopeName())){
+            holder.home_timeline_options_scope_iv.setImageResource(R.drawable.globe);
+        }
+        else if(SCOPE_FOLLOWERS.equalsIgnoreCase(timeline.getScopeName())){
+            holder.home_timeline_options_scope_iv.setImageResource(R.drawable.users);
+        }
+        else if(SCOPE_SELF.equalsIgnoreCase(timeline.getScopeName())){
+            holder.home_timeline_options_scope_iv.setImageResource(R.drawable.user);
+        }
+        else{
+            Log.e(CLASS_NAME, "Error ! Unsupported scope for the timeline : "+timeline.getScopeName());
+        }
+
+        holder.common_component_image_options_mini_iv.setTag(timeline);
+        holder.common_component_image_options_mini_iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupMenu(v, timeline);
+            }
+        });
+        //commons
+
         if(timeline.getCREATE_DTM() != null && !timeline.getCREATE_DTM().trim().isEmpty()){
             holder.common_component_text_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(timeline.getCREATE_DTM(), DB_DATE_TIME)));
         }
@@ -287,7 +389,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         //commons
     }
 
-    private void setupRecipeView(ViewHolder holder, TimelineMO timeline){
+    private void setupRecipeCommonView(ViewHolder holder, TimelineMO timeline){
         /*recipe*/
         if(timeline.getRecipeOwnerImg() != null && !timeline.getRecipeOwnerImg().trim().isEmpty()){
             Utility.loadImageFromURL(mContext, timeline.getRecipeOwnerImg(), holder.common_component_round_image_micro_iv);
@@ -320,6 +422,46 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             /*recipe*/
     }
 
+    /**
+     * Showing popup menu when tapping on 3 dots
+     */
+    private void showPopupMenu(View view, TimelineMO timeline) {
+        // inflate menu
+        PopupMenu popupMenu = new PopupMenu(mContext, view);
+        popupMenu.inflate(R.menu.timeline_options);
+
+        // Force icons to show
+        Object menuHelper;
+        Class[] argTypes;
+        try {
+            Field fMenuHelper = PopupMenu.class.getDeclaredField("mPopup");
+            fMenuHelper.setAccessible(true);
+            menuHelper = fMenuHelper.get(popupMenu);
+            argTypes = new Class[] { boolean.class };
+            menuHelper.getClass().getDeclaredMethod("setForceShowIcon", argTypes).invoke(menuHelper, true);
+        } catch (Exception e) {
+            // Possible exceptions are NoSuchMethodError and NoSuchFieldError
+            //
+            // In either case, an exception indicates something is wrong with the reflection code, or the
+            // structure of the PopupMenu class or its dependencies has changed.
+            //
+            // These exceptions should never happen since we're shipping the AppCompat library in our own apk,
+            // but in the case that they do, we simply can't force icons to display, so log the error and
+            // show the menu normally.
+
+            Log.w(CLASS_NAME, "error forcing menu icons to show", e);
+            popupMenu.show();
+            return;
+        }
+
+        for(int i=0; i<popupMenu.getMenu().size(); i++){
+            popupMenu.getMenu().getItem(i).setActionView(view);
+        }
+
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener(menuItemClickListener);
+    }
+
     private void setStars(List<ImageView> starsList, int count){
         if(starsList != null && !starsList.isEmpty()){
             for (int i=0; i<starsList.size(); i++){
@@ -338,10 +480,36 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         return timelines.size();
     }
 
+    public void updateTimelinePrivacy(TimelineMO timeline) {
+        if(timelines != null && !timelines.isEmpty()){
+            for(TimelineMO thisTimeline : timelines){
+                if(timeline.getTMLN_ID() == thisTimeline.getTMLN_ID()){
+                    thisTimeline.setScopeId(timeline.getScopeId());
+                    thisTimeline.setScopeName(timeline.getScopeName());
+                    notifyDataSetChanged();
+                    break;
+                }
+            }
+        }
+    }
+
+    public void deleteTimeline(TimelineMO timeline) {
+        if(timelines != null && !timelines.isEmpty()){
+            for(TimelineMO thisTimeline : timelines){
+                if(timeline.getTMLN_ID() == thisTimeline.getTMLN_ID()){
+                    timelines.remove(thisTimeline);
+                    notifyDataSetChanged();
+                    break;
+                }
+            }
+        }
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         /*common*/
         public CircleImageView common_component_round_image_mini_iv;
         public TextView common_component_text_datetime_tv;
+        public CircleImageView home_timeline_options_scope_iv;
         public ImageView common_component_image_options_mini_iv;
         public CircleImageView common_component_round_image_micro_iv;
         public TextView common_component_card_timeline_recipe_recipe_name_tv;
@@ -394,6 +562,20 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         public TextView fragment_timelines_timeline_user_msg_tv;
         /*home_timeline_user_item.xml*/
 
+        /*home_timeline_user_image_modify_item.xml*/
+        public RelativeLayout home_timeline_user_image_modify_item_rl;
+        public TextView home_timeline_user_image_modify_item_who_tv;
+        public CircleImageView home_timeline_user_image_modify_item_photo_iv;
+        /*home_timeline_user_image_modify_item.xml*/
+
+        /*home_timeline_user_follow_unfollow_item.xml*/
+        public RelativeLayout home_timeline_user_follow_unfollow_item_rl;
+        public TextView home_timeline_user_follow_unfollow_item_who_tv;
+        public TextView home_timeline_user_follow_unfollow_item_what_tv;
+        public CircleImageView home_timeline_user_follow_unfollow_item_photo_iv;
+        public TextView home_timeline_user_follow_unfollow_item_whose_tv;
+        /*home_timeline_user_follow_unfollow_item.xml*/
+
         /*home_timeline_unknown_item.xml*/
         public TextView fragment_timelines_timeline_unknown_msg_tv;
         /*home_timeline_unknown_item.xml*/
@@ -404,7 +586,8 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             /*commons*/
             common_component_round_image_mini_iv = view.findViewById(R.id.common_component_round_image_mini_layout);
             common_component_text_datetime_tv = view.findViewById(R.id.common_component_text_datetime_tv);
-            common_component_image_options_mini_iv = view.findViewById(R.id.common_component_image_options_mini_iv);
+            home_timeline_options_scope_iv = view.findViewById(R.id.home_timeline_options_scope_iv);
+            common_component_image_options_mini_iv = view.findViewById(R.id.home_timeline_options_iv);
             common_component_round_image_micro_iv = view.findViewById(R.id.common_component_round_image_micro_iv);
             common_component_card_timeline_recipe_recipe_name_tv = view.findViewById(R.id.common_component_card_timeline_recipe_recipe_name_tv);
             common_component_card_timeline_recipe_recipe_type_tv = view.findViewById(R.id.common_component_card_timeline_recipe_recipe_type_tv);
@@ -446,6 +629,16 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             } else if (R.layout.home_timeline_user_item == layout) {
                 fragment_timelines_timeline_user_rl = view.findViewById(R.id.fragment_timelines_timeline_user_rl);
                 fragment_timelines_timeline_user_msg_tv = view.findViewById(R.id.fragment_timelines_timeline_user_msg_tv);
+            } else if(R.layout.home_timeline_user_image_modify_item == layout){
+                home_timeline_user_image_modify_item_rl = view.findViewById(R.id.home_timeline_user_image_modify_item_rl);
+                home_timeline_user_image_modify_item_who_tv = view.findViewById(R.id.home_timeline_user_image_modify_item_who_tv);
+                home_timeline_user_image_modify_item_photo_iv = view.findViewById(R.id.home_timeline_user_image_modify_item_photo_iv);
+            } else if(R.layout.home_timeline_user_follow_unfollow_item == layout){
+                home_timeline_user_follow_unfollow_item_rl = view.findViewById(R.id.home_timeline_user_follow_unfollow_item_rl);
+                home_timeline_user_follow_unfollow_item_who_tv = view.findViewById(R.id.home_timeline_user_follow_unfollow_item_who_tv);
+                home_timeline_user_follow_unfollow_item_what_tv = view.findViewById(R.id.home_timeline_user_follow_unfollow_item_what_tv);
+                home_timeline_user_follow_unfollow_item_photo_iv = view.findViewById(R.id.home_timeline_user_follow_unfollow_item_photo_iv);
+                home_timeline_user_follow_unfollow_item_whose_tv = view.findViewById(R.id.home_timeline_user_follow_unfollow_item_whose_tv);
             } else {
                 Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE);
                 fragment_timelines_timeline_unknown_msg_tv = view.findViewById(R.id.fragment_timelines_timeline_unknown_msg_tv);
