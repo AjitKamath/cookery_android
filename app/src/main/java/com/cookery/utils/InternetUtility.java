@@ -924,6 +924,7 @@ public class InternetUtility {
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_UPDATE_EMAIL);
             paramMap.put("user_id", String.valueOf(user.getUSER_ID()));
             paramMap.put("email", String.valueOf(user.getEMAIL()));
+            paramMap.put("scope_id", String.valueOf(user.getEMAIL_SCOPE_ID()));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return Utility.jsonToObject(jsonStr, MessageMO.class);
@@ -959,6 +960,7 @@ public class InternetUtility {
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_UPDATE_PHONE);
             paramMap.put("user_id", String.valueOf(user.getUSER_ID()));
             paramMap.put("mobile", String.valueOf(user.getMOBILE()));
+            paramMap.put("scope_id", String.valueOf(user.getMOBILE_SCOPE_ID()));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return Utility.jsonToObject(jsonStr, MessageMO.class);
@@ -976,6 +978,7 @@ public class InternetUtility {
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_UPDATE_GENDER);
             paramMap.put("user_id", String.valueOf(user.getUSER_ID()));
             paramMap.put("gender", user.getGENDER());
+            paramMap.put("scope_id", String.valueOf(user.getGENDER_SCOPE_ID()));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return Utility.jsonToObject(jsonStr, MessageMO.class);

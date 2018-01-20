@@ -9,9 +9,12 @@ import java.io.Serializable;
 public class UserMO extends CommonMO implements Serializable {
     private String NAME;
     private String EMAIL;
+    private int EMAIL_SCOPE_ID;
     private String PASSWORD;
     private String GENDER;
+    private int GENDER_SCOPE_ID;
     private String MOBILE;
+    private int MOBILE_SCOPE_ID;
     private String IMG;
 
     private int followersCount;
@@ -19,6 +22,10 @@ public class UserMO extends CommonMO implements Serializable {
     private String newPassword;
     private int recipesCount;
     private boolean following;
+
+    private String emailScopeName;
+    private String genderScopeName;
+    private String mobileScopeName;
 
     public int getRecipesCount() {
         return recipesCount;
@@ -106,5 +113,53 @@ public class UserMO extends CommonMO implements Serializable {
 
     public void setFollowing(boolean following) {
         this.following = following;
+    }
+
+    public int getEMAIL_SCOPE_ID() {
+        return EMAIL_SCOPE_ID;
+    }
+
+    public void setEMAIL_SCOPE_ID(int EMAIL_SCOPE_ID) {
+        this.EMAIL_SCOPE_ID = EMAIL_SCOPE_ID;
+    }
+
+    public int getGENDER_SCOPE_ID() {
+        return GENDER_SCOPE_ID;
+    }
+
+    public void setGENDER_SCOPE_ID(int GENDER_SCOPE_ID) {
+        this.GENDER_SCOPE_ID = GENDER_SCOPE_ID;
+    }
+
+    public int getMOBILE_SCOPE_ID() {
+        return MOBILE_SCOPE_ID;
+    }
+
+    public void setMOBILE_SCOPE_ID(int MOBILE_SCOPE_ID) {
+        this.MOBILE_SCOPE_ID = MOBILE_SCOPE_ID;
+    }
+
+    public String getEmailScopeName() {
+        return emailScopeName;
+    }
+
+    public void setEmailScopeName(String emailScopeName) {
+        this.emailScopeName = emailScopeName;
+    }
+
+    public String getGenderScopeName() {
+        return genderScopeName;
+    }
+
+    public void setGenderScopeName(String genderScopeName) {
+        this.genderScopeName = genderScopeName;
+    }
+
+    public String getMobileScopeName() {
+        return mobileScopeName;
+    }
+
+    public void setMobileScopeName(String mobileScopeName) {
+        this.mobileScopeName = mobileScopeName;
     }
 }

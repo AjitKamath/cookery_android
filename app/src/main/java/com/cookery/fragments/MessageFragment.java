@@ -282,7 +282,7 @@ public class MessageFragment extends DialogFragment {
             });
         }
         else if("USER_UPDATE_EMAIL_SUCCESS".equalsIgnoreCase(mesage.getPurpose())){
-            common_message_message_tv.setText("Email Changed !");
+            common_message_message_tv.setText("You are awesome !");
             common_message_iv.setImageResource(R.drawable.happy);
 
             common_message_tv.setText(mesage.getErr_message());
@@ -338,7 +338,7 @@ public class MessageFragment extends DialogFragment {
             });
         }
         else if("USER_UPDATE_PHONE_SUCCESS".equalsIgnoreCase(mesage.getPurpose())){
-            common_message_message_tv.setText("Phone Number Changed !");
+            common_message_message_tv.setText("Terrific.. We got it !");
             common_message_iv.setImageResource(R.drawable.happy);
 
             common_message_tv.setText(mesage.getErr_message());

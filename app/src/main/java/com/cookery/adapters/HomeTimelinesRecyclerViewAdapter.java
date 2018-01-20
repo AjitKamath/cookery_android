@@ -358,17 +358,17 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             }
         }
 
-        if(SCOPE_PUBLIC.equalsIgnoreCase(timeline.getScopeName())){
+        if(SCOPE_PUBLIC == timeline.getScopeId()){
             holder.home_timeline_options_scope_iv.setImageResource(R.drawable.globe);
         }
-        else if(SCOPE_FOLLOWERS.equalsIgnoreCase(timeline.getScopeName())){
+        else if(SCOPE_FOLLOWERS == timeline.getScopeId()){
             holder.home_timeline_options_scope_iv.setImageResource(R.drawable.users);
         }
-        else if(SCOPE_SELF.equalsIgnoreCase(timeline.getScopeName())){
+        else if(SCOPE_SELF == timeline.getScopeId()){
             holder.home_timeline_options_scope_iv.setImageResource(R.drawable.user);
         }
         else{
-            Log.e(CLASS_NAME, "Error ! Unsupported scope for the timeline : "+timeline.getScopeName());
+            Log.e(CLASS_NAME, "Error ! Unsupported scope for the timeline : "+timeline.getScopeId());
         }
 
         holder.common_component_image_options_mini_iv.setTag(timeline);

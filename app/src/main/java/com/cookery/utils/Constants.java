@@ -206,7 +206,7 @@ public final class Constants {
     public static final int REQUEST_GALLERY_PHOTO = 2;
 
     //scopes
-    public static final String SCOPE_PUBLIC = "PUBLIC";
-    public static final String SCOPE_FOLLOWERS = "FOLLOWERS";
-    public static final String SCOPE_SELF = "SELF";
+    public static final int SCOPE_PUBLIC = 1;
+    public static final int SCOPE_FOLLOWERS = 2;
+    public static final int SCOPE_SELF = 3;
 }

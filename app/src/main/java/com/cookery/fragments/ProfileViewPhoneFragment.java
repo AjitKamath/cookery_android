@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.cookery.R;
@@ -28,6 +30,9 @@ import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.OK;
+import static com.cookery.utils.Constants.SCOPE_FOLLOWERS;
+import static com.cookery.utils.Constants.SCOPE_PUBLIC;
+import static com.cookery.utils.Constants.SCOPE_SELF;
 import static com.cookery.utils.Constants.UI_FONT;
 
 /**
@@ -43,6 +48,9 @@ public class ProfileViewPhoneFragment extends DialogFragment {
 
     @InjectView(R.id.profile_view_phone_et)
     EditText profile_view_phone_et;
+
+    @InjectView(R.id.profile_view_scope_radio_buttons_rg)
+    RadioGroup profile_view_scope_radio_buttons_rg;
 
     @InjectView(R.id.profile_view_phone_ok_tv)
     TextView profile_view_phone_ok_tv;
@@ -77,18 +85,35 @@ public class ProfileViewPhoneFragment extends DialogFragment {
         profile_view_phone_ok_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int newScopeId = Integer.parseInt(String.valueOf(profile_view_scope_radio_buttons_rg.findViewById(profile_view_scope_radio_buttons_rg.getCheckedRadioButtonId()).getTag()));
+
                 if(String.valueOf(profile_view_phone_et.getText()).trim().isEmpty()){
                     Utility.showSnacks(profile_view_phone_ll, "Phone number cannot be empty !", OK, Snackbar.LENGTH_LONG);
                 }
-                else if(user.getMOBILE().trim().equals(String.valueOf(profile_view_phone_et.getText()).trim())){
+                else if(user.getMOBILE().trim().equals(String.valueOf(profile_view_phone_et.getText()).trim()) && newScopeId == user.getMOBILE_SCOPE_ID()){
                     dismiss();
                 }
                 else{
                     user.setMOBILE(String.valueOf(profile_view_phone_et.getText()).trim());
+                    user.setMOBILE_SCOPE_ID(newScopeId);
                     new AsyncTaskerUpdateUserPhone().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
             }
         });
+
+        if(SCOPE_PUBLIC == user.getMOBILE_SCOPE_ID()){
+            ((RadioButton)profile_view_scope_radio_buttons_rg.findViewById(R.id.profile_view_scope_radio_buttons_public_rb)).setChecked(true);
+        }
+        else if(SCOPE_FOLLOWERS == user.getMOBILE_SCOPE_ID()){
+            ((RadioButton)profile_view_scope_radio_buttons_rg.findViewById(R.id.profile_view_scope_radio_buttons_followers_rb)).setChecked(true);
+        }
+        else if(SCOPE_SELF == user.getMOBILE_SCOPE_ID()){
+            ((RadioButton)profile_view_scope_radio_buttons_rg.findViewById(R.id.profile_view_scope_radio_buttons_myself_rb)).setChecked(true);
+        }
+        else{
+            Log.e(CLASS_NAME, "Error ! Could not identify the scope name : "+user.getMobileScopeName());
+        }
+
     }
 
     // Empty constructor required for DialogFragment

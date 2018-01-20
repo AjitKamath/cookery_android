@@ -224,3 +224,8 @@
 17 jan 2018
 1. #75 - user can now set privacy to an individual timeline to restrict visibility to himself, followers or to the public.
 2. #101 - user can delete a specific timeline permanently.
+
+-- git checkin on 17 jan 2018 --
+
+20 jan 2018
+1. #94 - user can now set privacy for his email/phone/gender to restrict visibility to only to himself, followers or to the public.

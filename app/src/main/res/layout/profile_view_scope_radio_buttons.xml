@@ -1,0 +1,54 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="30dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/tertiary_text_size"
+        android:textColor="@color/app_color_light"
+        android:text="SHOW ONLY TO"
+        android:layout_marginBottom="5dp"/>
+
+    <RadioGroup
+        android:id="@+id/profile_view_scope_radio_buttons_rg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:tag="1"
+            android:layout_weight="1"
+            android:text="PUBLIC"
+            android:id="@+id/profile_view_scope_radio_buttons_public_rb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/app_color"
+            android:textSize="@dimen/primary_text_size" />
+
+        <RadioButton
+            android:tag="2"
+            android:layout_weight="1"
+            android:text="FOLLOWERS"
+            android:id="@+id/profile_view_scope_radio_buttons_followers_rb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/app_color"
+            android:textSize="@dimen/primary_text_size" />
+
+        <RadioButton
+            android:tag="3"
+            android:text="MYSELF"
+            android:layout_weight="1"
+            android:id="@+id/profile_view_scope_radio_buttons_myself_rb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/app_color"
+            android:textSize="@dimen/primary_text_size" />
+
+    </RadioGroup>
+</LinearLayout>

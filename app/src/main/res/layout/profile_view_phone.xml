@@ -35,6 +35,8 @@
         android:textSize="@dimen/quaternary_text_size"
         android:text="Others cannot see your phone until you verify it. Use OTP to verify your phone number."/>
 
+    <include layout="@layout/profile_view_scope_radio_buttons"/>
+
     <TextView
         android:id="@+id/profile_view_phone_ok_tv"
         android:layout_width="match_parent"

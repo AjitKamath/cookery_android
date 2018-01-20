@@ -94,13 +94,13 @@ public class TimelineHideFragment extends DialogFragment {
             return;
         }
 
-        if(SCOPE_PUBLIC.equalsIgnoreCase(timeline.getScopeName())){
+        if(SCOPE_PUBLIC == timeline.getScopeId()){
             home_timeline_hide_public_select_iv.setVisibility(View.VISIBLE);
         }
-        else if(SCOPE_FOLLOWERS.equalsIgnoreCase(timeline.getScopeName())){
+        else if(SCOPE_FOLLOWERS == timeline.getScopeId()){
             home_timeline_hide_followers_select_iv.setVisibility(View.VISIBLE);
         }
-        else if(SCOPE_SELF.equalsIgnoreCase(timeline.getScopeName())){
+        else if(SCOPE_SELF == timeline.getScopeId()){
             home_timeline_hide_myself_select_iv.setVisibility(View.VISIBLE);
         }
         else{
