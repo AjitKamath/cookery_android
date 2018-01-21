@@ -52,6 +52,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/fb_login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp" />
+
     <TextView
         android:id="@+id/tv_register"
         android:layout_marginTop="20dp"

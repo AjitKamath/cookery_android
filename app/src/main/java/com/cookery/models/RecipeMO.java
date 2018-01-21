@@ -39,6 +39,9 @@ public class RecipeMO extends CommonMO implements Serializable {
     private int likesCount;
     private int viewsCount;
 
+    // For Context Menu of My List
+    private List<MyListMO> mylists;
+
     public List<String> getSteps() {
         return steps;
     }
@@ -237,5 +240,13 @@ public class RecipeMO extends CommonMO implements Serializable {
 
     public void setViewsCount(int viewsCount) {
         this.viewsCount = viewsCount;
+    }
+
+    public List<MyListMO> getMylists() {
+        return mylists;
+    }
+
+    public void setMylists(List<MyListMO> mylists) {
+        this.mylists = mylists;
     }
 }

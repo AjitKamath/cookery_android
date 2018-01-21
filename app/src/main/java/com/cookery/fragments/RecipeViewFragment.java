@@ -176,7 +176,7 @@ public class RecipeViewFragment extends DialogFragment {
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        common_fragment_recipe_tab_vp.setAdapter(new RecipeViewViewPagerAdapter(mContext, viewPagerTabsList, recipe, new View.OnClickListener() {
+        common_fragment_recipe_tab_vp.setAdapter(new RecipeViewViewPagerAdapter(mContext, getFragmentManager(),viewPagerTabsList, recipe, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(view.getId() == R.id.recipe_view_recipe_steps_fullscreen_iv){

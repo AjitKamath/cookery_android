@@ -4,6 +4,7 @@ package com.cookery.adapters;
  * Created by ajit on 25/8/17.
  */
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.view.PagerAdapter;
@@ -30,12 +31,15 @@ public class RecipeViewViewPagerAdapter extends PagerAdapter {
     private List<Integer> layouts;
     public RecipeMO recipe;
     private View.OnClickListener listener;
+    private FragmentManager manager;
 
-    public RecipeViewViewPagerAdapter(Context context, List<Integer> layouts, RecipeMO recipe, View.OnClickListener listener) {
+    public RecipeViewViewPagerAdapter(Context context,FragmentManager manager, List<Integer> layouts, RecipeMO recipe, View.OnClickListener listener) {
         this.mContext = context;
         this.layouts = layouts;
         this.recipe = recipe;
+        this.manager = manager;
         this.listener = listener;
+
     }
 
     @Override
@@ -54,7 +58,7 @@ public class RecipeViewViewPagerAdapter extends PagerAdapter {
     }
 
     private void setupRecipeIngredients(ViewGroup layout) {
-        RecipeViewIngredientsRecyclerViewAdapter adapter = new RecipeViewIngredientsRecyclerViewAdapter(mContext, recipe.getIngredients(), new View.OnClickListener() {
+        final RecipeViewIngredientsRecyclerViewAdapter adapter = new RecipeViewIngredientsRecyclerViewAdapter(mContext,manager,recipe.getIngredients(), recipe.getMylists() ,new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -67,6 +71,7 @@ public class RecipeViewViewPagerAdapter extends PagerAdapter {
         view_pager_recipe_ingredients_rv.setItemAnimator(new DefaultItemAnimator());
         view_pager_recipe_ingredients_rv.setAdapter(adapter);
     }
+
 
     private void setupRecipeSteps(ViewGroup layout) {
         ImageView recipe_view_recipe_steps_fullscreen_iv = layout.findViewById(R.id.recipe_view_recipe_steps_fullscreen_iv);

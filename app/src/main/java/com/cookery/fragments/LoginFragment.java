@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -15,12 +16,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cookery.R;
 import com.cookery.activities.HomeActivity;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 import java.util.List;
 
@@ -37,7 +44,7 @@ import static com.cookery.utils.Constants.OK;
 public class LoginFragment extends DialogFragment {
     private final String CLASS_NAME = this.getClass().getName();
     private Context mContext;
-
+    CallbackManager callbackManager;
 
     //components
     @InjectView(R.id.common_fragment_header_rl)
@@ -57,6 +64,11 @@ public class LoginFragment extends DialogFragment {
 
     @InjectView(R.id.tv_register)
     TextView tv_register;
+
+    @InjectView(R.id.fb_login_button)
+    LoginButton fb_login_button;
+
+
 
 
     @Override
@@ -80,6 +92,10 @@ public class LoginFragment extends DialogFragment {
             }
         });
 
+        fb_login_button.setFragment(this);
+
+        FBLogin();
+
         return view;
     }
 
@@ -88,6 +104,10 @@ public class LoginFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity().getApplicationContext();
+
+        callbackManager = CallbackManager.Factory.create();
+
+
     }
 
     @Override
@@ -116,6 +136,33 @@ public class LoginFragment extends DialogFragment {
         }
     }
 
+    private void FBLogin()
+    {
+        fb_login_button.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Toast.makeText(mContext,"Status: "+loginResult.getAccessToken(),Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(mContext,"Status: Cancelled",Toast.LENGTH_LONG).show();
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Toast.makeText(mContext,"Status: "+error.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     private boolean validateUserDetails(String email, String password)
     {

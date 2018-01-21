@@ -3,7 +3,6 @@ package com.cookery.fragments;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -27,7 +26,6 @@ import com.cookery.R;
 import com.cookery.adapters.AutoCompleteAdapter;
 import com.cookery.adapters.MyListIngredientsRecyclerViewAdapter;
 import com.cookery.models.IngredientMO;
-import com.cookery.models.MasterDataMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.MyListMO;
 import com.cookery.models.UserMO;
@@ -42,8 +40,9 @@ import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.FRAGMENT_MY_LIST;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.INGREDIENT_ID;
+import static com.cookery.utils.Constants.INGREDIENT_NAME;
 import static com.cookery.utils.Constants.LIST_ID;
-import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.UI_FONT;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_VIEW;
 
@@ -84,12 +83,11 @@ public class MyListFragment extends DialogFragment {
 
     //components
 
-    private List<IngredientMO> myIngredients;
     private MyListMO mylist;
-    private MasterDataMO masterData;
-    private FragmentManager fragmentManager;
     private UserMO loggedInUser;
     private int listid;
+    private int ing_id;
+    private String ing_name;
 
 
     @Override
@@ -111,19 +109,15 @@ public class MyListFragment extends DialogFragment {
     }
 
     private void getDataFromBundle() {
-        masterData = (MasterDataMO) getArguments().get(MASTER);
-        if(masterData == null || masterData.getCuisines() == null || masterData.getCuisines().isEmpty()
-                || masterData.getFoodTypes() == null || masterData.getFoodTypes().isEmpty()
-                || masterData.getQuantities() == null || masterData.getQuantities().isEmpty()
-                || masterData.getTastes() == null || masterData.getTastes().isEmpty()){
-
-            Log.e(CLASS_NAME, "Error ! Master data is null or required data in master data is not found !");
-            dismiss();
-        }
-
         mylist = (MyListMO) getArguments().get(GENERIC_OBJECT);
         if(null != getArguments().get(LIST_ID)) {
             listid = (Integer) getArguments().get(LIST_ID);
+        }
+        if(null != getArguments().get(INGREDIENT_ID)) {
+            ing_id = (Integer) getArguments().get(INGREDIENT_ID);
+        }
+        if(null != getArguments().get(INGREDIENT_NAME)) {
+            ing_name = (String) getArguments().get(INGREDIENT_NAME);
         }
     }
 
@@ -205,16 +199,42 @@ public class MyListFragment extends DialogFragment {
                     {
                         new MyListFragment.AsyncTaskerUpdateMyList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mylist);
                     }
+                    // Handling for Adding the selected ingredient from recipe to newly created list
+                    else
+                    {
+                        MyListIngredientsRecyclerViewAdapter adapter = (MyListIngredientsRecyclerViewAdapter) recipe_add_ingredients_list_rv.getAdapter();
+                        String listname = String.valueOf(add_my_list_et.getText());
+                        if (listname != null && !listname.trim().isEmpty()) {
+                            MyListMO mylistObj = new MyListMO();
+                            mylistObj.setLIST_NAME(listname);
+                            //mylistObj.setUSER_ID(loggedInUser.getUser_id());
+                            mylistObj.setUSER_ID(1);
+                            mylistObj.setListofingredients(adapter.ingredients);
+
+                            new MyListFragment.AsyncTaskerSubmitMyList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mylistObj);
+                        }
+                    }
 
                 }
             });
         }
 
     private void setupMyListFragment() {
-
         if (listid != 0) {
             new MyListFragment.AsyncTaskerViewMyList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, listid);
-        } else {
+        }
+        // Handling for Adding the selected ingredient from recipe to new list
+        else if(ing_id != 0)
+            {
+                ArrayList<MyListMO> mylistobj = new ArrayList<MyListMO>();
+                MyListMO myListMOobj = new MyListMO();
+                myListMOobj.setLIST_NAME("");
+                myListMOobj.setING_ID(ing_id);
+                myListMOobj.setING_NAME(ing_name);
+                mylistobj.add(myListMOobj);
+                setupMyListViewFragment(mylistobj);
+            }
+        else {
 
             common_fragment_header_tv.setText("MY LIST");
 

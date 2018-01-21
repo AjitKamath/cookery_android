@@ -35,6 +35,7 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_FETCH_USERS;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_SUBMIT;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_SUBMIT_FROM_RECIPE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_UPDATE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_VIEW;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL;
@@ -359,6 +360,33 @@ public class InternetUtility {
                 multipart.addFormField("ing_id["+i+"]", String.valueOf(mylistObj.getListofingredients().get(i).getING_ID()));
                 multipart.addFormField("ing_nm["+i+"]", String.valueOf(mylistObj.getListofingredients().get(i).getING_NAME()));
             }
+
+            return (MessageMO) Utility.jsonToObject(multipart.finish(), MessageMO.class);
+        }
+        catch(SocketException e){
+            Log.e(CLASS_NAME, e.getMessage());
+
+            message.setError(true);
+            message.setErr_message("Check your internet");
+        }
+        catch(Exception e){
+            Log.e(CLASS_NAME, e.getMessage());
+
+            message.setError(true);
+            message.setErr_message("Something went wrong");
+        }
+
+        return message;
+    }
+
+    public static MessageMO saveListFromRecipe(MyListMO mylistObj) {
+        MessageMO message = new MessageMO();
+        try {
+            MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS_PUBLIC+PHP_CONTROLLER, SERVER_CHARSET);
+            multipart.addFormField(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_SUBMIT_FROM_RECIPE);
+
+            multipart.addFormField("list_id", String.valueOf(mylistObj.getLIST_ID()));
+            multipart.addFormField("ing_id", String.valueOf(mylistObj.getING_ID()));
 
             return (MessageMO) Utility.jsonToObject(multipart.finish(), MessageMO.class);
         }
@@ -763,7 +791,8 @@ public class InternetUtility {
     }
 
 
-    public static List<MyListMO> fetchUserList(int userId, int index) {
+    //public static List<MyListMO> fetchUserList(int userId, int index) {
+    public static List<MyListMO> fetchUserList (int userId) {
         if(USE_TEST_DATA){
             return null;
         }
@@ -772,7 +801,7 @@ public class InternetUtility {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_FETCH);
             paramMap.put("user_id", String.valueOf(userId));
-            paramMap.put("index", String.valueOf(index));
+            //paramMap.put("index", String.valueOf(index));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return (List<MyListMO>) Utility.jsonToObject(jsonStr, MyListMO.class);

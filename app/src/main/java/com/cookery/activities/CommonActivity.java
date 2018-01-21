@@ -71,7 +71,7 @@ import static com.cookery.utils.Constants.TOP_RECIPES_MONTH;
 import static com.cookery.utils.Constants.TRENDING_RECIPES;
 
 
-public abstract class CommonActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener{
+public abstract class CommonActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
     private static final String CLASS_NAME = CommonActivity.class.getName();
     private Context mContext = this;
     private MasterDataMO masterData;
@@ -84,7 +84,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
 
         setupSearch();
@@ -95,29 +95,27 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
     private void verifyLoggedInUser() {
         loggedInUser = Utility.getUserFromUserSecurity(mContext);
-        if(loggedInUser == null || loggedInUser.getUSER_ID() == 0){
+        if (loggedInUser == null || loggedInUser.getUSER_ID() == 0) {
 
             String fragmentNameStr = FRAGMENT_LOGIN;
 
             FragmentManager manager = getFragmentManager();
             Fragment frag = manager.findFragmentByTag(fragmentNameStr);
 
-            if (frag != null)
-            {
+            if (frag != null) {
                 manager.beginTransaction().remove(frag).commit();
             }
             LoginFragment fragment = new LoginFragment();
 
             fragment.show(manager, fragmentNameStr);
-        }
-        else{
+        } else {
             new AsyncTaskerFetchUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
 
     }
 
-    public void updateLoggedInUser(){
+    public void updateLoggedInUser() {
         Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, null);
         verifyLoggedInUser();
     }
@@ -133,7 +131,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 RecipeMO recipe = (RecipeMO) view.getTag();
 
-                if(recipe == null){
+                if (recipe == null) {
                     Log.e(CLASS_NAME, "Selected Recipe object is null");
                     return;
                 }
@@ -147,7 +145,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String text = String.valueOf(getCommon_header_search_av().getText());
 
-                if(text.trim().isEmpty()){
+                if (text.trim().isEmpty()) {
                     RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
                     rotate.setDuration(100);
                     rotate.setInterpolator(new LinearInterpolator());
@@ -164,15 +162,14 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             public void afterTextChanged(Editable editable) {
                 String text = String.valueOf(getCommon_header_search_av().getText());
 
-                if(text.trim().isEmpty()){
+                if (text.trim().isEmpty()) {
                     RotateAnimation rotate = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
                     rotate.setDuration(100);
                     rotate.setInterpolator(new LinearInterpolator());
                     getCommon_header_search_iv().startAnimation(rotate);
 
                     getCommon_header_search_iv().setVisibility(View.GONE);
-                }
-                else{
+                } else {
                     getCommon_header_search_iv().setVisibility(View.VISIBLE);
                 }
             }
@@ -206,16 +203,16 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         getDrawer_layout().addDrawerListener(toggle);
         //toggle.syncState();
 
-        if(loggedInUser.getIMG() != null && !loggedInUser.getIMG().trim().isEmpty()){
+        if (loggedInUser.getIMG() != null && !loggedInUser.getIMG().trim().isEmpty()) {
             Utility.loadImageFromURL(mContext, loggedInUser.getIMG(), (ImageView) getNav_view().findViewById(R.id.navigation_header_iv));
         }
 
-        if(loggedInUser.getNAME() != null && !loggedInUser.getNAME().trim().isEmpty()){
-            ((TextView)getNav_view().findViewById(R.id.navigation_header_name_tv)).setText(loggedInUser.getNAME());
+        if (loggedInUser.getNAME() != null && !loggedInUser.getNAME().trim().isEmpty()) {
+            ((TextView) getNav_view().findViewById(R.id.navigation_header_name_tv)).setText(loggedInUser.getNAME());
         }
 
-        if(loggedInUser.getEMAIL() != null && !loggedInUser.getEMAIL().trim().isEmpty()){
-            ((TextView)getNav_view().findViewById(R.id.navigation_header_email_tv)).setText(loggedInUser.getEMAIL());
+        if (loggedInUser.getEMAIL() != null && !loggedInUser.getEMAIL().trim().isEmpty()) {
+            ((TextView) getNav_view().findViewById(R.id.navigation_header_email_tv)).setText(loggedInUser.getEMAIL());
         }
 
         getNav_view().findViewById(R.id.navigation_header_user_details_ll).setOnClickListener(new View.OnClickListener() {
@@ -256,18 +253,16 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         getFab().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(masterData == null){
+                if (masterData == null) {
                     new AsyncTaskerFetchMasterData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "FETCH_AND_SHOW_ADD_RECIPE");
-                }
-                else{
+                } else {
                     showAddRecipeFragment(masterData);
                 }
             }
         });
     }
 
-    private void logout()
-    {
+    private void logout() {
         Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, null);
 
         String fragmentNameStr = FRAGMENT_LOGIN;
@@ -275,8 +270,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         FragmentManager manager = getFragmentManager();
         Fragment frag = manager.findFragmentByTag(fragmentNameStr);
 
-        if (frag != null)
-        {
+        if (frag != null) {
             manager.beginTransaction().remove(frag).commit();
         }
         LoginFragment fragment = new LoginFragment();
@@ -338,7 +332,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         fragment.show(manager, fragmentNameStr);
     }
 
-    private void setupMyRecipesFragment(List<RecipeMO> recipes){
+    private void setupMyRecipesFragment(List<RecipeMO> recipes) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(MY_RECIPES, (Serializable) recipes);
 
@@ -357,16 +351,13 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         fragment.show(manager, fragmentNameStr);
     }
 
-    private void setupMyListFragment(List<MyListMO> mylists){
+    private void setupMyListFragment(List<MyListMO> mylists) {
         Bundle bundle = new Bundle();
         boolean listsexits = false;
-        if(mylists.size() == 0 || mylists == null)
-        {
+        if (mylists.size() == 0 || mylists == null) {
             // show no list exists yet
             bundle.putSerializable(MY_LISTS_EXISTS, (Serializable) listsexits);
-        }
-        else
-        {
+        } else {
             listsexits = true;
             bundle.putSerializable(MY_LISTS_EXISTS, (Serializable) listsexits);
         }
@@ -392,7 +383,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         fragment.show(manager, fragmentNameStr);
     }
 
-    private void setupMyReviewsFragment(List<RecipeMO> reviews){
+    private void setupMyReviewsFragment(List<RecipeMO> reviews) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(MY_REVIEWS, (Serializable) reviews);
 
@@ -531,7 +522,8 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected List<MyListMO> doInBackground(Void... objects) {
-            return InternetUtility.fetchUserList(loggedInUser.getUSER_ID(), 0);
+            //return InternetUtility.fetchUserList(loggedInUser.getUSER_ID(), 0);
+            return InternetUtility.fetchUserList(loggedInUser.getUSER_ID());
         }
 
         @Override
@@ -557,6 +549,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             if(recipes != null && !recipes.isEmpty()){
                 recipes.get(0).setComments(InternetUtility.fetchRecipeComments(loggedInUser, recipes.get(0), 0));
                 recipes.get(0).setReviews(InternetUtility.fetchRecipeReviews(loggedInUser, recipes.get(0), 0));
+                recipes.get(0).setMylists(InternetUtility.fetchUserList(loggedInUser.getUSER_ID()));
                 return recipes.get(0);
             }
 

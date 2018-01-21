@@ -20,11 +20,8 @@ import android.widget.TextView;
 import com.cookery.R;
 import com.cookery.adapters.MyListGridViewAdapter;
 import com.cookery.models.CuisineMO;
-import com.cookery.models.IngredientMO;
-import com.cookery.models.MasterDataMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.MyListMO;
-import com.cookery.models.RecipeMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
@@ -38,9 +35,11 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.FRAGMENT_MY_LIST;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.INGREDIENT_ID;
+import static com.cookery.utils.Constants.INGREDIENT_NAME;
 import static com.cookery.utils.Constants.LIST_ID;
-import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.MY_LISTS_EXISTS;
 
 /**
@@ -68,10 +67,6 @@ public class AddMyListFragment extends DialogFragment {
 
     //components
 
-    private FragmentManager fragmentManager;
-    private List<IngredientMO> myIngredients;
-    private RecipeMO recipe;
-    private MasterDataMO masterData;
     private boolean mylistexists;
     private List<MyListMO> mylists;
 
@@ -205,26 +200,15 @@ public class AddMyListFragment extends DialogFragment {
     }
 
     private void getDataFromBundle() {
-        masterData = (MasterDataMO) getArguments().get(MASTER);
-        if(masterData == null || masterData.getCuisines() == null || masterData.getCuisines().isEmpty()
-                || masterData.getFoodTypes() == null || masterData.getFoodTypes().isEmpty()
-                || masterData.getQuantities() == null || masterData.getQuantities().isEmpty()
-                || masterData.getTastes() == null || masterData.getTastes().isEmpty()){
-
-            Log.e(CLASS_NAME, "Error ! Master data is null or required data in master data is not found !");
-            dismiss();
-        }
-
         mylistexists = (Boolean) getArguments().get(MY_LISTS_EXISTS);
         mylists = (ArrayList<MyListMO>) getArguments().get(GENERIC_OBJECT);
     }
 
-    private void openAddListFragment()
+    public void openAddListFragment()
     {
         Bundle bundle = new Bundle();
 
         Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put(MASTER, masterData);
         paramsMap.put(GENERIC_OBJECT, new MyListMO());
 
         for(Map.Entry<String, Object> iterMap : paramsMap.entrySet()){
@@ -244,12 +228,12 @@ public class AddMyListFragment extends DialogFragment {
         fragment.show(manager, fragmentNameStr);
     }
 
+
     private void openViewListFragment(int listid)
     {
         Bundle bundle = new Bundle();
 
         Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put(MASTER, masterData);
         paramsMap.put(GENERIC_OBJECT, new MyListMO());
         paramsMap.put(LIST_ID, listid);
 
@@ -269,6 +253,32 @@ public class AddMyListFragment extends DialogFragment {
 
         fragment.show(manager, fragmentNameStr);
     }
+
+    public static void openAddListFragmentFromRecipe(FragmentManager manager, int ingid, String ingname)
+    {
+        Bundle bundle = new Bundle();
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put(GENERIC_OBJECT, new MyListMO());
+        paramsMap.put(INGREDIENT_ID, ingid);
+        paramsMap.put(INGREDIENT_NAME, ingname);
+
+
+        for(Map.Entry<String, Object> iterMap : paramsMap.entrySet()){
+            bundle.putSerializable(iterMap.getKey(), (Serializable) iterMap.getValue());
+        }
+
+        MyListFragment fragment = new MyListFragment();
+        fragment.setArguments(bundle);
+        String fragmentNameStr = FRAGMENT_RECIPE;
+        Fragment frag = manager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            manager.beginTransaction().remove(frag).commit();
+        }
+        fragment.show(manager,fragmentNameStr);
+    }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

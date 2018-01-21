@@ -96,7 +96,6 @@ public class FavoriteRecipesFragment extends DialogFragment {
                     Log.e(CLASS_NAME, "Recipe object is null");
                     return;
                 }
-
                 Utility.showRecipeFragment(getFragmentManager(), recipe);
             }
         }));

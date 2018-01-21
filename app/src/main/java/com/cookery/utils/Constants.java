@@ -68,6 +68,7 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_COMMENT_DELETE = "COMMENT_DELETE";
     public static final String PHP_FUNCTION_KEY_REVIEW_RECIPE = "REVIEW_RECIPE_FETCH";
     public static final String PHP_FUNCTION_KEY_MYLIST_SUBMIT = "PHP_FUNCTION_KEY_MYLIST_SUBMIT";
+    public static final String PHP_FUNCTION_KEY_MYLIST_SUBMIT_FROM_RECIPE = "PHP_FUNCTION_KEY_MYLIST_SUBMIT_FROM_RECIPE";
     public static final String PHP_FUNCTION_KEY_MYLIST_VIEW = "PHP_FUNCTION_KEY_MYLIST_VIEW";
     public static final String PHP_FUNCTION_KEY_MYLIST_UPDATE = "PHP_FUNCTION_KEY_MYLIST_UPDATE";
     public static final String PHP_FUNCTION_KEY_LIKE_SUBMIT = "LIKE_SUBMIT";
@@ -189,6 +190,8 @@ public final class Constants {
     public static final String MY_INGREDIENTS = "MY_INGREDIENTS";
     public static final String MY_LISTS_EXISTS = "MY_LISTS_EXISTS";
     public static final String LIST_ID = "LIST_ID";
+    public static final String INGREDIENT_ID = "INGREDIENT_ID";
+    public static final String INGREDIENT_NAME = "INGREDIENT_NAME";
 
     //check master keys
     public static final String CHECK_MASTER_FOR_CATEGORIES = "CHECK_MASTER_FOR_CATEGORIES";
