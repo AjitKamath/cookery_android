@@ -1,39 +1,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/profile_view_email_ll"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
     android:padding="5dp">
 
     <TextView
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="YOUR EMAIL"
         android:textColor="@color/app_color_light"
-        android:textSize="@dimen/primary_text_size"
-        android:text="YOUR EMAIL"/>
+        android:textSize="@dimen/primary_text_size" />
 
     <EditText
         android:id="@+id/profile_view_email_et"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@drawable/edit_text_border_white_bg"
-        android:textSize="@dimen/primary_text_size"
-        android:textColor="@color/secondaryDarkText"
         android:layout_marginTop="10dp"
+        android:background="@drawable/edit_text_border_white_bg"
+        android:gravity="center"
         android:text="Email"
-        android:gravity="center"/>
+        android:textColor="@color/secondaryDarkText"
+        android:textSize="@dimen/primary_text_size" />
 
     <TextView
-        android:layout_marginTop="2dp"
-        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="2dp"
+        android:text="Others cannot see your email until you verify it. Click on the verification link in your email once you update it."
         android:textColor="@color/secondaryDarkText"
-        android:textSize="@dimen/quaternary_text_size"
-        android:text="Others cannot see your email until you verify it. Click on the verification link in your email once you update it."/>
+        android:textSize="@dimen/quaternary_text_size" />
+
+    <include layout="@layout/profile_view_scope_radio_buttons"/>
 
     <TextView
         android:id="@+id/profile_view_email_ok_tv"
@@ -41,9 +43,9 @@
         android:layout_height="40dp"
         android:layout_marginTop="20dp"
         android:background="@color/app_color"
-        android:textSize="@dimen/primary_text_size"
+        android:gravity="center"
         android:text="OK"
         android:textColor="@color/white"
-        android:gravity="center"/>
+        android:textSize="@dimen/primary_text_size" />
 
 </LinearLayout>

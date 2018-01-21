@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/home_timeline_delete_ll"
+    android:padding="5dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/primary_text_size"
+        android:textColor="@color/app_color"
+        android:text="DELETE TIMELINE ?"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textSize="@dimen/tertiary_text_size"
+        android:textColor="@color/tertiaryDarkText"
+        android:text="Timeline will be permanently deleted"
+        android:layout_gravity="center_horizontal"/>
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:layout_weight="2">
+
+        <TextView
+            android:id="@+id/home_timeline_delete_yes_tv"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/secondary_text_size"
+            android:background="@color/red"
+            android:textColor="@color/white"
+            android:text="YES"/>
+
+        <TextView
+            android:id="@+id/home_timeline_delete_no_tv"
+            android:layout_marginLeft="5dp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/secondary_text_size"
+            android:background="@color/green"
+            android:textColor="@color/white"
+            android:text="NO"/>
+
+    </LinearLayout>
+
+</LinearLayout>

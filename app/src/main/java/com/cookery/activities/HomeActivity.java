@@ -11,19 +11,32 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.cookery.R;
 import com.cookery.adapters.HomeTimelinesTrendsViewPagerAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
+import com.cookery.fragments.TimelineDeleteFragment;
+import com.cookery.fragments.TimelineHideFragment;
 import com.cookery.models.RecipeMO;
+import com.cookery.models.TimelineMO;
+import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
+import static com.cookery.utils.Constants.FRAGMENT_TIMELINE_DELETE;
+import static com.cookery.utils.Constants.FRAGMENT_TIMELINE_HIDE;
+import static com.cookery.utils.Constants.GENERIC_OBJECT;
 
 public class HomeActivity extends CommonActivity{
 
@@ -90,6 +103,45 @@ public class HomeActivity extends CommonActivity{
             public void onRefresh() {
                 fetchTimelineContent();
             }
+        }, new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(R.id.timeline_options_hide == item.getItemId()){
+                    if(item.getActionView() == null){
+                        Log.e(CLASS_NAME, "Error ! View associated with menu item is null.");
+                        return false;
+                    }
+                    else if(item.getActionView().getTag() == null ){
+                        Log.e(CLASS_NAME, "Error ! Object in view tag is null.");
+                        return false;
+                    }
+
+                    Map<String, Object> paramsMap = new HashMap<>();
+                    paramsMap.put(GENERIC_OBJECT, item.getActionView().getTag());
+
+                    Utility.showFragment(getFragmentManager(), null, FRAGMENT_TIMELINE_HIDE, new TimelineHideFragment(), paramsMap);
+                }
+                else if(R.id.timeline_options_delete == item.getItemId()){
+                    if(item.getActionView() == null){
+                        Log.e(CLASS_NAME, "Error ! View associated with menu item is null.");
+                        return false;
+                    }
+                    else if(item.getActionView().getTag() == null ){
+                        Log.e(CLASS_NAME, "Error ! Object in view tag is null.");
+                        return false;
+                    }
+
+                    Map<String, Object> paramsMap = new HashMap<>();
+                    paramsMap.put(GENERIC_OBJECT, item.getActionView().getTag());
+
+                    Utility.showFragment(getFragmentManager(), null, FRAGMENT_TIMELINE_DELETE, new TimelineDeleteFragment(), paramsMap);
+                }
+                else{
+                    Log.e(CLASS_NAME, "Error ! Unimplemented menu item !");
+                }
+
+                return false;
+            }
         }));
         content_home_timelines_trends_vp.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(content_home_timelines_trends_tl));
 
@@ -110,6 +162,14 @@ public class HomeActivity extends CommonActivity{
 
             }
         });
+    }
+
+    public void updateTimelinePrivacy(TimelineMO timeline){
+        ((HomeTimelinesTrendsViewPagerAdapter)content_home_timelines_trends_vp.getAdapter()).updateTimelinePrivacy(timeline);
+    }
+
+    public void deleteTimeline(TimelineMO timeline){
+        ((HomeTimelinesTrendsViewPagerAdapter)content_home_timelines_trends_vp.getAdapter()).deleteTimeline(timeline);
     }
 
     @Override

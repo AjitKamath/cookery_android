@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center">
 
-                <include layout="@layout/home_timeline_user_image_micro" />
+                <include layout="@layout/home_timeline_user_image_micro"/>
 
             </LinearLayout>
 

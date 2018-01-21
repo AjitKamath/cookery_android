@@ -1,0 +1,38 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/users_rl"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/users_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="PEOPLE WHO LIKED"
+        android:gravity="center"
+        android:textColor="@color/app_color"
+        android:textSize="@dimen/tertiary_text_size" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_below="@+id/users_tv"
+        android:id="@+id/users_srl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/users_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</RelativeLayout>

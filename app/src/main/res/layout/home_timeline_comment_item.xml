@@ -43,12 +43,14 @@
                         android:layout_toRightOf="@+id/common_component_round_image_mini_layout"
                         android:orientation="vertical">
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical">
 
                             <TextView
+                                android:layout_centerVertical="true"
                                 android:id="@+id/fragment_timelines_timeline_comment_who_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -57,6 +59,8 @@
                                 android:textSize="10sp" />
 
                             <TextView
+                                android:layout_centerVertical="true"
+                                android:layout_toRightOf="@+id/fragment_timelines_timeline_comment_who_tv"
                                 android:id="@+id/fragment_timelines_timeline_comment_what_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -65,6 +69,8 @@
                                 android:textSize="10sp" />
 
                             <TextView
+                                android:layout_centerVertical="true"
+                                android:layout_toRightOf="@+id/fragment_timelines_timeline_comment_what_tv"
                                 android:id="@+id/fragment_timelines_timeline_comment_whose_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -73,6 +79,8 @@
                                 android:textSize="8sp" />
 
                             <TextView
+                                android:layout_centerVertical="true"
+                                android:layout_toRightOf="@+id/fragment_timelines_timeline_comment_whose_tv"
                                 android:layout_marginLeft="5dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -80,20 +88,25 @@
                                 android:textColor="@color/primaryDarkText"
                                 android:textSize="10sp" />
 
-                        </LinearLayout>
+                            <include
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                layout="@layout/home_timeline_options" />
+
+                        </RelativeLayout>
 
                         <include layout="@layout/home_timeline_datetime" />
 
                     </LinearLayout>
-
-                    <include layout="@layout/home_timeline_options_image_mini" />
 
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginLeft="35dp"
                     android:layout_marginTop="15dp">
 
                     <TextView
@@ -101,7 +114,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLength="150"
-                        android:text="@string/sample_commnet"
+                        android:text="COMMENT"
                         android:textColor="@color/tertiaryDarkText"
                         android:textSize="10sp" />
 

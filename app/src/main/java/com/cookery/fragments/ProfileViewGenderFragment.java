@@ -27,6 +27,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.SCOPE_FOLLOWERS;
+import static com.cookery.utils.Constants.SCOPE_PUBLIC;
+import static com.cookery.utils.Constants.SCOPE_SELF;
 import static com.cookery.utils.Constants.UI_FONT;
 
 /**
@@ -51,6 +54,9 @@ public class ProfileViewGenderFragment extends DialogFragment {
 
     @InjectView(R.id.profile_view_gender_other_rb)
     RadioButton profile_view_gender_other_rb;
+
+    @InjectView(R.id.profile_view_scope_radio_buttons_rg)
+    RadioGroup profile_view_scope_radio_buttons_rg;
 
     @InjectView(R.id.profile_view_gender_ok_tv)
     TextView profile_view_gender_ok_tv;
@@ -103,6 +109,7 @@ public class ProfileViewGenderFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 String gender = "M";
+                int newScopeId = Integer.parseInt(String.valueOf(profile_view_scope_radio_buttons_rg.findViewById(profile_view_scope_radio_buttons_rg.getCheckedRadioButtonId()).getTag()));
 
                 if(profile_view_gender_rg.getCheckedRadioButtonId() == profile_view_gender_he_rb.getId()){
                     gender = "M";
@@ -119,15 +126,29 @@ public class ProfileViewGenderFragment extends DialogFragment {
                 }
 
 
-                if(gender.equalsIgnoreCase(user.getGENDER().trim())){
+                if(gender.equalsIgnoreCase(user.getGENDER().trim()) && newScopeId == user.getGENDER_SCOPE_ID()){
                     dismiss();
                 }
                 else{
                     user.setGENDER(gender);
+                    user.setGENDER_SCOPE_ID(newScopeId);
                     new AsyncTaskerUpdateUserGender().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
             }
         });
+
+        if(SCOPE_PUBLIC == user.getGENDER_SCOPE_ID()){
+            ((RadioButton)profile_view_scope_radio_buttons_rg.findViewById(R.id.profile_view_scope_radio_buttons_public_rb)).setChecked(true);
+        }
+        else if(SCOPE_FOLLOWERS == user.getGENDER_SCOPE_ID()){
+            ((RadioButton)profile_view_scope_radio_buttons_rg.findViewById(R.id.profile_view_scope_radio_buttons_followers_rb)).setChecked(true);
+        }
+        else if(SCOPE_SELF == user.getGENDER_SCOPE_ID()){
+            ((RadioButton)profile_view_scope_radio_buttons_rg.findViewById(R.id.profile_view_scope_radio_buttons_myself_rb)).setChecked(true);
+        }
+        else{
+            Log.e(CLASS_NAME, "Error ! Could not identify the scope name : "+user.getGenderScopeName());
+        }
     }
 
     // Empty constructor required for DialogFragment

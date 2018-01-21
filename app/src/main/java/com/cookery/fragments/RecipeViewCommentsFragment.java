@@ -320,7 +320,7 @@ public class RecipeViewCommentsFragment extends DialogFragment {
                 Map<String, Object> bundleMap = new HashMap<String, Object>();
                 bundleMap.put(GENERIC_OBJECT, array);
 
-                Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE_COMMENTS, FRAGMENT_RECIPE_LIKED_USERS, new RecipeViewLikedViewedUsersFragment(), bundleMap);
+                Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE_COMMENTS, FRAGMENT_RECIPE_LIKED_USERS, new UsersFragment(), bundleMap);
             }
         }
     }

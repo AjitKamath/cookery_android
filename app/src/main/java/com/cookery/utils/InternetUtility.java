@@ -19,6 +19,7 @@ import com.cookery.models.UserMO;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,9 +53,15 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_RECIPE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_USER_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TASTE_FETCH_ALL;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_DELETE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_SCOPE_MODIFY;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_USER_FETCH;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FETCH_PUBLIC;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FETCH_SELF;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FOLLOWERS_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FOLLOWINGS_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FOLLOW_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_LOGIN;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_REGISTER;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_EMAIL;
@@ -698,14 +705,16 @@ public class InternetUtility {
                 }
             }
 
+            Date start = new Date();
             String response = multipart.finish();
+            Date end = new Date();
 
             Log.i(CLASS_NAME, "*");
-            Log.i(CLASS_NAME, "*** GET ***");
+            Log.i(CLASS_NAME, "*** POST ("+(end.getTime() - start.getTime())/1000+" seconds)***");
             Log.i(CLASS_NAME, "URL : "+url);
             Log.i(CLASS_NAME, "PARAMS : "+paramMap);
             Log.i(CLASS_NAME, "RESPONSE : "+response);
-            Log.i(CLASS_NAME, "*** GET ***");
+            Log.i(CLASS_NAME, "*** POST ***");
             Log.i(CLASS_NAME, "*");
 
             return  response;
@@ -908,7 +917,7 @@ public class InternetUtility {
     public static Object fetchUser(int userId){
         try {
             Map<String, String> paramMap = new HashMap<>();
-            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_FETCH);
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_FETCH_SELF);
             paramMap.put("user_id", String.valueOf(userId));
 
             String jsonStr = getResponseFromCookery(paramMap);
@@ -944,6 +953,7 @@ public class InternetUtility {
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_UPDATE_EMAIL);
             paramMap.put("user_id", String.valueOf(user.getUSER_ID()));
             paramMap.put("email", String.valueOf(user.getEMAIL()));
+            paramMap.put("scope_id", String.valueOf(user.getEMAIL_SCOPE_ID()));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return Utility.jsonToObject(jsonStr, MessageMO.class);
@@ -979,6 +989,7 @@ public class InternetUtility {
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_UPDATE_PHONE);
             paramMap.put("user_id", String.valueOf(user.getUSER_ID()));
             paramMap.put("mobile", String.valueOf(user.getMOBILE()));
+            paramMap.put("scope_id", String.valueOf(user.getMOBILE_SCOPE_ID()));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return Utility.jsonToObject(jsonStr, MessageMO.class);
@@ -996,6 +1007,7 @@ public class InternetUtility {
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_UPDATE_GENDER);
             paramMap.put("user_id", String.valueOf(user.getUSER_ID()));
             paramMap.put("gender", user.getGENDER());
+            paramMap.put("scope_id", String.valueOf(user.getGENDER_SCOPE_ID()));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return Utility.jsonToObject(jsonStr, MessageMO.class);
@@ -1023,6 +1035,144 @@ public class InternetUtility {
         }
         catch (Exception e){
             Log.e(CLASS_NAME, "Could not update the image of the user : "+e);
+        }
+
+        return null;
+    }
+
+    public static List<UserMO> fetchUsersPublicDetails(int recipeUserId, int loggedInUserId) {
+        if(USE_TEST_DATA){
+            return null;
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_FETCH_PUBLIC);
+            paramMap.put("logged_in_user_id", String.valueOf(loggedInUserId));
+            paramMap.put("user_id", String.valueOf(recipeUserId));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return (List<UserMO>) Utility.jsonToObject(jsonStr, UserMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch user details from the server : "+e);
+        }
+
+        return null;
+    }
+
+    public static Object submitUserFollow(UserMO loggedInUser, UserMO user) {
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_FOLLOW_SUBMIT);
+            paramMap.put("flwr_user_id", String.valueOf(loggedInUser.getUSER_ID()));
+            paramMap.put("flws_user_id", String.valueOf(user.getUSER_ID()));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return Utility.jsonToObject(jsonStr, UserMO.class);
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not update the image of the user : "+e);
+        }
+
+        return null;
+    }
+
+    public static List<UserMO> fetchUserFollowers(int userId, int loggedInUserId, int index) {
+        if(USE_TEST_DATA){
+            return null;
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_FOLLOWERS_FETCH);
+            paramMap.put("logged_in_user_id", String.valueOf(loggedInUserId));
+            paramMap.put("user_id", String.valueOf(userId));
+            paramMap.put("index", String.valueOf(index));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return (List<UserMO>) Utility.jsonToObject(jsonStr, UserMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch user followers from the server : "+e);
+        }
+
+        return null;
+    }
+
+    public static List<UserMO> fetchUserFollowings(int userId, int loggedInUserId, int index) {
+        if(USE_TEST_DATA){
+            return null;
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_FOLLOWINGS_FETCH);
+            paramMap.put("logged_in_user_id", String.valueOf(loggedInUserId));
+            paramMap.put("user_id", String.valueOf(userId));
+            paramMap.put("index", String.valueOf(index));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return (List<UserMO>) Utility.jsonToObject(jsonStr, UserMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch user followers from the server : "+e);
+        }
+
+        return null;
+    }
+
+    public static Object modifyTimelineScope(TimelineMO timeline) {
+        if(USE_TEST_DATA){
+            return null;
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_TIMELINE_SCOPE_MODIFY);
+            paramMap.put("tmln_id", String.valueOf(timeline.getTMLN_ID()));
+            paramMap.put("scope_id", String.valueOf(timeline.getScopeId()));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return Utility.jsonToObject(jsonStr, TimelineMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not modify timeline scope : "+e);
+        }
+
+        return null;
+    }
+
+    public static Object deleteTimeline(TimelineMO timeline) {
+        if(USE_TEST_DATA){
+            return null;
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_TIMELINE_DELETE);
+            paramMap.put("tmln_id", String.valueOf(timeline.getTMLN_ID()));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return Utility.jsonToObject(jsonStr, MessageMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not delete the timeline : "+e);
         }
 
         return null;

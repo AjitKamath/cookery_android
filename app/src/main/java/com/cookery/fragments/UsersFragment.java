@@ -5,17 +5,19 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.adapters.RecipeViewLikedViewedUsersRecyclerViewAdapter;
+import com.cookery.adapters.UsersRecyclerViewAdapter;
+import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.UserMO;
 
 import java.util.List;
@@ -29,19 +31,22 @@ import static com.cookery.utils.Constants.UI_FONT;
 /**
  * Created by vishal on 27/9/17.
  */
-public class RecipeViewLikedViewedUsersFragment extends DialogFragment {
+public class UsersFragment extends DialogFragment {
     private final String CLASS_NAME = this.getClass().getName();
     private Context mContext;
 
     /*components*/
-    @InjectView(R.id.recipe_view_liked_viewed_users_ll)
-    LinearLayout recipe_view_liked_viewed_users_ll;
+    @InjectView(R.id.users_rl)
+    RelativeLayout users_rl;
 
-    @InjectView(R.id.recipe_view_liked_viewed_users_tv)
-    TextView recipe_view_liked_viewed_users_tv;
+    @InjectView(R.id.users_tv)
+    TextView users_tv;
 
-    @InjectView(R.id.recipe_view_liked_viewed_users_rv)
-    RecyclerView recipe_view_liked_viewed_users_rv;
+    @InjectView(R.id.users_srl)
+    SwipeRefreshLayout users_srl;
+
+    @InjectView(R.id.users_rv)
+    RecyclerView users_rv;
     /*components*/
 
     private List<UserMO> usersList;
@@ -49,14 +54,14 @@ public class RecipeViewLikedViewedUsersFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.recipe_view_liked_viewed_users, container);
+        View view = inflater.inflate(R.layout.users, container);
         ButterKnife.inject(this, view);
 
         getDataFromBundle();
 
         setupPage();
 
-        setFont(recipe_view_liked_viewed_users_ll);
+        setFont(users_rl);
 
         return view;
     }
@@ -69,20 +74,42 @@ public class RecipeViewLikedViewedUsersFragment extends DialogFragment {
 
     private void setupPage() {
         if("LIKE".equalsIgnoreCase(purpose)){
-            recipe_view_liked_viewed_users_tv.setText("PEOPLE WHO LIKED");
+            users_tv.setText("PEOPLE WHO LIKED");
         }
         else if("VIEW".equalsIgnoreCase(purpose)){
-            recipe_view_liked_viewed_users_tv.setText("PEOPLE WHO VIEWED");
+            users_tv.setText("PEOPLE WHO VIEWED");
+        }
+        else if("FOLLOWERS".equalsIgnoreCase(purpose)){
+            users_tv.setText("PEOPLE WHO ARE FOLLOWING");
+        }
+        else if("FOLLOWINGS".equalsIgnoreCase(purpose)){
+            users_tv.setText("PEOPLE WHO ARE FOLLOWED");
         }
         else{
-            recipe_view_liked_viewed_users_tv.setText("UNKNOWN");
+            users_tv.setText("UNKNOWN");
         }
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        if(usersList != null && !usersList.isEmpty()){
+            final UsersRecyclerViewAdapter adapter = new UsersRecyclerViewAdapter(mContext, usersList);
+            adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
+                @Override
+                public void onBottomReached(int position) {
+                    //new HomeTimelinesTrendsViewPagerAdapter.AsyncTaskerTimelines(adapter).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                }
+            });
 
-        recipe_view_liked_viewed_users_rv.setLayoutManager(mLayoutManager);
-        recipe_view_liked_viewed_users_rv.setItemAnimator(new DefaultItemAnimator());
-        recipe_view_liked_viewed_users_rv.setAdapter(new RecipeViewLikedViewedUsersRecyclerViewAdapter(mContext, usersList));
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+            users_rv.setLayoutManager(mLayoutManager);
+            users_rv.setItemAnimator(new DefaultItemAnimator());
+            users_rv.setAdapter(adapter);
+
+            users_srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    //new MyTimelinesFragment.AsyncTaskerFetchMyTimelines().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, myTimelines.size());
+                }
+            });
+        }
     }
 
     @Override

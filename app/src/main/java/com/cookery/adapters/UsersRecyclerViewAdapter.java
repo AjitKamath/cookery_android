@@ -7,6 +7,7 @@ package com.cookery.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,24 +17,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.UserMO;
 import com.cookery.utils.DateTimeUtility;
 import com.cookery.utils.Utility;
 
 import java.util.List;
 
-import static com.cookery.utils.Constants.DB_DATE_TIME;
 import static com.cookery.utils.Constants.UI_FONT;
 
-public class RecipeViewLikedViewedUsersRecyclerViewAdapter extends RecyclerView.Adapter<RecipeViewLikedViewedUsersRecyclerViewAdapter.ViewHolder> {
+public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecyclerViewAdapter.ViewHolder> {
 
-    private static final String CLASS_NAME = RecipeViewLikedViewedUsersRecyclerViewAdapter.class.getName();
+    private static final String CLASS_NAME = UsersRecyclerViewAdapter.class.getName();
     private Context mContext;
 
     private List<UserMO> usersList;
     private View.OnClickListener listener;
+    private OnBottomReachedListener onBottomReachedListener;
 
-    public RecipeViewLikedViewedUsersRecyclerViewAdapter(Context mContext, List<UserMO> usersList) {
+    public UsersRecyclerViewAdapter(Context mContext, List<UserMO> usersList) {
         this.mContext = mContext;
         this.usersList = usersList;
         this.listener = listener;
@@ -41,9 +43,13 @@ public class RecipeViewLikedViewedUsersRecyclerViewAdapter extends RecyclerView.
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_view_liked_viewed_users_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.users_item, parent, false);
 
         return new ViewHolder(itemView);
+    }
+
+    public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener){
+        this.onBottomReachedListener = onBottomReachedListener;
     }
 
     @Override
@@ -51,19 +57,22 @@ public class RecipeViewLikedViewedUsersRecyclerViewAdapter extends RecyclerView.
         final UserMO user = usersList.get(position);
 
         if(user.getIMG() != null && !user.getIMG().trim().isEmpty()){
-            Utility.loadImageFromURL(mContext, user.getIMG(), holder.recipe_view_liked_viewed_users_item_iv);
+            Utility.loadImageFromURL(mContext, user.getIMG(), holder.users_item_iv);
         }
 
-        holder.recipe_view_liked_viewed_users_item_username_tv.setText(user.getNAME().trim());
+        holder.users_item_username_tv.setText(user.getNAME().trim());
 
-        if(user.getMOD_DTM() != null && !user.getMOD_DTM().trim().isEmpty()){
-            holder.recipe_view_liked_viewed_users_item_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(user.getMOD_DTM(), DB_DATE_TIME)));
+        if(user.isFollowing()){
+            holder.users_item_follow_tv.setVisibility(View.VISIBLE);
+            holder.users_item_username_tv.setTextColor(ContextCompat.getColor(mContext, R.color.app_color));
         }
         else{
-            holder.recipe_view_liked_viewed_users_item_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(user.getCREATE_DTM(), DB_DATE_TIME)));
+            holder.users_item_follow_tv.setVisibility(View.GONE);
         }
 
-        setFont(holder.recipe_view_liked_viewed_users_item_rl);
+        holder.users_item_datetime_tv.setText(DateTimeUtility.getCreateOrModifiedTime(user.getCREATE_DTM(), user.getMOD_DTM()));
+
+        setFont(holder.users_item_rl);
     }
 
     @Override
@@ -75,17 +84,19 @@ public class RecipeViewLikedViewedUsersRecyclerViewAdapter extends RecyclerView.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public RelativeLayout recipe_view_liked_viewed_users_item_rl;
-        public ImageView recipe_view_liked_viewed_users_item_iv;
-        public TextView recipe_view_liked_viewed_users_item_username_tv;
-        public TextView recipe_view_liked_viewed_users_item_datetime_tv;
+        public RelativeLayout users_item_rl;
+        public ImageView users_item_iv;
+        public TextView users_item_username_tv;
+        public TextView users_item_follow_tv;
+        public TextView users_item_datetime_tv;
 
         public ViewHolder(View view) {
             super(view);
-            recipe_view_liked_viewed_users_item_rl = view.findViewById(R.id.recipe_view_liked_viewed_users_item_rl);
-            recipe_view_liked_viewed_users_item_iv = view.findViewById(R.id.recipe_view_liked_viewed_users_item_iv);
-            recipe_view_liked_viewed_users_item_username_tv = view.findViewById(R.id.recipe_view_liked_viewed_users_item_username_tv);
-            recipe_view_liked_viewed_users_item_datetime_tv = view.findViewById(R.id.recipe_view_liked_viewed_users_item_datetime_tv);
+            users_item_rl = view.findViewById(R.id.users_item_rl);
+            users_item_iv = view.findViewById(R.id.users_item_iv);
+            users_item_username_tv = view.findViewById(R.id.users_item_username_tv);
+            users_item_follow_tv = view.findViewById(R.id.users_item_follow_tv);
+            users_item_datetime_tv = view.findViewById(R.id.users_item_datetime_tv);
         }
     }
 
