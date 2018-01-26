@@ -229,3 +229,8 @@
 
 20 jan 2018
 1. #94 - user can now set privacy for his email/phone/gender to restrict visibility to only to himself, followers or to the public.
+
+-- git checkin on 20 jan 2018 --
+
+26 jan 2018
+1. #120 - User can see his current rank & milestones & next rank and milestones in his profile view.
