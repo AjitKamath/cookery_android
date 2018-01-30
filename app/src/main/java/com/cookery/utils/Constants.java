@@ -106,6 +106,7 @@ public final class Constants {
 
     /*Date Time*/
     public static final String DB_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
+    public static final String UI_DATE = "d MMM ''yy";
     /*Date Time*/
 
     //fragment keys
@@ -155,6 +156,7 @@ public final class Constants {
     public static final String FRAGMENT_PROFILE_VIEW_PASSWORD = "FRAGMENT_PROFILE_VIEW_PASSWORD";
     public static final String FRAGMENT_PROFILE_VIEW_PHONE = "FRAGMENT_PROFILE_VIEW_PHONE";
     public static final String FRAGMENT_PROFILE_VIEW_GENDER = "FRAGMENT_PROFILE_VIEW_GENDER";
+    public static final String FRAGMENT_PROFILE_VIEW_IMAGE = "FRAGMENT_PROFILE_VIEW_IMAGE";
     public static final String FRAGMENT_LOGIN = "FRAGMENT_LOGIN";
     public static final String FRAGMENT_REGISTER = "FRAGMENT_REGISTER";
     public static final String FRAGMENT_USER_VIEW = "FRAGMENT_USER_VIEW";

@@ -234,3 +234,9 @@
 
 26 jan 2018
 1. #120 - User can see his current rank & milestones & next rank and milestones in his profile view.
+
+-- git checkin on 26 jan 2018 --
+
+30 jan 2018
+1. #130 - display joining date in Profile View & User View screens.
+2. #130 - display user image in full screen in Profile View & User View screen.

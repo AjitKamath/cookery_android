@@ -31,6 +31,7 @@ import com.cookery.activities.HomeActivity;
 import com.cookery.models.MessageMO;
 import com.cookery.models.Milestone;
 import com.cookery.models.UserMO;
+import com.cookery.utils.DateTimeUtility;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
@@ -53,6 +54,7 @@ import static com.cookery.utils.Constants.CAMERA_CHOICE;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_EMAIL;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_GENDER;
+import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_NAME;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_PASSWORD;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_PHONE;
@@ -73,6 +75,9 @@ public class ProfileViewFragment extends DialogFragment {
     /*components*/
     @InjectView(R.id.profile_view_rl)
     RelativeLayout profile_view_rl;
+
+    @InjectView(R.id.profile_view_profile_join_tv)
+    TextView profile_view_profile_join_tv;
 
     @InjectView(R.id.profile_view_profile_image_iv)
     CircleImageView profile_view_profile_image_iv;
@@ -174,8 +179,19 @@ public class ProfileViewFragment extends DialogFragment {
     }
 
     private void setupPage() {
+        profile_view_profile_join_tv.setText("JOINED ON "+DateTimeUtility.getSmartDate(loggedInUser.getCREATE_DTM()));
+
         if(loggedInUser.getIMG() != null && !loggedInUser.getIMG().trim().isEmpty()){
             Utility.loadImageFromURL(mContext, loggedInUser.getIMG(), profile_view_profile_image_iv);
+
+            profile_view_profile_image_iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Map<String, Object> paramsMap = new HashMap<>();
+                    paramsMap.put(GENERIC_OBJECT, loggedInUser.getIMG());
+                    Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_PROFILE_VIEW_IMAGE, new ProfileViewImageFragment(), paramsMap);
+                }
+            });
         }
 
         profile_view_profile_name_tv.setText(loggedInUser.getNAME());

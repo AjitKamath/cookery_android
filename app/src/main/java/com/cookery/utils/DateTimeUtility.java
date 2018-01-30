@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static com.cookery.utils.Constants.DB_DATE_TIME;
+import static com.cookery.utils.Constants.UI_DATE;
 
 public class DateTimeUtility {
     private static final String CLASS_NAME = DateTimeUtility.class.getName();
@@ -22,6 +23,21 @@ public class DateTimeUtility {
         }
 
         return null;
+    }
+
+    public static String getSmartDate(String date){
+        if(date != null && !date.trim().isEmpty()){
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat(DB_DATE_TIME);
+                SimpleDateFormat sdf1 = new SimpleDateFormat(UI_DATE);
+
+                return sdf1.format(sdf.parse(date));
+            } catch (ParseException e) {
+                Log.e(CLASS_NAME, "Date Time parse Exception !! Date(" + date + ") : " + e.getMessage());
+            }
+        }
+
+        return "ERROR";
     }
 
     public static String getCreateOrModifiedTime(String createDtm, String modifiedDtm){

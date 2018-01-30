@@ -6,7 +6,18 @@
     android:background="@color/white"
     android:padding="5dp">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:textSize="@dimen/quaternary_text_size"
+        android:textColor="@color/app_color"
+        android:text="JOINED ON 2 APR 2017"
+        android:id="@+id/profile_view_profile_join_tv"/>
+
     <RelativeLayout
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/profile_view_profile_join_tv"
         android:id="@+id/profile_view_profile_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

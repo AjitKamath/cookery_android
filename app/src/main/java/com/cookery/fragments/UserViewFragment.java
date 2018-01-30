@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.cookery.R;
 import com.cookery.models.MessageMO;
 import com.cookery.models.UserMO;
+import com.cookery.utils.DateTimeUtility;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
@@ -34,6 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
@@ -63,6 +65,9 @@ public class UserViewFragment extends DialogFragment {
 
     @InjectView(R.id.profile_view_public_profile_email_tv)
     TextView profile_view_public_profile_email_tv;
+
+    @InjectView(R.id.profile_view_public_profile_join_tv)
+    TextView profile_view_public_profile_join_tv;
 
     @InjectView(R.id.profile_view_public_profile_rank_tv)
     TextView profile_view_public_profile_rank_tv;
@@ -138,7 +143,19 @@ public class UserViewFragment extends DialogFragment {
                 profile_view_public_profile_message_tv.setVisibility(View.GONE);
             }
 
-            Utility.loadImageFromURL(mContext, user.getIMG(), profile_view_public_profile_image_iv);
+            if(user.getIMG() != null && !user.getIMG().trim().isEmpty()){
+                Utility.loadImageFromURL(mContext, user.getIMG(), profile_view_public_profile_image_iv);
+
+                profile_view_public_profile_image_iv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Map<String, Object> paramsMap = new HashMap<>();
+                        paramsMap.put(GENERIC_OBJECT, user.getIMG());
+                        Utility.showFragment(getFragmentManager(), FRAGMENT_USER_VIEW, FRAGMENT_PROFILE_VIEW_IMAGE, new ProfileViewImageFragment(), paramsMap);
+                    }
+                });
+            }
+
             profile_view_public_profile_name_tv.setText(user.getNAME());
 
             if(user.getEMAIL() != null && !user.getEMAIL().trim().isEmpty()){
@@ -147,6 +164,8 @@ public class UserViewFragment extends DialogFragment {
             else{
                 profile_view_public_profile_email_tv.setVisibility(View.GONE);
             }
+
+            profile_view_public_profile_join_tv.setText("JOINED ON "+ DateTimeUtility.getSmartDate(user.getCREATE_DTM()));
 
             if(user.getMOBILE() == null && user.getGENDER() == null){
                 profile_view_public_others_ll.setVisibility(View.GONE);
