@@ -24,7 +24,7 @@ public class DateTimeUtility {
         return null;
     }
 
-    public static String getCreateOrModifiedTime(String createDtm, String modifiedDtm){
+/*    public static String getCreateOrModifiedTime(String createDtm, String modifiedDtm){
         if(modifiedDtm != null && !modifiedDtm.trim().isEmpty()){
             return DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(modifiedDtm, DB_DATE_TIME));
         }
@@ -34,7 +34,7 @@ public class DateTimeUtility {
         else{
             return "ERROR";
         }
-    }
+    }*/
 
     public static String getSmartDateTime(Date dateTime) {
         SimpleDateFormat sdf = null;
@@ -91,6 +91,34 @@ public class DateTimeUtility {
         } else {
             int days = (int) minutes / 24;
             return days + " days ago";
+        }
+    }
+
+/*
+    public static String getSmartDate(String date){
+        if(date != null && !date.trim().isEmpty()){
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat(DB_DATE_TIME);
+                SimpleDateFormat sdf1 = new SimpleDateFormat(UI_DATE);
+
+                return sdf1.format(sdf.parse(date));
+            } catch (ParseException e) {
+                Log.e(CLASS_NAME, "Date Time parse Exception !! Date(" + date + ") : " + e.getMessage());
+            }
+        }
+
+        return "ERROR";
+    }*/
+
+    public static String getCreateOrModifiedTime(String createDtm, String modifiedDtm){
+        if(modifiedDtm != null && !modifiedDtm.trim().isEmpty()){
+            return DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(modifiedDtm, DB_DATE_TIME));
+        }
+        else if(createDtm != null && !createDtm.trim().isEmpty()){
+            return DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(createDtm, DB_DATE_TIME));
+        }
+        else{
+            return "ERROR";
         }
     }
 }

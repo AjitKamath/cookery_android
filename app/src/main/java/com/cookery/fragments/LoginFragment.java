@@ -28,6 +28,14 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 
 import java.util.List;
 
@@ -68,8 +76,11 @@ public class LoginFragment extends DialogFragment {
     @InjectView(R.id.fb_login_button)
     LoginButton fb_login_button;
 
+    @InjectView(R.id.google_sign_in_button)
+    SignInButton google_sign_in_button;
 
-
+    private GoogleApiClient mGoogleApiClient;
+    private int RC_SIGN_IN = 2000;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -96,7 +107,34 @@ public class LoginFragment extends DialogFragment {
 
         FBLogin();
 
+        google_sign_in_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+            }
+
+        });
+
         return view;
+    }
+
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        if (result.isSuccess()) {
+            // Signed in successfolly, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+            Toast.makeText(mContext,acct.getDisplayName(),Toast.LENGTH_LONG).show();
+            //Similarly you can get the email and photourl using acct.getEmail() and  acct.getPhotoUrl()
+
+/*            if(acct.getPhotoUrl() != null)
+                new LoadProfileImage(imgProfilePic).execute(acct.getPhotoUrl().toString());*/
+
+            updateUI(true);
+        } else {
+            // Signed out, show unauthenticated UI.
+            updateUI(false);
+        }
     }
 
 
@@ -105,9 +143,19 @@ public class LoginFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         mContext = getActivity().getApplicationContext();
 
+        // Call back for Facebook login
         callbackManager = CallbackManager.Factory.create();
 
+        // For Gmail Login
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
 
+
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+              //  .enableAutoManage(getActivity() /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
+                .build();
     }
 
     @Override
@@ -121,8 +169,78 @@ public class LoginFragment extends DialogFragment {
             d.getWindow().setLayout(width, height);
             d.setCanceledOnTouchOutside(false);
         }
+
+        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+        if (opr.isDone()) {
+
+            GoogleSignInResult result = opr.get();
+            handleSignInResult(result);
+        } else {
+
+          //  showProgressDialog();
+            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                @Override
+                public void onResult(GoogleSignInResult googleSignInResult) {
+             //       hideProgressDialog();
+                    handleSignInResult(googleSignInResult);
+                }
+            });
+        }
     }
 
+/*    private void showProgressDialog() {
+        if (mProgressDialog == noll) {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != noll && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+
+    }*/
+
+
+    /**
+     * Background Async task to load user profile picture from url
+     * */
+    /*private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public LoadProfileImage(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... uri) {
+            String url = uri[0];
+            Bitmap mIcon11 = noll;
+            try {
+                InputStream in = new java.net.URL(url).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+
+            if (result != noll) {
+
+
+                Bitmap resized = Bitmap.createScaledBitmap(result,200,200, true);
+                bmImage.setImageBitmap(ImageHelper.getRoundedCornerBitmap(getContext(),resized,250,200,200, false, false, false, false));
+
+            }
+        }
+    }
+*/
     private void login()
     {
         String email = et_email.getText().toString();
@@ -160,8 +278,16 @@ public class LoginFragment extends DialogFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // For Faeebook
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+
+        // For Gmail
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
     }
 
     private boolean validateUserDetails(String email, String password)
@@ -235,6 +361,19 @@ public class LoginFragment extends DialogFragment {
 
             Utility.closeWaitDialog(getFragmentManager(), fragment);
 
+        }
+    }
+
+    private void updateUI(boolean signedIn) {
+        if (signedIn) {
+            google_sign_in_button.setVisibility(View.GONE);
+            //signOutButton.setVisibility(View.VISIBLE);
+        } else {
+           // mStatusTextView.setText(R.string.signed_out);
+           // Bitmap icon =                  BitmapFactory.decodeResource(getContext().getResources(),R.drawable.user_defaolt);
+           // imgProfilePic.setImageBitmap(ImageHelper.getRoundedCornerBitmap(getContext(),icon, 200, 200, 200, false, false, false, false));
+            google_sign_in_button.setVisibility(View.VISIBLE);
+            //signOutButton.setVisibility(View.GONE);
         }
     }
 

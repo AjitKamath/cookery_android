@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import com.cookery.R;
 import com.cookery.adapters.RecipeViewImagesFullscreenViewPagerAdapter;
 import com.cookery.adapters.RecipeViewViewPagerAdapter;
+import com.cookery.models.FavouritesMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.RecipeMO;
@@ -46,6 +48,7 @@ import static com.cookery.utils.Constants.FRAGMENT_RECIPE_STEPS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_VIEWED_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
@@ -70,6 +73,9 @@ public class RecipeViewFragment extends DialogFragment {
 
     @InjectView(R.id.common_fragment_recipe_like_iv)
     ImageView common_fragment_recipe_like_iv;
+
+    @InjectView(R.id.common_fragment_recipe_favourite_iv)
+    ImageView common_fragment_recipe_favourite_iv;
 
     @InjectView(R.id.common_fragment_recipe_like_ll)
     LinearLayout common_fragment_recipe_like_ll;
@@ -215,6 +221,7 @@ public class RecipeViewFragment extends DialogFragment {
         setLikeView();
         setViewView();
         setCommentView();
+        setfavouriteView();
 
         common_fragment_recipe_user_details_ll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -300,6 +307,16 @@ public class RecipeViewFragment extends DialogFragment {
         }
     }
 
+    public void updateFavoriteView(ArrayList<FavouritesMO> fav) {
+        if (fav.get(0).isFabStatus()) {
+            common_fragment_recipe_favourite_iv.setImageResource(R.drawable.favstar36);
+            Utility.showSnacks(common_fragment_recipe_rl, "Added to Favourites", OK, Snackbar.LENGTH_LONG);
+        } else {
+            common_fragment_recipe_favourite_iv.setImageResource(R.drawable.favstarunselected);
+            Utility.showSnacks(common_fragment_recipe_rl, "Removed from Favourites", OK, Snackbar.LENGTH_LONG);
+        }
+    }
+
     public void setLikeView() {
         common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(recipe.getLikedUsers() == null ? 0 : recipe.getLikedUsers().size()));
 
@@ -330,6 +347,29 @@ public class RecipeViewFragment extends DialogFragment {
             public boolean onLongClick(View view) {
                 new AsyncFetchLikedViewedUsers("LIKE").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 return true;
+            }
+        });
+    }
+
+    public void setfavouriteView() {
+        if (recipe.isUserFavorite()) {
+            common_fragment_recipe_favourite_iv.setImageResource(R.drawable.favstar36);
+        } else {
+            common_fragment_recipe_favourite_iv.setImageResource(R.drawable.favstarunselected);
+        }
+
+        common_fragment_recipe_favourite_iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (recipe.getUSER_ID() == loggerInUser.getUSER_ID()) {
+                    return;
+                }
+
+                FavouritesMO fav = new FavouritesMO();
+                fav.setUSER_ID(loggerInUser.getUSER_ID());
+                fav.setRCP_ID(recipe.getRCP_ID());
+
+                new AsyncSubmitFavourite().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fav);
             }
         });
     }
@@ -447,6 +487,28 @@ public class RecipeViewFragment extends DialogFragment {
             if (like != null) {
                 recipe.setUserLiked(like.isLiked());
                 updateLikeView(like);
+            }
+        }
+    }
+
+    public class AsyncSubmitFavourite extends AsyncTask<Object, Void, Object> {
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            FavouritesMO fav = (FavouritesMO) objects[0];
+            return InternetUtility.submitFavourite(fav);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            ArrayList<FavouritesMO> fav = (ArrayList<FavouritesMO>) object;
+
+            if (fav != null) {
+                recipe.setUserFavorite(fav.get(0).isFabStatus());
+                updateFavoriteView(fav);
             }
         }
     }

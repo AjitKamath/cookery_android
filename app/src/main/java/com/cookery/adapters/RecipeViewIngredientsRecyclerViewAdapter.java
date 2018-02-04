@@ -165,6 +165,7 @@ public class RecipeViewIngredientsRecyclerViewAdapter extends RecyclerView.Adapt
                             // Add to new List
                             AddMyListFragment.openAddListFragmentFromRecipe(manager,ing_id,ing_name);
                         }
+
                         else
                         {
                             // Add to existing list

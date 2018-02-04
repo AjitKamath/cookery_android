@@ -381,7 +381,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         //commons
 
         if(timeline.getCREATE_DTM() != null && !timeline.getCREATE_DTM().trim().isEmpty()){
-            holder.common_component_text_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(timeline.getCREATE_DTM(), DB_DATE_TIME)));
+           holder.common_component_text_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(timeline.getCREATE_DTM(), DB_DATE_TIME)));
         }
         else{
             Log.e(CLASS_NAME, "Error ! CreateDtm is null !");

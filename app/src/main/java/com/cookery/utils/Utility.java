@@ -34,6 +34,7 @@ import com.cookery.fragments.UsersFragment;
 import com.cookery.fragments.WaitFragment;
 import com.cookery.models.CommentMO;
 import com.cookery.models.CuisineMO;
+import com.cookery.models.FavouritesMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.LikesMO;
@@ -221,6 +222,9 @@ public class Utility extends Activity {
             }
             else if(mappingClass.equals(MyListMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<MyListMO>>(){}.getType());
+            }
+            else if(mappingClass.equals(FavouritesMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<List<FavouritesMO>>(){}.getType());
             }
             else{
                 Log.e(CLASS_NAME, mappingClass+" is not identified for parsing JSON");

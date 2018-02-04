@@ -162,7 +162,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="horizontal"
-            android:weightSum="4">
+            android:weightSum="5">
 
             <LinearLayout
                 android:id="@+id/common_fragment_recipe_rating_ll"
@@ -214,6 +214,23 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/common_fragment_recipe_favourite_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/common_fragment_recipe_favourite_iv"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/favstarunselected"
+                    android:tag="UNSELECTED" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/common_fragment_recipe_view_ll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -251,7 +268,6 @@
                     android:layout_height="15dp"
                     android:src="@drawable/comment_disabled"
                     android:tag="UNSELECTED" />
-
                 <TextView
                     android:id="@+id/common_fragment_recipe_comment_tv"
                     android:layout_width="wrap_content"

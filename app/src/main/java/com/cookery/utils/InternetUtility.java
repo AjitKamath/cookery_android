@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.cookery.models.CommentMO;
 import com.cookery.models.CuisineMO;
+import com.cookery.models.FavouritesMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.LikesMO;
@@ -19,6 +20,7 @@ import com.cookery.models.UserMO;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,7 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_DELETE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_RECIPE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_SUBMIT;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FAV_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FOOD_CUISINE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FOOD_TYPE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_INGREDIENT_FETCH;
@@ -548,6 +551,25 @@ public class InternetUtility {
             paramMap.put("type", like.getTYPE());
 
             return (LikesMO) Utility.jsonToObject(getResponseFromCookery(paramMap), LikesMO.class);
+        }
+        catch(SocketException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch(Exception e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+
+        return null;
+    }
+
+    public static ArrayList<FavouritesMO> submitFavourite(FavouritesMO fav) {
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_FAV_SUBMIT);
+            paramMap.put("user_id", String.valueOf(fav.getUSER_ID()));
+            paramMap.put("rcp_id", String.valueOf(fav.getRCP_ID()));
+
+            return (ArrayList<FavouritesMO>) Utility.jsonToObject(getResponseFromCookery(paramMap), FavouritesMO.class);
         }
         catch(SocketException e){
             Log.e(CLASS_NAME, e.getMessage());

@@ -29,6 +29,7 @@
             android:layout_centerInParent="true"/>
 
         <ImageView
+            android:id="@+id/recipe_view_images_download"
             android:layout_alignParentRight="true"
             android:layout_width="20dp"
             android:layout_height="20dp"

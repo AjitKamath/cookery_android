@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item
+            android:id="@+id/recipe_images_download_current"
+            android:title="Download Current" />
+        <item
+            android:id="@+id/recipe_images_download_all"
+            android:title="Download All" />
+    </group>
+</menu>

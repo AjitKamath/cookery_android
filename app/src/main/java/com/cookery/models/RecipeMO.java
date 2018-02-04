@@ -35,6 +35,7 @@ public class RecipeMO extends CommonMO implements Serializable {
     private ReviewMO userReview;
     private boolean userLiked;
     private boolean userReviewed;
+    private boolean userFavorite;
 
     private int likesCount;
     private int viewsCount;
@@ -248,5 +249,13 @@ public class RecipeMO extends CommonMO implements Serializable {
 
     public void setMylists(List<MyListMO> mylists) {
         this.mylists = mylists;
+    }
+
+    public boolean isUserFavorite() {
+        return userFavorite;
+    }
+
+    public void setUserFavorite(boolean userFavorite) {
+        this.userFavorite = userFavorite;
     }
 }
