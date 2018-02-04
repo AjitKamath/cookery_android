@@ -7,7 +7,6 @@ package com.cookery.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,11 +33,13 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
     private List<UserMO> usersList;
     private View.OnClickListener listener;
     private OnBottomReachedListener onBottomReachedListener;
+    private String purpose;
 
-    public UsersRecyclerViewAdapter(Context mContext, List<UserMO> usersList) {
+    public UsersRecyclerViewAdapter(Context mContext, List<UserMO> usersList, String purpose) {
         this.mContext = mContext;
         this.usersList = usersList;
         this.listener = listener;
+        this.purpose = purpose;
     }
 
     @Override
@@ -54,6 +55,10 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        if (position == usersList.size() - 1){
+            onBottomReachedListener.onBottomReached(position);
+        }
+
         final UserMO user = usersList.get(position);
 
         if(user.getIMG() != null && !user.getIMG().trim().isEmpty()){
@@ -64,7 +69,6 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
 
         if(user.isFollowing()){
             holder.users_item_follow_tv.setVisibility(View.VISIBLE);
-            holder.users_item_username_tv.setTextColor(ContextCompat.getColor(mContext, R.color.app_color));
         }
         else{
             holder.users_item_follow_tv.setVisibility(View.GONE);

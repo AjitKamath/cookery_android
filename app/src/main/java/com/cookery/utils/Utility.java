@@ -15,9 +15,11 @@ import com.cookery.R;
 import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.CommonImagePickerFragment;
 import com.cookery.fragments.MessageFragment;
+import com.cookery.fragments.PeopleViewFragment;
 import com.cookery.fragments.ProfileViewEmailFragment;
 import com.cookery.fragments.ProfileViewFragment;
 import com.cookery.fragments.ProfileViewGenderFragment;
+import com.cookery.fragments.ProfileViewImageFragment;
 import com.cookery.fragments.ProfileViewNameFragment;
 import com.cookery.fragments.ProfileViewPasswordFragment;
 import com.cookery.fragments.ProfileViewPhoneFragment;
@@ -575,6 +577,22 @@ public class Utility extends Activity {
         }
         else if(fragment instanceof TimelineDeleteFragment){
             TimelineDeleteFragment currentFrag = (TimelineDeleteFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof ProfileViewImageFragment){
+            ProfileViewImageFragment currentFrag = (ProfileViewImageFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof PeopleViewFragment){
+            PeopleViewFragment currentFrag = (PeopleViewFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);

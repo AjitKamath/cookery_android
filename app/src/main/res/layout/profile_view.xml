@@ -2,11 +2,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/profile_view_rl"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:padding="5dp">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:textSize="@dimen/quaternary_text_size"
+        android:textColor="@color/app_color"
+        android:text="JOINED ON 2 APR 2017"
+        android:id="@+id/profile_view_profile_join_tv"/>
+
     <RelativeLayout
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/profile_view_profile_join_tv"
         android:id="@+id/profile_view_profile_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -86,7 +97,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -132,7 +143,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -171,12 +182,12 @@
     </RelativeLayout>
 
     <View
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_below="@+id/profile_view_profile_rl"
         android:id="@+id/profile_view_divider1"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
+        android:layout_below="@+id/profile_view_profile_rl"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
         android:background="@color/divider" />
 
     <RelativeLayout
@@ -191,13 +202,13 @@
             android:layout_marginLeft="5dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:weightSum="2"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:weightSum="2">
 
             <LinearLayout
-                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
@@ -241,10 +252,10 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginLeft="20dp"
-                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
@@ -282,26 +293,26 @@
     </RelativeLayout>
 
     <View
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_below="@+id/profile_view_others_rl"
         android:id="@+id/profile_view_divider2"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
+        android:layout_below="@+id/profile_view_others_rl"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
         android:background="@color/divider" />
 
     <RelativeLayout
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:id="@+id/profile_view_follow_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_below="@+id/profile_view_divider2">
+        android:layout_below="@+id/profile_view_divider2"
+        android:gravity="center">
 
         <LinearLayout
-            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -312,17 +323,17 @@
                 android:orientation="vertical">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:src="@drawable/followers"
                     app:border_color="@color/tertiaryDarkText"
                     app:border_width="1dp" />
 
                 <TextView
                     android:id="@+id/profile_view_followers_tv"
-                    android:layout_marginTop="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:text="0 FOLLOWERS"
                     android:textColor="@color/secondaryDarkText"
                     android:textSize="@dimen/tertiary_text_size" />
@@ -330,24 +341,24 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginLeft="50dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:src="@drawable/following"
                     app:border_color="@color/tertiaryDarkText"
                     app:border_width="1dp" />
 
                 <TextView
                     android:id="@+id/profile_view_following_tv"
-                    android:layout_marginTop="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:text="0 FOLLOWING"
                     android:textColor="@color/secondaryDarkText"
                     android:textSize="@dimen/tertiary_text_size" />
@@ -358,43 +369,234 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_marginTop="40dp"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:layout_below="@+id/profile_view_follow_rl">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_view_follow_rl"
+        android:layout_marginTop="25dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/edit_text_border_white_bg"
+            android:gravity="center_vertical"
+            android:text="RANKS &amp; MILESTONES"
+            android:textColor="@color/app_color"
+            android:textSize="@dimen/tertiary_text_size" />
 
         <LinearLayout
-            android:gravity="center"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/crown"
-                app:border_color="@color/tertiaryDarkText"
-                app:border_width="1dp" />
-
-            <TextView
-                android:layout_marginTop="10dp"
+            <GridLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CURRENT RANK - MASTER CHEF"
-                android:textColor="@color/app_color"
-                android:textSize="@dimen/secondary_text_size" />
+                android:layout_weight="1"
+                android:columnCount="2">
 
-            <TextView
-                android:layout_marginTop="2dp"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="15dp"
+                    android:layout_columnSpan="2"
+                    android:text="ACHIEVED RANK"
+                    android:textColor="@color/secondaryDarkText"
+                    android:textSize="@dimen/quaternary_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:gravity="center_vertical"
+                    android:text="RANK"
+                    android:textColor="@color/tertiaryDarkText"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="CURRENT RANK"
+                    android:id="@+id/profile_view_current_rank_tv"
+                    android:textColor="@color/app_color_light"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="15dp"
+                    android:layout_columnSpan="2"
+                    android:layout_marginTop="20dp"
+                    android:text="ACHIEVED MILESTONES"
+                    android:textColor="@color/secondaryDarkText"
+                    android:textSize="@dimen/quaternary_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:gravity="center_vertical"
+                    android:text="RECIPES"
+                    android:textColor="@color/tertiaryDarkText"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+                <TextView
+                    android:id="@+id/profile_view_current_recipes_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="0"
+                    android:textColor="@color/app_color_light"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:gravity="center_vertical"
+                    android:text="LIKES"
+                    android:textColor="@color/tertiaryDarkText"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+                <TextView
+                    android:id="@+id/profile_view_current_likes_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="0"
+                    android:textColor="@color/app_color_light"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:gravity="center_vertical"
+                    android:text="REVIEWS"
+                    android:textColor="@color/tertiaryDarkText"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+                <TextView
+                    android:id="@+id/profile_view_current_reviews_tv"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="0"
+                    android:textColor="@color/app_color_light"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+            </GridLayout>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@color/divider" />
+
+            <GridLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="NEXT RANK - SUPER CHEF"
-                android:textColor="@color/secondaryDarkText"
-                android:textSize="@dimen/tertiary_text_size" />
-        </LinearLayout>'
+                android:layout_weight="1"
+                android:columnCount="2">
 
-    </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="15dp"
+                    android:layout_columnSpan="2"
+                    android:text="NEXT RANK"
+                    android:textColor="@color/secondaryDarkText"
+                    android:textSize="@dimen/quaternary_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:gravity="center_vertical"
+                    android:text="RANK"
+                    android:textColor="@color/tertiaryDarkText"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+                <TextView
+                    android:id="@+id/profile_view_next_rank_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="NEXT RANK"
+                    android:textColor="@color/app_color_light"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="15dp"
+                    android:layout_columnSpan="2"
+                    android:layout_marginTop="20dp"
+                    android:text="NEXT MILESTONES"
+                    android:textColor="@color/secondaryDarkText"
+                    android:textSize="@dimen/quaternary_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:gravity="center_vertical"
+                    android:text="RECIPES"
+                    android:textColor="@color/tertiaryDarkText"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+                <TextView
+                    android:id="@+id/profile_view_next_recipes_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="0"
+                    android:textColor="@color/app_color_light"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:gravity="center_vertical"
+                    android:text="LIKES"
+                    android:textColor="@color/tertiaryDarkText"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+                <TextView
+                    android:id="@+id/profile_view_next_likes_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="0"
+                    android:textColor="@color/app_color_light"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:gravity="center_vertical"
+                    android:text="REVIEWS"
+                    android:textColor="@color/tertiaryDarkText"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+                <TextView
+                    android:id="@+id/profile_view_next_reviews_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="0"
+                    android:textColor="@color/app_color_light"
+                    android:textSize="@dimen/tertiary_text_size" />
+
+            </GridLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

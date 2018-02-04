@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/profile_view_public_rl"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:padding="5dp">
 
@@ -56,8 +56,17 @@
                 android:layout_marginTop="2dp"/>
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textSize="@dimen/quaternary_text_size"
+                android:textColor="@color/app_color"
+                android:text="JOINED ON 2 APR 2017"
+                android:id="@+id/profile_view_public_profile_join_tv"/>
+
+            <TextView
                 android:id="@+id/profile_view_public_profile_rank_tv"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="USER RANK"
@@ -153,7 +162,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="15dp"
         android:id="@+id/profile_view_public_recipes_ll"
         android:layout_width="match_parent"
@@ -181,7 +190,7 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:id="@+id/profile_view_public_follow_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

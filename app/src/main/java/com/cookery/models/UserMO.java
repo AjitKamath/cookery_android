@@ -1,6 +1,7 @@
 package com.cookery.models;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by vishal on 10/10/17.
@@ -26,6 +27,10 @@ public class UserMO extends CommonMO implements Serializable {
     private String emailScopeName;
     private String genderScopeName;
     private String mobileScopeName;
+
+    private String currentRank;
+    private List<Milestone> currentRankAndMilestone;
+    private List<Milestone> nextRankAndMilestone;
 
     public int getRecipesCount() {
         return recipesCount;
@@ -161,5 +166,29 @@ public class UserMO extends CommonMO implements Serializable {
 
     public void setMobileScopeName(String mobileScopeName) {
         this.mobileScopeName = mobileScopeName;
+    }
+
+    public List<Milestone> getCurrentRankAndMilestone() {
+        return currentRankAndMilestone;
+    }
+
+    public void setCurrentRankAndMilestone(List<Milestone> currentRankAndMilestone) {
+        this.currentRankAndMilestone = currentRankAndMilestone;
+    }
+
+    public List<Milestone> getNextRankAndMilestone() {
+        return nextRankAndMilestone;
+    }
+
+    public void setNextRankAndMilestone(List<Milestone> nextRankAndMilestone) {
+        this.nextRankAndMilestone = nextRankAndMilestone;
+    }
+
+    public String getCurrentRank() {
+        return currentRank;
+    }
+
+    public void setCurrentRank(String currentRank) {
+        this.currentRank = currentRank;
     }
 }

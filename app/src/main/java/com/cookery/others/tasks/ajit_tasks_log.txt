@@ -229,3 +229,20 @@
 
 20 jan 2018
 1. #94 - user can now set privacy for his email/phone/gender to restrict visibility to only to himself, followers or to the public.
+
+-- git checkin on 20 jan 2018 --
+
+26 jan 2018
+1. #120 - User can see his current rank & milestones & next rank and milestones in his profile view.
+
+-- git checkin on 26 jan 2018 --
+
+30 jan 2018
+1. #130 - display joining date in Profile View & User View screens.
+2. #130 - display user image in full screen in Profile View & User View screen.
+
+-- git checkin on 30 jan 2018 --
+
+4 feb 2018
+1. #111 - user can see whom he follows and who is following him in the People section of navigation drawer.
+2. Added date time in User joined timeline.

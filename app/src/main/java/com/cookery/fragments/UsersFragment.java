@@ -89,8 +89,8 @@ public class UsersFragment extends DialogFragment {
             users_tv.setText("UNKNOWN");
         }
 
-        if(usersList != null && !usersList.isEmpty()){
-            final UsersRecyclerViewAdapter adapter = new UsersRecyclerViewAdapter(mContext, usersList);
+        if(usersList != null){
+            final UsersRecyclerViewAdapter adapter = new UsersRecyclerViewAdapter(mContext, usersList, purpose);
             adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
                 @Override
                 public void onBottomReached(int position) {

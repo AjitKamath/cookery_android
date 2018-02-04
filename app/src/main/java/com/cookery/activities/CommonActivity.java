@@ -34,6 +34,7 @@ import com.cookery.fragments.FavoriteRecipesFragment;
 import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MyRecipesFragment;
 import com.cookery.fragments.MyReviewsFragment;
+import com.cookery.fragments.PeopleViewFragment;
 import com.cookery.fragments.ProfileViewFragment;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
@@ -58,6 +59,7 @@ import static com.cookery.utils.Constants.FRAGMENT_MY_FAVORITES;
 import static com.cookery.utils.Constants.FRAGMENT_MY_LIST;
 import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_MY_REVIEWS;
+import static com.cookery.utils.Constants.FRAGMENT_PEOPLE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
@@ -433,6 +435,9 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         else if(R.id.navigation_drawer_list == item.getItemId()){
             new AsyncTaskerFetchMyLists().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
+        else if(R.id.navigation_drawer_people == item.getItemId()){
+            new AsyncTaskerFetchPeople().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
         else if(R.id.navigation_drawer_logout == item.getItemId()){
                 logout();
         }
@@ -759,6 +764,38 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
                 Map<String, Object> params = new HashMap<>();
                 params.put(GENERIC_OBJECT, loggedInUser);
                 Utility.showFragment(getFragmentManager(), null, FRAGMENT_PROFILE_VIEW, new ProfileViewFragment(), params);
+            }
+        }
+    }
+
+    class AsyncTaskerFetchPeople extends AsyncTask<Object, Void, Object> {
+        private Fragment fragment;
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            Object[] people = new Object[2];
+
+            people[0] = InternetUtility.fetchUserFollowers(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), 0);
+            people[1] = InternetUtility.fetchUserFollowings(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), 0);
+
+            return people;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching people who follow you and whom you follow..");
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            Object[] people = (Object[]) object;
+
+            if(people != null && people.length != 0) {
+                Utility.closeWaitDialog(getFragmentManager(), fragment);
+
+                Map<String, Object> params = new HashMap<>();
+                params.put(GENERIC_OBJECT, people);
+                Utility.showFragment(getFragmentManager(), null, FRAGMENT_PEOPLE_VIEW, new PeopleViewFragment(), params);
             }
         }
     }

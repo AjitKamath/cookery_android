@@ -29,7 +29,9 @@ import android.widget.TextView;
 import com.cookery.R;
 import com.cookery.activities.HomeActivity;
 import com.cookery.models.MessageMO;
+import com.cookery.models.Milestone;
 import com.cookery.models.UserMO;
+import com.cookery.utils.DateTimeUtility;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
@@ -52,6 +54,7 @@ import static com.cookery.utils.Constants.CAMERA_CHOICE;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_EMAIL;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_GENDER;
+import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_NAME;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_PASSWORD;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_PHONE;
@@ -72,6 +75,9 @@ public class ProfileViewFragment extends DialogFragment {
     /*components*/
     @InjectView(R.id.profile_view_rl)
     RelativeLayout profile_view_rl;
+
+    @InjectView(R.id.profile_view_profile_join_tv)
+    TextView profile_view_profile_join_tv;
 
     @InjectView(R.id.profile_view_profile_image_iv)
     CircleImageView profile_view_profile_image_iv;
@@ -114,6 +120,30 @@ public class ProfileViewFragment extends DialogFragment {
 
     @InjectView(R.id.profile_view_following_tv)
     TextView profile_view_following_tv;
+
+    @InjectView(R.id.profile_view_current_rank_tv)
+    TextView profile_view_current_rank_tv;
+
+    @InjectView(R.id.profile_view_current_recipes_tv)
+    TextView profile_view_current_recipes_tv;
+
+    @InjectView(R.id.profile_view_current_likes_tv)
+    TextView profile_view_current_likes_tv;
+
+    @InjectView(R.id.profile_view_current_reviews_tv)
+    TextView profile_view_current_reviews_tv;
+
+    @InjectView(R.id.profile_view_next_rank_tv)
+    TextView profile_view_next_rank_tv;
+
+    @InjectView(R.id.profile_view_next_recipes_tv)
+    TextView profile_view_next_recipes_tv;
+
+    @InjectView(R.id.profile_view_next_likes_tv)
+    TextView profile_view_next_likes_tv;
+
+    @InjectView(R.id.profile_view_next_reviews_tv)
+    TextView profile_view_next_reviews_tv;
     /*components*/
 
     private UserMO loggedInUser;
@@ -128,8 +158,6 @@ public class ProfileViewFragment extends DialogFragment {
         Dialog d = getDialog();
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        getLoggedInUser();
-
         getDataFromBundle();
 
         setupPage();
@@ -143,10 +171,6 @@ public class ProfileViewFragment extends DialogFragment {
         loggedInUser = (UserMO) getArguments().get(GENERIC_OBJECT);
     }
 
-    private void getLoggedInUser() {
-        loggedInUser = Utility.getUserFromUserSecurity(mContext);
-    }
-
     @Override
     public void onDismiss(final DialogInterface dialog) {
         if(doUpdateLoggedInUser){
@@ -155,8 +179,19 @@ public class ProfileViewFragment extends DialogFragment {
     }
 
     private void setupPage() {
+        profile_view_profile_join_tv.setText("JOINED ON "+DateTimeUtility.getSmartDate(loggedInUser.getCREATE_DTM()));
+
         if(loggedInUser.getIMG() != null && !loggedInUser.getIMG().trim().isEmpty()){
             Utility.loadImageFromURL(mContext, loggedInUser.getIMG(), profile_view_profile_image_iv);
+
+            profile_view_profile_image_iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Map<String, Object> paramsMap = new HashMap<>();
+                    paramsMap.put(GENERIC_OBJECT, loggedInUser.getIMG());
+                    Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_PROFILE_VIEW_IMAGE, new ProfileViewImageFragment(), paramsMap);
+                }
+            });
         }
 
         profile_view_profile_name_tv.setText(loggedInUser.getNAME());
@@ -224,6 +259,68 @@ public class ProfileViewFragment extends DialogFragment {
                 Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_PROFILE_VIEW_GENDER, new ProfileViewGenderFragment(), paramsMap);
             }
         });
+
+        setupRanksAndMilestones();
+    }
+
+    private void setupRanksAndMilestones(){
+        //current milestone
+        if(loggedInUser.getCurrentRankAndMilestone() != null && !loggedInUser.getCurrentRankAndMilestone().isEmpty()){
+            profile_view_current_rank_tv.setText(loggedInUser.getCurrentRank().toUpperCase());
+
+            for(Milestone milestone : loggedInUser.getCurrentRankAndMilestone()) {
+                if ("RECIPE".equalsIgnoreCase(milestone.getTYPE())) {
+                    if (milestone.getNUMBER() == 0) {
+                        profile_view_current_recipes_tv.setText(String.valueOf(milestone.getCurrentNumber()));
+                    } else {
+                        profile_view_current_recipes_tv.setText(milestone.getCurrentNumber() + "/" + milestone.getNUMBER());
+                    }
+                } else if ("LIKE".equalsIgnoreCase(milestone.getTYPE())) {
+                    if (milestone.getNUMBER() == 0) {
+                        profile_view_current_likes_tv.setText(String.valueOf(milestone.getCurrentNumber()));
+                    } else {
+                        profile_view_current_likes_tv.setText(milestone.getCurrentNumber() + "/" + milestone.getNUMBER());
+                    }
+                }
+                else if ("REVIEW".equalsIgnoreCase(milestone.getTYPE())) {
+                    if (milestone.getNUMBER() == 0) {
+                        profile_view_current_reviews_tv.setText(String.valueOf(milestone.getCurrentNumber()));
+                    } else {
+                        profile_view_current_reviews_tv.setText(milestone.getCurrentNumber() + "/" + milestone.getNUMBER());
+                    }
+                }
+                else{
+                    Log.e(CLASS_NAME, "Error ! Could not identify the milestone : "+milestone.getTYPE());
+                }
+            }
+        }
+        else{
+            Log.e(CLASS_NAME, "Error ! Current rank & milestones are null");
+        }
+        //current milestone
+
+        //next milestone
+        if(loggedInUser.getNextRankAndMilestone() != null && !loggedInUser.getNextRankAndMilestone().isEmpty()){
+            profile_view_next_rank_tv.setText(loggedInUser.getNextRankAndMilestone().get(0).getRANK_NAME().toUpperCase());
+
+            for(Milestone milestone : loggedInUser.getNextRankAndMilestone()) {
+                if ("RECIPE".equalsIgnoreCase(milestone.getTYPE())) {
+                    profile_view_next_recipes_tv.setText(String.valueOf(milestone.getNUMBER()));
+                } else if ("LIKE".equalsIgnoreCase(milestone.getTYPE())) {
+                    profile_view_next_likes_tv.setText(String.valueOf(milestone.getNUMBER()));
+                }
+                else if ("REVIEW".equalsIgnoreCase(milestone.getTYPE())) {
+                    profile_view_next_reviews_tv.setText(String.valueOf(milestone.getNUMBER()));
+                }
+                else{
+                    Log.e(CLASS_NAME, "Error ! Could not identify the milestone : "+milestone.getTYPE());
+                }
+            }
+        }
+        else{
+            Log.e(CLASS_NAME, "Error ! Next rank & milestones are null");
+        }
+        //Next milestone
     }
 
     public void updateName(String name){
@@ -364,7 +461,7 @@ public class ProfileViewFragment extends DialogFragment {
         Dialog d = getDialog();
         if (d!=null) {
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
-            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
             d.getWindow().setLayout(width, height);
         }
     }
