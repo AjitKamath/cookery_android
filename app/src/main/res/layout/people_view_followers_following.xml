@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/people_view_followers_following_rl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="5dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/people_view_followers_following_message_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MESSAGE"
+        android:textColor="@color/tertiaryLightText"
+        android:layout_centerInParent="true"/>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/people_view_followers_following_srl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/people_view_followers_following_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</RelativeLayout>

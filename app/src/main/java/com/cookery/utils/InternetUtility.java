@@ -710,7 +710,7 @@ public class InternetUtility {
             Date end = new Date();
 
             Log.i(CLASS_NAME, "*");
-            Log.i(CLASS_NAME, "*** POST ("+(end.getTime() - start.getTime())/1000+" seconds)***");
+            Log.i(CLASS_NAME, "*** POST ("+(double)(end.getTime() - start.getTime())/1000+" seconds)***");
             Log.i(CLASS_NAME, "URL : "+url);
             Log.i(CLASS_NAME, "PARAMS : "+paramMap);
             Log.i(CLASS_NAME, "RESPONSE : "+response);

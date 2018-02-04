@@ -163,6 +163,7 @@ public final class Constants {
     public static final String FRAGMENT_USERS = "FRAGMENT_USERS";
     public static final String FRAGMENT_TIMELINE_HIDE = "FRAGMENT_TIMELINE_HIDE";
     public static final String FRAGMENT_TIMELINE_DELETE = "FRAGMENT_TIMELINE_DELETE";
+    public static final String FRAGMENT_PEOPLE_VIEW = "FRAGMENT_PEOPLE_VIEW";
 
     //FRAGMENT OBJECT KEYS
     public static final String LOGGED_IN_USER = "LOGGED_IN_USER";

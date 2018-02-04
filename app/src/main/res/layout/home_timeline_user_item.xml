@@ -31,32 +31,42 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <include layout="@layout/home_timeline_user_image_mini"
-                        android:id="@+id/common_component_round_image_mini_layout"/>
+                    <include
+                        android:id="@+id/common_component_round_image_mini_layout"
+                        layout="@layout/home_timeline_user_image_mini" />
 
-                    <RelativeLayout
-                        android:layout_marginLeft="5dp"
-                        android:layout_centerInParent="true"
-                        android:layout_toRightOf="@+id/common_component_round_image_mini_layout"
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_toRightOf="@+id/common_component_round_image_mini_layout"
+                        android:orientation="vertical">
 
-                        <TextView
-                            android:layout_centerVertical="true"
-                            android:id="@+id/fragment_timelines_timeline_user_msg_tv"
+                        <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="You joined Cookery !"
-                            android:textColor="@color/primaryDarkText"
-                            android:textSize="10sp" />
+                            android:layout_centerInParent="true">
 
-                        <include
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            layout="@layout/home_timeline_options" />
+                            <TextView
+                                android:id="@+id/fragment_timelines_timeline_user_msg_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:text="You joined Cookery !"
+                                android:textColor="@color/primaryDarkText"
+                                android:textSize="10sp" />
 
-                    </RelativeLayout>
+                            <include
+                                layout="@layout/home_timeline_options"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true" />
+
+                        </RelativeLayout>
+
+                        <include layout="@layout/home_timeline_datetime" />
+                    </LinearLayout>
 
                 </RelativeLayout>
             </LinearLayout>

@@ -1,0 +1,84 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/white"
+    android:id="@+id/people_view_rl"
+    android:layout_gravity="center_vertical"
+    android:gravity="center">
+
+    <RelativeLayout
+        android:id="@+id/people_view_search_rl"
+        android:layout_alignParentTop="true"
+        android:focusable="true"
+        android:padding="5dp"
+        android:background="@color/app_color"
+        android:focusableInTouchMode="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="10">
+
+        <com.cookery.component.DelayAutoCompleteTextView
+            android:id="@+id/people_view_search_act"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/edit_text_border_dark"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:hint="find people .."
+            android:textAlignment="center"
+            android:textColorHint="@color/secondaryLightText"
+            android:popupBackground="@android:color/transparent"
+            android:drawableLeft="@drawable/ic_search_white_24dp"
+            android:scrollbars="vertical"
+            android:paddingRight="30dp"
+            android:maxLines="1"
+            android:inputType="text"
+            android:imeOptions="actionNext"
+            android:dropDownWidth="match_parent"
+            android:fadeScrollbars="false" />
+
+        <ImageView
+            android:id="@+id/people_view_search_iv"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_close_white_36dp"/>
+
+    </RelativeLayout>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/people_view_search_rl"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/people_view_tl"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                app:tabGravity="fill"
+                app:tabIndicatorColor="@color/white"
+                app:tabMaxWidth="0dp"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/white"
+                app:tabTextColor="@color/white" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/people_view_tab_vp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>
