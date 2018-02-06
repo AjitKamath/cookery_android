@@ -1062,7 +1062,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<UserMO> fetchUsersPublicDetails(int recipeUserId, int loggedInUserId) {
+    public static List<UserMO> fetchUsersPublicDetails(int userId, int loggedInUserId) {
         if(USE_TEST_DATA){
             return null;
         }
@@ -1071,7 +1071,7 @@ public class InternetUtility {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_FETCH_PUBLIC);
             paramMap.put("logged_in_user_id", String.valueOf(loggedInUserId));
-            paramMap.put("user_id", String.valueOf(recipeUserId));
+            paramMap.put("user_id", String.valueOf(userId));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return (List<UserMO>) Utility.jsonToObject(jsonStr, UserMO.class);

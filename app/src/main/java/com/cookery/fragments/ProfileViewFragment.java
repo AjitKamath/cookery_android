@@ -6,8 +6,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -34,12 +32,10 @@ import com.cookery.models.UserMO;
 import com.cookery.utils.DateTimeUtility;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -175,6 +171,7 @@ public class ProfileViewFragment extends DialogFragment {
     public void onDismiss(final DialogInterface dialog) {
         if(doUpdateLoggedInUser){
             ((HomeActivity)getActivity()).updateLoggedInUser();
+            doUpdateLoggedInUser = false;
         }
     }
 
@@ -211,7 +208,10 @@ public class ProfileViewFragment extends DialogFragment {
         profile_view_profile_image_change_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utility.pickPhotos(getFragmentManager(), FRAGMENT_PROFILE_VIEW);
+                //Utility.pickPhotos(getFragmentManager(), FRAGMENT_PROFILE_VIEW);
+
+                Fragment fragment = getFragmentManager().findFragmentByTag(FRAGMENT_PROFILE_VIEW);
+                CropImage.activity().start(mContext, fragment);
             }
         });
 
@@ -367,6 +367,9 @@ public class ProfileViewFragment extends DialogFragment {
         else if(CAMERA_CHOICE == choice){
             showPickImageFromCamera();
         }
+        else{
+            Log.e(CLASS_NAME, "Error ! Could not identify the option : "+choice);
+        }
     }
 
     private void showPickImageFromGallery() {
@@ -400,7 +403,17 @@ public class ProfileViewFragment extends DialogFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                updatePhoto(result.getUri().getPath());
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                Log.e(CLASS_NAME, "Error ! Something went wrong ! : "+error.getMessage());
+            }
+        }
+
+        /*if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             Bitmap bitmap = BitmapFactory.decodeFile(imagePathStr);
             updatePhoto(imagePathStr);
         }
@@ -430,7 +443,7 @@ public class ProfileViewFragment extends DialogFragment {
             catch (Exception e){
                 Log.e(CLASS_NAME, "Error while getting the image from the user choice");
             }
-        }
+        }*/
     }
 
     private File createImageFile() throws IOException {

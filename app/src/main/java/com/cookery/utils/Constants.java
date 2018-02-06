@@ -14,7 +14,7 @@ public final class Constants {
 
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_AJIT = "cookery_php-ajitkamathk452607.codeanyapp.com";
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_VISHAL = "cookery_php-dial2vishal53897.codeanyapp.com";
-    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_VISHAL;
+    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_AJIT;
 
     private static final String SERVER_CODEANYWHERE_PUBLIC_DIR = "public";
 
@@ -114,6 +114,7 @@ public final class Constants {
     public static final int GALLERY_CHOICE = 1111;
     public static final int CAMERA_CHOICE = 2222;
     public static final int CLOSE_CHOICE = 3333;
+    public static final int CROP_CHOICE = 4444;
 
     /*Async Task Purpose Keys*/
     public static final String ASYNC_TASK_GET_ALL_CATEGORY_RECIPES = "ASYNC_TASK_GET_ALL_CATEGORY_RECIPES";

@@ -7,6 +7,7 @@ package com.cookery.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.interfaces.OnBottomReachedListener;
+import com.cookery.models.RecipeMO;
 import com.cookery.models.TimelineMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.DateTimeUtility;
@@ -152,6 +154,8 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
 
     private void setupLayout(ViewHolder holder, final TimelineMO timeline){
         if(TIMELINE_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_RECIPE_MODIFY.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
+            setupRecipeOnClickListener(holder.fragment_timelines_timeline_recipe_recipe_cv, timeline.getRecipeId());
+
             if(timeline.getRecipeName() != null){
                 holder.fragment_timelines_timeline_recipe_recipe_name_tv.setText(timeline.getRecipeName().toUpperCase());
             }
@@ -203,6 +207,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             }
             else{
                 holder.fragment_timelines_timeline_like_who_tv.setText(timeline.getWhoName());
+                setupUserOnClickListener(holder.fragment_timelines_timeline_like_who_tv, timeline.getWhoUserId());
             }
 
             if(timeline.getWhoseUserId() == loggedInUser.getUSER_ID()){
@@ -210,6 +215,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             }
             else{
                 holder.fragment_timelines_timeline_like_whose_tv.setText(timeline.getWhoseName()+"'s");
+                setupUserOnClickListener(holder.fragment_timelines_timeline_like_whose_tv, timeline.getWhoseUserId());
             }
 
             /*like/unlike*/
@@ -246,6 +252,8 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             }
             else{
                 holder.fragment_timelines_timeline_comment_who_tv.setText(timeline.getWhoName());
+
+                setupUserOnClickListener(holder.fragment_timelines_timeline_comment_who_tv, timeline.getWhoUserId());
             }
 
             if(timeline.getWhoseUserId() == loggedInUser.getUSER_ID()){
@@ -253,6 +261,8 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             }
             else{
                 holder.fragment_timelines_timeline_comment_whose_tv.setText(timeline.getWhoseName()+"'s");
+
+                setupUserOnClickListener(holder.fragment_timelines_timeline_comment_whose_tv, timeline.getWhoseUserId());
             }
 
             holder.fragment_timelines_timeline_comment_comment_tv.setText(timeline.getComment());
@@ -269,6 +279,8 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             }
             else{
                 holder.fragment_timelines_timeline_review_who_tv.setText(timeline.getWhoName());
+
+                setupUserOnClickListener(holder.fragment_timelines_timeline_review_who_tv, timeline.getWhoUserId());
             }
 
             if(timeline.getWhoseUserId() == loggedInUser.getUSER_ID()){
@@ -276,6 +288,8 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             }
             else{
                 holder.fragment_timelines_timeline_review_whose_tv.setText(timeline.getWhoseName()+"'s");
+
+                setupUserOnClickListener(holder.fragment_timelines_timeline_review_whose_tv, timeline.getWhoseUserId());
             }
 
             /*review*/
@@ -306,6 +320,8 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             }
             else{
                 holder.home_timeline_user_image_modify_item_who_tv.setText(timeline.getWhoName().trim());
+
+                setupUserOnClickListener(holder.home_timeline_user_image_modify_item_who_tv, timeline.getWhoUserId());
             }
 
             Utility.loadImageFromURL(mContext, timeline.getWhoUserImage(), holder.home_timeline_user_image_modify_item_photo_iv);
@@ -325,9 +341,12 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
 
                 Utility.loadImageFromURL(mContext, timeline.getWhoseUserImage(), holder.home_timeline_user_follow_unfollow_item_photo_iv);
                 holder.home_timeline_user_follow_unfollow_item_whose_tv.setText(timeline.getWhoseName().trim());
+
+                setupUserOnClickListener(holder.home_timeline_user_follow_unfollow_item_whose_tv, timeline.getWhoUserId());
             }
             else{
                 holder.home_timeline_user_follow_unfollow_item_who_tv.setText(timeline.getWhoName().trim());
+                setupUserOnClickListener(holder.home_timeline_user_follow_unfollow_item_who_tv, timeline.getWhoUserId());
 
                 if(TIMELINE_USER_FOLLOW.equalsIgnoreCase(timeline.getTYPE())){
                     holder.home_timeline_user_follow_unfollow_item_what_tv.setText("followed you");
@@ -355,6 +374,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             }
             else{
                 Utility.loadImageFromURL(mContext, timeline.getWhoUserImage(), holder.common_component_round_image_mini_iv);
+                setupUserOnClickListener(holder.common_component_round_image_mini_iv, timeline.getWhoUserId());
             }
         }
 
@@ -389,7 +409,25 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         //commons
     }
 
+    private void setupRecipeOnClickListener(ViewGroup component, int recipeId){
+        RecipeMO recipe = new RecipeMO();
+        recipe.setRCP_ID(recipeId);
+
+        component.setTag(recipe);
+        component.setOnClickListener(listener);
+    }
+
+    private void setupUserOnClickListener(View component, int userId){
+        UserMO user = new UserMO();
+        user.setUSER_ID(userId);
+
+        component.setTag(user);
+        component.setOnClickListener(listener);
+    }
+
     private void setupRecipeCommonView(ViewHolder holder, TimelineMO timeline){
+        setupRecipeOnClickListener(holder.common_component_card_timeline_recipe_cv, timeline.getRecipeId());
+
         /*recipe*/
         if(timeline.getRecipeOwnerImg() != null && !timeline.getRecipeOwnerImg().trim().isEmpty()){
             Utility.loadImageFromURL(mContext, timeline.getRecipeOwnerImg(), holder.common_component_round_image_micro_iv);
@@ -512,6 +550,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         public CircleImageView home_timeline_options_scope_iv;
         public ImageView common_component_image_options_mini_iv;
         public CircleImageView common_component_round_image_micro_iv;
+        public CardView common_component_card_timeline_recipe_cv;
         public TextView common_component_card_timeline_recipe_recipe_name_tv;
         public TextView common_component_card_timeline_recipe_recipe_type_tv;
         public TextView common_component_card_timeline_recipe_recipe_cuisine_tv;
@@ -538,6 +577,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         /*home_timeline_recipe_item*/
         public RelativeLayout fragment_timelines_timeline_recipe_rl;
         public TextView fragment_timelines_timeline_recipe_msg_tv;
+        public CardView fragment_timelines_timeline_recipe_recipe_cv;
         public TextView fragment_timelines_timeline_recipe_recipe_name_tv;
         public TextView fragment_timelines_timeline_recipe_recipe_type_tv;
         public TextView fragment_timelines_timeline_recipe_recipe_cuisine_tv;
@@ -589,6 +629,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             home_timeline_options_scope_iv = view.findViewById(R.id.home_timeline_options_scope_iv);
             common_component_image_options_mini_iv = view.findViewById(R.id.home_timeline_options_iv);
             common_component_round_image_micro_iv = view.findViewById(R.id.common_component_round_image_micro_iv);
+            common_component_card_timeline_recipe_cv = view.findViewById(R.id.common_component_card_timeline_recipe_cv);
             common_component_card_timeline_recipe_recipe_name_tv = view.findViewById(R.id.common_component_card_timeline_recipe_recipe_name_tv);
             common_component_card_timeline_recipe_recipe_type_tv = view.findViewById(R.id.common_component_card_timeline_recipe_recipe_type_tv);
             common_component_card_timeline_recipe_recipe_cuisine_tv = view.findViewById(R.id.common_component_card_timeline_recipe_recipe_cuisine_tv);
@@ -611,6 +652,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             } else if (R.layout.home_timeline_recipe_item == layout) {
                 fragment_timelines_timeline_recipe_rl = view.findViewById(R.id.fragment_timelines_timeline_recipe_rl);
                 fragment_timelines_timeline_recipe_msg_tv = view.findViewById(R.id.fragment_timelines_timeline_recipe_msg_tv);
+                fragment_timelines_timeline_recipe_recipe_cv = view.findViewById(R.id.fragment_timelines_timeline_recipe_recipe_cv);
                 fragment_timelines_timeline_recipe_recipe_name_tv = view.findViewById(R.id.fragment_timelines_timeline_recipe_recipe_name_tv);
                 fragment_timelines_timeline_recipe_recipe_type_tv = view.findViewById(R.id.fragment_timelines_timeline_recipe_recipe_type_tv);
                 fragment_timelines_timeline_recipe_recipe_cuisine_tv = view.findViewById(R.id.fragment_timelines_timeline_recipe_recipe_cuisine_tv);
