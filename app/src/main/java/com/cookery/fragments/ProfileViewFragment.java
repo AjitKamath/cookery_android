@@ -90,6 +90,9 @@ public class ProfileViewFragment extends DialogFragment {
     @InjectView(R.id.profile_view_profile_email_tv)
     TextView profile_view_profile_email_tv;
 
+    @InjectView(R.id.profile_view_profile_email_scope_iv)
+    ImageView profile_view_profile_email_scope_iv;
+
     @InjectView(R.id.profile_view_profile_email_change_iv)
     ImageView profile_view_profile_email_change_iv;
 
@@ -102,6 +105,9 @@ public class ProfileViewFragment extends DialogFragment {
     @InjectView(R.id.profile_view_profile_phone_tv)
     TextView profile_view_profile_phone_tv;
 
+    @InjectView(R.id.profile_view_profile_phone_scope_iv)
+    ImageView profile_view_profile_phone_scope_iv;
+
     @InjectView(R.id.profile_view_profile_phone_change_iv)
     ImageView profile_view_profile_phone_change_iv;
 
@@ -110,6 +116,12 @@ public class ProfileViewFragment extends DialogFragment {
 
     @InjectView(R.id.profile_view_profile_gender_tv)
     TextView profile_view_profile_gender_tv;
+
+    @InjectView(R.id.profile_view_profile_gender_scope_iv)
+    ImageView profile_view_profile_gender_scope_iv;
+
+    @InjectView(R.id.profile_view_profile_gender_change_iv)
+    ImageView profile_view_profile_gender_change_iv;
 
     @InjectView(R.id.profile_view_followers_tv)
     TextView profile_view_followers_tv;
@@ -192,15 +204,10 @@ public class ProfileViewFragment extends DialogFragment {
         }
 
         profile_view_profile_name_tv.setText(loggedInUser.getNAME());
-        profile_view_profile_email_tv.setText(loggedInUser.getEMAIL());
 
-        if(loggedInUser.getMOBILE() != null && !loggedInUser.getMOBILE().trim().isEmpty()){
-            profile_view_profile_phone_tv.setText(loggedInUser.getMOBILE());
-        }
-
-        if(loggedInUser.getGENDER() != null && !loggedInUser.getGENDER().trim().isEmpty()){
-            profile_view_profile_gender_tv.setText(Utility.getGender(loggedInUser.getGENDER()));
-        }
+        updateEmail(loggedInUser);
+        updatePhone(loggedInUser);
+        updateGender(loggedInUser);
 
         profile_view_followers_tv.setText(loggedInUser.getFollowersCount()+" FOLLOWERS");
         profile_view_following_tv.setText(loggedInUser.getFollowingCount()+" FOLLOWING");
@@ -251,7 +258,7 @@ public class ProfileViewFragment extends DialogFragment {
             }
         });
 
-        profile_view_profile_gender_tv.setOnClickListener(new View.OnClickListener() {
+        profile_view_profile_gender_change_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Map<String, Object> paramsMap = new HashMap<>();
@@ -329,26 +336,41 @@ public class ProfileViewFragment extends DialogFragment {
         doUpdateLoggedInUser = true;
     }
 
-    public void updateEmail(String email){
-        profile_view_profile_email_tv.setText(email);
+    public void updateEmail(UserMO user){
+        profile_view_profile_email_tv.setText(user.getEMAIL());
         profile_view_profile_email_verify_tv.setText("NOT VERIFIED");
         profile_view_profile_email_verify_tv.setTextColor(ContextCompat.getColor(mContext, R.color.red));
+        profile_view_profile_email_scope_iv.setImageResource(Utility.getScopeImageId(user.getEMAIL_SCOPE_ID()));
 
         doUpdateLoggedInUser = true;
     }
 
-    public void updatePhone(String phone){
-        profile_view_profile_phone_tv.setText(phone);
-        profile_view_profile_phone_verify_tv.setText("NOT VERIFIED");
-        profile_view_profile_phone_verify_tv.setTextColor(ContextCompat.getColor(mContext, R.color.red));
+    public void updatePhone(UserMO user){
+        if(user.getMOBILE() != null && !user.getMOBILE().trim().isEmpty()){
+            profile_view_profile_phone_tv.setText(user.getMOBILE());
+            profile_view_profile_phone_verify_tv.setText("NOT VERIFIED");
+            profile_view_profile_phone_verify_tv.setTextColor(ContextCompat.getColor(mContext, R.color.red));
+            profile_view_profile_phone_scope_iv.setImageResource(Utility.getScopeImageId(user.getMOBILE_SCOPE_ID()));
 
-        doUpdateLoggedInUser = true;
+            doUpdateLoggedInUser = true;
+        }
+        else{
+            profile_view_profile_phone_tv.setText("Not Set");
+            profile_view_profile_phone_scope_iv.setVisibility(View.GONE);
+        }
     }
 
-    public void updateGender(String gender){
-        profile_view_profile_gender_tv.setText(Utility.getGender(gender));
+    public void updateGender(UserMO user){
+        if(user.getGENDER() != null && !user.getGENDER().trim().isEmpty()) {
+            profile_view_profile_gender_tv.setText(Utility.getGender(user.getGENDER()));
+            profile_view_profile_gender_scope_iv.setImageResource(Utility.getScopeImageId(user.getGENDER_SCOPE_ID()));
 
-        doUpdateLoggedInUser = true;
+            doUpdateLoggedInUser = true;
+        }
+        else{
+            profile_view_profile_gender_tv.setText("Not Set");
+            profile_view_profile_gender_scope_iv.setVisibility(View.GONE);
+        }
     }
 
     private void updatePhoto(String photoPath){

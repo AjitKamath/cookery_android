@@ -68,12 +68,31 @@ import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
+import static com.cookery.utils.Constants.SCOPE_FOLLOWERS;
+import static com.cookery.utils.Constants.SCOPE_PUBLIC;
+import static com.cookery.utils.Constants.SCOPE_SELF;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.SERVER_ADDRESS;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
 public class Utility extends Activity {
     private static final String CLASS_NAME = Utility.class.getName();
+
+    public static int getScopeImageId(int scope){
+        if(SCOPE_SELF == scope){
+            return R.drawable.user;
+        }
+        else if(SCOPE_PUBLIC == scope){
+            return R.drawable.globe;
+        }
+        else if(SCOPE_FOLLOWERS == scope){
+            return R.drawable.users;
+        }
+        else{
+            Log.e(CLASS_NAME, "Error ! Could not identify the scope id("+scope+")");
+            return R.drawable.globe;
+        }
+    }
 
     public static UserMO getUserFromUserSecurity(Context context){
         UserSecurity userSecurity = new UserSecurity(context);

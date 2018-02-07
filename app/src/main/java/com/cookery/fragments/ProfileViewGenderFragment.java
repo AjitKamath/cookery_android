@@ -212,7 +212,7 @@ public class ProfileViewGenderFragment extends DialogFragment {
 
             if(message != null && !message.isError()){
                 if(getTargetFragment() instanceof ProfileViewFragment){
-                    ((ProfileViewFragment)getTargetFragment()).updateGender(user.getGENDER());
+                    ((ProfileViewFragment)getTargetFragment()).updateGender(user);
                     dismiss();
                 }
                 else{

@@ -114,11 +114,21 @@
 
                     <TextView
                         android:id="@+id/profile_view_profile_email_tv"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="User Email"
                         android:textColor="@color/secondaryDarkText"
                         android:textSize="@dimen/secondary_text_size" />
+
+                    <ImageView
+                        android:layout_toRightOf="@+id/profile_view_profile_email_tv"
+                        android:id="@+id/profile_view_profile_email_scope_iv"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/globe" />
+
 
                     <ImageView
                         android:id="@+id/profile_view_profile_email_change_iv"
@@ -225,11 +235,20 @@
 
                     <TextView
                         android:id="@+id/profile_view_profile_phone_tv"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Not Set"
                         android:textColor="@color/secondaryDarkText"
                         android:textSize="@dimen/secondary_text_size" />
+
+                    <ImageView
+                        android:layout_toRightOf="@+id/profile_view_profile_phone_tv"
+                        android:id="@+id/profile_view_profile_phone_scope_iv"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/globe" />
 
                     <ImageView
                         android:id="@+id/profile_view_profile_phone_change_iv"
@@ -272,11 +291,20 @@
 
                     <TextView
                         android:id="@+id/profile_view_profile_gender_tv"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Not Set"
                         android:textColor="@color/secondaryDarkText"
                         android:textSize="@dimen/secondary_text_size" />
+
+                    <ImageView
+                        android:layout_toRightOf="@+id/profile_view_profile_gender_tv"
+                        android:id="@+id/profile_view_profile_gender_scope_iv"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/globe" />
 
                     <ImageView
                         android:id="@+id/profile_view_profile_gender_change_iv"

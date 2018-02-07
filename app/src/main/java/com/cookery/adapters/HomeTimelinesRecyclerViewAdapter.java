@@ -33,9 +33,6 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.cookery.utils.Constants.DB_DATE_TIME;
-import static com.cookery.utils.Constants.SCOPE_FOLLOWERS;
-import static com.cookery.utils.Constants.SCOPE_PUBLIC;
-import static com.cookery.utils.Constants.SCOPE_SELF;
 import static com.cookery.utils.Constants.TIMELINE_COMMENT_RECIPE_ADD;
 import static com.cookery.utils.Constants.TIMELINE_COMMENT_RECIPE_REMOVE;
 import static com.cookery.utils.Constants.TIMELINE_LIKE_COMMENT_ADD;
@@ -378,18 +375,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             }
         }
 
-        if(SCOPE_PUBLIC == timeline.getScopeId()){
-            holder.home_timeline_options_scope_iv.setImageResource(R.drawable.globe);
-        }
-        else if(SCOPE_FOLLOWERS == timeline.getScopeId()){
-            holder.home_timeline_options_scope_iv.setImageResource(R.drawable.users);
-        }
-        else if(SCOPE_SELF == timeline.getScopeId()){
-            holder.home_timeline_options_scope_iv.setImageResource(R.drawable.user);
-        }
-        else{
-            Log.e(CLASS_NAME, "Error ! Unsupported scope for the timeline : "+timeline.getScopeId());
-        }
+        holder.home_timeline_options_scope_iv.setImageResource(Utility.getScopeImageId(timeline.getScopeId()));
 
         holder.common_component_image_options_mini_iv.setTag(timeline);
         holder.common_component_image_options_mini_iv.setOnClickListener(new View.OnClickListener() {

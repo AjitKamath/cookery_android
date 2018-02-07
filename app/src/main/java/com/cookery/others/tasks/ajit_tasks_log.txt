@@ -260,3 +260,7 @@
 
 7 feb 2018
 1. #164 - People View - Show public profile on clicking user in People View.
+2. #117 - Profile View - shown to world/self indicator for Email, Phone & Gender.
+
+-- git checkin on 7 feb 2018 --
+

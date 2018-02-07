@@ -176,7 +176,7 @@ public class ProfileViewEmailFragment extends DialogFragment {
 
             if(message != null && !message.isError()){
                 if(getTargetFragment() instanceof ProfileViewFragment){
-                    ((ProfileViewFragment)getTargetFragment()).updateEmail(user.getEMAIL());
+                    ((ProfileViewFragment)getTargetFragment()).updateEmail(user);
                     dismiss();
 
                     message.setPurpose("USER_UPDATE_EMAIL_SUCCESS");
