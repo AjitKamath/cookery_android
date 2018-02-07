@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.adapters.UsersRecyclerViewAdapter;
+import com.cookery.interfaces.ItemClickListener;
 import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.UserMO;
 
@@ -90,7 +91,12 @@ public class UsersFragment extends DialogFragment {
         }
 
         if(usersList != null){
-            final UsersRecyclerViewAdapter adapter = new UsersRecyclerViewAdapter(mContext, usersList, purpose);
+            final UsersRecyclerViewAdapter adapter = new UsersRecyclerViewAdapter(mContext, usersList, purpose, new ItemClickListener() {
+                @Override
+                public void onItemClick(Object item) {
+
+                }
+            });
             adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
                 @Override
                 public void onBottomReached(int position) {

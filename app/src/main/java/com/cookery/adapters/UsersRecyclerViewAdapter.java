@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.interfaces.ItemClickListener;
 import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.UserMO;
 import com.cookery.utils.DateTimeUtility;
@@ -31,14 +32,14 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
     private Context mContext;
 
     private List<UserMO> usersList;
-    private View.OnClickListener listener;
+    private ItemClickListener itemClickListener;
     private OnBottomReachedListener onBottomReachedListener;
     private String purpose;
 
-    public UsersRecyclerViewAdapter(Context mContext, List<UserMO> usersList, String purpose) {
+    public UsersRecyclerViewAdapter(Context mContext, List<UserMO> usersList, String purpose, ItemClickListener itemClickListener) {
         this.mContext = mContext;
         this.usersList = usersList;
-        this.listener = listener;
+        this.itemClickListener = itemClickListener;
         this.purpose = purpose;
     }
 
@@ -76,6 +77,8 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
 
         holder.users_item_datetime_tv.setText(DateTimeUtility.getCreateOrModifiedTime(user.getCREATE_DTM(), user.getMOD_DTM()));
 
+        holder.bind(usersList.get(position), itemClickListener);
+
         setFont(holder.users_item_rl);
     }
 
@@ -101,6 +104,14 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
             users_item_username_tv = view.findViewById(R.id.users_item_username_tv);
             users_item_follow_tv = view.findViewById(R.id.users_item_follow_tv);
             users_item_datetime_tv = view.findViewById(R.id.users_item_datetime_tv);
+        }
+
+        public void bind(final Object item, final ItemClickListener listener) {
+            users_item_rl.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    listener.onItemClick(item);
+                }
+            });
         }
     }
 

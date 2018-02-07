@@ -255,3 +255,8 @@
 
 6 feb 2018
 1. #90 - Profile View - Crop DP - User can crop his DP.
+
+-- git checkin on 6 feb 2018 --
+
+7 feb 2018
+1. #164 - People View - Show public profile on clicking user in People View.
