@@ -78,6 +78,24 @@ import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 public class Utility extends Activity {
     private static final String CLASS_NAME = Utility.class.getName();
 
+    public static String getUserNameOrYou(String username, int userId, int loggedInUserId){
+        if(userId != 0 && userId == loggedInUserId){
+            return "YOU";
+        }
+        else{
+            return username;
+        }
+    }
+
+    public static String getUserNameOrYour(String username, int userId, int loggedInUserId){
+        if(userId != 0 && userId == loggedInUserId){
+            return "YOUR";
+        }
+        else{
+            return username+"'s";
+        }
+    }
+
     public static int getScopeImageId(int scope){
         if(SCOPE_SELF == scope){
             return R.drawable.user;
@@ -91,6 +109,15 @@ public class Utility extends Activity {
         else{
             Log.e(CLASS_NAME, "Error ! Could not identify the scope id("+scope+")");
             return R.drawable.globe;
+        }
+    }
+
+    public static int getLikeImageId(boolean isLiked){
+        if(isLiked){
+            return R.drawable.heart;
+        }
+        else{
+            return R.drawable.heart_unselected;
         }
     }
 

@@ -264,3 +264,6 @@
 
 -- git checkin on 7 feb 2018 --
 
+9 feb 2018
+1. #151  - Profile View - Followers & Following - show followers/following list on long click on followers/following in Profile View
+

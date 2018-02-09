@@ -48,6 +48,7 @@ import static com.cookery.utils.Constants.FRAGMENT_RECIPE_STEPS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_VIEWED_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
@@ -320,19 +321,11 @@ public class RecipeViewFragment extends DialogFragment {
     public void setLikeView() {
         common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(recipe.getLikedUsers() == null ? 0 : recipe.getLikedUsers().size()));
 
-        if (recipe.isUserLiked()) {
-            common_fragment_recipe_like_iv.setImageResource(R.drawable.heart);
-        } else {
-            common_fragment_recipe_like_iv.setImageResource(R.drawable.heart_unselected);
-        }
+        common_fragment_recipe_like_iv.setImageResource(Utility.getLikeImageId(recipe.isUserLiked()));
 
         common_fragment_recipe_like_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (recipe.getUSER_ID() == loggerInUser.getUSER_ID()) {
-                    return;
-                }
-
                 LikesMO like = new LikesMO();
                 like.setUSER_ID(loggerInUser.getUSER_ID());
                 like.setTYPE("RECIPE");
@@ -651,10 +644,12 @@ public class RecipeViewFragment extends DialogFragment {
                     if (recipe.getLikedUsers() != null && !recipe.getLikedUsers().isEmpty()) {
                         Object array[] = new Object[]{"LIKE", recipe.getLikedUsers()};
 
-                        Map<String, Object> bundleMap = new HashMap<String, Object>();
-                        bundleMap.put(GENERIC_OBJECT, array);
+                        Map<String, Object> params = new HashMap<String, Object>();
+                        params.put(GENERIC_OBJECT, array);
+                        params.put(SELECTED_ITEM, recipe);
+                        params.put(LOGGED_IN_USER, loggerInUser);
 
-                        Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE, FRAGMENT_RECIPE_LIKED_USERS, new UsersFragment(), bundleMap);
+                        Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE, FRAGMENT_RECIPE_LIKED_USERS, new UsersFragment(), params);
                     }
                 } else if ("VIEW".equalsIgnoreCase(purpose)) {
                     recipe.setViewedUsers(users);
@@ -663,10 +658,12 @@ public class RecipeViewFragment extends DialogFragment {
                     if (recipe.getViewedUsers() != null && !recipe.getViewedUsers().isEmpty()) {
                         Object array[] = new Object[]{"VIEW", recipe.getViewedUsers()};
 
-                        Map<String, Object> bundleMap = new HashMap<String, Object>();
-                        bundleMap.put(GENERIC_OBJECT, array);
+                        Map<String, Object> params = new HashMap<String, Object>();
+                        params.put(GENERIC_OBJECT, array);
+                        params.put(SELECTED_ITEM, recipe);
+                        params.put(LOGGED_IN_USER, loggerInUser);
 
-                        Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE, FRAGMENT_RECIPE_VIEWED_USERS, new UsersFragment(), bundleMap);
+                        Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE, FRAGMENT_RECIPE_VIEWED_USERS, new UsersFragment(), params);
                     }
                 }
             }

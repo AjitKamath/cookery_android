@@ -345,6 +345,7 @@
             android:weightSum="2">
 
             <LinearLayout
+                android:id="@+id/profile_view_follow_followers_ll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -369,6 +370,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/profile_view_follow_following_ll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"

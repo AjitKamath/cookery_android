@@ -54,7 +54,7 @@
         </RelativeLayout>
 
         <TextView
-            android:textColor="@color/app_color"
+            android:textColor="@color/secondaryDarkText"
             android:id="@+id/users_item_follow_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

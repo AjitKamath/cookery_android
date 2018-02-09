@@ -84,10 +84,6 @@ public class CommonImagePickerFragment extends DialogFragment {
             AddRecipeFragment fragment = (AddRecipeFragment) getTargetFragment();
             fragment.onFinishDialog(choice);
         }
-        else if(getTargetFragment() instanceof ProfileViewFragment){
-            ProfileViewFragment fragment = (ProfileViewFragment) getTargetFragment();
-            fragment.onFinishDialog(choice);
-        }
         else{
             Log.e(CLASS_NAME, UN_IDENTIFIED_PARENT_FRAGMENT+":"+getParentFragment());
         }

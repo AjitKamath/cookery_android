@@ -40,6 +40,7 @@ import butterknife.InjectView;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_LIKED_USERS;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
 
@@ -292,6 +293,7 @@ public class RecipeViewCommentsFragment extends DialogFragment {
 
     class AsyncFetchLikedUsers extends AsyncTask<CommentMO, Void, Object> {
         private Fragment fragment;
+        private CommentMO comment;
 
         @Override
         protected void onPreExecute(){
@@ -300,7 +302,7 @@ public class RecipeViewCommentsFragment extends DialogFragment {
 
         @Override
         protected Object doInBackground(CommentMO... objects) {
-            CommentMO comment = objects[0];
+            comment = objects[0];
             return InternetUtility.fetchLikedUsers("COMMENT", comment.getCOM_ID());
         }
 
@@ -317,10 +319,12 @@ public class RecipeViewCommentsFragment extends DialogFragment {
             if(users != null && !users.isEmpty()){
                 Object array[] = new Object[]{"LIKE", users};
 
-                Map<String, Object> bundleMap = new HashMap<String, Object>();
-                bundleMap.put(GENERIC_OBJECT, array);
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put(GENERIC_OBJECT, array);
+                params.put(SELECTED_ITEM, comment);
+                params.put(LOGGED_IN_USER, loggedInUser);
 
-                Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE_COMMENTS, FRAGMENT_RECIPE_LIKED_USERS, new UsersFragment(), bundleMap);
+                Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE_COMMENTS, FRAGMENT_RECIPE_LIKED_USERS, new UsersFragment(), params);
             }
         }
     }
