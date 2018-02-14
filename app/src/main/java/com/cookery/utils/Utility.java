@@ -78,6 +78,10 @@ import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 public class Utility extends Activity {
     private static final String CLASS_NAME = Utility.class.getName();
 
+    public static String getFollowingText(String username){
+        return "you follow "+username;
+    }
+
     public static String getUserNameOrYou(String username, int userId, int loggedInUserId){
         if(userId != 0 && userId == loggedInUserId){
             return "YOU";

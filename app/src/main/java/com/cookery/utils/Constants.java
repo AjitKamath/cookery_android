@@ -74,6 +74,7 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_USER_FOLLOWINGS_FETCH = "USER_FOLLOWINGS_FETCH";
     public static final String PHP_FUNCTION_KEY_TIMELINE_SCOPE_MODIFY = "TIMELINE_SCOPE_MODIFY";
     public static final String PHP_FUNCTION_KEY_TIMELINE_DELETE = "TIMELINE_DELETE";
+    public static final String PHP_FUNCTION_KEY_USER_SEARCH = "USER_SEARCH";
     /*PHP function keys*/
 
     /*Timeline keys*/

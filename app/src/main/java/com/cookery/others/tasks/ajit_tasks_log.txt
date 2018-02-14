@@ -267,3 +267,8 @@
 9 feb 2018
 1. #151  - Profile View - Followers & Following - show followers/following list on long click on followers/following in Profile View
 
+-- git checkin on 9 feb 2018 --
+
+14 feb 2018
+1. #158 People - Search Users - user can search other users in People View and see thier public profile.
+

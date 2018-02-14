@@ -12,16 +12,25 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.adapters.PeopleViewSearchAutoCompleteAdapter;
 import com.cookery.adapters.PeopleViewViewPagerAdapter;
+import com.cookery.component.DelayAutoCompleteTextView;
 import com.cookery.interfaces.ItemClickListener;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
@@ -39,6 +48,7 @@ import static com.cookery.utils.Constants.FRAGMENT_PEOPLE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.UI_FONT;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
 /**
  * Created by ajit on 21/3/16.
@@ -51,6 +61,12 @@ public class PeopleViewFragment extends DialogFragment {
     /*components*/
     @InjectView(R.id.people_view_rl)
     RelativeLayout people_view_rl;
+    
+    @InjectView(R.id.people_view_search_act)
+    DelayAutoCompleteTextView people_view_search_act;
+    
+    @InjectView(R.id.people_view_search_iv)
+    ImageView people_view_search_iv;
 
     @InjectView(R.id.people_view_tl)
     TabLayout people_view_tl;
@@ -94,6 +110,8 @@ public class PeopleViewFragment extends DialogFragment {
     }
 
     private void setupPage() {
+        setupSearch();
+
         final List<Integer> viewPagerTabsList = new ArrayList<>();
         viewPagerTabsList.add(R.layout.people_view_followers_following);
         viewPagerTabsList.add(R.layout.people_view_followers_following);
@@ -135,7 +153,78 @@ public class PeopleViewFragment extends DialogFragment {
 
             }
         });
+    }
 
+    private void setupSearch() {
+        PeopleViewSearchAutoCompleteAdapter adapter = new PeopleViewSearchAutoCompleteAdapter(mContext, loggedInUser);
+        people_view_search_act.setThreshold(2);
+        people_view_search_act.setAutoCompleteDelay(1000);
+        people_view_search_act.setAdapter(adapter);
+
+        people_view_search_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(view.getTag() != null){
+                    if(view.getTag() instanceof UserMO){
+                        new AsyncFetchUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO)view.getTag()).getUSER_ID());
+                    }
+                    else{
+                        Log.e(CLASS_NAME, "Error ! "+UN_IDENTIFIED_OBJECT_TYPE+" : "+view.getTag());
+                    }
+                }
+                else{
+                    Log.e(CLASS_NAME, "Error ! View Tag is null/empty");
+                }
+            }
+        });
+
+        people_view_search_act.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String text = String.valueOf(people_view_search_act.getText());
+
+                if (text.trim().isEmpty()) {
+                    RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                    rotate.setDuration(100);
+                    rotate.setInterpolator(new LinearInterpolator());
+                    people_view_search_iv.startAnimation(rotate);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String text = String.valueOf(people_view_search_act.getText());
+
+                if (text.trim().isEmpty()) {
+                    RotateAnimation rotate = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                    rotate.setDuration(100);
+                    rotate.setInterpolator(new LinearInterpolator());
+                    people_view_search_iv.startAnimation(rotate);
+
+                    people_view_search_iv.setVisibility(View.GONE);
+                } else {
+                    people_view_search_iv.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        people_view_search_iv.setVisibility(View.GONE);
+        people_view_search_iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                people_view_search_act.setText("");
+
+                RotateAnimation rotate = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                rotate.setDuration(100);
+                rotate.setInterpolator(new LinearInterpolator());
+                people_view_search_iv.startAnimation(rotate);
+            }
+        });
     }
 
     // Empty constructor required for DialogFragment

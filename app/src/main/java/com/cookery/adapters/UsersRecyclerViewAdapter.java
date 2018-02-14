@@ -70,7 +70,7 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
 
         if(user.isFollowing()){
             holder.users_item_follow_tv.setVisibility(View.VISIBLE);
-            holder.users_item_follow_tv.setText("you follow "+user.getNAME());
+            holder.users_item_follow_tv.setText(Utility.getFollowingText(user.getNAME()));
         }
         else{
             holder.users_item_follow_tv.setVisibility(View.GONE);
