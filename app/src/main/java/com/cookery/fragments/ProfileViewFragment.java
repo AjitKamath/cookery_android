@@ -6,23 +6,19 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -34,15 +30,10 @@ import com.cookery.models.UserMO;
 import com.cookery.utils.DateTimeUtility;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
+import com.theartofdev.edmodo.cropper.CropImage;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -50,7 +41,6 @@ import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
-import static com.cookery.utils.Constants.CAMERA_CHOICE;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_EMAIL;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_GENDER;
@@ -58,10 +48,11 @@ import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_NAME;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_PASSWORD;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_PHONE;
-import static com.cookery.utils.Constants.GALLERY_CHOICE;
+import static com.cookery.utils.Constants.FRAGMENT_USERS;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
-import static com.cookery.utils.Constants.REQUEST_GALLERY_PHOTO;
-import static com.cookery.utils.Constants.REQUEST_TAKE_PHOTO;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
+import static com.cookery.utils.Constants.OK;
+import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
 
 /**
@@ -94,6 +85,9 @@ public class ProfileViewFragment extends DialogFragment {
     @InjectView(R.id.profile_view_profile_email_tv)
     TextView profile_view_profile_email_tv;
 
+    @InjectView(R.id.profile_view_profile_email_scope_iv)
+    ImageView profile_view_profile_email_scope_iv;
+
     @InjectView(R.id.profile_view_profile_email_change_iv)
     ImageView profile_view_profile_email_change_iv;
 
@@ -106,6 +100,9 @@ public class ProfileViewFragment extends DialogFragment {
     @InjectView(R.id.profile_view_profile_phone_tv)
     TextView profile_view_profile_phone_tv;
 
+    @InjectView(R.id.profile_view_profile_phone_scope_iv)
+    ImageView profile_view_profile_phone_scope_iv;
+
     @InjectView(R.id.profile_view_profile_phone_change_iv)
     ImageView profile_view_profile_phone_change_iv;
 
@@ -115,8 +112,20 @@ public class ProfileViewFragment extends DialogFragment {
     @InjectView(R.id.profile_view_profile_gender_tv)
     TextView profile_view_profile_gender_tv;
 
+    @InjectView(R.id.profile_view_profile_gender_scope_iv)
+    ImageView profile_view_profile_gender_scope_iv;
+
+    @InjectView(R.id.profile_view_profile_gender_change_iv)
+    ImageView profile_view_profile_gender_change_iv;
+
+    @InjectView(R.id.profile_view_follow_followers_ll)
+    LinearLayout profile_view_follow_followers_ll;
+
     @InjectView(R.id.profile_view_followers_tv)
     TextView profile_view_followers_tv;
+
+    @InjectView(R.id.profile_view_follow_following_ll)
+    LinearLayout profile_view_follow_following_ll;
 
     @InjectView(R.id.profile_view_following_tv)
     TextView profile_view_following_tv;
@@ -148,7 +157,6 @@ public class ProfileViewFragment extends DialogFragment {
 
     private UserMO loggedInUser;
     private boolean doUpdateLoggedInUser = false;
-    private String imagePathStr;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -175,6 +183,7 @@ public class ProfileViewFragment extends DialogFragment {
     public void onDismiss(final DialogInterface dialog) {
         if(doUpdateLoggedInUser){
             ((HomeActivity)getActivity()).updateLoggedInUser();
+            doUpdateLoggedInUser = false;
         }
     }
 
@@ -195,15 +204,10 @@ public class ProfileViewFragment extends DialogFragment {
         }
 
         profile_view_profile_name_tv.setText(loggedInUser.getNAME());
-        profile_view_profile_email_tv.setText(loggedInUser.getEMAIL());
 
-        if(loggedInUser.getMOBILE() != null && !loggedInUser.getMOBILE().trim().isEmpty()){
-            profile_view_profile_phone_tv.setText(loggedInUser.getMOBILE());
-        }
-
-        if(loggedInUser.getGENDER() != null && !loggedInUser.getGENDER().trim().isEmpty()){
-            profile_view_profile_gender_tv.setText(Utility.getGender(loggedInUser.getGENDER()));
-        }
+        updateEmail(loggedInUser);
+        updatePhone(loggedInUser);
+        updateGender(loggedInUser);
 
         profile_view_followers_tv.setText(loggedInUser.getFollowersCount()+" FOLLOWERS");
         profile_view_following_tv.setText(loggedInUser.getFollowingCount()+" FOLLOWING");
@@ -211,7 +215,10 @@ public class ProfileViewFragment extends DialogFragment {
         profile_view_profile_image_change_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utility.pickPhotos(getFragmentManager(), FRAGMENT_PROFILE_VIEW);
+                //Utility.pickPhotos(getFragmentManager(), FRAGMENT_PROFILE_VIEW);
+
+                Fragment fragment = getFragmentManager().findFragmentByTag(FRAGMENT_PROFILE_VIEW);
+                CropImage.activity().start(mContext, fragment);
             }
         });
 
@@ -251,12 +258,28 @@ public class ProfileViewFragment extends DialogFragment {
             }
         });
 
-        profile_view_profile_gender_tv.setOnClickListener(new View.OnClickListener() {
+        profile_view_profile_gender_change_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Map<String, Object> paramsMap = new HashMap<>();
                 paramsMap.put(GENERIC_OBJECT, loggedInUser);
                 Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_PROFILE_VIEW_GENDER, new ProfileViewGenderFragment(), paramsMap);
+            }
+        });
+
+        profile_view_follow_followers_ll.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                new AsyncTaskerFetchUserFollowers().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                return true;
+            }
+        });
+
+        profile_view_follow_following_ll.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                new AsyncTaskerFetchUserFollowing().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                return true;
             }
         });
 
@@ -329,26 +352,41 @@ public class ProfileViewFragment extends DialogFragment {
         doUpdateLoggedInUser = true;
     }
 
-    public void updateEmail(String email){
-        profile_view_profile_email_tv.setText(email);
+    public void updateEmail(UserMO user){
+        profile_view_profile_email_tv.setText(user.getEMAIL());
         profile_view_profile_email_verify_tv.setText("NOT VERIFIED");
         profile_view_profile_email_verify_tv.setTextColor(ContextCompat.getColor(mContext, R.color.red));
+        profile_view_profile_email_scope_iv.setImageResource(Utility.getScopeImageId(user.getEMAIL_SCOPE_ID()));
 
         doUpdateLoggedInUser = true;
     }
 
-    public void updatePhone(String phone){
-        profile_view_profile_phone_tv.setText(phone);
-        profile_view_profile_phone_verify_tv.setText("NOT VERIFIED");
-        profile_view_profile_phone_verify_tv.setTextColor(ContextCompat.getColor(mContext, R.color.red));
+    public void updatePhone(UserMO user){
+        if(user.getMOBILE() != null && !user.getMOBILE().trim().isEmpty()){
+            profile_view_profile_phone_tv.setText(user.getMOBILE());
+            profile_view_profile_phone_verify_tv.setText("NOT VERIFIED");
+            profile_view_profile_phone_verify_tv.setTextColor(ContextCompat.getColor(mContext, R.color.red));
+            profile_view_profile_phone_scope_iv.setImageResource(Utility.getScopeImageId(user.getMOBILE_SCOPE_ID()));
 
-        doUpdateLoggedInUser = true;
+            doUpdateLoggedInUser = true;
+        }
+        else{
+            profile_view_profile_phone_tv.setText("Not Set");
+            profile_view_profile_phone_scope_iv.setVisibility(View.GONE);
+        }
     }
 
-    public void updateGender(String gender){
-        profile_view_profile_gender_tv.setText(Utility.getGender(gender));
+    public void updateGender(UserMO user){
+        if(user.getGENDER() != null && !user.getGENDER().trim().isEmpty()) {
+            profile_view_profile_gender_tv.setText(Utility.getGender(user.getGENDER()));
+            profile_view_profile_gender_scope_iv.setImageResource(Utility.getScopeImageId(user.getGENDER_SCOPE_ID()));
 
-        doUpdateLoggedInUser = true;
+            doUpdateLoggedInUser = true;
+        }
+        else{
+            profile_view_profile_gender_tv.setText("Not Set");
+            profile_view_profile_gender_scope_iv.setVisibility(View.GONE);
+        }
     }
 
     private void updatePhoto(String photoPath){
@@ -356,93 +394,17 @@ public class ProfileViewFragment extends DialogFragment {
         new AsyncTaskerUpdateUserImage().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public void onFinishDialog(Integer choice) {
-        if (choice == null) {
-            Log.e(CLASS_NAME, "Could not identify the choice : "+choice);
-            return;
-        }
-        else if(GALLERY_CHOICE == choice){
-            showPickImageFromGallery();
-        }
-        else if(CAMERA_CHOICE == choice){
-            showPickImageFromCamera();
-        }
-    }
-
-    private void showPickImageFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        startActivityForResult(intent, REQUEST_GALLERY_PHOTO);
-    }
-
-    private void showPickImageFromCamera() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-
-                // Continue only if the File was successfully created
-                if (photoFile != null) {
-                    Uri photoURI = FileProvider.getUriForFile(getActivity(), "com.example.android.fileprovider", photoFile);
-
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-                }
-            }
-            catch (IOException ex) {
-                Log.e(CLASS_NAME, "An error occurred when getting image file from camera: ");
-            }
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePathStr);
-            updatePhoto(imagePathStr);
-        }
-
-        else if (requestCode == REQUEST_GALLERY_PHOTO && resultCode == RESULT_OK) {
-            try {
-                InputStream inputStream = mContext.getContentResolver().openInputStream(data.getData());
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                File photoFile = createImageFile();
-
-                OutputStream outputStream =  new FileOutputStream(photoFile);
-
-                int read = 0;
-                byte[] bytes = new byte[1024];
-
-                InputStream is = mContext.getContentResolver().openInputStream(data.getData());
-
-                while ((read = is.read(bytes)) != -1) {
-                    outputStream.write(bytes, 0, read);
-                }
-
-                imagePathStr = photoFile.getAbsolutePath();
-
-                updatePhoto(imagePathStr);
-            }
-            catch (Exception e){
-                Log.e(CLASS_NAME, "Error while getting the image from the user choice");
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                updatePhoto(result.getUri().getPath());
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                Log.e(CLASS_NAME, "Error ! Something went wrong ! : "+error.getMessage());
             }
         }
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = timeStamp + "_";
-        File storageDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(imageFileName,  ".jpg", storageDir);
-
-        // Save a file: path for use with ACTION_VIEW intents
-        imagePathStr = image.getAbsolutePath();
-        return image;
     }
 
     // Empty constructor required for DialogFragment
@@ -517,6 +479,73 @@ public class ProfileViewFragment extends DialogFragment {
 
                 message.setPurpose("USER_UPDATE_IMAGE_FAILED");
                 Utility.showMessageDialog(getFragmentManager(), null, message);
+            }
+        }
+    }
+
+    class AsyncTaskerFetchUserFollowers extends AsyncTask<Object, Void, Object> {
+        private Fragment fragment;
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            return InternetUtility.fetchUserFollowers(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), 0);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching followers ..");
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            List<UserMO> followers = (List<UserMO>) object;
+
+            Utility.closeWaitDialog(getFragmentManager(), fragment);
+
+            if(followers != null && !followers.isEmpty()){
+                Object array[] = new Object[]{"FOLLOWERS", followers};
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put(GENERIC_OBJECT, array);
+                params.put(SELECTED_ITEM, loggedInUser);
+                params.put(LOGGED_IN_USER, loggedInUser);
+
+                Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_USERS, new UsersFragment(), params);
+            }
+            else{
+                Utility.showSnacks(profile_view_rl, "No Followers to show !", OK, Snackbar.LENGTH_LONG);
+            }
+        }
+    }
+
+    class AsyncTaskerFetchUserFollowing extends AsyncTask<Object, Void, Object> {
+        private Fragment fragment;
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            return InternetUtility.fetchUserFollowings(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), 0);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching users ..");
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            List<UserMO> followings = (List<UserMO>) object;
+
+            Utility.closeWaitDialog(getFragmentManager(), fragment);
+
+            if (followings != null && !followings.isEmpty()) {
+                Object array[] = new Object[]{"FOLLOWINGS", followings};
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put(GENERIC_OBJECT, array);
+                params.put(SELECTED_ITEM, loggedInUser);
+                params.put(LOGGED_IN_USER, loggedInUser);
+
+                Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_USERS, new UsersFragment(), params);
+            } else {
+                Utility.showSnacks(profile_view_rl, "No Followers to show !", OK, Snackbar.LENGTH_LONG);
             }
         }
     }

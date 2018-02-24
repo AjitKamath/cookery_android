@@ -14,7 +14,7 @@ public final class Constants {
 
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_AJIT = "cookery_php-ajitkamathk452607.codeanyapp.com";
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_VISHAL = "cookery_php-dial2vishal53897.codeanyapp.com";
-    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_VISHAL;
+    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_AJIT;
 
     private static final String SERVER_CODEANYWHERE_PUBLIC_DIR = "public";
 
@@ -74,6 +74,7 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_USER_FOLLOWINGS_FETCH = "USER_FOLLOWINGS_FETCH";
     public static final String PHP_FUNCTION_KEY_TIMELINE_SCOPE_MODIFY = "TIMELINE_SCOPE_MODIFY";
     public static final String PHP_FUNCTION_KEY_TIMELINE_DELETE = "TIMELINE_DELETE";
+    public static final String PHP_FUNCTION_KEY_USER_SEARCH = "USER_SEARCH";
     /*PHP function keys*/
 
     /*Timeline keys*/

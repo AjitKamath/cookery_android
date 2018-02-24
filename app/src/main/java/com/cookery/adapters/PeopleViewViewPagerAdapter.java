@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.interfaces.ItemClickListener;
 import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
@@ -37,17 +38,17 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
 
     private Object people;
     private List<Integer> layouts;
-    private View.OnClickListener listener;
+    private ItemClickListener itemClickListener;
     public UserMO loggedInUser;
     private FragmentManager fragManager;
 
-    public PeopleViewViewPagerAdapter(Context context, FragmentManager fragManager, List<Integer> layouts, UserMO loggedInUser, Object people, View.OnClickListener listener) {
+    public PeopleViewViewPagerAdapter(Context context, FragmentManager fragManager, List<Integer> layouts, UserMO loggedInUser, Object people, ItemClickListener itemClickListener) {
         this.mContext = context;
         this.layouts = layouts;
         this.loggedInUser = loggedInUser;
         this.people = people;
         this.fragManager = fragManager;
-        this.listener = listener;
+        this.itemClickListener = itemClickListener;
     }
 
     @Override
@@ -113,7 +114,7 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
     }
 
     private void setupUsers(final ViewGroup layout, List<UserMO> users, final String purpose){
-        final UsersRecyclerViewAdapter adapter = new UsersRecyclerViewAdapter(mContext, users, purpose);
+        final UsersRecyclerViewAdapter adapter = new UsersRecyclerViewAdapter(mContext, users, purpose, itemClickListener);
         adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
             @Override
             public void onBottomReached(int position) {

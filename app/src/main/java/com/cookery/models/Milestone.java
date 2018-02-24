@@ -1,10 +1,12 @@
 package com.cookery.models;
 
+import java.io.Serializable;
+
 /**
  * Created by ajit on 22/1/18.
  */
 
-public class Milestone {
+public class Milestone implements Serializable{
     private int MLT_ID;
     private int RANK_ID;
     private String TYPE;

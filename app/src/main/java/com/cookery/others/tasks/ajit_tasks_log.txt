@@ -246,3 +246,29 @@
 4 feb 2018
 1. #111 - user can see whom he follows and who is following him in the People section of navigation drawer.
 2. Added date time in User joined timeline.
+
+-- git checkin on 4 feb 2018 --
+
+4 feb 2018
+1. #125 - Timeline View - Show Recipe on tapping on recipe in timeline
+2. #125 - Timeline View - Show User on tpping on user in timeline.
+
+6 feb 2018
+1. #90 - Profile View - Crop DP - User can crop his DP.
+
+-- git checkin on 6 feb 2018 --
+
+7 feb 2018
+1. #164 - People View - Show public profile on clicking user in People View.
+2. #117 - Profile View - shown to world/self indicator for Email, Phone & Gender.
+
+-- git checkin on 7 feb 2018 --
+
+9 feb 2018
+1. #151  - Profile View - Followers & Following - show followers/following list on long click on followers/following in Profile View
+
+-- git checkin on 9 feb 2018 --
+
+14 feb 2018
+1. #158 People - Search Users - user can search other users in People View and see thier public profile.
+

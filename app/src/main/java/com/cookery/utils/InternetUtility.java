@@ -67,6 +67,7 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FOLLOWINGS_FETCH
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FOLLOW_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_LOGIN;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_REGISTER;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_SEARCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_EMAIL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_GENDER;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_IMAGE;
@@ -1062,7 +1063,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<UserMO> fetchUsersPublicDetails(int recipeUserId, int loggedInUserId) {
+    public static List<UserMO> fetchUsersPublicDetails(int userId, int loggedInUserId) {
         if(USE_TEST_DATA){
             return null;
         }
@@ -1071,7 +1072,7 @@ public class InternetUtility {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_FETCH_PUBLIC);
             paramMap.put("logged_in_user_id", String.valueOf(loggedInUserId));
-            paramMap.put("user_id", String.valueOf(recipeUserId));
+            paramMap.put("user_id", String.valueOf(userId));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return (List<UserMO>) Utility.jsonToObject(jsonStr, UserMO.class);
@@ -1195,6 +1196,27 @@ public class InternetUtility {
         }
         catch (Exception e){
             Log.e(CLASS_NAME, "Could not delete the timeline : "+e);
+        }
+
+        return null;
+    }
+
+    public static Object searchUsers(String searchQuery, int loggedInUserId, int index){
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_SEARCH);
+            paramMap.put("search_query", searchQuery);
+            paramMap.put("logged_in_user_id", String.valueOf(loggedInUserId));
+            paramMap.put("index", String.valueOf(index));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return Utility.jsonToObject(jsonStr, UserMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could search users : "+e);
         }
 
         return null;

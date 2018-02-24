@@ -177,7 +177,7 @@ public class ProfileViewPhoneFragment extends DialogFragment {
 
             if(message != null && !message.isError()){
                 if(getTargetFragment() instanceof ProfileViewFragment){
-                    ((ProfileViewFragment)getTargetFragment()).updatePhone(user.getMOBILE());
+                    ((ProfileViewFragment)getTargetFragment()).updatePhone(user);
                     dismiss();
 
                     message.setPurpose("USER_UPDATE_PHONE_SUCCESS");

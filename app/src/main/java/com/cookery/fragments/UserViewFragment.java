@@ -39,7 +39,9 @@ import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
+import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
 
 /**
@@ -166,6 +168,7 @@ public class UserViewFragment extends DialogFragment {
             }
 
             profile_view_public_profile_join_tv.setText("JOINED ON "+ DateTimeUtility.getSmartDate(user.getCREATE_DTM()));
+            profile_view_public_profile_rank_tv.setText(user.getCurrentRank());
 
             if(user.getMOBILE() == null && user.getGENDER() == null){
                 profile_view_public_others_ll.setVisibility(View.GONE);
@@ -337,6 +340,8 @@ public class UserViewFragment extends DialogFragment {
                 Object array[] = new Object[]{"FOLLOWERS", followers};
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put(GENERIC_OBJECT, array);
+                params.put(SELECTED_ITEM, user);
+                params.put(LOGGED_IN_USER, loggedInUser);
 
                 Utility.showFragment(getFragmentManager(), FRAGMENT_USER_VIEW, FRAGMENT_USERS, new UsersFragment(), params);
             }
@@ -369,6 +374,8 @@ public class UserViewFragment extends DialogFragment {
                 Object array[] = new Object[]{"FOLLOWINGS", followings};
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put(GENERIC_OBJECT, array);
+                params.put(SELECTED_ITEM, user);
+                params.put(LOGGED_IN_USER, loggedInUser);
 
                 Utility.showFragment(getFragmentManager(), FRAGMENT_USER_VIEW, FRAGMENT_USERS, new UsersFragment(), params);
             }
