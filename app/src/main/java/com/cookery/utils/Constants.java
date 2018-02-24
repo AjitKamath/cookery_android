@@ -218,5 +218,5 @@ public final class Constants {
     public static final int SCOPE_SELF = 3;
 
     //Images Download
-    public static final String GALLERY_DIR = "Cookery";
+    public static final String GALLERY_DIR = "/Cookery";
 }

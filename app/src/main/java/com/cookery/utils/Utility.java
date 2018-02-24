@@ -99,7 +99,8 @@ public class Utility extends Activity {
     }
 
     public static void writeIntoUserSecurity(Context context, String key, Object value){
-        UserSecurity userSecurity = new UserSecurity(context);userSecurity.write(key, value);
+        UserSecurity userSecurity = new UserSecurity(context);
+        userSecurity.write(key, value);
     }
 
     public static String getSmartNumber(int number){
