@@ -26,6 +26,8 @@ import com.cookery.utils.Utility;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -36,6 +38,9 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -104,6 +109,10 @@ public class LoginFragment extends DialogFragment {
         });
 
         fb_login_button.setFragment(this);
+       /* ArrayList<String> as = new ArrayList<>();
+        as.add("email");
+        //fb_login_button.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday", "user_friends"));
+        fb_login_button.setReadPermissions(as);*/
 
         FBLogin();
 
@@ -122,18 +131,41 @@ public class LoginFragment extends DialogFragment {
 
     private void handleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
-            // Signed in successfolly, show authenticated UI.
+            // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            Toast.makeText(mContext,acct.getDisplayName(),Toast.LENGTH_LONG).show();
+            //Toast.makeText(mContext,acct.getDisplayName(),Toast.LENGTH_LONG).show();
+
+            UserMO userobj = new UserMO();
+            userobj.setEMAIL(acct.getEmail());
+            acct.getGrantedScopes();
+            acct.getId();
+            acct.getIdToken();
+            userobj.setUSER_ID(1);
+            Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, userobj);
+            dismiss();
+            ((HomeActivity) getActivity()).updateLoggedInUser();
+
             //Similarly you can get the email and photourl using acct.getEmail() and  acct.getPhotoUrl()
 
 /*            if(acct.getPhotoUrl() != null)
                 new LoadProfileImage(imgProfilePic).execute(acct.getPhotoUrl().toString());*/
 
-            updateUI(true);
         } else {
             // Signed out, show unauthenticated UI.
-            updateUI(false);
+
+        }
+    }
+
+    private void updateUI(boolean signedIn) {
+        if (signedIn) {
+            google_sign_in_button.setVisibility(View.GONE);
+            //signOutButton.setVisibility(View.VISIBLE);
+        } else {
+            // mStatusTextView.setText(R.string.signed_out);
+            // Bitmap icon =                  BitmapFactory.decodeResource(getContext().getResources(),R.drawable.user_defaolt);
+            // imgProfilePic.setImageBitmap(ImageHelper.getRoundedCornerBitmap(getContext(),icon, 200, 200, 200, false, false, false, false));
+            google_sign_in_button.setVisibility(View.VISIBLE);
+            //signOutButton.setVisibility(View.GONE);
         }
     }
 
@@ -156,6 +188,7 @@ public class LoginFragment extends DialogFragment {
               //  .enableAutoManage(getActivity() /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
                 .build();
+
     }
 
     @Override
@@ -172,11 +205,9 @@ public class LoginFragment extends DialogFragment {
 
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
-
             GoogleSignInResult result = opr.get();
             handleSignInResult(result);
         } else {
-
           //  showProgressDialog();
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
@@ -241,6 +272,15 @@ public class LoginFragment extends DialogFragment {
         }
     }
 */
+
+    public void signOut() {
+        if (mGoogleApiClient.isConnected()) {
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+            mGoogleApiClient.disconnect();
+            mGoogleApiClient.connect();
+        }
+    }
+
     private void login()
     {
         String email = et_email.getText().toString();
@@ -260,6 +300,21 @@ public class LoginFragment extends DialogFragment {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Toast.makeText(mContext,"Status: "+loginResult.getAccessToken(),Toast.LENGTH_LONG).show();
+
+              GraphRequest graphRequest = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                testmethod(object);
+                            }
+                        });
+
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "first_name, last_name, email, id");
+                graphRequest.setParameters(parameters);
+                graphRequest.executeAsync();
+
             }
 
             @Override
@@ -276,9 +331,26 @@ public class LoginFragment extends DialogFragment {
 
     }
 
+
+    public void testmethod(JSONObject object){
+        UserMO userobj = new UserMO();
+        try {
+            userobj.setEMAIL(object.getString("email"));
+            System.out.println("Email : "+object.getString("email"));
+            System.out.println("Name : "+object.getString("first_name")+ " "+ object.getString("last_name"));
+            System.out.println("Id : "+object.getString("id"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+ /*       Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, userobj);
+        dismiss();
+        ((HomeActivity) getActivity()).updateLoggedInUser();*/
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // For Faeebook
+        // For Facebook
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -361,19 +433,6 @@ public class LoginFragment extends DialogFragment {
 
             Utility.closeWaitDialog(getFragmentManager(), fragment);
 
-        }
-    }
-
-    private void updateUI(boolean signedIn) {
-        if (signedIn) {
-            google_sign_in_button.setVisibility(View.GONE);
-            //signOutButton.setVisibility(View.VISIBLE);
-        } else {
-           // mStatusTextView.setText(R.string.signed_out);
-           // Bitmap icon =                  BitmapFactory.decodeResource(getContext().getResources(),R.drawable.user_defaolt);
-           // imgProfilePic.setImageBitmap(ImageHelper.getRoundedCornerBitmap(getContext(),icon, 200, 200, 200, false, false, false, false));
-            google_sign_in_button.setVisibility(View.VISIBLE);
-            //signOutButton.setVisibility(View.GONE);
         }
     }
 

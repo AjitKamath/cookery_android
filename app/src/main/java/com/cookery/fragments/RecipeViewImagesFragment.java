@@ -2,11 +2,8 @@ package com.cookery.fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,13 +20,14 @@ import android.widget.Toast;
 
 import com.cookery.R;
 import com.cookery.adapters.RecipeViewImagesFullscreenViewPagerAdapter;
-import com.cookery.utils.Utility;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Date;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -127,13 +125,11 @@ public class RecipeViewImagesFragment extends DialogFragment  {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.recipe_images_download_current:
-                                Toast.makeText(mContext, item.getTitle(), Toast.LENGTH_LONG).show();
                                 new AsyncTaskerDownloadRecipeImages().execute(images.get(imageposition));
                                 return true;
 
                             case R.id.recipe_images_download_all:
-                                Toast.makeText(mContext, item.getTitle(), Toast.LENGTH_LONG).show();
-                                new AsyncTaskerDownloadRecipeImages().execute(images.get(imageposition));
+                                new AsyncTaskerDownloadAllRecipeImages().execute(images);
                                 return true;
 
                             default:
@@ -146,124 +142,120 @@ public class RecipeViewImagesFragment extends DialogFragment  {
         });
     }
 
-    class AsyncTaskerDownloadRecipeImages extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-
+    class AsyncTaskerDownloadRecipeImages extends AsyncTask<String, Void, Void> {
         @Override
         protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "Downloading Images..");
+            Toast.makeText(mContext, "Downloading Recipe Image", Toast.LENGTH_LONG).show();
         }
 
         @Override
-        protected Object doInBackground(Object... objects) {
-            getImage((String) objects[0]);
+        protected Void doInBackground(String... objects) {
+            URL url;
+            String storeDir=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + GALLERY_DIR;
+            try {
+                String image = SERVER_ADDRESS+objects[0].toString();
+                url = new URL(image);
+                String pathl="";
+                int count;
+                try {
+                    File f=new File(storeDir);
+                    if(!f.exists()) {
+                        f.mkdirs();
+                    }
+                        HttpURLConnection con=(HttpURLConnection)url.openConnection();
+                        InputStream is=con.getInputStream();
+                        String pathr=url.getPath();
+                        String filename=pathr.substring(pathr.lastIndexOf('/')+1);
+                        pathl=storeDir+"/"+filename;
+                        FileOutputStream fos=new FileOutputStream(pathl);
+
+                        byte data[] = new byte[1024];
+                        long total = 0;
+                        while ((count = is.read(data)) != -1) {
+                            total += count;
+                            // writing data to output file
+                            fos.write(data, 0, count);
+
+                        }
+                        is.close();
+                        fos.flush();
+                        fos.close();
+
+                } catch (Exception e) {
+                    Toast.makeText(mContext, "Download failed", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+
+                }
+
+            } catch (MalformedURLException e) {
+                Toast.makeText(mContext, "Download failed", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
             return null;
         }
 
         @Override
-        protected void onPostExecute(Object object) {
-            Bitmap imageToSave = (Bitmap) object;
-            if(imageToSave != null){
-                createDirectoryAndSaveFile(imageToSave);
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
-            }
+        protected void onPostExecute(Void result){
+            Toast.makeText(mContext, "Download Completed", Toast.LENGTH_LONG).show();
         }
     }
 
-    public void getImage(String image)
-    {
-        try{
-            Picasso.with(mContext)
-                    .load(SERVER_ADDRESS + image)
-                    .into(new Target() {
-                              @Override
-                              public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                  try {
-                                      String root = Environment.getExternalStorageDirectory().toString();
-                                      File myDir = new File(root + "/yourDirectory");
-
-                                      if (!myDir.exists()) {
-                                          myDir.mkdirs();
-                                      }
-
-                                      String name = new Date().toString() + ".jpg";
-                                      myDir = new File(myDir, name);
-                                      FileOutputStream out = new FileOutputStream(myDir);
-                                      bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-
-                                      out.flush();
-                                      out.close();
-                                  } catch(Exception e){
-                                      // some action
-                                  }
-                              }
-
-                              @Override
-                              public void onBitmapFailed(Drawable errorDrawable) {
-                              }
-
-                              @Override
-                              public void onPrepareLoad(Drawable placeHolderDrawable) {
-                              }
-                          }
-                    );
+    class AsyncTaskerDownloadAllRecipeImages extends AsyncTask<List<String>, String, Void> {
+        @Override
+        protected void onPreExecute() {
+            Toast.makeText(mContext, "Downloading Recipe Images", Toast.LENGTH_LONG).show();
         }
 
-       /* try {
-            Picasso.with(mContext).load(SERVER_ADDRESS + image).into(new Target() {
+        @Override
+        protected Void doInBackground(List<String>... objects) {
+            URL url;
+            String storeDir=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + GALLERY_DIR;
 
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    try{
-                        object = bitmap;
-                    }
-                    catch (Exception e){
+            for(int i=0; i<objects[0].size(); i++) {
+                    try {
+                        String image = SERVER_ADDRESS + objects[0].get(i).toString();
+                        url = new URL(image);
+                        String pathl = "";
+                        int count;
+
+                        File f = new File(storeDir);
+                        if (!f.exists()) {
+                            f.mkdirs();
+                        }
+                        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                        InputStream is = con.getInputStream();
+                        String pathr = url.getPath();
+                        String filename = pathr.substring(pathr.lastIndexOf('/') + 1);
+                        pathl = storeDir + "/" + filename;
+                        FileOutputStream fos = new FileOutputStream(pathl);
+
+                        byte data[] = new byte[1024];
+                        long total = 0;
+                        publishProgress(objects[0].get(i));
+                        while ((count = is.read(data)) != -1) {
+                            total += count;
+                            // writing data to output file
+                            fos.write(data, 0, count);
+                        }
+
+                        is.close();
+                        fos.flush();
+                        fos.close();
+
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-
-                @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
-
-                }
-
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                }
-            });
-        }*/
-        catch (Exception e)
-        {
-            e.getMessage();
-        }
-       // return object;
-    }
-
-
-
-
-    private void createDirectoryAndSaveFile(Bitmap image) {
-
-        try {
-        File direct = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + GALLERY_DIR);
-        if (!direct.exists()) {
-            direct.mkdirs();
-//            File wallpaperDirectory = new File("/sdcard/DirName/");
-  //          wallpaperDirectory.mkdirs();
+            return null;
         }
 
-        File file = new File(direct, "Test_image");
-        if (file.exists())
-            file.delete();
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
 
-            FileOutputStream out = new FileOutputStream(file);
-            image.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-            out.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        @Override
+        protected void onPostExecute(Void result){
+            Toast.makeText(mContext, "Download Completed", Toast.LENGTH_LONG).show();
         }
     }
 

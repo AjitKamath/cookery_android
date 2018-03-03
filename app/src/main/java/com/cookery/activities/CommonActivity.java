@@ -266,7 +266,8 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
     private void logout() {
         Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, null);
-
+        LoginFragment dd = new LoginFragment();
+//        dd.signOut();
         String fragmentNameStr = FRAGMENT_LOGIN;
 
         FragmentManager manager = getFragmentManager();
