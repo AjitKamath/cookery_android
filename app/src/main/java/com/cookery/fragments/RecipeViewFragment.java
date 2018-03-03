@@ -233,7 +233,7 @@ public class RecipeViewFragment extends DialogFragment {
     }
 
     private void setViewView() {
-        common_fragment_recipe_views_tv.setText(String.valueOf(recipe.getViewedUsers() == null ? 0 : recipe.getViewedUsers().size()));
+        common_fragment_recipe_views_tv.setText(String.valueOf(recipe.getViewsCount()));
 
         common_fragment_recipe_view_ll.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -319,7 +319,7 @@ public class RecipeViewFragment extends DialogFragment {
     }
 
     public void setLikeView() {
-        common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(recipe.getLikedUsers() == null ? 0 : recipe.getLikedUsers().size()));
+        common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(recipe.getLikesCount()));
 
         common_fragment_recipe_like_iv.setImageResource(Utility.getLikeImageId(recipe.isUserLiked()));
 
@@ -616,9 +616,9 @@ public class RecipeViewFragment extends DialogFragment {
         @Override
         protected Object doInBackground(Void... objects) {
             if ("LIKE".equalsIgnoreCase(purpose)) {
-                return InternetUtility.fetchLikedUsers("RECIPE", recipe.getRCP_ID());
+                return InternetUtility.fetchLikedUsers("RECIPE", recipe.getRCP_ID(), 0);
             } else if ("VIEW".equalsIgnoreCase(purpose)) {
-                return InternetUtility.fetchViewedUsers(recipe);
+                return InternetUtility.fetchViewedUsers(recipe, 0);
             } else {
                 Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE + purpose);
             }

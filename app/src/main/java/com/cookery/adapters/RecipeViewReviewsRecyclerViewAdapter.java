@@ -61,7 +61,7 @@ public class RecipeViewReviewsRecyclerViewAdapter extends RecyclerView.Adapter<R
 
         holder.recipe_reviews_item_user_name_tv.setText(review.getUserName());
         holder.recipe_reviews_item_tv.setText(review.getREVIEW());
-        holder.recipe_reviews_item_likes_count_tv.setText(String.valueOf(review.getLikedUsers() == null ? 0 : review.getLikedUsers().size()));
+        holder.recipe_reviews_item_likes_count_tv.setText(String.valueOf(review.getLikesCount()));
 
         if(review.isUserLiked()){
             holder.recipe_reviews_likes_iv.setImageResource(R.drawable.heart);

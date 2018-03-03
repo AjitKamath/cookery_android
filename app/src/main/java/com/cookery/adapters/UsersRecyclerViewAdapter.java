@@ -22,6 +22,7 @@ import com.cookery.models.UserMO;
 import com.cookery.utils.DateTimeUtility;
 import com.cookery.utils.Utility;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.cookery.utils.Constants.UI_FONT;
@@ -52,6 +53,19 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
 
     public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener){
         this.onBottomReachedListener = onBottomReachedListener;
+    }
+
+    public void updateUsers(int index, List<UserMO> users){
+        if(usersList == null){
+            usersList = new ArrayList<>();
+        }
+
+        if(index == 0){
+            usersList.clear();
+        }
+
+        usersList.addAll(users);
+        notifyDataSetChanged();
     }
 
     @Override

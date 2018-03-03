@@ -303,7 +303,7 @@ public class RecipeViewCommentsFragment extends DialogFragment {
         @Override
         protected Object doInBackground(CommentMO... objects) {
             comment = objects[0];
-            return InternetUtility.fetchLikedUsers("COMMENT", comment.getCOM_ID());
+            return InternetUtility.fetchLikedUsers("COMMENT", comment.getCOM_ID(), 0);
         }
 
         @Override

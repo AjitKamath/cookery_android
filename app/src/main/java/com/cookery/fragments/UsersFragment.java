@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
@@ -27,6 +28,7 @@ import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.DateTimeUtility;
+import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
 /**
  * Created by vishal on 27/9/17.
@@ -200,10 +203,10 @@ public class UsersFragment extends DialogFragment {
             setupSelectedRecipe((RecipeMO) objectOfInterest);
 
             if("LIKE".equalsIgnoreCase(purpose)){
-                users_tv.setText(usersList.size()+" LIKED THE RECIPE "+((RecipeMO)objectOfInterest).getRCP_NAME());
+                users_tv.setText(((RecipeMO) objectOfInterest).getLikesCount()+" LIKED THE RECIPE "+((RecipeMO)objectOfInterest).getRCP_NAME());
             }
             else if("VIEW".equalsIgnoreCase(purpose)){
-                users_tv.setText(usersList.size()+" VIEWED THE RECIPE "+((RecipeMO)objectOfInterest).getRCP_NAME());
+                users_tv.setText(((RecipeMO) objectOfInterest).getViewsCount()+" VIEWED THE RECIPE "+((RecipeMO)objectOfInterest).getRCP_NAME());
             }
             else{
                 Log.e(CLASS_NAME, "Unimplemented purpose("+purpose+") for a recipe");
@@ -214,7 +217,7 @@ public class UsersFragment extends DialogFragment {
 
             if("LIKE".equalsIgnoreCase(purpose)){
                 CommentMO comment = (CommentMO)objectOfInterest;
-                users_tv.setText(usersList.size()+" LIKED "+Utility.getUserNameOrYour(comment.getUserName(), comment.getUSER_ID(), loggedInUser.getUSER_ID())+" COMMENT");
+                users_tv.setText(((CommentMO) objectOfInterest).getLikesCount()+" LIKED "+Utility.getUserNameOrYour(comment.getUserName(), comment.getUSER_ID(), loggedInUser.getUSER_ID())+" COMMENT");
             }
             else{
                 Log.e(CLASS_NAME, "Unimplemented purpose("+purpose+") for a comment");
@@ -225,7 +228,7 @@ public class UsersFragment extends DialogFragment {
 
             if("LIKE".equalsIgnoreCase(purpose)){
                 ReviewMO review = (ReviewMO) objectOfInterest;
-                users_tv.setText(usersList.size()+" LIKED "+Utility.getUserNameOrYour(review.getUserName(), review.getUSER_ID(), loggedInUser.getUSER_ID())+" REVIEW");
+                users_tv.setText(((RecipeMO) objectOfInterest).getLikesCount()+" LIKED "+Utility.getUserNameOrYour(review.getUserName(), review.getUSER_ID(), loggedInUser.getUSER_ID())+" REVIEW");
             }
             else{
                 Log.e(CLASS_NAME, "Unimplemented purpose("+purpose+") for a review");
@@ -236,10 +239,10 @@ public class UsersFragment extends DialogFragment {
             setupSelectedUser((UserMO)objectOfInterest);
 
             if("FOLLOWERS".equalsIgnoreCase(purpose)){
-                users_tv.setText(usersList.size()+" PEOPLE FOLLOW "+Utility.getUserNameOrYou(user.getNAME(), user.getUSER_ID(), loggedInUser.getUSER_ID()));
+                users_tv.setText(((UserMO) objectOfInterest).getFollowersCount()+" PEOPLE FOLLOW "+Utility.getUserNameOrYou(user.getNAME(), user.getUSER_ID(), loggedInUser.getUSER_ID()));
             }
             else if("FOLLOWINGS".equalsIgnoreCase(purpose)){
-                users_tv.setText(usersList.size()+" PEOPLE ARE FOLLOWED BY "+Utility.getUserNameOrYou(user.getNAME(), user.getUSER_ID(), loggedInUser.getUSER_ID()));
+                users_tv.setText(((UserMO) objectOfInterest).getFollowingCount()+" PEOPLE ARE FOLLOWED BY "+Utility.getUserNameOrYou(user.getNAME(), user.getUSER_ID(), loggedInUser.getUSER_ID()));
             }
             else{
                 Log.e(CLASS_NAME, "Unimplemented purpose("+purpose+") for a user");
@@ -260,7 +263,7 @@ public class UsersFragment extends DialogFragment {
             adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
                 @Override
                 public void onBottomReached(int position) {
-                    //new HomeTimelinesTrendsViewPagerAdapter.AsyncTaskerTimelines(adapter).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    new AsyncFetchUsers(adapter.getItemCount()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
             });
 
@@ -272,10 +275,14 @@ public class UsersFragment extends DialogFragment {
             users_srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    //new MyTimelinesFragment.AsyncTaskerFetchMyTimelines().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, myTimelines.size());
+                    new AsyncFetchUsers(0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
             });
         }
+    }
+
+    private void updateUsers(int index, List<UserMO> users){
+        ((UsersRecyclerViewAdapter)users_rv.getAdapter()).updateUsers(index, users);
     }
 
     private void setupSelectedReview(ReviewMO review) {
@@ -371,6 +378,61 @@ public class UsersFragment extends DialogFragment {
             }
             else if(v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
+            }
+        }
+    }
+
+    class AsyncFetchUsers extends AsyncTask<Void, Void, Object> {
+        private int index;
+
+        public AsyncFetchUsers(int index){
+            this.index = index;
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected Object doInBackground(Void... objects) {
+            if ("LIKE".equalsIgnoreCase(purpose)) {
+                if(objectOfInterest instanceof RecipeMO){
+                    return InternetUtility.fetchLikedUsers("RECIPE", ((RecipeMO)objectOfInterest).getRCP_ID(), index);
+                }
+                else if(objectOfInterest instanceof CommentMO){
+                    return InternetUtility.fetchLikedUsers("COMMENT", ((CommentMO)objectOfInterest).getCOM_ID(), index);
+                }
+                else if (objectOfInterest instanceof ReviewMO){
+                    return InternetUtility.fetchLikedUsers("REVIEW", ((ReviewMO)objectOfInterest).getREV_ID(), index);
+                }
+                else{
+                    Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+objectOfInterest);
+                }
+            } else if ("VIEW".equalsIgnoreCase(purpose)) {
+                return InternetUtility.fetchViewedUsers((RecipeMO)objectOfInterest, index);
+            }
+            else if ("FOLLOWERS".equalsIgnoreCase(purpose)) {
+                return InternetUtility.fetchUserFollowers(((UserMO)objectOfInterest).getUSER_ID(), loggedInUser.getUSER_ID(), index);
+            }
+            else if ("FOLLOWINGS".equalsIgnoreCase(purpose)) {
+                return InternetUtility.fetchUserFollowings(((UserMO)objectOfInterest).getUSER_ID(), loggedInUser.getUSER_ID(), index);
+            }
+            else {
+                Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE + purpose);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            if (object == null) {
+                return;
+            }
+
+            List<UserMO> users = (List<UserMO>) object;
+
+            if (users != null) {
+                updateUsers(index, users);
             }
         }
     }

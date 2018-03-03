@@ -82,7 +82,7 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
         }
 
         holder.recipe_comments_item_tv.setText(comment.getCOMMENT());
-        holder.recipe_comments_item_likes_count_tv.setText(Utility.getSmartNumber(comment.getLikedUsers() == null ? 0 : comment.getLikedUsers().size()));
+        holder.recipe_comments_item_likes_count_tv.setText(Utility.getSmartNumber(comment.getLikesCount()));
 
         if(comment.getMOD_DTM() != null && !comment.getMOD_DTM().trim().isEmpty()){
             holder.recipe_comments_item_date_time_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(comment.getMOD_DTM(), DB_DATE_TIME)));

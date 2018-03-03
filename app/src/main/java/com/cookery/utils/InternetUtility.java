@@ -607,7 +607,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<UserMO> fetchLikedUsers(String type, int type_id) {
+    public static List<UserMO> fetchLikedUsers(String type, int type_id, int index) {
         if(USE_TEST_DATA){
             return null;
         }
@@ -615,6 +615,7 @@ public class InternetUtility {
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_LIKE_FETCH_USERS);
+            paramMap.put("index", String.valueOf(index));
             paramMap.put("type", type);
             paramMap.put("type_id", String.valueOf(type_id));
 
@@ -631,7 +632,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<UserMO> fetchViewedUsers(RecipeMO recipe) {
+    public static List<UserMO> fetchViewedUsers(RecipeMO recipe, int index) {
         if(USE_TEST_DATA){
             return null;
         }
@@ -640,6 +641,7 @@ public class InternetUtility {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_VIEW_FETCH_USERS);
             paramMap.put("rcp_id", String.valueOf(recipe.getRCP_ID()));
+            paramMap.put("index", String.valueOf(index));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return (List<UserMO>) Utility.jsonToObject(jsonStr, UserMO.class);
