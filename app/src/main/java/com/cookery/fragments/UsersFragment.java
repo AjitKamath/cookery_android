@@ -283,6 +283,7 @@ public class UsersFragment extends DialogFragment {
 
     private void updateUsers(int index, List<UserMO> users){
         ((UsersRecyclerViewAdapter)users_rv.getAdapter()).updateUsers(index, users);
+        users_srl.setRefreshing(false);
     }
 
     private void setupSelectedReview(ReviewMO review) {

@@ -231,7 +231,7 @@
         <RelativeLayout
             android:background="@color/white"
             android:padding="5dp"
-            android:id="@+id/recipe_reviews_rl"
+            android:id="@+id/recipe_view_reviews_rl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">

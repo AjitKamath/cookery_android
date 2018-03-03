@@ -553,8 +553,8 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             List<RecipeMO> recipes = (List<RecipeMO>) InternetUtility.fetchRecipe(objects[0], loggedInUser.getUSER_ID());
 
             if(recipes != null && !recipes.isEmpty()){
-                recipes.get(0).setComments(InternetUtility.fetchRecipeComments(loggedInUser, recipes.get(0), 0));
-                recipes.get(0).setReviews(InternetUtility.fetchRecipeReviews(loggedInUser, recipes.get(0), 0));
+                /*recipes.get(0).setComments(InternetUtility.fetchRecipeComments(loggedInUser, recipes.get(0), 0));
+                recipes.get(0).setReviews(InternetUtility.fetchRecipeReviews(loggedInUser, recipes.get(0), 0));*/
                 recipes.get(0).setMylists(InternetUtility.fetchUserList(loggedInUser.getUSER_ID()));
                 return recipes.get(0);
             }

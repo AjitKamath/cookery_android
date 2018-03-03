@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.adapters.RecipeCommentsRecyclerViewAdapter;
+import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.CommentMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.RecipeMO;
@@ -55,6 +57,9 @@ public class RecipeViewCommentsFragment extends DialogFragment {
     //components
     @InjectView(R.id.recipe_comments_rl)
     RelativeLayout recipe_comments_rl;
+
+    @InjectView(R.id.recipe_comments_srl)
+    SwipeRefreshLayout recipe_comments_srl;
 
     @InjectView(R.id.recipe_comments_rv)
     RecyclerView recipe_comments_rv;
@@ -100,10 +105,7 @@ public class RecipeViewCommentsFragment extends DialogFragment {
     }
 
     private void setupComments() {
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-        recipe_comments_rv.setLayoutManager(mLayoutManager);
-        recipe_comments_rv.setItemAnimator(new DefaultItemAnimator());
-        recipe_comments_rv.setAdapter(new RecipeCommentsRecyclerViewAdapter(mContext, loggedInUser, recipe.getComments(), new View.OnClickListener() {
+        final RecipeCommentsRecyclerViewAdapter adapter = new RecipeCommentsRecyclerViewAdapter(mContext, loggedInUser, recipe.getComments(), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(view.getId() == R.id.recipe_comments_item_delete_iv){
@@ -125,7 +127,25 @@ public class RecipeViewCommentsFragment extends DialogFragment {
                 }
                 return true;
             }
-        }));
+        });
+        adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
+            @Override
+            public void onBottomReached(int position) {
+                new AsyncFetchComments(adapter.getItemCount()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        recipe_comments_rv.setLayoutManager(mLayoutManager);
+        recipe_comments_rv.setItemAnimator(new DefaultItemAnimator());
+        recipe_comments_rv.setAdapter(adapter);
+
+        recipe_comments_srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new AsyncFetchComments(0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
 
         recipe_comments_comment_iv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,6 +162,11 @@ public class RecipeViewCommentsFragment extends DialogFragment {
                 }
             }
         });
+    }
+
+    private void updateComments(List<CommentMO> comments, int index){
+        ((RecipeCommentsRecyclerViewAdapter)recipe_comments_rv.getAdapter()).updateComments(comments, index);
+        recipe_comments_srl.setRefreshing(false);
     }
 
     public void deleteComment(CommentMO comment){
@@ -189,6 +214,30 @@ public class RecipeViewCommentsFragment extends DialogFragment {
             }
             else if(v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
+            }
+        }
+    }
+
+    public class AsyncFetchComments extends AsyncTask<Object, Void, Object> {
+        private int index;
+
+        public AsyncFetchComments(int index){
+            this.index = index;
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            return InternetUtility.fetchRecipeComments(loggedInUser, recipe, index);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            if(object != null){
+                updateComments((List<CommentMO>) object, index);
             }
         }
     }

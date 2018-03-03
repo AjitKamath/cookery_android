@@ -39,6 +39,7 @@ public class RecipeMO extends CommonMO implements Serializable {
 
     private int likesCount;
     private int viewsCount;
+    private int commentsCount;
 
     // For Context Menu of My List
     private List<MyListMO> mylists;
@@ -257,5 +258,13 @@ public class RecipeMO extends CommonMO implements Serializable {
 
     public void setUserFavorite(boolean userFavorite) {
         this.userFavorite = userFavorite;
+    }
+
+    public int getCommentsCount() {
+        return commentsCount;
+    }
+
+    public void setCommentsCount(int commentsCount) {
+        this.commentsCount = commentsCount;
     }
 }

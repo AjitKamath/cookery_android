@@ -1,87 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recipe_view_reviews_rl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/recipe_reviews_rl"
     android:gravity="center"
     android:padding="5dp">
 
     <android.support.v7.widget.CardView
-        android:layout_margin="5dp"
+        android:id="@+id/recipe_view_reviews_cv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/recipe_reviews_cv">
+        android:layout_margin="5dp">
 
         <LinearLayout
-            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <ImageView
-                android:id="@+id/recipe_reviews_delete_iv"
+                android:id="@+id/recipe_view_reviews_delete_iv"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:src="@drawable/ic_delete_grey600_48dp"
-                android:layout_gravity="right"/>
+                android:layout_gravity="right"
+                android:src="@drawable/ic_delete_grey600_48dp" />
 
             <TextView
-                android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:text="YOUR REVIEW"
                 android:textColor="@color/app_color"
                 android:textSize="@dimen/tertiary_text_size" />
 
             <LinearLayout
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal"
                 android:weightSum="5">
 
                 <ImageView
-                    android:tag="1"
-                    android:id="@+id/recipe_reviews_star_1_iv"
+                    android:id="@+id/recipe_view_reviews_star_1_iv"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_weight="1"
-                    android:src="@drawable/star_unselected" />
+                    android:src="@drawable/star_unselected"
+                    android:tag="1" />
 
                 <ImageView
-                    android:tag="2"
-                    android:id="@+id/recipe_reviews_star_2_iv"
+                    android:id="@+id/recipe_view_reviews_star_2_iv"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_weight="1"
-                    android:src="@drawable/star_unselected" />
+                    android:src="@drawable/star_unselected"
+                    android:tag="2" />
 
                 <ImageView
-                    android:tag="3"
-                    android:id="@+id/recipe_reviews_star_3_iv"
+                    android:id="@+id/recipe_view_reviews_star_3_iv"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_weight="1"
-                    android:src="@drawable/star_unselected" />
+                    android:src="@drawable/star_unselected"
+                    android:tag="3" />
 
                 <ImageView
-                    android:tag="4"
-                    android:id="@+id/recipe_reviews_star_4_iv"
+                    android:id="@+id/recipe_reviews_view_star_4_iv"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_weight="1"
-                    android:src="@drawable/star_unselected" />
+                    android:src="@drawable/star_unselected"
+                    android:tag="4" />
 
                 <ImageView
-                    android:tag="5"
-                    android:id="@+id/recipe_reviews_star_5_iv"
+                    android:id="@+id/recipe_reviews_view_star_5_iv"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_weight="1"
-                    android:src="@drawable/star_unselected" />
+                    android:src="@drawable/star_unselected"
+                    android:tag="5" />
 
 
             </LinearLayout>
@@ -90,45 +89,45 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:paddingHorizontal="5dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingHorizontal="5dp">
 
                 <EditText
-                    android:id="@+id/recipe_reviews_review_et"
+                    android:id="@+id/recipe_view_reviews_review_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/tertiaryDarkText"
-                    android:textColor="@color/secondaryDarkText"
-                    android:textSize="@dimen/primary_text_size"
                     android:gravity="center"
+                    android:hint="your review .."
                     android:maxLength="@integer/recipe_review_text_limit"
-                    android:hint="your review .."/>
+                    android:textColor="@color/secondaryDarkText"
+                    android:textColorHint="@color/tertiaryDarkText"
+                    android:textSize="@dimen/primary_text_size" />
 
                 <RelativeLayout
-                    android:id="@+id/recipe_reviews_review_rl"
+                    android:id="@+id/recipe_view_reviews_review_rl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:layout_alignParentTop="true"
-                        android:id="@+id/recipe_reviews_review_tv"
+                        android:id="@+id/recipe_view_reviews_review_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:maxLength="@integer/recipe_review_text_limit"
                         android:text="Review"
                         android:textColor="@color/secondaryDarkText"
-                        android:textSize="@dimen/tertiary_text_size"
-                        android:maxLength="@integer/recipe_review_text_limit"/>
+                        android:textSize="@dimen/tertiary_text_size" />
 
                     <TextView
-                        android:layout_below="@+id/recipe_reviews_review_tv"
-                        android:layout_marginTop="5dp"
-                        android:id="@+id/recipe_reviews_review_datetime_tv"
+                        android:id="@+id/recipe_view_reviews_review_datetime_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_below="@+id/recipe_view_reviews_review_tv"
+                        android:layout_marginTop="5dp"
                         android:gravity="right"
                         android:text="today"
                         android:textColor="@color/tertiaryDarkText"
-                        android:textSize="@dimen/quaternary_text_size"/>
+                        android:textSize="@dimen/quaternary_text_size" />
 
                 </RelativeLayout>
 
@@ -137,28 +136,40 @@
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
-    <android.support.v7.widget.RecyclerView
-        android:padding="5dp"
-        android:layout_below="@+id/recipe_reviews_cv"
-        android:id="@+id/recipe_reviews_reviews_rv"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_below="@+id/recipe_view_reviews_cv"
+        android:id="@+id/recipe_view_reviews_reviews_srl"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:layout_marginTop="10dp"
+        android:padding="5dp"
         android:paddingBottom="35dp"
-        android:scrollbars="vertical" />
+        android:layout_height="match_parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recipe_view_reviews_reviews_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/recipe_review_submit_fab"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:id="@+id/recipe_view_review_submit_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:layout_gravity="bottom|end"
         android:layout_margin="5dp"
-        app:fabSize="mini"
-        app:rippleColor="@color/Blue"
-        android:scaleType="centerInside"
         android:backgroundTint="@color/app_color"
-        android:src="@drawable/ic_done_white_18dp" />
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_done_white_18dp"
+        app:fabSize="mini"
+        app:rippleColor="@color/Blue" />
 
 </RelativeLayout>

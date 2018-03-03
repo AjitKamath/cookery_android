@@ -245,13 +245,12 @@ public class RecipeViewFragment extends DialogFragment {
     }
 
     private void setCommentView() {
-        if (recipe.getComments() == null || recipe.getComments().isEmpty()) {
+        if (recipe.getCommentsCount() == 0) {
             common_fragment_recipe_comment_iv.setImageResource(R.drawable.comment_disabled);
-            common_fragment_recipe_comment_tv.setText("0");
         } else {
             common_fragment_recipe_comment_iv.setImageResource(R.drawable.comment_enabled);
-            common_fragment_recipe_comment_tv.setText(String.valueOf(recipe.getComments().size()));
         }
+        common_fragment_recipe_comment_tv.setText(String.valueOf(recipe.getCommentsCount()));
 
         common_fragment_recipe_comment_ll.setOnClickListener(new View.OnClickListener() {
             @Override

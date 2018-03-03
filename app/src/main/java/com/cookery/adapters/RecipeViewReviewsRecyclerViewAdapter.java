@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.LikesMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.UserMO;
@@ -35,6 +36,7 @@ public class RecipeViewReviewsRecyclerViewAdapter extends RecyclerView.Adapter<R
 
     private List<ReviewMO> reviews;
     private View.OnLongClickListener listener;
+    private OnBottomReachedListener onBottomReachedListener;
     private UserMO loggedInUser;
 
     public RecipeViewReviewsRecyclerViewAdapter(Context mContext, UserMO loggedInUser, List<ReviewMO> reviews, View.OnLongClickListener listener) {
@@ -46,13 +48,21 @@ public class RecipeViewReviewsRecyclerViewAdapter extends RecyclerView.Adapter<R
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_reviews_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_view_reviews_item, parent, false);
 
         return new ViewHolder(itemView);
     }
 
+    public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener){
+        this.onBottomReachedListener = onBottomReachedListener;
+    }
+
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        if (position == reviews.size() - 1){
+            onBottomReachedListener.onBottomReached(position);
+        }
+
         final ReviewMO review = reviews.get(position);
 
         if(review.getUserImage() != null && !review.getUserImage().trim().isEmpty()){
@@ -132,6 +142,19 @@ public class RecipeViewReviewsRecyclerViewAdapter extends RecyclerView.Adapter<R
             return 0;
         }
         return reviews.size();
+    }
+
+    public void updateReviews(List<ReviewMO> newReviews, int index) {
+        if(reviews == null){
+            reviews = new ArrayList<>();
+        }
+
+        if(index == 0){
+            reviews.clear();
+        }
+
+        reviews.addAll(newReviews);
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

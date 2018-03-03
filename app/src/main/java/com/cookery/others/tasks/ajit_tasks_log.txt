@@ -276,3 +276,4 @@
 
 3 March 2018
 1. #159 Recipe View - Fetch Liked/Viewed Users On Demand
+2. #173 Recipe View - Fetch Comments & Reviews only on demand
