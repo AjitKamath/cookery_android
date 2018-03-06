@@ -595,7 +595,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected Object doInBackground(Object... objects) {
-            return InternetUtility.fetchMyRecipes(loggedInUser.getUSER_ID());
+            return InternetUtility.fetchMyRecipes(loggedInUser.getUSER_ID(), 0);
         }
 
         @Override
@@ -605,11 +605,15 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected void onPostExecute(Object object) {
-            List<RecipeMO> myRecipes = (List<RecipeMO>) object;
+            Utility.closeWaitDialog(getFragmentManager(), fragment);
 
+            List<RecipeMO> myRecipes = (List<RecipeMO>) object;
             if(myRecipes != null || !myRecipes.isEmpty()){
-                setupMyRecipesFragment((List<RecipeMO>) object);
-                Utility.closeWaitDialog(getFragmentManager(), fragment);
+                Map<String, Object> paramsMap = new HashMap<>();
+                paramsMap.put(GENERIC_OBJECT, myRecipes);
+                paramsMap.put(LOGGED_IN_USER, loggedInUser);
+
+                Utility.showFragment(getFragmentManager(), null, FRAGMENT_MY_RECIPE, new MyRecipesFragment(), paramsMap);
             }
         }
     }
@@ -632,7 +636,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             Utility.closeWaitDialog(getFragmentManager(), fragment);
 
             List<ReviewMO> myReviews = (List<ReviewMO>) object;
-
             if(myReviews != null && !myReviews.isEmpty()){
                 Map<String, Object> paramsMap = new HashMap<>();
                 paramsMap.put(GENERIC_OBJECT, myReviews);

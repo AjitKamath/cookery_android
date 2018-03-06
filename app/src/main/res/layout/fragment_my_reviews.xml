@@ -6,7 +6,7 @@
     android:layout_gravity="center"
     android:background="@color/white"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="5dp">
 
     <TextView
         android:id="@+id/fragment_my_reviews_tv"

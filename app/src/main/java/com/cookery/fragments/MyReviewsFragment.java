@@ -125,9 +125,7 @@ public class MyReviewsFragment extends DialogFragment {
             }
         });
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
-        mLayoutManager.scrollToPosition(myReviews.size()-1);
-
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         fragment_my_reviews_content_recipes_rv.setLayoutManager(mLayoutManager);
         fragment_my_reviews_content_recipes_rv.setItemAnimator(new DefaultItemAnimator());
         fragment_my_reviews_content_recipes_rv.setAdapter(adapter);

@@ -778,7 +778,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<RecipeMO> fetchMyRecipes(int user_id) {
+    public static List<RecipeMO> fetchMyRecipes(int user_id, int index) {
         if(USE_TEST_DATA){
             return TestData.getRecipesTestData();
         }
@@ -787,6 +787,7 @@ public class InternetUtility {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_RECIPE_USER_FETCH);
             paramMap.put("user_id", String.valueOf(user_id));
+            paramMap.put("index", String.valueOf(index));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return (List<RecipeMO>) Utility.jsonToObject(jsonStr, RecipeMO.class);
