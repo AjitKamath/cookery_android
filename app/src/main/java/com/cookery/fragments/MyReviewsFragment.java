@@ -4,8 +4,10 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -19,16 +21,19 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.adapters.ReviewsMiniRecyclerViewAdapter;
-import com.cookery.models.RecipeMO;
+import com.cookery.interfaces.OnBottomReachedListener;
+import com.cookery.models.ReviewMO;
+import com.cookery.models.UserMO;
+import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.cookery.utils.Constants.MY_REVIEWS;
+import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.UI_FONT;
 
@@ -46,18 +51,15 @@ public class MyReviewsFragment extends DialogFragment {
     @InjectView(R.id.fragment_my_reviews_tv)
     TextView fragment_my_reviews_tv;
 
+    @InjectView(R.id.fragment_my_reviews_content_recipes_srl)
+    SwipeRefreshLayout fragment_my_reviews_content_recipes_srl;
+
     @InjectView(R.id.fragment_my_reviews_content_recipes_rv)
     RecyclerView fragment_my_reviews_content_recipes_rv;
-
-    @InjectView(R.id.common_fragment_header_tv)
-    TextView common_fragment_header_tv;
-
-    @InjectView(R.id.fragment_my_reviews_content_count_tv)
-    TextView fragment_my_reviews_content_count_tv;
     //components
 
-    private List<RecipeMO> myReviews;
-
+    private List<ReviewMO> myReviews;
+    private UserMO loggedInUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,28 +76,19 @@ public class MyReviewsFragment extends DialogFragment {
     }
 
     private void getDataFromBundle() {
-        myReviews = (ArrayList<RecipeMO>) getArguments().get(MY_REVIEWS);
+        myReviews = (List<ReviewMO>) getArguments().get(GENERIC_OBJECT);
+        loggedInUser =(UserMO) getArguments().get(LOGGED_IN_USER);
     }
 
     private void setupMyRecipesFragment() {
-        if(myReviews == null || myReviews.isEmpty()){
-            fragment_my_reviews_ll.setVisibility(View.GONE);
-            fragment_my_reviews_tv.setVisibility(View.VISIBLE);
-
-            return;
-        }
-
-        fragment_my_reviews_ll.setVisibility(View.VISIBLE);
-        fragment_my_reviews_tv.setVisibility(View.GONE);
-
-        if(myReviews.size() == 1){
-            fragment_my_reviews_content_count_tv.setText(myReviews.size()+ " recipe review");
+        if(myReviews != null && !myReviews.isEmpty()){
+            fragment_my_reviews_tv.setVisibility(View.GONE);
         }
         else{
-            fragment_my_reviews_content_count_tv.setText(myReviews.size()+ " recipe reviews");
+            fragment_my_reviews_tv.setVisibility(View.VISIBLE);
         }
 
-        ReviewsMiniRecyclerViewAdapter adapter = new ReviewsMiniRecyclerViewAdapter(mContext, myReviews, new View.OnClickListener() {
+        final ReviewsMiniRecyclerViewAdapter adapter = new ReviewsMiniRecyclerViewAdapter(mContext, myReviews, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(R.id.fragment_reviews_review_mini_item_options_iv == view.getId()){
@@ -124,6 +117,14 @@ public class MyReviewsFragment extends DialogFragment {
                 }
             }
         });
+
+        adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
+            @Override
+            public void onBottomReached(int position) {
+                new AsyncTaskerFetchMyReviews(adapter.getItemCount()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
         mLayoutManager.scrollToPosition(myReviews.size()-1);
 
@@ -131,8 +132,17 @@ public class MyReviewsFragment extends DialogFragment {
         fragment_my_reviews_content_recipes_rv.setItemAnimator(new DefaultItemAnimator());
         fragment_my_reviews_content_recipes_rv.setAdapter(adapter);
 
-        common_fragment_header_tv.setText("MY REVIEWS");
+        fragment_my_reviews_content_recipes_srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new AsyncTaskerFetchMyReviews(0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
+    }
 
+    private void updateReviews(List<ReviewMO> reviews, int index){
+        ((ReviewsMiniRecyclerViewAdapter)fragment_my_reviews_content_recipes_rv.getAdapter()).updateReviews(reviews, index);
+        fragment_my_reviews_content_recipes_srl.setRefreshing(false);
     }
 
     @Override
@@ -166,6 +176,35 @@ public class MyReviewsFragment extends DialogFragment {
             }
             else if(v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
+            }
+        }
+    }
+
+    class AsyncTaskerFetchMyReviews extends AsyncTask<Object, Void, Object> {
+        private int index;
+
+        public AsyncTaskerFetchMyReviews(int index){
+            this.index = index;
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            return InternetUtility.fetchMyReviews(loggedInUser.getUSER_ID(), index);
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            List<ReviewMO> myReviews = (List<ReviewMO>) object;
+
+            if(myReviews != null && !myReviews.isEmpty()){
+                updateReviews(myReviews, index);
+            }
+            else{
+                ((ReviewsMiniRecyclerViewAdapter)fragment_my_reviews_content_recipes_rv.getAdapter()).setOnBottomReachedListener(null);
             }
         }
     }

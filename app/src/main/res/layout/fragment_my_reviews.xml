@@ -4,50 +4,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="@color/lightgray"
-    android:orientation="vertical">
-
-    <include
-        layout="@layout/common_fragment_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/fragment_my_reviews_tv"
-        android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/gray"
-        android:textSize="15sp"
         android:layout_gravity="center"
-        android:text="You have not reviewed any recipes"/>
+        android:layout_marginTop="20dp"
+        android:text="You have not reviewed any recipes yet"
+        android:textColor="@color/gray"
+        android:textSize="15sp" />
 
-    <LinearLayout
-        android:layout_marginTop="5dp"
-        android:id="@+id/fragment_my_reviews_content_ll"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/fragment_my_reviews_content_recipes_srl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/fragment_my_reviews_content_count_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/gray"
-            android:layout_gravity="right"
-            android:layout_marginRight="5dp"
-            android:textSize="12sp"
-            android:text="23 Recipes"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:id="@+id/fragment_my_reviews_content_recipes_rv"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="vertical" />
+            android:layout_gravity="top">
 
-    </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/fragment_my_reviews_content_recipes_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical" />
 
+        </android.support.constraint.ConstraintLayout>
 
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

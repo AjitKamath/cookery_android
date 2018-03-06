@@ -277,3 +277,9 @@
 3 March 2018
 1. #159 Recipe View - Fetch Liked/Viewed Users On Demand
 2. #173 Recipe View - Fetch Comments & Reviews only on demand
+
+-- git checkin on 3 March 2018 --
+
+6 march 2018
+1. #176 My Reviews View - show user's all the reviews on clicking on 'My Reviews' in navigation drawer.
+2. Prevent redundant service calls on reaching bottom of the list/screen in swipe to refresh layouts through out the app.

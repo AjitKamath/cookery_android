@@ -198,6 +198,9 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
             if(timelines != null && !timelines.isEmpty()){
                 adapter.updateBottomTimelines(timelines);
             }
+            else{
+                adapter.setOnBottomReachedListener(null);
+            }
         }
     }
 }

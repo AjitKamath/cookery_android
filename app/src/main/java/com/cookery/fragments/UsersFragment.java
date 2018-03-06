@@ -432,8 +432,11 @@ public class UsersFragment extends DialogFragment {
 
             List<UserMO> users = (List<UserMO>) object;
 
-            if (users != null) {
+            if (users != null && !users.isEmpty()) {
                 updateUsers(index, users);
+            }
+            else{
+                ((UsersRecyclerViewAdapter)users_rv.getAdapter()).setOnBottomReachedListener(null);
             }
         }
     }

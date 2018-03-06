@@ -801,7 +801,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<RecipeMO> fetchMyReviews(int user_id) {
+    public static Object fetchMyReviews(int user_id, int index) {
         if(USE_TEST_DATA){
             return TestData.getRecipesTestData();
         }
@@ -810,15 +810,16 @@ public class InternetUtility {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_REVIEW_USER_FETCH);
             paramMap.put("user_id", String.valueOf(user_id));
+            paramMap.put("index", String.valueOf(index));
 
             String jsonStr = getResponseFromCookery(paramMap);
-            return (List<RecipeMO>) Utility.jsonToObject(jsonStr, RecipeMO.class);
+            return Utility.jsonToObject(jsonStr, ReviewMO.class);
         }
         catch (IOException e){
             Log.e(CLASS_NAME, e.getMessage());
         }
         catch (Exception e){
-            Log.e(CLASS_NAME, "Could not fetch Cuisines from the server : "+e);
+            Log.e(CLASS_NAME, "Could not fetch users reviews from the server : "+e);
         }
 
         return null;

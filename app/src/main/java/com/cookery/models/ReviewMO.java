@@ -18,6 +18,13 @@ public class ReviewMO extends CommonMO implements Serializable {
     private String userName;
     private boolean userReviewed;
 
+    private String recipeName;
+    private String recipeOwnerName;
+    private String recipeOwnerImage;
+    private String foodTypeName;
+    private String foodCuisineName;
+    private List<String> recipeImages;
+
     private int likesCount;
 
     private List<UserMO> likedUsers;
@@ -100,5 +107,53 @@ public class ReviewMO extends CommonMO implements Serializable {
 
     public void setLikesCount(int likesCount) {
         this.likesCount = likesCount;
+    }
+
+    public String getRecipeName() {
+        return recipeName;
+    }
+
+    public void setRecipeName(String recipeName) {
+        this.recipeName = recipeName;
+    }
+
+    public String getFoodTypeName() {
+        return foodTypeName;
+    }
+
+    public void setFoodTypeName(String foodTypeName) {
+        this.foodTypeName = foodTypeName;
+    }
+
+    public String getFoodCuisineName() {
+        return foodCuisineName;
+    }
+
+    public void setFoodCuisineName(String foodCuisineName) {
+        this.foodCuisineName = foodCuisineName;
+    }
+
+    public List<String> getRecipeImages() {
+        return recipeImages;
+    }
+
+    public void setRecipeImages(List<String> recipeImages) {
+        this.recipeImages = recipeImages;
+    }
+
+    public String getRecipeOwnerName() {
+        return recipeOwnerName;
+    }
+
+    public void setRecipeOwnerName(String recipeOwnerName) {
+        this.recipeOwnerName = recipeOwnerName;
+    }
+
+    public String getRecipeOwnerImage() {
+        return recipeOwnerImage;
+    }
+
+    public void setRecipeOwnerImage(String recipeOwnerImage) {
+        this.recipeOwnerImage = recipeOwnerImage;
     }
 }

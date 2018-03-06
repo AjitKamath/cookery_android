@@ -239,6 +239,9 @@ public class RecipeViewCommentsFragment extends DialogFragment {
             if(object != null){
                 updateComments((List<CommentMO>) object, index);
             }
+            else{
+                ((RecipeCommentsRecyclerViewAdapter)recipe_comments_rv.getAdapter()).setOnBottomReachedListener(null);
+            }
         }
     }
 

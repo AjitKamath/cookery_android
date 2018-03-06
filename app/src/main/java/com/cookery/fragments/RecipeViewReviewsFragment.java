@@ -346,6 +346,9 @@ public class RecipeViewReviewsFragment extends DialogFragment {
             if (reviews != null && !reviews.isEmpty()) {
                 updateReviews(reviews, index);
             }
+            else{
+                ((RecipeViewReviewsRecyclerViewAdapter)recipe_reviews_reviews_rv.getAdapter()).setOnBottomReachedListener(null);
+            }
         }
     }
 

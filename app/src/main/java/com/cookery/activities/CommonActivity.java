@@ -42,6 +42,7 @@ import com.cookery.models.MasterDataMO;
 import com.cookery.models.MyListMO;
 import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
+import com.cookery.models.ReviewMO;
 import com.cookery.models.TasteMO;
 import com.cookery.models.TimelineMO;
 import com.cookery.models.UserMO;
@@ -66,7 +67,6 @@ import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.MY_LISTS_EXISTS;
 import static com.cookery.utils.Constants.MY_RECIPES;
-import static com.cookery.utils.Constants.MY_REVIEWS;
 import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.TOP_RECIPES_CHEF;
 import static com.cookery.utils.Constants.TOP_RECIPES_MONTH;
@@ -386,25 +386,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         fragment.show(manager, fragmentNameStr);
     }
 
-    private void setupMyReviewsFragment(List<RecipeMO> reviews) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(MY_REVIEWS, (Serializable) reviews);
-
-        MyReviewsFragment fragment = new MyReviewsFragment();
-        fragment.setArguments(bundle);
-
-
-        String fragmentNameStr = FRAGMENT_MY_REVIEWS;
-        FragmentManager manager = getFragmentManager();
-        Fragment frag = manager.findFragmentByTag(fragmentNameStr);
-
-        if (frag != null) {
-            manager.beginTransaction().remove(frag).commit();
-        }
-
-        fragment.show(manager, fragmentNameStr);
-    }
-
     private void fetchContent() {
         fetchHomeContent();
         fetchMasterContent();
@@ -638,7 +619,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected Object doInBackground(Object... objects) {
-            return InternetUtility.fetchMyReviews(loggedInUser.getUSER_ID());
+            return InternetUtility.fetchMyReviews(loggedInUser.getUSER_ID(), 0);
         }
 
         @Override
@@ -648,11 +629,16 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected void onPostExecute(Object object) {
-            List<RecipeMO> myReviews = (List<RecipeMO>) object;
+            Utility.closeWaitDialog(getFragmentManager(), fragment);
+
+            List<ReviewMO> myReviews = (List<ReviewMO>) object;
 
             if(myReviews != null && !myReviews.isEmpty()){
-                setupMyReviewsFragment((List<RecipeMO>) object);
-                Utility.closeWaitDialog(getFragmentManager(), fragment);
+                Map<String, Object> paramsMap = new HashMap<>();
+                paramsMap.put(GENERIC_OBJECT, myReviews);
+                paramsMap.put(LOGGED_IN_USER, loggedInUser);
+
+                Utility.showFragment(getFragmentManager(), null, FRAGMENT_MY_REVIEWS, new MyReviewsFragment(), paramsMap);
             }
         }
     }
