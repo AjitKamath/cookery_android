@@ -13,7 +13,7 @@ import android.widget.ImageView;
 
 import com.cookery.R;
 import com.cookery.fragments.AddRecipeFragment;
-import com.cookery.fragments.CommonImagePickerFragment;
+import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MessageFragment;
 import com.cookery.fragments.MyRecipesFragment;
 import com.cookery.fragments.MyReviewsFragment;
@@ -62,7 +62,6 @@ import java.util.Map;
 
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_WAIT;
-import static com.cookery.utils.Constants.FRAGMENT_PICK_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
@@ -158,31 +157,6 @@ public class Utility extends Activity {
     public static String getSmartNumber(int number){
         //TODO: here goes logic to convert number into smart number
         return String .valueOf(number);
-    }
-
-    public static void pickPhotos(FragmentManager fragmentManager, String parentFragmentStr){
-        String fragmentNameStr = FRAGMENT_PICK_IMAGE;
-        String parentFragmentNameStr = parentFragmentStr;
-        CommonImagePickerFragment fragment = new CommonImagePickerFragment();
-
-        Fragment frag = fragmentManager.findFragmentByTag(fragmentNameStr);
-
-        if (frag != null) {
-            fragmentManager.beginTransaction().remove(frag).commit();
-        }
-
-        Fragment parentFragment = null;
-        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
-            parentFragment = fragmentManager.findFragmentByTag(parentFragmentNameStr);
-        }
-
-        fragment.setStyle(android.support.v4.app.DialogFragment.STYLE_NORMAL, R.style.fragment_theme);
-
-        if (parentFragment != null) {
-            fragment.setTargetFragment(parentFragment, 0);
-        }
-
-        fragment.show(fragmentManager, fragmentNameStr);
     }
 
 	public static void showSnacks(ViewGroup viewGroup, String messageStr, final String doWhatStr, int duration){
@@ -662,6 +636,14 @@ public class Utility extends Activity {
         }
         else if(fragment instanceof MyRecipesFragment){
             MyRecipesFragment currentFrag = (MyRecipesFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof LoginFragment){
+            LoginFragment currentFrag = (LoginFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);

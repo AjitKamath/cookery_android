@@ -133,7 +133,7 @@ public class SelectionFragment extends DialogFragment {
         Dialog d = getDialog();
         if (d!=null) {
             int width = ViewGroup.LayoutParams.WRAP_CONTENT;
-            int height = 400;
+            int height = 900;
             d.getWindow().setLayout(width, height);
         }
     }

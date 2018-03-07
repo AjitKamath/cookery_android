@@ -215,8 +215,6 @@ public class ProfileViewFragment extends DialogFragment {
         profile_view_profile_image_change_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Utility.pickPhotos(getFragmentManager(), FRAGMENT_PROFILE_VIEW);
-
                 Fragment fragment = getFragmentManager().findFragmentByTag(FRAGMENT_PROFILE_VIEW);
                 CropImage.activity().start(mContext, fragment);
             }

@@ -145,6 +145,7 @@ public class LoginFragment extends DialogFragment {
             dismiss();
             ((HomeActivity) getActivity()).updateLoggedInUser();
 
+
             //Similarly you can get the email and photourl using acct.getEmail() and  acct.getPhotoUrl()
 
 /*            if(acct.getPhotoUrl() != null)
@@ -422,6 +423,9 @@ public class LoginFragment extends DialogFragment {
                 Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, userList.get(0));
 
                 ((HomeActivity)getActivity()).updateLoggedInUser();
+                ((HomeActivity) getActivity()).fetchMasterContent();
+                ((HomeActivity) getActivity()).fetchHomeContent();
+                ((HomeActivity) getActivity()).fetchTimelineContent();
             }
             else
             {

@@ -5,18 +5,13 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -40,12 +35,10 @@ import com.cookery.models.RecipeMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,14 +48,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static android.app.Activity.RESULT_OK;
-import static com.cookery.utils.Constants.CAMERA_CHOICE;
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
-import static com.cookery.utils.Constants.GALLERY_CHOICE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.OK;
-import static com.cookery.utils.Constants.REQUEST_GALLERY_PHOTO;
-import static com.cookery.utils.Constants.REQUEST_TAKE_PHOTO;
 import static com.cookery.utils.Constants.UI_FONT;
 
 /**
@@ -296,7 +285,9 @@ public class AddRecipeFragment extends DialogFragment {
         recipe_add_images_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utility.pickPhotos(getFragmentManager(), FRAGMENT_ADD_RECIPE);
+                /*Utility.pickPhotos(getFragmentManager(), FRAGMENT_ADD_RECIPE);*/
+                Fragment fragment = getFragmentManager().findFragmentByTag(FRAGMENT_ADD_RECIPE);
+                CropImage.activity().start(getActivity(), fragment);
             }
         });
 
@@ -368,79 +359,15 @@ public class AddRecipeFragment extends DialogFragment {
         }
     }
 
-    public void onFinishDialog(Integer choice) {
-        if (choice == null) {
-            Log.e(CLASS_NAME, "Could not identify the choice : "+choice);
-            return;
-        }
-        else if(GALLERY_CHOICE == choice){
-            showPickImageFromGallery();
-        }
-        else if(CAMERA_CHOICE == choice){
-            showPickImageFromCamera();
-        }
-    }
-
-    private void showPickImageFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        startActivityForResult(intent, REQUEST_GALLERY_PHOTO);
-    }
-
-    private void showPickImageFromCamera() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-
-                // Continue only if the File was successfully created
-                if (photoFile != null) {
-                    Uri photoURI = FileProvider.getUriForFile(getActivity(), "com.example.android.fileprovider", photoFile);
-
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-                }
-            }
-            catch (IOException ex) {
-                Log.e(CLASS_NAME, "An error occurred when getting image file from camera: ");
-            }
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePathStr);
-            setPhoto(imagePathStr);
-        }
-
-        else if (requestCode == REQUEST_GALLERY_PHOTO && resultCode == RESULT_OK) {
-            try {
-                InputStream inputStream = mContext.getContentResolver().openInputStream(data.getData());
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                File photoFile = createImageFile();
-
-                OutputStream outputStream =  new FileOutputStream(photoFile);
-
-                int read = 0;
-                byte[] bytes = new byte[1024];
-
-                InputStream is = mContext.getContentResolver().openInputStream(data.getData());
-
-                while ((read = is.read(bytes)) != -1) {
-                    outputStream.write(bytes, 0, read);
-                }
-
-                imagePathStr = photoFile.getAbsolutePath();
-
-                setPhoto(imagePathStr);
-            }
-            catch (Exception e){
-                Log.e(CLASS_NAME, "Error while getting the image from the user choice");
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                setPhoto(result.getUri().getPath());
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                Log.e(CLASS_NAME, "Error ! Something went wrong ! : "+error.getMessage());
             }
         }
     }

@@ -83,6 +83,10 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        fetchMasterContent();
+        fetchHomeContent();
+        fetchTimelineContent();
     }
 
     @Override
@@ -98,23 +102,10 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     private void verifyLoggedInUser() {
         loggedInUser = Utility.getUserFromUserSecurity(mContext);
         if (loggedInUser == null || loggedInUser.getUSER_ID() == 0) {
-
-            String fragmentNameStr = FRAGMENT_LOGIN;
-
-            FragmentManager manager = getFragmentManager();
-            Fragment frag = manager.findFragmentByTag(fragmentNameStr);
-
-            if (frag != null) {
-                manager.beginTransaction().remove(frag).commit();
-            }
-            LoginFragment fragment = new LoginFragment();
-
-            fragment.show(manager, fragmentNameStr);
+            Utility.showFragment(getFragmentManager(), null, FRAGMENT_LOGIN, new LoginFragment(), null);
         } else {
             new AsyncTaskerFetchUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
-
-
     }
 
     public void updateLoggedInUser() {
@@ -258,7 +249,10 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
                 if (masterData == null) {
                     new AsyncTaskerFetchMasterData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "FETCH_AND_SHOW_ADD_RECIPE");
                 } else {
-                    showAddRecipeFragment(masterData);
+                    Map<String, Object> paramsMap = new HashMap<>();
+                    paramsMap.put(MASTER, masterData);
+                    paramsMap.put(GENERIC_OBJECT, new RecipeMO());
+                    Utility.showFragment(getFragmentManager(), null, FRAGMENT_ADD_RECIPE, new AddRecipeFragment(), paramsMap);
                 }
             }
         });
@@ -279,41 +273,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         LoginFragment fragment = new LoginFragment();
 
         fragment.show(manager, fragmentNameStr);
-    }
-
-    private void showAddRecipeFragment(MasterDataMO masterData) {
-        Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put(MASTER, masterData);
-        paramsMap.put(GENERIC_OBJECT, new RecipeMO());
-
-        Utility.showFragment(getFragmentManager(), null, FRAGMENT_ADD_RECIPE, new AddRecipeFragment(), paramsMap);
-
-        /*String fragmentNameStr = FRAGMENT_ADD_RECIPE;
-        String parentFragmentNameStr = null;
-
-        FragmentManager manager = getFragmentManager();
-        Fragment frag = manager.findFragmentByTag(fragmentNameStr);
-
-        if (frag != null) {
-            manager.beginTransaction().remove(frag).commit();
-        }
-
-        Fragment parentFragment = null;
-        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
-            parentFragment = manager.findFragmentByTag(parentFragmentNameStr);
-        }
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(MASTER, masterData);
-
-        AddRecipeFragment fragment = new AddRecipeFragment();
-        fragment.setArguments(bundle);
-
-        if (parentFragment != null) {
-            fragment.setTargetFragment(parentFragment, 0);
-        }
-
-        fragment.show(manager, fragmentNameStr);*/
     }
 
     private void showFavRecipesFragment(Map<String, List<RecipeMO>> favRecipes) {
@@ -386,11 +345,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         fragment.show(manager, fragmentNameStr);
     }
 
-    private void fetchContent() {
-        fetchHomeContent();
-        fetchMasterContent();
-    }
-
     public void fetchHomeContent(){
         new AsyncTaskerHomeContent().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -399,7 +353,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         new AsyncTaskerTimelineContent().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    private void fetchMasterContent(){
+    public void fetchMasterContent(){
         new AsyncTaskerFetchMasterData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "JUST_FETCH");
     }
 
@@ -485,7 +439,10 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
                             Utility.closeWaitDialog(getFragmentManager(), fragment);
 
                             if("FETCH_AND_SHOW_ADD_RECIPE".equalsIgnoreCase(whatToDo)){
-                                showAddRecipeFragment(masterData);
+                                Map<String, Object> paramsMap = new HashMap<>();
+                                paramsMap.put(MASTER, masterData);
+                                paramsMap.put(GENERIC_OBJECT, new RecipeMO());
+                                Utility.showFragment(getFragmentManager(), null, FRAGMENT_ADD_RECIPE, new AddRecipeFragment(), paramsMap);
                             }
                         }
                     }
@@ -495,7 +452,11 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     }
 
     private List<TimelineMO> fetchTimelines(){
-        return InternetUtility.getFetchUserTimeline(loggedInUser.getUSER_ID(), 0);
+        if(loggedInUser != null && loggedInUser.getUSER_ID() != 0){
+            return InternetUtility.getFetchUserTimeline(loggedInUser.getUSER_ID(), 0);
+        }
+
+        return null;
     }
 
 
@@ -704,8 +665,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     }
 
     class AsyncTaskerFetchUser extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-
         @Override
         protected Object doInBackground(Object... objects) {
             return InternetUtility.fetchUser(loggedInUser.getUSER_ID());
@@ -713,7 +672,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "logging in 2..");
         }
 
         @Override
@@ -722,10 +680,10 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
             if(user != null && !user.isEmpty()) {
                 loggedInUser = user.get(0);
-                Utility.closeWaitDialog(getFragmentManager(), fragment);
-
                 setupNavigator();
-                fetchContent();
+            }
+            else{
+                Utility.showFragment(getFragmentManager(), null, FRAGMENT_LOGIN, new LoginFragment(), null);
             }
         }
     }
