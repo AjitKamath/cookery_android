@@ -55,9 +55,9 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_DELETE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_RECIPE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_USER_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_STORY_USER_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TASTE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_DELETE;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_SCOPE_MODIFY;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_USER_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FETCH_PUBLIC;
@@ -876,15 +876,16 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<TimelineMO> getFetchTimelineDetails(TimelineMO timeline) {
+    public static List<TimelineMO> getFetchUserStories(int userId, int index) {
         if(USE_TEST_DATA){
             return null;
         }
 
         try {
             Map<String, String> paramMap = new HashMap<>();
-            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_TIMELINE_FETCH);
-            paramMap.put("tmln_id", String.valueOf(timeline.getTMLN_ID()));
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_STORY_USER_FETCH);
+            paramMap.put("user_id", String.valueOf(userId));
+            paramMap.put("index", String.valueOf(index));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return (List<TimelineMO>) Utility.jsonToObject(jsonStr, TimelineMO.class);
@@ -893,12 +894,11 @@ public class InternetUtility {
             Log.e(CLASS_NAME, e.getMessage());
         }
         catch (Exception e){
-            Log.e(CLASS_NAME, "Could not fetch user timeline details from the server : "+e);
+            Log.e(CLASS_NAME, "Could not fetch user stories from the server : "+e);
         }
 
         return null;
     }
-
 
     public static Object userRegistraion(String name,String email, String mobile, String password, String gender)
     {

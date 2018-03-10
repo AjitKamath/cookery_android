@@ -66,6 +66,17 @@
                                 android:textColor="@color/primaryDarkText"
                                 android:textSize="10sp" />
 
+                            <TextView
+                                android:layout_centerVertical="true"
+                                android:layout_toRightOf="@+id/home_timeline_user_follow_unfollow_item_what_tv"
+                                android:layout_marginLeft="5dp"
+                                android:id="@+id/home_timeline_user_follow_unfollow_item_whose_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="whom"
+                                android:textColor="@color/app_color"
+                                android:textSize="10sp" />
+
                             <include
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -89,16 +100,6 @@
                     android:layout_marginTop="10dp"
                     android:layout_gravity="center_horizontal"
                     app:border_width="1dp" />
-
-                <TextView
-                    android:layout_marginTop="2dp"
-                    android:layout_gravity="center_horizontal"
-                    android:id="@+id/home_timeline_user_follow_unfollow_item_whose_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="WHOM"
-                    android:textColor="@color/app_color"
-                    android:textSize="@dimen/secondary_text_size" />
 
             </LinearLayout>
 

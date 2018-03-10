@@ -293,3 +293,9 @@
 3. #166Library Change - To Pick Photos.
 4. Home - Prevent redundant service calls to fetch timelines when un necessary.
 5. Recipe Add - cosmetic fixes to ingredients autocomplete.
+
+-- git checkin on 7 March 2018 --
+
+10 march 2018
+1. #123 - Home View - Stories
+2. Home - prevent redundant calls for fetching timelines

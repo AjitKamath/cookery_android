@@ -53,9 +53,8 @@ import static com.cookery.utils.Constants.TIMELINE_USER_UNFOLLOW;
 import static com.cookery.utils.Constants.UI_FONT;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
-public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeTimelinesRecyclerViewAdapter.ViewHolder> {
-
-    private static final String CLASS_NAME = HomeTimelinesRecyclerViewAdapter.class.getName();
+public class HomeStoriesRecyclerViewAdapter extends RecyclerView.Adapter<HomeStoriesRecyclerViewAdapter.ViewHolder> {
+    private static final String CLASS_NAME = HomeStoriesRecyclerViewAdapter.class.getName();
     private Context mContext;
 
     private List<TimelineMO> timelines;
@@ -64,7 +63,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
     private OnBottomReachedListener onBottomReachedListener;
     private UserMO loggedInUser;
 
-    public HomeTimelinesRecyclerViewAdapter(Context mContext, List<TimelineMO> timelines, View.OnClickListener listener, PopupMenu.OnMenuItemClickListener menuItemClickListener) {
+    public HomeStoriesRecyclerViewAdapter(Context mContext, List<TimelineMO> timelines, View.OnClickListener listener, PopupMenu.OnMenuItemClickListener menuItemClickListener) {
         this.mContext = mContext;
         this.timelines = timelines;
         this.listener = listener;
@@ -82,38 +81,38 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
 
     @Override
     public int getItemViewType(int position) {
-        TimelineMO timeline = timelines.get(position);
+        TimelineMO story = timelines.get(position);
 
-        if(timeline == null || timeline.getTMLN_ID() == 0){
-            Log.e(CLASS_NAME, "Empty/null timeline/tmln_id");
+        if(story == null || story.getTMLN_ID() == 0){
+            Log.e(CLASS_NAME, "Empty/null story/tmln_id");
             return -1;
         }
 
-        if(TIMELINE_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_RECIPE_MODIFY.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
+        if(TIMELINE_RECIPE_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_RECIPE_MODIFY.equalsIgnoreCase(story.getTYPE()) || TIMELINE_RECIPE_REMOVE.equalsIgnoreCase(story.getTYPE())){
             return R.layout.home_timeline_recipe_item;
         }
-        else if(TIMELINE_LIKE_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE()) ||
-                TIMELINE_LIKE_COMMENT_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_COMMENT_REMOVE.equalsIgnoreCase(timeline.getTYPE()) ||
-                TIMELINE_LIKE_REVIEW_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_REVIEW_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
+        else if(TIMELINE_LIKE_RECIPE_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_LIKE_RECIPE_REMOVE.equalsIgnoreCase(story.getTYPE()) ||
+                TIMELINE_LIKE_COMMENT_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_LIKE_COMMENT_REMOVE.equalsIgnoreCase(story.getTYPE()) ||
+                TIMELINE_LIKE_REVIEW_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_LIKE_REVIEW_REMOVE.equalsIgnoreCase(story.getTYPE())){
             return R.layout.home_timeline_like_item;
         }
-        else if(TIMELINE_COMMENT_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_COMMENT_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
+        else if(TIMELINE_COMMENT_RECIPE_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_COMMENT_RECIPE_REMOVE.equalsIgnoreCase(story.getTYPE())){
             return R.layout.home_timeline_comment_item;
         }
-        else if(TIMELINE_REVIEW_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_REVIEW_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
+        else if(TIMELINE_REVIEW_RECIPE_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_REVIEW_RECIPE_REMOVE.equalsIgnoreCase(story.getTYPE())){
             return R.layout.home_timeline_review_item;
         }
-        else if(TIMELINE_USER_ADD.equalsIgnoreCase(timeline.getTYPE())){
+        else if(TIMELINE_USER_ADD.equalsIgnoreCase(story.getTYPE())){
             return R.layout.home_timeline_user_item;
         }
-        else if(TIMELINE_USER_PHOTO_MODIFY.equalsIgnoreCase(timeline.getTYPE())){
+        else if(TIMELINE_USER_PHOTO_MODIFY.equalsIgnoreCase(story.getTYPE())){
             return R.layout.home_timeline_user_image_modify_item;
         }
-        else if(TIMELINE_USER_FOLLOW.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_USER_UNFOLLOW.equalsIgnoreCase(timeline.getTYPE())){
+        else if(TIMELINE_USER_FOLLOW.equalsIgnoreCase(story.getTYPE()) || TIMELINE_USER_UNFOLLOW.equalsIgnoreCase(story.getTYPE())){
             return R.layout.home_timeline_user_follow_unfollow_item;
         }
         else{
-            Log.e(CLASS_NAME, "The timeline type("+timeline.getTYPE()+") could not be understood. New type of timeline ?");
+            Log.e(CLASS_NAME, "The story type("+story.getTYPE()+") could not be understood. New type of story ?");
 
             return R.layout.home_timeline_unknown_item;
         }
@@ -123,7 +122,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         this.onBottomReachedListener = onBottomReachedListener;
     }
 
-    public void updateTopTimelines(List<TimelineMO> timelines){
+    public void updateTopStories(List<TimelineMO> timelines){
         List<TimelineMO> temp = new ArrayList<>(timelines);
         temp.addAll(this.timelines);
         this.timelines = temp;
@@ -131,7 +130,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         notifyDataSetChanged();
     }
 
-    public void updateBottomTimelines(List<TimelineMO> timelines){
+    public void updateBottomStories(List<TimelineMO> timelines){
         if(this.timelines == null){
             this.timelines = new ArrayList<>();
         }
@@ -149,148 +148,148 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         setupLayout(holder, timelines.get(position));
     }
 
-    private void setupLayout(ViewHolder holder, final TimelineMO timeline){
-        if(TIMELINE_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_RECIPE_MODIFY.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
-            setupRecipeOnClickListener(holder.fragment_timelines_timeline_recipe_recipe_cv, timeline.getRecipeId());
+    private void setupLayout(ViewHolder holder, final TimelineMO story){
+        if(TIMELINE_RECIPE_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_RECIPE_MODIFY.equalsIgnoreCase(story.getTYPE()) || TIMELINE_RECIPE_REMOVE.equalsIgnoreCase(story.getTYPE())){
+            setupRecipeOnClickListener(holder.fragment_timelines_timeline_recipe_recipe_cv, story.getRecipeId());
 
-            if(timeline.getRecipeName() != null){
-                holder.fragment_timelines_timeline_recipe_recipe_name_tv.setText(timeline.getRecipeName().toUpperCase());
+            if(story.getRecipeName() != null){
+                holder.fragment_timelines_timeline_recipe_recipe_name_tv.setText(story.getRecipeName().toUpperCase());
             }
             else{
-                Log.e(CLASS_NAME, "Error ! Possible data corruption due to non enforced foreign key violation ! tmln_id("+timeline.getTMLN_ID()+") type("+timeline.getTYPE()+") type_id("+timeline.getTYPE_ID()+")");
+                Log.e(CLASS_NAME, "Error ! Possible data corruption due to non enforced foreign key violation ! tmln_id("+story.getTMLN_ID()+") type("+story.getTYPE()+") type_id("+story.getTYPE_ID()+")");
             }
 
-            if(timeline.getRecipeTypeName() != null){
-                holder.fragment_timelines_timeline_recipe_recipe_type_tv.setText(timeline.getRecipeTypeName().toUpperCase());
+            if(story.getRecipeTypeName() != null){
+                holder.fragment_timelines_timeline_recipe_recipe_type_tv.setText(story.getRecipeTypeName().toUpperCase());
             }
             else{
-                Log.e(CLASS_NAME, "Error ! Possible data corruption due to non enforced foreign key violation ! tmln_id("+timeline.getTMLN_ID()+") type("+timeline.getTYPE()+") type_id("+timeline.getTYPE_ID()+")");
+                Log.e(CLASS_NAME, "Error ! Possible data corruption due to non enforced foreign key violation ! tmln_id("+story.getTMLN_ID()+") type("+story.getTYPE()+") type_id("+story.getTYPE_ID()+")");
             }
 
-            if(timeline.getRecipeCuisineName() != null){
-                holder.fragment_timelines_timeline_recipe_recipe_cuisine_tv.setText(timeline.getRecipeCuisineName().toUpperCase());
+            if(story.getRecipeCuisineName() != null){
+                holder.fragment_timelines_timeline_recipe_recipe_cuisine_tv.setText(story.getRecipeCuisineName().toUpperCase());
             }
             else{
-                Log.e(CLASS_NAME, "Error ! Possible data corruption due to non enforced foreign key violation ! tmln_id("+timeline.getTMLN_ID()+") type("+timeline.getTYPE()+") type_id("+timeline.getTYPE_ID()+")");
+                Log.e(CLASS_NAME, "Error ! Possible data corruption due to non enforced foreign key violation ! tmln_id("+story.getTMLN_ID()+") type("+story.getTYPE()+") type_id("+story.getTYPE_ID()+")");
             }
 
-            if(TIMELINE_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE())){
-                holder.fragment_timelines_timeline_recipe_msg_tv.setText("You posted a Recipe !");
+            if(TIMELINE_RECIPE_ADD.equalsIgnoreCase(story.getTYPE())){
+                holder.fragment_timelines_timeline_recipe_msg_tv.setText(story.getWhoName()+" posted a Recipe !");
             }
-            else if(TIMELINE_RECIPE_MODIFY.equalsIgnoreCase(timeline.getTYPE())){
-                holder.fragment_timelines_timeline_recipe_msg_tv.setText("You modified your Recipe !");
+            else if(TIMELINE_RECIPE_MODIFY.equalsIgnoreCase(story.getTYPE())){
+                holder.fragment_timelines_timeline_recipe_msg_tv.setText(story.getWhoName()+" modified the Recipe !");
             }
-            else if(TIMELINE_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
-                holder.fragment_timelines_timeline_recipe_msg_tv.setText("You deleted your Recipe !");
+            else if(TIMELINE_RECIPE_REMOVE.equalsIgnoreCase(story.getTYPE())){
+                holder.fragment_timelines_timeline_recipe_msg_tv.setText(story.getWhoName()+" deleted the Recipe !");
             }
 
-            if(timeline.getRecipeImage() != null && !timeline.getRecipeImage().trim().isEmpty()){
+            if(story.getRecipeImage() != null && !story.getRecipeImage().trim().isEmpty()){
                 if(holder.fragment_timelines_timeline_recipe_recipe_iv == null){
                     Log.e(CLASS_NAME, "Error ! ImageView object is null !");
                 }
                 else{
-                    Utility.loadImageFromURL(mContext, timeline.getRecipeImage(), holder.fragment_timelines_timeline_recipe_recipe_iv);
+                    Utility.loadImageFromURL(mContext, story.getRecipeImage(), holder.fragment_timelines_timeline_recipe_recipe_iv);
                 }
             }
 
             setFont(holder.fragment_timelines_timeline_recipe_rl);
         }
-        else if(TIMELINE_LIKE_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE()) ||
-                TIMELINE_LIKE_COMMENT_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_COMMENT_REMOVE.equalsIgnoreCase(timeline.getTYPE()) ||
-                TIMELINE_LIKE_REVIEW_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_REVIEW_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
+        else if(TIMELINE_LIKE_RECIPE_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_LIKE_RECIPE_REMOVE.equalsIgnoreCase(story.getTYPE()) ||
+                TIMELINE_LIKE_COMMENT_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_LIKE_COMMENT_REMOVE.equalsIgnoreCase(story.getTYPE()) ||
+                TIMELINE_LIKE_REVIEW_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_LIKE_REVIEW_REMOVE.equalsIgnoreCase(story.getTYPE())){
 
-            if(timeline.getWhoUserId() == loggedInUser.getUSER_ID()){
+            if(story.getWhoUserId() == loggedInUser.getUSER_ID()){
                 holder.fragment_timelines_timeline_like_who_tv.setText("You");
             }
             else{
-                holder.fragment_timelines_timeline_like_who_tv.setText(timeline.getWhoName());
-                setupUserOnClickListener(holder.fragment_timelines_timeline_like_who_tv, timeline.getWhoUserId());
+                holder.fragment_timelines_timeline_like_who_tv.setText(story.getWhoName());
+                setupUserOnClickListener(holder.fragment_timelines_timeline_like_who_tv, story.getWhoUserId());
             }
 
-            if(timeline.getWhoseUserId() == loggedInUser.getUSER_ID()){
+            if(story.getWhoseUserId() == loggedInUser.getUSER_ID()){
                 holder.fragment_timelines_timeline_like_whose_tv.setText("your");
             }
             else{
-                holder.fragment_timelines_timeline_like_whose_tv.setText(timeline.getWhoseName()+"'s");
-                setupUserOnClickListener(holder.fragment_timelines_timeline_like_whose_tv, timeline.getWhoseUserId());
+                holder.fragment_timelines_timeline_like_whose_tv.setText(story.getWhoseName()+"'s");
+                setupUserOnClickListener(holder.fragment_timelines_timeline_like_whose_tv, story.getWhoseUserId());
             }
 
             /*like/unlike*/
-            if(TIMELINE_LIKE_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_COMMENT_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_REVIEW_ADD.equalsIgnoreCase(timeline.getTYPE())){
+            if(TIMELINE_LIKE_RECIPE_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_LIKE_COMMENT_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_LIKE_REVIEW_ADD.equalsIgnoreCase(story.getTYPE())){
                 holder.fragment_timelines_timeline_like_what_tv.setText("liked");
             }
-            else if(TIMELINE_LIKE_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_COMMENT_REMOVE.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_REVIEW_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
+            else if(TIMELINE_LIKE_RECIPE_REMOVE.equalsIgnoreCase(story.getTYPE()) || TIMELINE_LIKE_COMMENT_REMOVE.equalsIgnoreCase(story.getTYPE()) || TIMELINE_LIKE_REVIEW_REMOVE.equalsIgnoreCase(story.getTYPE())){
                 holder.fragment_timelines_timeline_like_what_tv.setText("unliked");
             }
             /*like/unlike*/
 
-            if(TIMELINE_LIKE_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
+            if(TIMELINE_LIKE_RECIPE_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_LIKE_RECIPE_REMOVE.equalsIgnoreCase(story.getTYPE())){
                 holder.fragment_timelines_timeline_like_on_tv.setText("Recipe");
                 holder.fragment_timelines_timeline_like_review_tv.setVisibility(View.GONE);
             }
-            else if(TIMELINE_LIKE_COMMENT_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_COMMENT_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
+            else if(TIMELINE_LIKE_COMMENT_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_LIKE_COMMENT_REMOVE.equalsIgnoreCase(story.getTYPE())){
                 holder.fragment_timelines_timeline_like_on_tv.setText("Comment");
-                holder.fragment_timelines_timeline_like_review_tv.setText(timeline.getComment());
+                holder.fragment_timelines_timeline_like_review_tv.setText(story.getComment());
             }
-            else if(TIMELINE_LIKE_REVIEW_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_LIKE_REVIEW_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
+            else if(TIMELINE_LIKE_REVIEW_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_LIKE_REVIEW_REMOVE.equalsIgnoreCase(story.getTYPE())){
                 holder.fragment_timelines_timeline_like_on_tv.setText("Review");
-                holder.fragment_timelines_timeline_like_review_tv.setText(timeline.getReview());
+                holder.fragment_timelines_timeline_like_review_tv.setText(story.getReview());
             }
 
             /*recipe*/
-            setupRecipeCommonView(holder, timeline);
+            setupRecipeCommonView(holder, story);
             /*recipe*/
 
             setFont(holder.fragment_timelines_timeline_like_rl);
         }
-        else if(TIMELINE_COMMENT_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_COMMENT_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
-            if(timeline.getWhoUserId() == loggedInUser.getUSER_ID()){
+        else if(TIMELINE_COMMENT_RECIPE_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_COMMENT_RECIPE_REMOVE.equalsIgnoreCase(story.getTYPE())){
+            if(story.getWhoUserId() == loggedInUser.getUSER_ID()){
                 holder.fragment_timelines_timeline_comment_who_tv.setText("You");
             }
             else{
-                holder.fragment_timelines_timeline_comment_who_tv.setText(timeline.getWhoName());
+                holder.fragment_timelines_timeline_comment_who_tv.setText(story.getWhoName());
 
-                setupUserOnClickListener(holder.fragment_timelines_timeline_comment_who_tv, timeline.getWhoUserId());
+                setupUserOnClickListener(holder.fragment_timelines_timeline_comment_who_tv, story.getWhoUserId());
             }
 
-            if(timeline.getWhoseUserId() == loggedInUser.getUSER_ID()){
+            if(story.getWhoseUserId() == loggedInUser.getUSER_ID()){
                 holder.fragment_timelines_timeline_comment_whose_tv.setText("your");
             }
             else{
-                holder.fragment_timelines_timeline_comment_whose_tv.setText(timeline.getWhoseName()+"'s");
+                holder.fragment_timelines_timeline_comment_whose_tv.setText(story.getWhoseName()+"'s");
 
-                setupUserOnClickListener(holder.fragment_timelines_timeline_comment_whose_tv, timeline.getWhoseUserId());
+                setupUserOnClickListener(holder.fragment_timelines_timeline_comment_whose_tv, story.getWhoseUserId());
             }
 
-            holder.fragment_timelines_timeline_comment_comment_tv.setText(timeline.getComment());
+            holder.fragment_timelines_timeline_comment_comment_tv.setText(story.getComment());
 
             /*recipe*/
-            setupRecipeCommonView(holder, timeline);
+            setupRecipeCommonView(holder, story);
             /*recipe*/
 
             setFont(holder.fragment_timelines_timeline_comment_rl);
         }
-        else if(TIMELINE_REVIEW_RECIPE_ADD.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_REVIEW_RECIPE_REMOVE.equalsIgnoreCase(timeline.getTYPE())){
-            if(timeline.getWhoUserId() == loggedInUser.getUSER_ID()){
+        else if(TIMELINE_REVIEW_RECIPE_ADD.equalsIgnoreCase(story.getTYPE()) || TIMELINE_REVIEW_RECIPE_REMOVE.equalsIgnoreCase(story.getTYPE())){
+            if(story.getWhoUserId() == loggedInUser.getUSER_ID()){
                 holder.fragment_timelines_timeline_review_who_tv.setText("You");
             }
             else{
-                holder.fragment_timelines_timeline_review_who_tv.setText(timeline.getWhoName());
+                holder.fragment_timelines_timeline_review_who_tv.setText(story.getWhoName());
 
-                setupUserOnClickListener(holder.fragment_timelines_timeline_review_who_tv, timeline.getWhoUserId());
+                setupUserOnClickListener(holder.fragment_timelines_timeline_review_who_tv, story.getWhoUserId());
             }
 
-            if(timeline.getWhoseUserId() == loggedInUser.getUSER_ID()){
+            if(story.getWhoseUserId() == loggedInUser.getUSER_ID()){
                 holder.fragment_timelines_timeline_review_whose_tv.setText("your");
             }
             else{
-                holder.fragment_timelines_timeline_review_whose_tv.setText(timeline.getWhoseName()+"'s");
+                holder.fragment_timelines_timeline_review_whose_tv.setText(story.getWhoseName()+"'s");
 
-                setupUserOnClickListener(holder.fragment_timelines_timeline_review_whose_tv, timeline.getWhoseUserId());
+                setupUserOnClickListener(holder.fragment_timelines_timeline_review_whose_tv, story.getWhoseUserId());
             }
 
             /*review*/
-            holder.fragment_timelines_timeline_review_review_tv.setText(timeline.getReview());
+            holder.fragment_timelines_timeline_review_review_tv.setText(story.getReview());
 
             List<ImageView> starsList = new ArrayList<>();
             starsList.add(holder.fragment_timelines_timeline_review_star1_iv);
@@ -299,98 +298,94 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
             starsList.add(holder.fragment_timelines_timeline_review_star4_iv);
             starsList.add(holder.fragment_timelines_timeline_review_star5_iv);
 
-            setStars(starsList, timeline.getRating());
+            setStars(starsList, story.getRating());
             /*review*/
 
             /*recipe*/
-            setupRecipeCommonView(holder, timeline);
+            setupRecipeCommonView(holder, story);
             /*recipe*/
 
             setFont(holder.fragment_timelines_timeline_review_rl);
         }
-        else if(TIMELINE_USER_ADD.equalsIgnoreCase(timeline.getTYPE())){
-            setFont(holder.fragment_timelines_timeline_user_rl);
-        }
-        else if(TIMELINE_USER_PHOTO_MODIFY.equalsIgnoreCase(timeline.getTYPE())){
-            if(timeline.getWhoUserId() == loggedInUser.getUSER_ID()){
+        else if(TIMELINE_USER_PHOTO_MODIFY.equalsIgnoreCase(story.getTYPE())){
+            if(story.getWhoUserId() == loggedInUser.getUSER_ID()){
                 holder.home_timeline_user_image_modify_item_who_tv.setText("You");
             }
             else{
-                holder.home_timeline_user_image_modify_item_who_tv.setText(timeline.getWhoName().trim());
-                setupUserOnClickListener(holder.home_timeline_user_image_modify_item_who_tv, timeline.getWhoUserId());
+                holder.home_timeline_user_image_modify_item_who_tv.setText(story.getWhoName().trim());
+
+                setupUserOnClickListener(holder.home_timeline_user_image_modify_item_who_tv, story.getWhoUserId());
             }
 
-            Utility.loadImageFromURL(mContext, timeline.getWhoUserImage(), holder.home_timeline_user_image_modify_item_photo_iv);
-            setupUserImageOnClickListener(holder.home_timeline_user_image_modify_item_photo_iv, timeline.getWhoUserImage());
+            Utility.loadImageFromURL(mContext, story.getWhoUserImage(), holder.home_timeline_user_image_modify_item_photo_iv);
 
             setFont(holder.home_timeline_user_image_modify_item_rl);
         }
-        else if(TIMELINE_USER_FOLLOW.equalsIgnoreCase(timeline.getTYPE()) || TIMELINE_USER_UNFOLLOW.equalsIgnoreCase(timeline.getTYPE())){
-            setupUserOnClickListener(holder.home_timeline_user_follow_unfollow_item_who_tv, timeline.getWhoUserId());
-            setupUserOnClickListener(holder.home_timeline_user_follow_unfollow_item_whose_tv, timeline.getWhoseUserId());
-            Utility.loadImageFromURL(mContext, timeline.getWhoseUserImage(), holder.home_timeline_user_follow_unfollow_item_photo_iv);
-            setupUserImageOnClickListener(holder.home_timeline_user_follow_unfollow_item_photo_iv, timeline.getWhoseUserImage());
+        else if(TIMELINE_USER_FOLLOW.equalsIgnoreCase(story.getTYPE()) || TIMELINE_USER_UNFOLLOW.equalsIgnoreCase(story.getTYPE())){
+            setupUserOnClickListener(holder.home_timeline_user_follow_unfollow_item_who_tv, story.getWhoUserId());
+            setupUserOnClickListener(holder.home_timeline_user_follow_unfollow_item_whose_tv, story.getWhoseUserId());
+            Utility.loadImageFromURL(mContext, story.getWhoseUserImage(), holder.home_timeline_user_follow_unfollow_item_photo_iv);
+            setupUserImageOnClickListener(holder.home_timeline_user_follow_unfollow_item_photo_iv, story.getWhoseUserImage());
 
-            if(timeline.getWhoUserId() == loggedInUser.getUSER_ID()){
+            if(story.getWhoUserId() == loggedInUser.getUSER_ID()){
                 holder.home_timeline_user_follow_unfollow_item_who_tv.setText("You");
 
-                if(TIMELINE_USER_FOLLOW.equalsIgnoreCase(timeline.getTYPE())){
+                if(TIMELINE_USER_FOLLOW.equalsIgnoreCase(story.getTYPE())){
                     holder.home_timeline_user_follow_unfollow_item_what_tv.setText(" followed");
                 }
-                else if(TIMELINE_USER_UNFOLLOW.equalsIgnoreCase(timeline.getTYPE())){
+                else if(TIMELINE_USER_UNFOLLOW.equalsIgnoreCase(story.getTYPE())){
                     holder.home_timeline_user_follow_unfollow_item_what_tv.setText(" unfollowed");
                 }
             }
             else{
-                holder.home_timeline_user_follow_unfollow_item_who_tv.setText(timeline.getWhoName().trim());
+                holder.home_timeline_user_follow_unfollow_item_who_tv.setText(story.getWhoName().trim());
 
-                if(TIMELINE_USER_FOLLOW.equalsIgnoreCase(timeline.getTYPE())){
+                if(TIMELINE_USER_FOLLOW.equalsIgnoreCase(story.getTYPE())){
                     holder.home_timeline_user_follow_unfollow_item_what_tv.setText(" followed");
                 }
-                else if(TIMELINE_USER_UNFOLLOW.equalsIgnoreCase(timeline.getTYPE())){
+                else if(TIMELINE_USER_UNFOLLOW.equalsIgnoreCase(story.getTYPE())){
                     holder.home_timeline_user_follow_unfollow_item_what_tv.setText(" unfollowed");
                 }
             }
 
-            if(timeline.getWhoseUserId() == loggedInUser.getUSER_ID()){
+            if(story.getWhoseUserId() == loggedInUser.getUSER_ID()){
                 holder.home_timeline_user_follow_unfollow_item_whose_tv.setText("You");
             }
             else{
-                holder.home_timeline_user_follow_unfollow_item_whose_tv.setText(timeline.getWhoseName().trim());
+                holder.home_timeline_user_follow_unfollow_item_whose_tv.setText(story.getWhoseName().trim());
             }
 
             setFont(holder.home_timeline_user_follow_unfollow_item_rl);
         }
         else{
-            Log.e(CLASS_NAME, "The timeline type("+timeline.getTYPE()+") could not be understood. New type of timeline ?");
-            holder.fragment_timelines_timeline_unknown_msg_tv.setText("Unknown Timeline - "+timeline.getTYPE());
+            Log.e(CLASS_NAME, "The story type("+story.getTYPE()+") could not be understood. New type of story ?");
+            holder.fragment_timelines_timeline_unknown_msg_tv.setText("Unknown Story - "+story.getTYPE());
             return;
         }
 
         //commons
-        if(timeline.getWhoUserImage() != null && !timeline.getWhoUserImage().trim().isEmpty()){
+        if(story.getWhoUserImage() != null && !story.getWhoUserImage().trim().isEmpty()){
             if(holder.common_component_round_image_mini_iv == null){
                 Log.e(CLASS_NAME, "Error ! ImageView object is null !");
             }
             else{
-                Utility.loadImageFromURL(mContext, timeline.getWhoUserImage(), holder.common_component_round_image_mini_iv);
-                setupUserOnClickListener(holder.common_component_round_image_mini_iv, timeline.getWhoUserId());
+                Utility.loadImageFromURL(mContext, story.getWhoUserImage(), holder.common_component_round_image_mini_iv);
+                setupUserOnClickListener(holder.common_component_round_image_mini_iv, story.getWhoUserId());
             }
         }
 
-        holder.home_timeline_options_scope_iv.setImageResource(Utility.getScopeImageId(timeline.getScopeId()));
-
-        holder.common_component_image_options_mini_iv.setTag(timeline);
+        holder.home_timeline_options_scope_iv.setVisibility(View.GONE);
+        holder.common_component_image_options_mini_iv.setTag(story);
         holder.common_component_image_options_mini_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showPopupMenu(v, timeline);
+                showPopupMenu(v, story);
             }
         });
         //commons
 
-        if(timeline.getCREATE_DTM() != null && !timeline.getCREATE_DTM().trim().isEmpty()){
-           holder.common_component_text_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(timeline.getCREATE_DTM(), DB_DATE_TIME)));
+        if(story.getCREATE_DTM() != null && !story.getCREATE_DTM().trim().isEmpty()){
+           holder.common_component_text_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(story.getCREATE_DTM(), DB_DATE_TIME)));
         }
         else{
             Log.e(CLASS_NAME, "Error ! CreateDtm is null !");
@@ -419,37 +414,37 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         component.setOnClickListener(listener);
     }
 
-    private void setupRecipeCommonView(ViewHolder holder, TimelineMO timeline){
-        setupRecipeOnClickListener(holder.common_component_card_timeline_recipe_cv, timeline.getRecipeId());
+    private void setupRecipeCommonView(ViewHolder holder, TimelineMO story){
+        setupRecipeOnClickListener(holder.common_component_card_timeline_recipe_cv, story.getRecipeId());
 
         /*recipe*/
-        if(timeline.getRecipeOwnerImg() != null && !timeline.getRecipeOwnerImg().trim().isEmpty()){
-            Utility.loadImageFromURL(mContext, timeline.getRecipeOwnerImg(), holder.common_component_round_image_micro_iv);
+        if(story.getRecipeOwnerImg() != null && !story.getRecipeOwnerImg().trim().isEmpty()){
+            Utility.loadImageFromURL(mContext, story.getRecipeOwnerImg(), holder.common_component_round_image_micro_iv);
         }
 
-        if(timeline.getRecipeImage() != null && !timeline.getRecipeImage().trim().isEmpty()){
-            Utility.loadImageFromURL(mContext, timeline.getRecipeImage(), holder.common_component_card_timeline_recipe_recipe_iv);
+        if(story.getRecipeImage() != null && !story.getRecipeImage().trim().isEmpty()){
+            Utility.loadImageFromURL(mContext, story.getRecipeImage(), holder.common_component_card_timeline_recipe_recipe_iv);
         }
 
-        if(timeline.getRecipeName() != null && !timeline.getRecipeName().trim().isEmpty()){
-            holder.common_component_card_timeline_recipe_recipe_name_tv.setText(timeline.getRecipeName().toUpperCase());
+        if(story.getRecipeName() != null && !story.getRecipeName().trim().isEmpty()){
+            holder.common_component_card_timeline_recipe_recipe_name_tv.setText(story.getRecipeName().toUpperCase());
         }
         else{
-            Log.e(CLASS_NAME, "Error ! Could not fetch recipe name for timeline.");
+            Log.e(CLASS_NAME, "Error ! Could not fetch recipe name for story.");
         }
 
-        if(timeline.getRecipeTypeName() != null && !timeline.getRecipeTypeName().trim().isEmpty()){
-            holder.common_component_card_timeline_recipe_recipe_type_tv.setText(timeline.getRecipeTypeName().toUpperCase());
+        if(story.getRecipeTypeName() != null && !story.getRecipeTypeName().trim().isEmpty()){
+            holder.common_component_card_timeline_recipe_recipe_type_tv.setText(story.getRecipeTypeName().toUpperCase());
         }
         else{
-            Log.e(CLASS_NAME, "Error ! Could not fetch recipe food type name for timeline.");
+            Log.e(CLASS_NAME, "Error ! Could not fetch recipe food type name for story.");
         }
 
-        if(timeline.getRecipeCuisineName() != null && !timeline.getRecipeCuisineName().trim().isEmpty()){
-            holder.common_component_card_timeline_recipe_recipe_cuisine_tv.setText(timeline.getRecipeCuisineName().toUpperCase());
+        if(story.getRecipeCuisineName() != null && !story.getRecipeCuisineName().trim().isEmpty()){
+            holder.common_component_card_timeline_recipe_recipe_cuisine_tv.setText(story.getRecipeCuisineName().toUpperCase());
         }
         else{
-            Log.e(CLASS_NAME, "Error ! Could not fetch recipe cuisine name for timeline.");
+            Log.e(CLASS_NAME, "Error ! Could not fetch recipe cuisine name for story.");
         }
             /*recipe*/
     }
@@ -460,7 +455,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
     private void showPopupMenu(View view, TimelineMO timeline) {
         // inflate menu
         PopupMenu popupMenu = new PopupMenu(mContext, view);
-        popupMenu.inflate(R.menu.timeline_options);
+        popupMenu.inflate(R.menu.story_options);
 
         // Force icons to show
         Object menuHelper;
@@ -510,31 +505,6 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
     @Override
     public int getItemCount() {
         return timelines.size();
-    }
-
-    public void updateTimelinePrivacy(TimelineMO timeline) {
-        if(timelines != null && !timelines.isEmpty()){
-            for(TimelineMO thisTimeline : timelines){
-                if(timeline.getTMLN_ID() == thisTimeline.getTMLN_ID()){
-                    thisTimeline.setScopeId(timeline.getScopeId());
-                    thisTimeline.setScopeName(timeline.getScopeName());
-                    notifyDataSetChanged();
-                    break;
-                }
-            }
-        }
-    }
-
-    public void deleteTimeline(TimelineMO timeline) {
-        if(timelines != null && !timelines.isEmpty()){
-            for(TimelineMO thisTimeline : timelines){
-                if(timeline.getTMLN_ID() == thisTimeline.getTMLN_ID()){
-                    timelines.remove(thisTimeline);
-                    notifyDataSetChanged();
-                    break;
-                }
-            }
-        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

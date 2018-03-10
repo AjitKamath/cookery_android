@@ -425,7 +425,6 @@ public class LoginFragment extends DialogFragment {
                 ((HomeActivity)getActivity()).updateLoggedInUser();
                 ((HomeActivity) getActivity()).fetchMasterContent();
                 ((HomeActivity) getActivity()).fetchHomeContent();
-                ((HomeActivity) getActivity()).fetchTimelineContent();
             }
             else
             {
