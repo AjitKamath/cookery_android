@@ -67,6 +67,7 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FOLLOWINGS_FETCH
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FOLLOW_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_LOGIN;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_REGISTER;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_REGISTER_FIRST_CHECK;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_SEARCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_EMAIL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_GENDER;
@@ -895,20 +896,44 @@ public class InternetUtility {
         return null;
     }
 
+    public static Object userCheckFirstTimeSocialLogin(String email,String name, String password){
+        String flag="";
 
-    public static Object userRegistraion(String name,String email, String mobile, String password, String gender)
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_REGISTER_FIRST_CHECK);
+            paramMap.put("email", email);
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            Object obj = Utility.jsonToObject(jsonStr, UserMO.class);
+            if(null != obj){
+            ArrayList<UserMO> userobj = (ArrayList<UserMO>) obj;
+            userobj.get(0).setEMAIL(email);
+            userobj.get(0).setNAME(name);
+            userobj.get(0).setPASSWORD(password);
+            return userobj.get(0);
+            }
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not found the user : "+e);
+        }
+        return null;
+    }
+
+    //public static Object userRegistration(String name,String email, String mobile, String password, String gender)
+    public static Object userRegistration(String name,String email, String password)
     {
         String flag="";
 
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_REGISTER);
-            paramMap.put("code", "");
+           // paramMap.put("code", "");
             paramMap.put("name", name);
             paramMap.put("email", email);
-            paramMap.put("mobile", mobile);
+           // paramMap.put("mobile", mobile);
             paramMap.put("password", password);
-            paramMap.put("gender", gender);
+            //paramMap.put("gender", gender);
 
             String jsonStr = getResponseFromCookery(paramMap);
             return Utility.jsonToObject(jsonStr, MessageMO.class);

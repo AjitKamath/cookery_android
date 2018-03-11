@@ -14,7 +14,7 @@ public final class Constants {
 
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_AJIT = "cookery_php-ajitkamathk452607.codeanyapp.com";
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_VISHAL = "cookery_php-dial2vishal53897.codeanyapp.com";
-    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_AJIT;
+    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_VISHAL;
 
     private static final String SERVER_CODEANYWHERE_PUBLIC_DIR = "public";
 
@@ -60,6 +60,7 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_TIMELINE_FETCH = "TIMELINE_FETCH";
     public static final String PHP_FUNCTION_KEY_TIMELINE_USER_FETCH = "TIMELINE_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_USER_REGISTER = "USER_REGISTER";
+    public static final String PHP_FUNCTION_KEY_USER_REGISTER_FIRST_CHECK = "USER_REGISTER_CHECK";
     public static final String PHP_FUNCTION_KEY_USER_LOGIN = "USER_LOGIN";
     public static final String PHP_FUNCTION_KEY_USER_FETCH_SELF = "USER_FETCH_SELF";
     public static final String PHP_FUNCTION_KEY_USER_FETCH_PUBLIC = "USER_FETCH_PUBLIC";
@@ -220,4 +221,13 @@ public final class Constants {
 
     //Images Download
     public static final String GALLERY_DIR = "/Cookery";
+
+    // Rate Us
+    public final static int DAYS_UNTIL_PROMPT = 7;//Min number of days
+    public final static int LAUNCHES_UNTIL_PROMPT = 7;//Min number of launches
+
+    // Social Registration
+    public final static String DEFAULT_SOCIAL_PASSWORD = "DEFAULT_SOCIAL_PASSWORD";
+
+
 }

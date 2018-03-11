@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -32,6 +33,10 @@ import com.cookery.models.RecipeMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
+import com.facebook.CallbackManager;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,10 +137,15 @@ public class RecipeViewFragment extends DialogFragment {
     @InjectView(R.id.common_fragment_recipe_rating_iv)
     ImageView common_fragment_recipe_rating_iv;
 
+    @InjectView(R.id.fb_share_button)
+    ShareButton fbShareButton;
+
     //end of components
 
     private RecipeMO recipe;
     private UserMO loggerInUser;
+    CallbackManager callbackManager;
+    ShareDialog shareDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -230,7 +240,14 @@ public class RecipeViewFragment extends DialogFragment {
                 new AsyncFetchRecipeUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
+
+        ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.cookery"))
+                .setQuote(recipe.getRCP_NAME()) // Name of Dish
+                .build();
+        fbShareButton.setShareContent(linkContent);
     }
+
 
     private void setViewView() {
         common_fragment_recipe_views_tv.setText(String.valueOf(recipe.getViewedUsers() == null ? 0 : recipe.getViewedUsers().size()));
@@ -354,9 +371,9 @@ public class RecipeViewFragment extends DialogFragment {
         common_fragment_recipe_favourite_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (recipe.getUSER_ID() == loggerInUser.getUSER_ID()) {
+                /*if (recipe.getUSER_ID() == loggerInUser.getUSER_ID()) {
                     return;
-                }
+                }*/
 
                 FavouritesMO fav = new FavouritesMO();
                 fav.setUSER_ID(loggerInUser.getUSER_ID());
@@ -430,8 +447,33 @@ public class RecipeViewFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity().getApplicationContext();
+
+     /*   callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
+        // this part is optional
+        shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+            @Override
+            public void onSuccess(Sharer.Result result) {
+
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }});*/
     }
 
+  /*  @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+*/
     @Override
     public void onStart() {
         super.onStart();

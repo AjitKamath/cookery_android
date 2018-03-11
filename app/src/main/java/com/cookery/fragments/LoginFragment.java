@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.cookery.utils.Constants.DEFAULT_SOCIAL_PASSWORD;
 import static com.cookery.utils.Constants.FRAGMENT_REGISTER;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
@@ -86,6 +88,9 @@ public class LoginFragment extends DialogFragment {
 
     private GoogleApiClient mGoogleApiClient;
     private int RC_SIGN_IN = 2000;
+    private FragmentManager fragmentManager;
+    private Fragment fragment;
+    private Dialog dialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -109,11 +114,6 @@ public class LoginFragment extends DialogFragment {
         });
 
         fb_login_button.setFragment(this);
-       /* ArrayList<String> as = new ArrayList<>();
-        as.add("email");
-        //fb_login_button.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday", "user_friends"));
-        fb_login_button.setReadPermissions(as);*/
-
         FBLogin();
 
         google_sign_in_button.setOnClickListener(new View.OnClickListener() {
@@ -122,9 +122,7 @@ public class LoginFragment extends DialogFragment {
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
                 startActivityForResult(signInIntent, RC_SIGN_IN);
             }
-
         });
-
         return view;
     }
 
@@ -133,26 +131,14 @@ public class LoginFragment extends DialogFragment {
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            //Toast.makeText(mContext,acct.getDisplayName(),Toast.LENGTH_LONG).show();
-
             UserMO userobj = new UserMO();
+            userobj.setNAME(acct.getGivenName()+" "+acct.getFamilyName());
+            userobj.setPASSWORD(DEFAULT_SOCIAL_PASSWORD);
             userobj.setEMAIL(acct.getEmail());
-            acct.getGrantedScopes();
-            acct.getId();
-            acct.getIdToken();
-            userobj.setUSER_ID(1);
-            Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, userobj);
-            dismiss();
-            ((HomeActivity) getActivity()).updateLoggedInUser();
 
-            //Similarly you can get the email and photourl using acct.getEmail() and  acct.getPhotoUrl()
-
-/*            if(acct.getPhotoUrl() != null)
-                new LoadProfileImage(imgProfilePic).execute(acct.getPhotoUrl().toString());*/
-
+            checkSocialRegistration(userobj);
         } else {
             // Signed out, show unauthenticated UI.
-
         }
     }
 
@@ -162,7 +148,7 @@ public class LoginFragment extends DialogFragment {
             //signOutButton.setVisibility(View.VISIBLE);
         } else {
             // mStatusTextView.setText(R.string.signed_out);
-            // Bitmap icon =                  BitmapFactory.decodeResource(getContext().getResources(),R.drawable.user_defaolt);
+            // Bitmap icon = BitmapFactory.decodeResource(getContext().getResources(),R.drawable.user_defaolt);
             // imgProfilePic.setImageBitmap(ImageHelper.getRoundedCornerBitmap(getContext(),icon, 200, 200, 200, false, false, false, false));
             google_sign_in_button.setVisibility(View.VISIBLE);
             //signOutButton.setVisibility(View.GONE);
@@ -174,6 +160,7 @@ public class LoginFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity().getApplicationContext();
+        fragmentManager = getFragmentManager();
 
         // Call back for Facebook login
         callbackManager = CallbackManager.Factory.create();
@@ -195,12 +182,12 @@ public class LoginFragment extends DialogFragment {
     public void onStart() {
         super.onStart();
 
-        Dialog d = getDialog();
-        if (d!=null) {
+        dialog = getDialog();
+        if (dialog!=null) {
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            d.getWindow().setLayout(width, height);
-            d.setCanceledOnTouchOutside(false);
+            dialog.getWindow().setLayout(width, height);
+            dialog.setCanceledOnTouchOutside(false);
         }
 
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
@@ -208,70 +195,15 @@ public class LoginFragment extends DialogFragment {
             GoogleSignInResult result = opr.get();
             handleSignInResult(result);
         } else {
-          //  showProgressDialog();
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
                 public void onResult(GoogleSignInResult googleSignInResult) {
-             //       hideProgressDialog();
                     handleSignInResult(googleSignInResult);
                 }
             });
         }
     }
 
-/*    private void showProgressDialog() {
-        if (mProgressDialog == noll) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != noll && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-
-    }*/
-
-
-    /**
-     * Background Async task to load user profile picture from url
-     * */
-    /*private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public LoadProfileImage(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... uri) {
-            String url = uri[0];
-            Bitmap mIcon11 = noll;
-            try {
-                InputStream in = new java.net.URL(url).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-
-            if (result != noll) {
-
-
-                Bitmap resized = Bitmap.createScaledBitmap(result,200,200, true);
-                bmImage.setImageBitmap(ImageHelper.getRoundedCornerBitmap(getContext(),resized,250,200,200, false, false, false, false));
-
-            }
-        }
-    }
-*/
 
     public void signOut() {
         if (mGoogleApiClient.isConnected()) {
@@ -296,20 +228,32 @@ public class LoginFragment extends DialogFragment {
 
     private void FBLogin()
     {
+        fb_login_button.setReadPermissions("email");
         fb_login_button.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Toast.makeText(mContext,"Status: "+loginResult.getAccessToken(),Toast.LENGTH_LONG).show();
+//            Toast.makeText(mContext,"Status: "+loginResult.getAccessToken(),Toast.LENGTH_LONG).show();
 
               GraphRequest graphRequest = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
-                                testmethod(object);
+                                try {
+                                    UserMO userobj = new UserMO();
+                                    userobj.setNAME(object.getString("first_name") + " " + object.getString("last_name"));
+                                    userobj.setPASSWORD(DEFAULT_SOCIAL_PASSWORD);
+                                    userobj.setEMAIL(object.getString("email"));
+                                    checkSocialRegistration(userobj);
+                                }
+                                catch (JSONException e){
+                                    if(e.getMessage().equalsIgnoreCase("No value for email")){
+                                        //Utility.showSnacks(fragment_my_recipe_header_rl, "Login failed !", OK, Snackbar.LENGTH_LONG);
+                                    }
+                                    Log.e(CLASS_NAME, e.getMessage());
+                                }
                             }
                         });
-
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "first_name, last_name, email, id");
                 graphRequest.setParameters(parameters);
@@ -328,24 +272,19 @@ public class LoginFragment extends DialogFragment {
                 Toast.makeText(mContext,"Status: "+error.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
 
-    public void testmethod(JSONObject object){
-        UserMO userobj = new UserMO();
-        try {
-            userobj.setEMAIL(object.getString("email"));
-            System.out.println("Email : "+object.getString("email"));
-            System.out.println("Name : "+object.getString("first_name")+ " "+ object.getString("last_name"));
-            System.out.println("Id : "+object.getString("id"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public boolean checkSocialRegistration(UserMO object) {
 
- /*       Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, userobj);
-        dismiss();
-        ((HomeActivity) getActivity()).updateLoggedInUser();*/
+        if (!validateUserDetails(object.getEMAIL(), object.getPASSWORD())) {
+            Utility.showSnacks(fragment_my_recipe_header_rl, "Login failed !", OK, Snackbar.LENGTH_LONG);
+            Log.e(CLASS_NAME, "Email not found");
+            return false;
+        } else {
+            new AsyncTaskerCheckFirstTimeSocialLogin().execute(object);
+        }
+        return true;
     }
 
     @Override
@@ -433,6 +372,40 @@ public class LoginFragment extends DialogFragment {
 
             Utility.closeWaitDialog(getFragmentManager(), fragment);
 
+        }
+    }
+
+    private void dismissFragment(){
+        dismiss();
+    }
+
+    class AsyncTaskerCheckFirstTimeSocialLogin extends AsyncTask<UserMO, Void, Object> {
+        @Override
+        protected void onPreExecute(){
+        }
+
+        @Override
+        protected Object doInBackground(UserMO... objects) {
+            return InternetUtility.userCheckFirstTimeSocialLogin(objects[0].getEMAIL(),objects[0].getNAME(),objects[0].getPASSWORD());
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+
+            UserMO msg = (UserMO)object;
+            int user_id = msg.getUSER_ID();
+            if (user_id != 0) {
+                Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, object);
+
+                //((HomeActivity) getActivity()).updateLoggedInUser();
+            }
+            else{
+            MyAccountFragment myacctfrag = new MyAccountFragment();
+            myacctfrag.new AsyncTaskerRegisterUser().execute(msg);
+            }
+
+
+            Utility.closeWaitDialog(getFragmentManager(), fragment);
         }
     }
 

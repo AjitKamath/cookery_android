@@ -10,6 +10,14 @@
 
     <string name="facebook_app_id">398809143879333</string>
 
-    <string name="fb_login_protocol_scheme">fb398809143879333</string>
+    <string name="rate_us">RATE US</string>
+
+    <string name="remind_me_later">REMIND ME LATER</string>
+
+    <string name="no_thanks">NO THANKS</string>
+
+    <string name="rate_msg">If you like our app, please take a moment to rate it in play store!</string>
+
+    <string name="rate_title">Rate Cookery</string>
 
 </resources>

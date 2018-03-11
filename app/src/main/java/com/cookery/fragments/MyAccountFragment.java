@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.cookery.R;
+import com.cookery.activities.HomeActivity;
 import com.cookery.models.MessageMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
@@ -184,24 +185,31 @@ public class MyAccountFragment extends DialogFragment {
 
         @Override
         protected void onPreExecute(){
-            fragment = Utility.showWaitDialog(getFragmentManager(), "Registering User ..");
+            //Null check is for registration via social login
+            if(null != getFragmentManager()) {
+                fragment = Utility.showWaitDialog(getFragmentManager(), "Registering User ..");
+            }
         }
 
         @Override
         protected Object doInBackground(UserMO... objects) {
-            return InternetUtility.userRegistraion(objects[0].getNAME(),objects[0].getEMAIL(),objects[0].getMOBILE(),objects[0].getPASSWORD(),objects[0].getGENDER());
+            //return InternetUtility.userRegistration(objects[0].getNAME(),objects[0].getEMAIL(),objects[0].getMOBILE(),objects[0].getPASSWORD(),objects[0].getGENDER());
+            return InternetUtility.userRegistration(objects[0].getNAME(),objects[0].getEMAIL(),objects[0].getPASSWORD());
         }
 
         @Override
         protected void onPostExecute(Object object) {
             MessageMO msg = (MessageMO)object;
             String status = msg.getErr_message();
+            UserMO userobj = new UserMO();
+            userobj.setUSER_ID(msg.getUser_id());
             if(status.equalsIgnoreCase("User Registered Successfully"))
             {
-                //TODO: pass user ID
-                Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, "");
+                Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, userobj);
+                dismiss();
+                ((HomeActivity) getActivity()).updateLoggedInUser();
 
-                login();
+               // login();
                 Utility.closeWaitDialog(getFragmentManager(), fragment);
 
             }

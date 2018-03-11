@@ -3,6 +3,10 @@ package com.cookery.activities;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -12,6 +16,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -53,6 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.cookery.utils.Constants.DAYS_UNTIL_PROMPT;
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.FRAGMENT_MY_FAVORITES;
@@ -62,6 +68,7 @@ import static com.cookery.utils.Constants.FRAGMENT_MY_REVIEWS;
 import static com.cookery.utils.Constants.FRAGMENT_PEOPLE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.LAUNCHES_UNTIL_PROMPT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.MY_LISTS_EXISTS;
@@ -93,29 +100,68 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         setupFab();
 
         verifyLoggedInUser();
+        setupRateUs(mContext);
     }
 
     private void verifyLoggedInUser() {
         loggedInUser = Utility.getUserFromUserSecurity(mContext);
         if (loggedInUser == null || loggedInUser.getUSER_ID() == 0) {
-
-            String fragmentNameStr = FRAGMENT_LOGIN;
-
-            FragmentManager manager = getFragmentManager();
-            Fragment frag = manager.findFragmentByTag(fragmentNameStr);
-
-            if (frag != null) {
-                manager.beginTransaction().remove(frag).commit();
-            }
-            LoginFragment fragment = new LoginFragment();
-
-            fragment.show(manager, fragmentNameStr);
+            Utility.showFragment(getFragmentManager(), null, FRAGMENT_LOGIN, new LoginFragment(), null);
         } else {
             new AsyncTaskerFetchUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
-
-
     }
+
+
+    public void setupRateUs(Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences(mContext.getResources().getString(R.string.app_name), Context.MODE_PRIVATE);
+        if (prefs.getBoolean("dontshowagain", false)) { return ; }
+        SharedPreferences.Editor editor = prefs.edit();
+        // Increment launch counter
+        long launch_count = prefs.getLong("launch_count", 0) + 1;
+        editor.putLong("launch_count", launch_count);
+        // Get date of first launch
+        Long date_firstLaunch = prefs.getLong("date_firstlaunch", 0);
+        if (date_firstLaunch == 0) {
+            date_firstLaunch = System.currentTimeMillis();
+            editor.putLong("date_firstlaunch", date_firstLaunch);
+        }
+        // Wait at least n days before opening
+        if (launch_count >= LAUNCHES_UNTIL_PROMPT) {
+            if (System.currentTimeMillis() >= date_firstLaunch +
+                    (DAYS_UNTIL_PROMPT * 24 * 60 * 60 * 1000)) {
+                showRateDialog(mContext, editor);
+            }
+        }
+        editor.commit();
+    }
+
+
+    public void showRateDialog(final Context mContext, final SharedPreferences.Editor editor) {
+
+        AlertDialog dialog = new AlertDialog.Builder(this).setPositiveButton(getString(R.string.rate_us), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface paramAnonymousDialogInterface, int paramAnonymousInt) {
+                // TODO: URL of App
+                //mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PNAME)));
+                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.cookery")));
+                //dismiss();
+            }
+        }).setNegativeButton(getString(R.string.remind_me_later), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface paramAnonymousDialogInterface, int paramAnonymousInt) {
+                //dialog.dismiss();
+            }
+        }).setNeutralButton(getString(R.string.no_thanks), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface paramAnonymousDialogInterface, int paramAnonymousInt) {
+                if (editor != null) {
+                    editor.putBoolean("dontshowagain", true);
+                    editor.commit();
+                }
+             //   dialog.dismiss();
+            }
+        }).setMessage(R.string.rate_msg).setTitle(R.string.rate_title).create();
+        dialog.show();
+}
+
 
     public void updateLoggedInUser() {
         Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, null);
@@ -267,7 +313,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     private void logout() {
         Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, null);
         LoginFragment dd = new LoginFragment();
-//        dd.signOut();
+        dd.signOut();
         String fragmentNameStr = FRAGMENT_LOGIN;
 
         FragmentManager manager = getFragmentManager();
@@ -279,6 +325,17 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         LoginFragment fragment = new LoginFragment();
 
         fragment.show(manager, fragmentNameStr);
+    }
+
+    private void share(){
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("text/plain");
+        i.putExtra(Intent.EXTRA_SUBJECT, "Cookery");
+        String sAux = "\nLet me recommend you this application\n\n";
+        // TODO: Need to change the below URL with our App after publish on Play Store (below one is just for test)
+        sAux = sAux + "https://play.google.com/store/apps/details?id=com.cookery \n\n";
+        i.putExtra(Intent.EXTRA_TEXT, sAux);
+        startActivity(Intent.createChooser(i, "choose one"));
     }
 
     private void showAddRecipeFragment(MasterDataMO masterData) {
@@ -435,6 +492,9 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         }
         else if(R.id.navigation_drawer_list == item.getItemId()){
             new AsyncTaskerFetchMyLists().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+        else if(R.id.navigation_drawer_share == item.getItemId()){
+            share();
         }
         else if(R.id.navigation_drawer_people == item.getItemId()){
             new AsyncTaskerFetchPeople().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

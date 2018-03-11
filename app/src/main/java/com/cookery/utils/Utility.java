@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import com.cookery.R;
 import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.CommonImagePickerFragment;
+import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MessageFragment;
 import com.cookery.fragments.PeopleViewFragment;
 import com.cookery.fragments.ProfileViewEmailFragment;
@@ -644,6 +645,14 @@ public class Utility extends Activity {
         }
         else if(fragment instanceof PeopleViewFragment){
             PeopleViewFragment currentFrag = (PeopleViewFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof LoginFragment){
+            LoginFragment currentFrag = (LoginFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);

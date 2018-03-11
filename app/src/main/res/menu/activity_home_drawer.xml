@@ -26,6 +26,11 @@
             android:title="People" />
 
         <item
+            android:id="@+id/navigation_drawer_share"
+            android:icon="@drawable/share"
+            android:title="Invite Friends" />
+
+        <item
             android:id="@+id/navigation_drawer_rate_us"
             android:icon="@drawable/rate_us"
             android:title="Rate Us" />

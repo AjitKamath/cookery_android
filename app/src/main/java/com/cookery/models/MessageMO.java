@@ -13,6 +13,7 @@ public class MessageMO implements Serializable {
 
     private String purpose;
     private Object object;
+    private int user_id;
 
     public String getErr_message() {
         return err_message;
@@ -53,5 +54,13 @@ public class MessageMO implements Serializable {
 
     public void setObject(Object object) {
         this.object = object;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 }
