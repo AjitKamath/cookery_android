@@ -40,6 +40,7 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
     private android.support.v7.widget.PopupMenu.OnMenuItemClickListener menuItemListener;
     private SwipeRefreshLayout.OnRefreshListener refreshListener;
     private RecyclerView home_timelines_rv;
+    private RecyclerView home_stories_rv;
 
     public HomeTimelinesTrendsViewPagerAdapter(Context context, List<Integer> layouts, UserMO loggedInUser, Object array[], View.OnClickListener listener, SwipeRefreshLayout.OnRefreshListener refreshListener, android.support.v7.widget.PopupMenu.OnMenuItemClickListener menuItemListener) {
         this.mContext = context;
@@ -57,8 +58,9 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
         ViewGroup layout = (ViewGroup) inflater.inflate(layouts.get(position), collection, false);
 
         switch(position){
-            case 0: setupTimeline(layout); break;
+            case 0: setupStories(layout); break;
             case 1: setupTrend(layout); break;
+            case 2: setupTimeline(layout); break;
         }
 
         setFont(layout);
@@ -66,8 +68,34 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
         return layout;
     }
 
+    private void setupStories(ViewGroup layout) {
+        List<TimelineMO> stories = (List<TimelineMO>) array[0];
+
+        if(stories == null || stories.isEmpty()){
+            return;
+        }
+
+        SwipeRefreshLayout home_stories_srl = layout.findViewById(R.id.home_stories_srl);
+        home_stories_rv = layout.findViewById(R.id.home_stories_rv);
+
+        final HomeStoriesRecyclerViewAdapter adapter = new HomeStoriesRecyclerViewAdapter(mContext, stories, listener, menuItemListener);
+        adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
+            @Override
+            public void onBottomReached(int position) {
+                new AsyncTaskerStories(adapter).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        home_stories_rv.setLayoutManager(mLayoutManager);
+        home_stories_rv.setItemAnimator(new DefaultItemAnimator());
+        home_stories_rv.setAdapter(adapter);
+
+        home_stories_srl.setOnRefreshListener(refreshListener);
+    }
+
     private void setupTimeline(ViewGroup layout) {
-        List<TimelineMO> timelines = (List<TimelineMO>) array[0];
+        List<TimelineMO> timelines = (List<TimelineMO>) array[2];
 
         if(timelines == null || timelines.isEmpty()){
             return;
@@ -118,8 +146,9 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         switch(position){
-            case 0: return "TIMELINE";
+            case 0: return "STORIES";
             case 1: return "TREND";
+            case 2: return "TIMELINE";
             default: return "UNIMPL";
         }
     }
@@ -171,24 +200,11 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
 
         @Override
         protected Object doInBackground(Object... objects) {
-            //fetch timelines
-            int index = adapter.getItemCount();
-            List<TimelineMO> timelines = InternetUtility.getFetchUserTimeline(loggedInUser.getUSER_ID(), index);
-
-            /*if(timelines != null){
-                if(array[0] == null){
-                    array[0] = new ArrayList<>();
-                }
-
-                array[0] = ((List<TimelineMO>) array[0]).addAll(timelines);
-            }*/
-
-            return timelines;
+            return InternetUtility.getFetchUserTimeline(loggedInUser.getUSER_ID(), adapter.getItemCount());
         }
 
         @Override
         protected void onPreExecute() {
-            //fragment = Utility.showWaitDialog(getFragmentManager(), "loading recipes ..");
         }
 
         @Override
@@ -197,6 +213,38 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
 
             if(timelines != null && !timelines.isEmpty()){
                 adapter.updateBottomTimelines(timelines);
+            }
+            else{
+                adapter.setOnBottomReachedListener(null);
+            }
+        }
+    }
+
+    class AsyncTaskerStories extends AsyncTask<Object, Void, Object> {
+        private HomeStoriesRecyclerViewAdapter adapter;
+
+        public AsyncTaskerStories(HomeStoriesRecyclerViewAdapter adapter){
+            this.adapter = adapter;
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            return InternetUtility.getFetchUserStories(loggedInUser.getUSER_ID(), adapter.getItemCount());
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            List<TimelineMO> stories = (List<TimelineMO>) object;
+
+            if(stories != null && !stories.isEmpty()){
+                adapter.updateBottomStories(stories);
+            }
+            else{
+                adapter.setOnBottomReachedListener(null);
             }
         }
     }

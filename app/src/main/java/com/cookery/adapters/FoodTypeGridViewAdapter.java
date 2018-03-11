@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,6 +14,8 @@ import com.cookery.models.FoodTypeMO;
 import com.cookery.utils.Utility;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.cookery.utils.Constants.UI_FONT;
 
@@ -59,12 +60,9 @@ public class FoodTypeGridViewAdapter extends BaseAdapter {
 
         FoodTypeMO food = (FoodTypeMO) dataList.get(position);
 
+        Utility.loadImageFromURL(mContext, food.getIMG(), mHolder.food_type_gv_item_iv);
+
         mHolder.food_type_gv_item_tv.setText(food.getFOOD_TYP_NAME());
-
-        if(food.getIMG() != null){
-            Utility.loadImageFromURL(mContext, food.getIMG(), mHolder.food_type_gv_item_iv);
-        }
-
         mHolder.food_type_gv_item_ll.setTag(food);
         mHolder.food_type_gv_item_ll.setOnClickListener(clickListener);
 
@@ -80,7 +78,7 @@ public class FoodTypeGridViewAdapter extends BaseAdapter {
 
     public class ViewHolder {
         private LinearLayout food_type_gv_item_ll;
-        private ImageView food_type_gv_item_iv;
+        private CircleImageView food_type_gv_item_iv;
         private TextView food_type_gv_item_tv;
     }
 

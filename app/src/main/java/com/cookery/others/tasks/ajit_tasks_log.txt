@@ -272,3 +272,30 @@
 14 feb 2018
 1. #158 People - Search Users - user can search other users in People View and see thier public profile.
 
+-- git checkin on 14 feb 2018 --
+
+3 March 2018
+1. #159 Recipe View - Fetch Liked/Viewed Users On Demand
+2. #173 Recipe View - Fetch Comments & Reviews only on demand
+
+-- git checkin on 3 March 2018 --
+
+6 march 2018
+1. #176 My Reviews View - show user's all the reviews on clicking on 'My Reviews' in navigation drawer.
+2. Prevent redundant service calls on reaching bottom of the list/screen in swipe to refresh layouts through out the app.
+3. #181 My Recipes View - show user's recipes on clicking on 'My Recipes' in navigation drawer.
+
+-- git checkin on 6 March 2018 --
+
+7 march 2018
+1. #207Recipe Add - Fix Dropdowns.
+2. #205Recipe Add - Master Data Images.
+3. #166Library Change - To Pick Photos.
+4. Home - Prevent redundant service calls to fetch timelines when un necessary.
+5. Recipe Add - cosmetic fixes to ingredients autocomplete.
+
+-- git checkin on 7 March 2018 --
+
+10 march 2018
+1. #123 - Home View - Stories
+2. Home - prevent redundant calls for fetching timelines

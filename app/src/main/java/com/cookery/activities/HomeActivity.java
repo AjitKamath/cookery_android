@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import com.cookery.R;
 import com.cookery.adapters.HomeTimelinesTrendsViewPagerAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
+import com.cookery.fragments.ProfileViewImageFragment;
 import com.cookery.fragments.TimelineDeleteFragment;
 import com.cookery.fragments.TimelineHideFragment;
 import com.cookery.fragments.UserViewFragment;
@@ -38,6 +39,7 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_TIMELINE_DELETE;
 import static com.cookery.utils.Constants.FRAGMENT_TIMELINE_HIDE;
 import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
@@ -86,19 +88,24 @@ public class HomeActivity extends CommonActivity{
 
     private void setupTabs(Object array[]) {
         final List<Integer> viewPagerTabsList = new ArrayList<>();
-        viewPagerTabsList.add(R.layout.home_timelines);
+        viewPagerTabsList.add(R.layout.home_stories);
         viewPagerTabsList.add(R.layout.home_trends);
+        viewPagerTabsList.add(R.layout.home_timelines);
 
         for(Integer iter : viewPagerTabsList){
             content_home_timelines_trends_tl.addTab(content_home_timelines_trends_tl.newTab());
         }
 
-        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-
-        content_home_timelines_trends_vp.setAdapter(new HomeTimelinesTrendsViewPagerAdapter(mContext, viewPagerTabsList, loggedInUser, array, new View.OnClickListener() {
+        HomeTimelinesTrendsViewPagerAdapter adapter = new HomeTimelinesTrendsViewPagerAdapter(mContext, viewPagerTabsList, loggedInUser, array, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(view.getTag() != null && view.getId() == R.id.home_timeline_user_follow_unfollow_item_photo_iv){
+                    Map<String, Object> paramsMap = new HashMap<>();
+                    paramsMap.put(GENERIC_OBJECT, String.valueOf(view.getTag()));
+                    Utility.showFragment(getFragmentManager(), null, FRAGMENT_PROFILE_VIEW_IMAGE, new ProfileViewImageFragment(), paramsMap);
+                    return;
+                }
+
                 if(view.getTag() != null ) {
                     if (view.getTag() instanceof RecipeMO) {
                         new AsyncTaskerFetchRecipe().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (RecipeMO) view.getTag());
@@ -155,7 +162,11 @@ public class HomeActivity extends CommonActivity{
 
                 return false;
             }
-        }));
+        });
+
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        content_home_timelines_trends_vp.setAdapter(adapter);
         content_home_timelines_trends_vp.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(content_home_timelines_trends_tl));
 
         content_home_timelines_trends_tl.setupWithViewPager(content_home_timelines_trends_vp);
@@ -198,11 +209,6 @@ public class HomeActivity extends CommonActivity{
     @Override
     protected NavigationView getNav_view() {
         return nav_view;
-    }
-
-    @Override
-    protected CoordinatorLayout getWrapper_home_cl() {
-        return wrapper_home_cl;
     }
 
     @Override

@@ -9,15 +9,15 @@
     android:paddingBottom="40dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        app:border_color="@color/app_color"
         android:id="@+id/food_type_gv_item_iv"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:border_color="@color/white"
         app:border_width="1dp"
         android:src="@drawable/food"/>
 
     <LinearLayout
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"

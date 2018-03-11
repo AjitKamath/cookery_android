@@ -42,6 +42,8 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
     public UserMO loggedInUser;
     private FragmentManager fragManager;
 
+    private RecyclerView people_view_followers_following_rv;
+
     public PeopleViewViewPagerAdapter(Context context, FragmentManager fragManager, List<Integer> layouts, UserMO loggedInUser, Object people, ItemClickListener itemClickListener) {
         this.mContext = context;
         this.layouts = layouts;
@@ -118,13 +120,13 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
         adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
             @Override
             public void onBottomReached(int position) {
-                new AsyncTaskerFetchOldPeople().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, adapter, purpose);
+                new AsyncTaskerFetchPeople(purpose, adapter.getItemCount()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
 
-        RecyclerView people_view_followers_following_rv = layout.findViewById(R.id.people_view_followers_following_rv);
+        people_view_followers_following_rv = layout.findViewById(R.id.people_view_followers_following_rv);
         people_view_followers_following_rv.setLayoutManager(mLayoutManager);
         people_view_followers_following_rv.setItemAnimator(new DefaultItemAnimator());
         people_view_followers_following_rv.setAdapter(adapter);
@@ -134,7 +136,7 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
         people_view_followers_following_srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new AsyncTaskerFetchLatestPeople(purpose).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, layout, people_view_followers_following_srl);
+                new AsyncTaskerFetchPeople(purpose, 0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
     }
@@ -183,14 +185,16 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
         }
     }
 
-    class AsyncTaskerFetchLatestPeople extends AsyncTask<Object, Void, Object> {
+    class AsyncTaskerFetchPeople extends AsyncTask<Object, Void, Object> {
         private Fragment fragment;
         private ViewGroup layout;
         private String purpose;
+        private int index;
         private SwipeRefreshLayout people_view_followers_following_srl;
 
-        public AsyncTaskerFetchLatestPeople(String purpose){
+        public AsyncTaskerFetchPeople(String purpose, int index){
             this.purpose = purpose;
+            this.index = index;
         }
 
         @Override
@@ -199,10 +203,10 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
             people_view_followers_following_srl = (SwipeRefreshLayout) objects[1];
 
             if("FOLLOWERS".equalsIgnoreCase(purpose)){
-                return InternetUtility.fetchUserFollowers(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), 0);
+                return InternetUtility.fetchUserFollowers(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), index);
             }
             else if("FOLLOWING".equalsIgnoreCase(purpose)){
-                return InternetUtility.fetchUserFollowings(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), 0);
+                return InternetUtility.fetchUserFollowings(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), index);
             }
             else{
                 Log.e(CLASS_NAME, "Error ! Could not identify the purpose !");
@@ -247,52 +251,8 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
                     Log.e(CLASS_NAME, "Error ! Could not identify the purpose !");
                 }
             }
-        }
-    }
-
-    class AsyncTaskerFetchOldPeople extends AsyncTask<Object, Void, Object> {
-        private UsersRecyclerViewAdapter adapter;
-        private String purpose;
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            adapter = (UsersRecyclerViewAdapter) objects[0];
-            purpose = String.valueOf(objects[1]);
-
-            if("FOLLOWERS".equalsIgnoreCase(purpose)){
-                return InternetUtility.fetchUserFollowers(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), adapter.getItemCount());
-            }
-            else if("FOLLOWING".equalsIgnoreCase(purpose)){
-                return InternetUtility.fetchUserFollowings(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), adapter.getItemCount());
-            }
             else{
-                Log.e(CLASS_NAME, "Error ! Could not identify the purpose !");
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            List<UserMO> fetchedUsers = (List<UserMO>) object;
-
-            if(fetchedUsers != null) {
-                Object[] users = (Object[])people;
-                if("FOLLOWERS".equalsIgnoreCase(purpose)){
-                    ((List<UserMO>)users[0]).addAll(fetchedUsers);
-                    adapter.notifyDataSetChanged();
-                }
-                else if("FOLLOWING".equalsIgnoreCase(purpose)){
-                    ((List<UserMO>)users[1]).addAll(fetchedUsers);
-                    adapter.notifyDataSetChanged();
-                }
-                else{
-                    Log.e(CLASS_NAME, "Error ! Could not identify the purpose !");
-                }
+                ((UsersRecyclerViewAdapter)people_view_followers_following_rv.getAdapter()).setOnBottomReachedListener(null);
             }
         }
     }

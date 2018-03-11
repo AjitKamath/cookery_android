@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.CommentMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.UserMO;
@@ -24,6 +25,7 @@ import com.cookery.utils.DateTimeUtility;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.cookery.utils.Constants.DB_DATE_TIME;
@@ -37,6 +39,7 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
     private List<CommentMO> comments;
     private View.OnClickListener listener;
     private View.OnLongClickListener longClickListener;
+    private OnBottomReachedListener onBottomReachedListener;
     private UserMO loggedInUser;
 
     public RecipeCommentsRecyclerViewAdapter(Context mContext, UserMO loggedInUser, List<CommentMO> comments, View.OnClickListener listener, View.OnLongClickListener longClickListener) {
@@ -54,8 +57,16 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
         return new ViewHolder(itemView);
     }
 
+    public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener){
+        this.onBottomReachedListener = onBottomReachedListener;
+    }
+
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        if (position ==  comments.size() - 1){
+            onBottomReachedListener.onBottomReached(position);
+        }
+
         final CommentMO comment = comments.get(position);
 
         if(comment.getUserImage() != null && !comment.getUserImage().trim().isEmpty()){
@@ -82,7 +93,7 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
         }
 
         holder.recipe_comments_item_tv.setText(comment.getCOMMENT());
-        holder.recipe_comments_item_likes_count_tv.setText(Utility.getSmartNumber(comment.getLikedUsers() == null ? 0 : comment.getLikedUsers().size()));
+        holder.recipe_comments_item_likes_count_tv.setText(Utility.getSmartNumber(comment.getLikesCount()));
 
         if(comment.getMOD_DTM() != null && !comment.getMOD_DTM().trim().isEmpty()){
             holder.recipe_comments_item_date_time_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(comment.getMOD_DTM(), DB_DATE_TIME)));
@@ -146,6 +157,19 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
                 setFont((ViewGroup) v);
             }
         }
+    }
+
+    public void updateComments(List<CommentMO> newComments, int index) {
+        if(comments == null){
+            comments = new ArrayList<>();
+        }
+
+        if(index == 0){
+            comments.clear();
+        }
+
+        comments.addAll(newComments);
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

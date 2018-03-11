@@ -250,7 +250,7 @@ public class RecipeViewFragment extends DialogFragment {
 
 
     private void setViewView() {
-        common_fragment_recipe_views_tv.setText(String.valueOf(recipe.getViewedUsers() == null ? 0 : recipe.getViewedUsers().size()));
+        common_fragment_recipe_views_tv.setText(String.valueOf(recipe.getViewsCount()));
 
         common_fragment_recipe_view_ll.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -262,13 +262,12 @@ public class RecipeViewFragment extends DialogFragment {
     }
 
     private void setCommentView() {
-        if (recipe.getComments() == null || recipe.getComments().isEmpty()) {
+        if (recipe.getCommentsCount() == 0) {
             common_fragment_recipe_comment_iv.setImageResource(R.drawable.comment_disabled);
-            common_fragment_recipe_comment_tv.setText("0");
         } else {
             common_fragment_recipe_comment_iv.setImageResource(R.drawable.comment_enabled);
-            common_fragment_recipe_comment_tv.setText(String.valueOf(recipe.getComments().size()));
         }
+        common_fragment_recipe_comment_tv.setText(String.valueOf(recipe.getCommentsCount()));
 
         common_fragment_recipe_comment_ll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -336,7 +335,7 @@ public class RecipeViewFragment extends DialogFragment {
     }
 
     public void setLikeView() {
-        common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(recipe.getLikedUsers() == null ? 0 : recipe.getLikedUsers().size()));
+        common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(recipe.getLikesCount()));
 
         common_fragment_recipe_like_iv.setImageResource(Utility.getLikeImageId(recipe.isUserLiked()));
 
@@ -658,9 +657,9 @@ public class RecipeViewFragment extends DialogFragment {
         @Override
         protected Object doInBackground(Void... objects) {
             if ("LIKE".equalsIgnoreCase(purpose)) {
-                return InternetUtility.fetchLikedUsers("RECIPE", recipe.getRCP_ID());
+                return InternetUtility.fetchLikedUsers("RECIPE", recipe.getRCP_ID(), 0);
             } else if ("VIEW".equalsIgnoreCase(purpose)) {
-                return InternetUtility.fetchViewedUsers(recipe);
+                return InternetUtility.fetchViewedUsers(recipe, 0);
             } else {
                 Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE + purpose);
             }

@@ -139,7 +139,7 @@ public class AddRecipeIngredientQuantityFragment extends DialogFragment {
 
         Dialog d = getDialog();
         if (d!=null) {
-            int width = 300;
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.WRAP_CONTENT;
             d.getWindow().setLayout(width, height);
         }

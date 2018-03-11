@@ -55,9 +55,9 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_DELETE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_RECIPE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_USER_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_STORY_USER_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TASTE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_DELETE;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_SCOPE_MODIFY;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_USER_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FETCH_PUBLIC;
@@ -608,7 +608,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<UserMO> fetchLikedUsers(String type, int type_id) {
+    public static List<UserMO> fetchLikedUsers(String type, int type_id, int index) {
         if(USE_TEST_DATA){
             return null;
         }
@@ -616,6 +616,7 @@ public class InternetUtility {
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_LIKE_FETCH_USERS);
+            paramMap.put("index", String.valueOf(index));
             paramMap.put("type", type);
             paramMap.put("type_id", String.valueOf(type_id));
 
@@ -632,7 +633,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<UserMO> fetchViewedUsers(RecipeMO recipe) {
+    public static List<UserMO> fetchViewedUsers(RecipeMO recipe, int index) {
         if(USE_TEST_DATA){
             return null;
         }
@@ -641,6 +642,7 @@ public class InternetUtility {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_VIEW_FETCH_USERS);
             paramMap.put("rcp_id", String.valueOf(recipe.getRCP_ID()));
+            paramMap.put("index", String.valueOf(index));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return (List<UserMO>) Utility.jsonToObject(jsonStr, UserMO.class);
@@ -777,7 +779,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<RecipeMO> fetchMyRecipes(int user_id) {
+    public static List<RecipeMO> fetchMyRecipes(int user_id, int index) {
         if(USE_TEST_DATA){
             return TestData.getRecipesTestData();
         }
@@ -786,6 +788,7 @@ public class InternetUtility {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_RECIPE_USER_FETCH);
             paramMap.put("user_id", String.valueOf(user_id));
+            paramMap.put("index", String.valueOf(index));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return (List<RecipeMO>) Utility.jsonToObject(jsonStr, RecipeMO.class);
@@ -800,7 +803,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<RecipeMO> fetchMyReviews(int user_id) {
+    public static Object fetchMyReviews(int user_id, int index) {
         if(USE_TEST_DATA){
             return TestData.getRecipesTestData();
         }
@@ -809,15 +812,16 @@ public class InternetUtility {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_REVIEW_USER_FETCH);
             paramMap.put("user_id", String.valueOf(user_id));
+            paramMap.put("index", String.valueOf(index));
 
             String jsonStr = getResponseFromCookery(paramMap);
-            return (List<RecipeMO>) Utility.jsonToObject(jsonStr, RecipeMO.class);
+            return Utility.jsonToObject(jsonStr, ReviewMO.class);
         }
         catch (IOException e){
             Log.e(CLASS_NAME, e.getMessage());
         }
         catch (Exception e){
-            Log.e(CLASS_NAME, "Could not fetch Cuisines from the server : "+e);
+            Log.e(CLASS_NAME, "Could not fetch users reviews from the server : "+e);
         }
 
         return null;
@@ -873,15 +877,16 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<TimelineMO> getFetchTimelineDetails(TimelineMO timeline) {
+    public static List<TimelineMO> getFetchUserStories(int userId, int index) {
         if(USE_TEST_DATA){
             return null;
         }
 
         try {
             Map<String, String> paramMap = new HashMap<>();
-            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_TIMELINE_FETCH);
-            paramMap.put("tmln_id", String.valueOf(timeline.getTMLN_ID()));
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_STORY_USER_FETCH);
+            paramMap.put("user_id", String.valueOf(userId));
+            paramMap.put("index", String.valueOf(index));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return (List<TimelineMO>) Utility.jsonToObject(jsonStr, TimelineMO.class);
@@ -890,7 +895,7 @@ public class InternetUtility {
             Log.e(CLASS_NAME, e.getMessage());
         }
         catch (Exception e){
-            Log.e(CLASS_NAME, "Could not fetch user timeline details from the server : "+e);
+            Log.e(CLASS_NAME, "Could not fetch user stories from the server : "+e);
         }
 
         return null;
@@ -922,6 +927,7 @@ public class InternetUtility {
 
     //public static Object userRegistration(String name,String email, String mobile, String password, String gender)
     public static Object userRegistration(String name,String email, String password)
+    public static Object userRegistraion(String name,String email, String mobile, String password, String gender)
     {
         String flag="";
 

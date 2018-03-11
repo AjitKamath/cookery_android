@@ -40,18 +40,6 @@ public class DateTimeUtility {
         return "ERROR";
     }
 
-    public static String getCreateOrModifiedTime(String createDtm, String modifiedDtm){
-        if(modifiedDtm != null && !modifiedDtm.trim().isEmpty()){
-            return DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(modifiedDtm, DB_DATE_TIME));
-        }
-        else if(createDtm != null && !createDtm.trim().isEmpty()){
-            return DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(createDtm, DB_DATE_TIME));
-        }
-        else{
-            return "ERROR";
-        }
-    }
-
     public static String getSmartDateTime(Date dateTime) {
         SimpleDateFormat sdf = null;
 
@@ -88,6 +76,18 @@ public class DateTimeUtility {
         }
 
         return sdf.format(dateTime);
+    }
+
+    public static String getCreateOrModifiedTime(String createDtm, String modifiedDtm){
+        if(modifiedDtm != null && !modifiedDtm.trim().isEmpty()){
+            return DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(modifiedDtm, DB_DATE_TIME));
+        }
+        else if(createDtm != null && !createDtm.trim().isEmpty()){
+            return DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(createDtm, DB_DATE_TIME));
+        }
+        else{
+            return "ERROR";
+        }
     }
 
     public static String getSmartTime(long millSeconds) {

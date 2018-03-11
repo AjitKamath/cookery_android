@@ -8,14 +8,14 @@
     android:padding="@dimen/padding"
     android:gravity="center">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/autocomplete_ingredient_iv"
-        android:layout_width="@dimen/header_buttons_dimen"
-        android:layout_height="@dimen/header_buttons_dimen"
-        android:src="@drawable/food" />
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/placeholder" />
 
     <TextView
-        android:textColor="@color/darkOrange"
+        android:textColor="@color/secondaryDarkText"
         android:layout_marginLeft="10dp"
         android:id="@+id/autocomplete_ingredient_tv"
         android:layout_width="match_parent"

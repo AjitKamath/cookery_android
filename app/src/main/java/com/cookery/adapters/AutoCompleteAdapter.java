@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.cookery.R;
 import com.cookery.filters.AutocompleteFilter;
 import com.cookery.models.IngredientMO;
+import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +93,7 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
             autocomplete_iv = convertView.findViewById(R.id.autocomplete_ingredient_iv);
 
             autocomplete_tv.setText(ingredient.getING_NAME());
-            autocomplete_iv.setImageResource(R.drawable.food);
+            Utility.loadImageFromURL(mContext, ingredient.getIMG(), autocomplete_iv);
 
             convertView.setTag(ingredient);
 

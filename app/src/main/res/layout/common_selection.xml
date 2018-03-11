@@ -19,7 +19,7 @@
         android:id="@+id/common_selection_food_type_gv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="3"
+        android:numColumns="2"
         tools:listitem="@layout/cuisine_gv_item">
     </GridView>
 

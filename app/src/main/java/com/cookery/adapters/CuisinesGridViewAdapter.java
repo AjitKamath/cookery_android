@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,6 +14,8 @@ import com.cookery.models.CuisineMO;
 import com.cookery.utils.Utility;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.cookery.utils.Constants.UI_FONT;
 
@@ -59,12 +60,9 @@ public class CuisinesGridViewAdapter extends BaseAdapter {
 
         CuisineMO cuisine = (CuisineMO) dataList.get(position);
 
+        Utility.loadImageFromURL(mContext, cuisine.getIMG(), mHolder.cuisine_gv_item_iv);
+
         mHolder.cuisine_gv_item_tv.setText(cuisine.getFOOD_CSN_NAME());
-
-        if(cuisine.getIMG() != null){
-            Utility.loadImageFromURL(mContext, cuisine.getIMG(), mHolder.cuisine_gv_item_iv);
-        }
-
         mHolder.cuisine_gv_item_ll.setTag(cuisine);
         mHolder.cuisine_gv_item_ll.setOnClickListener(clickListener);
 
@@ -80,7 +78,7 @@ public class CuisinesGridViewAdapter extends BaseAdapter {
 
     public class ViewHolder {
         private LinearLayout cuisine_gv_item_ll;
-        private ImageView cuisine_gv_item_iv;
+        private CircleImageView cuisine_gv_item_iv;
         private TextView cuisine_gv_item_tv;
     }
 

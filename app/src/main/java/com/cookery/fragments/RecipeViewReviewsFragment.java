@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.adapters.RecipeViewReviewsRecyclerViewAdapter;
+import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.MessageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
@@ -58,46 +60,49 @@ public class RecipeViewReviewsFragment extends DialogFragment {
     private Context mContext;
 
     //components
-    @InjectView(R.id.recipe_reviews_rl)
+    @InjectView(R.id.recipe_view_reviews_rl)
     RelativeLayout recipe_reviews_rl;
 
-    @InjectView(R.id.recipe_reviews_cv)
+    @InjectView(R.id.recipe_view_reviews_cv)
     CardView recipe_reviews_cv;
 
-    @InjectView(R.id.recipe_reviews_delete_iv)
+    @InjectView(R.id.recipe_view_reviews_delete_iv)
     ImageView recipe_reviews_delete_iv;
 
-    @InjectView(R.id.recipe_reviews_star_1_iv)
+    @InjectView(R.id.recipe_view_reviews_star_1_iv)
     ImageView recipe_reviews_star_1_iv;
 
-    @InjectView(R.id.recipe_reviews_star_2_iv)
+    @InjectView(R.id.recipe_view_reviews_star_2_iv)
     ImageView recipe_reviews_star_2_iv;
 
-    @InjectView(R.id.recipe_reviews_star_3_iv)
+    @InjectView(R.id.recipe_view_reviews_star_3_iv)
     ImageView recipe_reviews_star_3_iv;
 
-    @InjectView(R.id.recipe_reviews_star_4_iv)
+    @InjectView(R.id.recipe_reviews_view_star_4_iv)
     ImageView recipe_reviews_star_4_iv;
 
-    @InjectView(R.id.recipe_reviews_star_5_iv)
+    @InjectView(R.id.recipe_reviews_view_star_5_iv)
     ImageView recipe_reviews_star_5_iv;
 
-    @InjectView(R.id.recipe_reviews_review_et)
+    @InjectView(R.id.recipe_view_reviews_review_et)
     EditText recipe_reviews_review_et;
 
-    @InjectView(R.id.recipe_reviews_review_rl)
+    @InjectView(R.id.recipe_view_reviews_review_rl)
     RelativeLayout recipe_reviews_review_rl;
 
-    @InjectView(R.id.recipe_reviews_review_tv)
+    @InjectView(R.id.recipe_view_reviews_review_tv)
     TextView recipe_reviews_review_tv;
 
-    @InjectView(R.id.recipe_reviews_review_datetime_tv)
+    @InjectView(R.id.recipe_view_reviews_review_datetime_tv)
     TextView recipe_reviews_review_datetime_tv;
 
-    @InjectView(R.id.recipe_reviews_reviews_rv)
+    @InjectView(R.id.recipe_view_reviews_reviews_srl)
+    SwipeRefreshLayout recipe_view_reviews_reviews_srl;
+
+    @InjectView(R.id.recipe_view_reviews_reviews_rv)
     RecyclerView recipe_reviews_reviews_rv;
 
-    @InjectView(R.id.recipe_review_submit_fab)
+    @InjectView(R.id.recipe_view_review_submit_fab)
     FloatingActionButton recipe_review_submit_fab;
     //end of components
 
@@ -106,7 +111,7 @@ public class RecipeViewReviewsFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.recipe_reviews, container);
+        View view = inflater.inflate(R.layout.recipe_view_reviews, container);
         ButterKnife.inject(this, view);
 
         Dialog d = getDialog();
@@ -132,19 +137,6 @@ public class RecipeViewReviewsFragment extends DialogFragment {
         setupStars();
         setupReview();
         setupReviews();
-
-        /*common_fragment_recipe_rating_submit_ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(review.getRATING() == 0){
-                    Utility.showSnacks(common_fragment_recipe_review_cv, "Rate before you submit", OK, Snackbar.LENGTH_LONG);
-                    return;
-                }
-                review.setREVIEW(String.valueOf(common_fragment_recipe_rating_review_tv.getText()));
-
-                new AsyncSubmitReview().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, review);
-            }
-        });*/
     }
 
     private void setupReview() {
@@ -206,16 +198,36 @@ public class RecipeViewReviewsFragment extends DialogFragment {
     }
 
     private void setupReviews() {
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-        recipe_reviews_reviews_rv.setLayoutManager(mLayoutManager);
-        recipe_reviews_reviews_rv.setItemAnimator(new DefaultItemAnimator());
-        recipe_reviews_reviews_rv.setAdapter(new RecipeViewReviewsRecyclerViewAdapter(mContext, loggedInUser, recipe.getReviews(), new View.OnLongClickListener() {
+        final RecipeViewReviewsRecyclerViewAdapter adapter = new RecipeViewReviewsRecyclerViewAdapter(mContext, loggedInUser, recipe.getReviews(), new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 new AsyncFetchLikedUsers().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (ReviewMO) view.getTag());
                 return true;
             }
-        }));
+        });
+        adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
+            @Override
+            public void onBottomReached(int position) {
+                new AsyncFetchRecipeReviews(adapter.getItemCount()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        recipe_reviews_reviews_rv.setLayoutManager(mLayoutManager);
+        recipe_reviews_reviews_rv.setItemAnimator(new DefaultItemAnimator());
+        recipe_reviews_reviews_rv.setAdapter(adapter);
+
+        recipe_view_reviews_reviews_srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new AsyncFetchRecipeReviews(0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
+    }
+
+    private void updateReviews(List<ReviewMO> reviews, int index){
+        ((RecipeViewReviewsRecyclerViewAdapter)recipe_reviews_reviews_rv.getAdapter()).updateReviews(reviews, index);
+        recipe_view_reviews_reviews_srl.setRefreshing(false);
     }
 
     private void setupStars() {
@@ -311,6 +323,35 @@ public class RecipeViewReviewsFragment extends DialogFragment {
         }
     }
 
+    class AsyncFetchRecipeReviews extends AsyncTask<Void, Void, Object> {
+        private int index;
+
+        public AsyncFetchRecipeReviews(int index){
+            this.index = index;
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected Object doInBackground(Void... objects) {
+            return InternetUtility.fetchRecipeReviews(loggedInUser, recipe, index);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            List<ReviewMO> reviews = (List<ReviewMO>) object;
+
+            if (reviews != null && !reviews.isEmpty()) {
+                updateReviews(reviews, index);
+            }
+            else{
+                ((RecipeViewReviewsRecyclerViewAdapter)recipe_reviews_reviews_rv.getAdapter()).setOnBottomReachedListener(null);
+            }
+        }
+    }
+
     public class AsyncSubmitReview extends AsyncTask<Object, Void, Object> {
         Fragment frag;
 
@@ -388,7 +429,7 @@ public class RecipeViewReviewsFragment extends DialogFragment {
         @Override
         protected Object doInBackground(ReviewMO... objects) {
             review = objects[0];
-            return InternetUtility.fetchLikedUsers("REVIEW", review.getREV_ID());
+            return InternetUtility.fetchLikedUsers("REVIEW", review.getREV_ID(), 0);
         }
 
         @Override

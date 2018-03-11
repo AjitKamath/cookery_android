@@ -57,8 +57,8 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_RECIPE_TRENDING_FETCH = "RECIPE_TRENDING_FETCH";
     public static final String PHP_FUNCTION_KEY_RECIPE_USER_FETCH = "RECIPE_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_REVIEW_USER_FETCH = "REVIEW_USER_FETCH";
-    public static final String PHP_FUNCTION_KEY_TIMELINE_FETCH = "TIMELINE_FETCH";
     public static final String PHP_FUNCTION_KEY_TIMELINE_USER_FETCH = "TIMELINE_USER_FETCH";
+    public static final String PHP_FUNCTION_KEY_STORY_USER_FETCH = "STORY_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_USER_REGISTER = "USER_REGISTER";
     public static final String PHP_FUNCTION_KEY_USER_REGISTER_FIRST_CHECK = "USER_REGISTER_CHECK";
     public static final String PHP_FUNCTION_KEY_USER_LOGIN = "USER_LOGIN";

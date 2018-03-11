@@ -4,38 +4,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:padding="5dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="5dp">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recipe_comments_rv"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/recipe_comments_srl"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        android:layout_marginBottom="50dp"/>
+        android:layout_marginBottom="50dp">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recipe_comments_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:padding="1dp"
-        android:background="@color/gray"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/gray"
         android:minHeight="40dp"
-        android:layout_height="wrap_content">
+        android:padding="1dp">
 
         <EditText
             android:id="@+id/recipe_comments_comment_et"
-            android:gravity="left|center_vertical"
-            android:minHeight="40dp"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:textColor="@color/primaryDarkText"
-            android:textSize="14sp"
-            android:textColorHint="@color/secondaryDarkText"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="left|center_vertical"
             android:hint="add your comments .."
+            android:maxLength="@integer/comment_text_limit"
+            android:minHeight="40dp"
             android:paddingLeft="5dp"
             android:paddingRight="40dp"
-            android:maxLength="@integer/comment_text_limit"
-            android:background="@color/white"/>
+            android:textColor="@color/primaryDarkText"
+            android:textColorHint="@color/secondaryDarkText"
+            android:textSize="14sp" />
     </LinearLayout>
 
     <ImageView
@@ -44,8 +58,8 @@
         android:layout_height="20dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:src="@drawable/send"
+        android:layout_marginBottom="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"/>
+        android:src="@drawable/send" />
 
 </RelativeLayout>
