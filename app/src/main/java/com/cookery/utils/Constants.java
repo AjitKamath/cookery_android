@@ -14,7 +14,7 @@ public final class Constants {
 
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_AJIT = "cookery_php-ajitkamathk452607.codeanyapp.com";
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_VISHAL = "cookery_php-dial2vishal53897.codeanyapp.com";
-    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_VISHAL;
+    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_AJIT;
 
     private static final String SERVER_CODEANYWHERE_PUBLIC_DIR = "public";
 
@@ -229,5 +229,9 @@ public final class Constants {
     // Social Registration
     public final static String DEFAULT_SOCIAL_PASSWORD = "DEFAULT_SOCIAL_PASSWORD";
 
+    //security keys
+    public final static String UNIQUE_IDENTIFIER = "UNIQUE_IDENTIFIER";
+    public final static String API_KEY_IDENTIFIER = "x-api-key";
+    public final static String API_KEY_ANDROID = "AIzaSyAxI2I8Wvt784ExlS_BBHY8uWPakM7XRBo";
 
 }

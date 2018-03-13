@@ -299,3 +299,9 @@
 10 march 2018
 1. #123 - Home View - Stories
 2. Home - prevent redundant calls for fetching timelines
+
+-- git checkin on 10 March 2018 --
+
+13 march 2018
+1. #217 - Token Based Request Authentication
+2. #188 - Database - Remove Obsolete Columns

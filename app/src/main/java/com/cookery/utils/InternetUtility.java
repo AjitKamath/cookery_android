@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.cookery.utils.Constants.API_KEY_ANDROID;
+import static com.cookery.utils.Constants.API_KEY_IDENTIFIER;
 import static com.cookery.utils.Constants.PHP_CONTROLLER;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_DELETE;
@@ -303,10 +305,6 @@ public class InternetUtility {
                 multipart.addFormField("rcp_steps["+i+"]", recipe.getSteps().get(i));
             }
             /*steps*/
-
-            multipart.addFormField("rcp_proc", recipe.getRCP_PROC());
-            multipart.addFormField("rcp_plating", recipe.getRCP_PLATING());
-            multipart.addFormField("rcp_note", recipe.getRCP_NOTE());
 
             //tastes
             for(int i=0; i<recipe.getTastes().size(); i++){
@@ -725,6 +723,10 @@ public class InternetUtility {
             final String url = SERVER_ADDRESS_PUBLIC+PHP_CONTROLLER;
 
             MultipartUtility multipart = new MultipartUtility(url, SERVER_CHARSET);
+
+            //keep security related stuff in header only
+            multipart.addHeaderField(API_KEY_IDENTIFIER, API_KEY_ANDROID+1);
+
             if(paramMap != null && !paramMap.isEmpty()){
                 for(Map.Entry<String, String> iter : paramMap.entrySet()){
                     multipart.addFormField(iter.getKey(), iter.getValue());
@@ -927,7 +929,6 @@ public class InternetUtility {
 
     //public static Object userRegistration(String name,String email, String mobile, String password, String gender)
     public static Object userRegistration(String name,String email, String password)
-    public static Object userRegistraion(String name,String email, String mobile, String password, String gender)
     {
         String flag="";
 

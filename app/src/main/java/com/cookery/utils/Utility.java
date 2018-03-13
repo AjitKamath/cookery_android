@@ -13,8 +13,6 @@ import android.widget.ImageView;
 
 import com.cookery.R;
 import com.cookery.fragments.AddRecipeFragment;
-import com.cookery.fragments.CommonImagePickerFragment;
-import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MessageFragment;
 import com.cookery.fragments.MyRecipesFragment;
