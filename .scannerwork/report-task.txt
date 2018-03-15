@@ -1,0 +1,7 @@
+organization=cookery
+projectKey=cookery_android_dev_key
+serverUrl=https://sonarcloud.io
+serverVersion=7.1.0.37735
+dashboardUrl=https://sonarcloud.io/dashboard/index/cookery_android_dev_key
+ceTaskId=AWIqmRs_V4Tcj4EG2avv
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AWIqmRs_V4Tcj4EG2avv

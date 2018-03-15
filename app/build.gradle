@@ -1,3 +1,7 @@
+plugins {
+    id "org.sonarqube" version "2.6.1"
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
@@ -8,7 +12,7 @@ android {
         applicationId "com.cookery.app"
         minSdkVersion 21
         targetSdkVersion 21
-        versionCode 1
+        versionCode project.appVersion.toInteger()
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -17,6 +21,17 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectName", "Cookery Android"
+        property "sonar.projectKey", "cookery_android_dev_key"
+        property "sonar.projectVersion", project.appVersion.toString()
+        property "sonar.organization", "cookery"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.login", "a7500f7db8a84a7afc2b2933e77f2d0fc60611ac"
     }
 }
 
@@ -51,3 +66,4 @@ dependencies {
     compile 'com.facebook.android:facebook-share:[4,5)'
 
 }
+
