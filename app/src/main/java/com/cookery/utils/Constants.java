@@ -54,7 +54,6 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_VIEW_FETCH_USERS = "VIEW_FETCH_USERS";
     public static final String PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL = "QUANTITY_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_FOOD_CUISINE_FETCH_ALL = "FOOD_CUISINE_FETCH_ALL";
-    public static final String PHP_FUNCTION_KEY_RECIPE_TRENDING_FETCH = "RECIPE_TRENDING_FETCH";
     public static final String PHP_FUNCTION_KEY_RECIPE_USER_FETCH = "RECIPE_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_REVIEW_USER_FETCH = "REVIEW_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_TIMELINE_USER_FETCH = "TIMELINE_USER_FETCH";
@@ -76,6 +75,7 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_TIMELINE_SCOPE_MODIFY = "TIMELINE_SCOPE_MODIFY";
     public static final String PHP_FUNCTION_KEY_TIMELINE_DELETE = "TIMELINE_DELETE";
     public static final String PHP_FUNCTION_KEY_USER_SEARCH = "USER_SEARCH";
+    public static final String PHP_FUNCTION_KEY_TREND_FETCH = "TREND_FETCH";
     /*PHP function keys*/
 
     /*Timeline keys*/
@@ -233,5 +233,10 @@ public final class Constants {
     public final static String UNIQUE_IDENTIFIER = "UNIQUE_IDENTIFIER";
     public final static String API_KEY_IDENTIFIER = "x-api-key";
     public final static String API_KEY_ANDROID = "AIzaSyAxI2I8Wvt784ExlS_BBHY8uWPakM7XRBo";
+
+    //Trend Keys
+    public final static String TRENDS_RECIPES_OF_THE_MONTH = "RECIPES_OF_THE_MONTH";
+    public final static String TRENDS_USER_OF_THE_WEEK = "USER_OF_THE_WEEK";
+    public final static String TRENDS_RECIPE_OF_THE_DAY = "RECIPE_OF_THE_DAY";
 
 }

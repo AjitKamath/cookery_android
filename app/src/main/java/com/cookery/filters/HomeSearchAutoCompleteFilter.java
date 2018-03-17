@@ -3,6 +3,7 @@ package com.cookery.filters;
 import android.widget.Filter;
 
 import com.cookery.adapters.HomeSearchAutoCompleteAdapter;
+import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
 
 import java.util.ArrayList;
@@ -16,10 +17,12 @@ public class HomeSearchAutoCompleteFilter extends Filter {
 
     private HomeSearchAutoCompleteAdapter adapter;
     private List<Object> filteredList;
+    private UserMO loggedInUser;
 
-    public HomeSearchAutoCompleteFilter(HomeSearchAutoCompleteAdapter adapter) {
+    public HomeSearchAutoCompleteFilter(UserMO loggedInUser, HomeSearchAutoCompleteAdapter adapter) {
         super();
         this.adapter = adapter;
+        this.loggedInUser = loggedInUser;
         this.filteredList = new ArrayList<>();
     }
 
@@ -40,7 +43,7 @@ public class HomeSearchAutoCompleteFilter extends Filter {
         }
 
         //fetch from database
-        filteredList = (List<Object>) InternetUtility.searchRecipes(filterPattern);
+        filteredList = (List<Object>) InternetUtility.searchRecipes(loggedInUser.getUSER_ID(), filterPattern);
 
         if(filteredList != null){
             results.values = filteredList;

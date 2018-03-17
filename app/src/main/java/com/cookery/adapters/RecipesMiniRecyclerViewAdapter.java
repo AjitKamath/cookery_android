@@ -62,9 +62,8 @@ public class RecipesMiniRecyclerViewAdapter extends RecyclerView.Adapter<Recipes
 
         final RecipeMO recipe = recipes.get(position);
 
-        if(recipe.getImages() != null && !recipe.getImages().isEmpty() && recipe.getImages().get(0) != null
-                && !recipe.getImages().get(0).trim().isEmpty()){
-            Utility.loadImageFromURL(mContext, recipe.getImages().get(0), holder.view_pager_recipes_recipe_mini_iv);
+        if(recipe.getImages() != null && !recipe.getImages().isEmpty()){
+            Utility.loadImageFromURL(mContext, recipe.getImages().get(0).getRCP_IMG(), holder.view_pager_recipes_recipe_mini_iv);
         }
 
         holder.view_pager_recipes_recipe_mini_tv.setText(recipe.getRCP_NAME().toUpperCase());

@@ -69,9 +69,7 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
 
         final CommentMO comment = comments.get(position);
 
-        if(comment.getUserImage() != null && !comment.getUserImage().trim().isEmpty()){
-            Utility.loadImageFromURL(mContext, comment.getUserImage(), holder.recipe_comments_item_iv);
-        }
+        Utility.loadImageFromURL(mContext, comment.getUserImage(), holder.recipe_comments_item_iv);
 
         holder.recipe_comments_item_username_tv.setText(comment.getUserName().trim());
 
@@ -121,14 +119,14 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
     }
 
     private void setupLike(ViewHolder holder, LikesMO like){
-        if(like.isLiked()){
+        if(like.isUserLiked()){
             holder.recipe_comments_likes_iv.setImageResource(R.drawable.heart);
         }
         else{
             holder.recipe_comments_likes_iv.setImageResource(R.drawable.heart_unselected);
         }
 
-        holder.recipe_comments_item_likes_count_tv.setText(String.valueOf(like.getLikes()));
+        holder.recipe_comments_item_likes_count_tv.setText(String.valueOf(like.getLikesCount()));
     }
 
     @Override

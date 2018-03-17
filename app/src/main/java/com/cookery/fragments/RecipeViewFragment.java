@@ -27,6 +27,7 @@ import com.cookery.R;
 import com.cookery.adapters.RecipeViewImagesFullscreenViewPagerAdapter;
 import com.cookery.adapters.RecipeViewViewPagerAdapter;
 import com.cookery.models.FavouritesMO;
+import com.cookery.models.ImageMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.RecipeMO;
@@ -176,9 +177,7 @@ public class RecipeViewFragment extends DialogFragment {
     private void setupPage() {
         setupImages();
 
-        if (recipe.getUserImage() != null && !recipe.getUserImage().trim().isEmpty()) {
-            Utility.loadImageFromURL(mContext, recipe.getUserImage().trim(), recipe_view_user_iv);
-        }
+        Utility.loadImageFromURL(mContext, recipe.getUserImage().trim(), recipe_view_user_iv);
 
         common_fragment_recipe_recipe_name_tv.setText(recipe.getRCP_NAME().toUpperCase());
         common_fragment_recipe_food_type_tv.setText(recipe.getFoodTypeName().toUpperCase());
@@ -281,12 +280,36 @@ public class RecipeViewFragment extends DialogFragment {
         common_fragment_recipe_vp.setAdapter(new RecipeViewImagesFullscreenViewPagerAdapter(mContext, recipe.getImages(), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Object array[] = new Object[]{common_fragment_recipe_vp.getCurrentItem(), recipe.getImages()};
+                if(R.id.recipe_view_images_fullscreen_item_image_iv == view.getId()){
+                    Object array[] = new Object[]{common_fragment_recipe_vp.getCurrentItem(), recipe.getImages()};
 
-                Map<String, Object> bundleMap = new HashMap<String, Object>();
-                bundleMap.put(GENERIC_OBJECT, array);
+                    Map<String, Object> bundleMap = new HashMap<String, Object>();
+                    bundleMap.put(GENERIC_OBJECT, array);
+                    bundleMap.put(LOGGED_IN_USER, loggerInUser);
 
-                Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE, FRAGMENT_RECIPE_IMAGES, new RecipeViewImagesFragment(), bundleMap);
+                    Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE, FRAGMENT_RECIPE_IMAGES, new RecipeViewImagesFragment(), bundleMap);
+                }
+                else if(R.id.recipe_view_images_fullscreen_item_likes_ll == view.getId()){
+                    ImageMO image = (ImageMO) view.getTag();
+
+                    if(image == null){
+                        Log.e(CLASS_NAME, "Image is null/empty");
+                        return;
+                    }
+
+                    LikesMO like = new LikesMO();
+                    like.setUSER_ID(loggerInUser.getUSER_ID());
+                    like.setTYPE("RECIPE_IMG");
+                    like.setTYPE_ID(image.getRCP_IMG_ID());
+
+                    new AsyncSubmitRecipeImageLike(view).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
+                }
+                else if(R.id.recipe_view_images_fullscreen_item_comments_ll == view.getId()){
+                    //TODO: comment recipe image
+                }
+                else{
+                    Log.e(CLASS_NAME, "Could not identify the purpose of event on this view");
+                }
             }
         }));
 
@@ -314,13 +337,21 @@ public class RecipeViewFragment extends DialogFragment {
         recipe_view_images_count_tv.setText(index + "/" + maxCount);
     }
 
-    public void updateLikeView(LikesMO like) {
-        common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(like.getLikes()));
+    public void updateRecipeLikeView(LikesMO like) {
+        common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(like.getLikesCount()));
+        common_fragment_recipe_like_iv.setImageResource(Utility.getLikeImageId(recipe.isUserLiked()));
+    }
 
-        if (recipe.isUserLiked()) {
-            common_fragment_recipe_like_iv.setImageResource(R.drawable.heart);
-        } else {
-            common_fragment_recipe_like_iv.setImageResource(R.drawable.heart_unselected);
+    public void updateRecipeImageLikeView(LikesMO like, View layout) {
+        layout.findViewById(R.id.recipe_view_images_fullscreen_item_likes_iv).setBackgroundResource(Utility.getLikeImageId(like.isUserLiked()));
+        ((TextView)layout.findViewById(R.id.recipe_view_images_fullscreen_item_likes_tv)).setText(Utility.getSmartNumber(like.getLikesCount()));
+
+        for(ImageMO image : recipe.getImages()){
+            if(image.getRCP_IMG_ID() == like.getTYPE_ID()){
+                image.setLikesCount(like.getLikesCount());
+                image.setUserLiked(like.isUserLiked());
+                break;
+            }
         }
     }
 
@@ -347,7 +378,7 @@ public class RecipeViewFragment extends DialogFragment {
                 like.setTYPE("RECIPE");
                 like.setTYPE_ID(recipe.getRCP_ID());
 
-                new AsyncSubmitLike().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
+                new AsyncSubmitRecipeLike().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
             }
         });
 
@@ -403,7 +434,7 @@ public class RecipeViewFragment extends DialogFragment {
     }
 
     public void updateRecipeView() {
-        new AsyncUpdateRecipe().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, recipe);
+        new AsyncFetchRecipe().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, recipe);
     }
 
     public void showReviewDeleteMessage() {
@@ -503,7 +534,7 @@ public class RecipeViewFragment extends DialogFragment {
         }
     }
 
-    public class AsyncSubmitLike extends AsyncTask<Object, Void, Object> {
+    public class AsyncSubmitRecipeLike extends AsyncTask<Object, Void, Object> {
         @Override
         protected void onPreExecute() {
         }
@@ -519,8 +550,35 @@ public class RecipeViewFragment extends DialogFragment {
             LikesMO like = (LikesMO) object;
 
             if (like != null) {
-                recipe.setUserLiked(like.isLiked());
-                updateLikeView(like);
+                recipe.setUserLiked(like.isUserLiked());
+                updateRecipeLikeView(like);
+            }
+        }
+    }
+
+    public class AsyncSubmitRecipeImageLike extends AsyncTask<Object, Void, Object> {
+        View layout;
+
+        public AsyncSubmitRecipeImageLike(View layout) {
+            this.layout = layout;
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            LikesMO like = (LikesMO) objects[0];
+            return InternetUtility.submitLike(like);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            LikesMO like = (LikesMO) object;
+
+            if (like != null) {
+                updateRecipeImageLikeView(like, layout);
             }
         }
     }
@@ -593,7 +651,7 @@ public class RecipeViewFragment extends DialogFragment {
         }
     }
 
-    class AsyncUpdateRecipe extends AsyncTask<RecipeMO, Void, Object> {
+    class AsyncFetchRecipe extends AsyncTask<RecipeMO, Void, Object> {
         private Fragment fragment;
 
         @Override
@@ -606,8 +664,6 @@ public class RecipeViewFragment extends DialogFragment {
             List<RecipeMO> recipes = (List<RecipeMO>) InternetUtility.fetchRecipe(recipe, loggerInUser.getUSER_ID());
 
             if (recipes != null && !recipes.isEmpty()) {
-                recipes.get(0).setComments(InternetUtility.fetchRecipeComments(loggerInUser, recipes.get(0), 0));
-                recipes.get(0).setReviews(InternetUtility.fetchRecipeReviews(loggerInUser, recipes.get(0), 0));
                 return recipes.get(0);
             }
 
@@ -627,10 +683,7 @@ public class RecipeViewFragment extends DialogFragment {
             if (recipe != null) {
                 recipe = updatedRecipe;
 
-                setRatingView();
-                setLikeView();
-                setViewView();
-                setCommentView();
+                setupPage();
             }
         }
     }

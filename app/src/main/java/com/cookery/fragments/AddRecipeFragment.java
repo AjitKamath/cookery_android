@@ -28,6 +28,7 @@ import com.cookery.adapters.RecipeAddImagesViewPagerAdapter;
 import com.cookery.adapters.RecipeAddViewPagerAdapter;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
+import com.cookery.models.ImageMO;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.MessageMO;
@@ -168,7 +169,7 @@ public class AddRecipeFragment extends DialogFragment {
     }
 
     private void setupPage() {
-        setupImages(new ArrayList<String>());
+        setupImages(new ArrayList<ImageMO>());
         setupTabs();
 
         recipe_add_close_iv.setOnClickListener(new View.OnClickListener() {
@@ -246,16 +247,16 @@ public class AddRecipeFragment extends DialogFragment {
         });
     }
 
-    private void setupImages(List<String> images) {
+    private void setupImages(List<ImageMO> images) {
         recipe_add_images_vp.setAdapter(new RecipeAddImagesViewPagerAdapter(mContext, images, false, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(view.getId() == R.id.recipe_add_images_item_close_iv){
                     String imageStr = String.valueOf(view.getTag());
-                    List<String> images = ((RecipeAddImagesViewPagerAdapter)recipe_add_images_vp.getAdapter()).images;
+                    List<ImageMO> images = ((RecipeAddImagesViewPagerAdapter)recipe_add_images_vp.getAdapter()).images;
 
-                    for(String image : images){
-                        if(image.equalsIgnoreCase(imageStr)){
+                    for(ImageMO image : images){
+                        if(image.getRCP_IMG().equalsIgnoreCase(imageStr)){
                             images.remove(image);
                             break;
                         }

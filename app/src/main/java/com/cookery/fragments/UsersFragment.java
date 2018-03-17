@@ -2,6 +2,7 @@ package com.cookery.fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -32,12 +33,16 @@ import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.cookery.utils.Constants.FRAGMENT_USERS;
+import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
@@ -257,7 +262,12 @@ public class UsersFragment extends DialogFragment {
             final UsersRecyclerViewAdapter adapter = new UsersRecyclerViewAdapter(mContext, usersList, purpose, new ItemClickListener() {
                 @Override
                 public void onItemClick(Object item) {
-
+                    if(item instanceof UserMO){
+                        new AsyncFetchUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO)item).getUSER_ID());
+                    }
+                    else{
+                        Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+item);
+                    }
                 }
             });
             adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
@@ -340,7 +350,7 @@ public class UsersFragment extends DialogFragment {
         users_type_recipe_ll.setVisibility(View.VISIBLE);
 
         if(recipe.getImages() != null && !recipe.getImages().isEmpty()){
-            Utility.loadImageFromURL(mContext, recipe.getImages().get(0), users_type_recipe_iv);
+            Utility.loadImageFromURL(mContext, recipe.getImages().get(0).getRCP_IMG(), users_type_recipe_iv);
         }
 
         users_type_recipe_name_tv.setText(recipe.getRCP_NAME());
@@ -437,6 +447,42 @@ public class UsersFragment extends DialogFragment {
             }
             else{
                 ((UsersRecyclerViewAdapter)users_rv.getAdapter()).setOnBottomReachedListener(null);
+            }
+        }
+    }
+
+    class AsyncFetchUser extends AsyncTask<Object, Void, Object> {
+        private Fragment fragment;
+
+        @Override
+        protected void onPreExecute() {
+            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching user details ..");
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            return InternetUtility.fetchUsersPublicDetails(Integer.parseInt(String.valueOf(objects[0])), loggedInUser.getUSER_ID());
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            Utility.closeWaitDialog(getFragmentManager(), fragment);
+
+            if (object == null) {
+                return;
+            }
+
+            List<UserMO> users = (List<UserMO>) object;
+
+            if (users != null && !users.isEmpty()) {
+                Map<String, Object> bundleMap = new HashMap<String, Object>();
+                bundleMap.put(GENERIC_OBJECT, users.get(0));
+
+                Utility.showFragment(getFragmentManager(), FRAGMENT_USERS, FRAGMENT_USER_VIEW, new UserViewFragment(), bundleMap);
+
+            }
+            else{
+                Log.e(CLASS_NAME, "Failed to fetch users details");
             }
         }
     }

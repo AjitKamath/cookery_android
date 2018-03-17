@@ -12,6 +12,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +20,11 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.interfaces.OnBottomReachedListener;
-import com.cookery.models.RecipeMO;
 import com.cookery.models.TimelineMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.cookery.utils.Constants.UI_FONT;
 
@@ -122,15 +121,16 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
     }
 
     private void setupTrend(ViewGroup layout) {
-        Map<String, List<RecipeMO>> categoriesRecipes = (Map<String, List<RecipeMO>>)array[1];
+        List<? extends Object> trends = (List<? extends Object>)array[1];
 
-        if(categoriesRecipes == null || categoriesRecipes.isEmpty()){
+        if(trends == null || trends.isEmpty()){
+            Log.e(CLASS_NAME, "Error ! No Trends found !");
             return;
         }
 
         RecyclerView home_trends_rv = layout.findViewById(R.id.home_trends_rv);
 
-        HomeCategoriesRecipesRecyclerViewAdapter adapter = new HomeCategoriesRecipesRecyclerViewAdapter(mContext, categoriesRecipes, listener);
+        HomeTrendsRecyclerViewAdapter adapter = new HomeTrendsRecyclerViewAdapter(mContext, trends, listener);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
 
         home_trends_rv.setLayoutManager(mLayoutManager);

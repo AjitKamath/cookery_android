@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +21,11 @@ import android.widget.Toast;
 
 import com.cookery.R;
 import com.cookery.adapters.RecipeViewImagesFullscreenViewPagerAdapter;
+import com.cookery.models.ImageMO;
+import com.cookery.models.LikesMO;
+import com.cookery.models.UserMO;
+import com.cookery.utils.InternetUtility;
+import com.cookery.utils.Utility;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,13 +41,14 @@ import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.GALLERY_DIR;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.SERVER_ADDRESS;
 import static com.cookery.utils.Constants.UI_FONT;
 
 /**
  * Created by ajit on 21/3/16.
  */
-public class RecipeViewImagesFragment extends DialogFragment  {
+public class RecipeViewImagesFragment extends DialogFragment {
     private final String CLASS_NAME = this.getClass().getName();
     private Context mContext;
 
@@ -58,6 +65,7 @@ public class RecipeViewImagesFragment extends DialogFragment  {
 
     private Object object;
     private int imageposition;
+    private UserMO loggedInUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,18 +86,37 @@ public class RecipeViewImagesFragment extends DialogFragment  {
 
     private void getDataFromBundle() {
         object = getArguments().get(GENERIC_OBJECT);
+        loggedInUser = (UserMO) getArguments().get(LOGGED_IN_USER);
     }
 
     private void setupPage() {
-        Object array[] = (Object[])object;
+        Object array[] = (Object[]) object;
 
-        int imageIndex = (Integer)array[0];
-        final List<String> images = (List<String>) array[1];
+        int imageIndex = (Integer) array[0];
+        final List<ImageMO> images = (List<ImageMO>) array[1];
 
         recipe_view_images_fullscreen_vp.setAdapter(new RecipeViewImagesFullscreenViewPagerAdapter(mContext, images, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (R.id.recipe_view_images_fullscreen_item_likes_ll == view.getId()) {
+                    ImageMO image = (ImageMO) view.getTag();
 
+                    if (image == null) {
+                        Log.e(CLASS_NAME, "Image is null/empty");
+                        return;
+                    }
+
+                    LikesMO like = new LikesMO();
+                    like.setUSER_ID(loggedInUser.getUSER_ID());
+                    like.setTYPE("RECIPE_IMG");
+                    like.setTYPE_ID(image.getRCP_IMG_ID());
+
+                    new AsyncSubmitRecipeImageLike(view).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
+                } else if (R.id.recipe_view_images_fullscreen_item_comments_ll == view.getId()) {
+                    //TODO: comment recipe image
+                } else {
+                    Log.e(CLASS_NAME, "Could not identify the purpose of event on this view");
+                }
             }
         }));
         recipe_view_images_fullscreen_vp.setCurrentItem(imageIndex);
@@ -142,44 +169,79 @@ public class RecipeViewImagesFragment extends DialogFragment  {
         });
     }
 
-    class AsyncTaskerDownloadRecipeImages extends AsyncTask<String, Void, Void> {
+    private void updateImageLikeView(LikesMO like, View layout) {
+        layout.findViewById(R.id.recipe_view_images_fullscreen_item_likes_iv).setBackgroundResource(Utility.getLikeImageId(like.isUserLiked()));
+        ((TextView) layout.findViewById(R.id.recipe_view_images_fullscreen_item_likes_tv)).setText(Utility.getSmartNumber(like.getLikesCount()));
+    }
+
+    public class AsyncSubmitRecipeImageLike extends AsyncTask<Object, Void, Object> {
+        View layout;
+
+        public AsyncSubmitRecipeImageLike(View layout) {
+            this.layout = layout;
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            LikesMO like = (LikesMO) objects[0];
+            return InternetUtility.submitLike(like);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            LikesMO like = (LikesMO) object;
+
+            if (like != null) {
+                if (getTargetFragment() instanceof RecipeViewFragment) {
+                    updateImageLikeView(like, layout);
+                    ((RecipeViewFragment) getTargetFragment()).updateRecipeView();
+                }
+            }
+        }
+    }
+
+    class AsyncTaskerDownloadRecipeImages extends AsyncTask<ImageMO, Void, Void> {
         @Override
         protected void onPreExecute() {
             Toast.makeText(mContext, "Downloading Recipe Image", Toast.LENGTH_LONG).show();
         }
 
         @Override
-        protected Void doInBackground(String... objects) {
+        protected Void doInBackground(ImageMO... objects) {
             URL url;
-            String storeDir=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + GALLERY_DIR;
+            String storeDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + GALLERY_DIR;
             try {
-                String image = SERVER_ADDRESS+objects[0].toString();
+                String image = SERVER_ADDRESS + objects[0].getRCP_IMG().toString();
                 url = new URL(image);
-                String pathl="";
+                String pathl = "";
                 int count;
                 try {
-                    File f=new File(storeDir);
-                    if(!f.exists()) {
+                    File f = new File(storeDir);
+                    if (!f.exists()) {
                         f.mkdirs();
                     }
-                        HttpURLConnection con=(HttpURLConnection)url.openConnection();
-                        InputStream is=con.getInputStream();
-                        String pathr=url.getPath();
-                        String filename=pathr.substring(pathr.lastIndexOf('/')+1);
-                        pathl=storeDir+"/"+filename;
-                        FileOutputStream fos=new FileOutputStream(pathl);
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    InputStream is = con.getInputStream();
+                    String pathr = url.getPath();
+                    String filename = pathr.substring(pathr.lastIndexOf('/') + 1);
+                    pathl = storeDir + "/" + filename;
+                    FileOutputStream fos = new FileOutputStream(pathl);
 
-                        byte data[] = new byte[1024];
-                        long total = 0;
-                        while ((count = is.read(data)) != -1) {
-                            total += count;
-                            // writing data to output file
-                            fos.write(data, 0, count);
+                    byte data[] = new byte[1024];
+                    long total = 0;
+                    while ((count = is.read(data)) != -1) {
+                        total += count;
+                        // writing data to output file
+                        fos.write(data, 0, count);
 
-                        }
-                        is.close();
-                        fos.flush();
-                        fos.close();
+                    }
+                    is.close();
+                    fos.flush();
+                    fos.close();
 
                 } catch (Exception e) {
                     Toast.makeText(mContext, "Download failed", Toast.LENGTH_LONG).show();
@@ -195,57 +257,57 @@ public class RecipeViewImagesFragment extends DialogFragment  {
         }
 
         @Override
-        protected void onPostExecute(Void result){
+        protected void onPostExecute(Void result) {
             Toast.makeText(mContext, "Download Completed", Toast.LENGTH_LONG).show();
         }
     }
 
-    class AsyncTaskerDownloadAllRecipeImages extends AsyncTask<List<String>, String, Void> {
+    class AsyncTaskerDownloadAllRecipeImages extends AsyncTask<List<ImageMO>, String, Void> {
         @Override
         protected void onPreExecute() {
             Toast.makeText(mContext, "Downloading Recipe Images", Toast.LENGTH_LONG).show();
         }
 
         @Override
-        protected Void doInBackground(List<String>... objects) {
+        protected Void doInBackground(List<ImageMO>... objects) {
             URL url;
-            String storeDir=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + GALLERY_DIR;
+            String storeDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + GALLERY_DIR;
 
-            for(int i=0; i<objects[0].size(); i++) {
-                    try {
-                        String image = SERVER_ADDRESS + objects[0].get(i).toString();
-                        url = new URL(image);
-                        String pathl = "";
-                        int count;
+            for (int i = 0; i < objects[0].size(); i++) {
+                try {
+                    String image = SERVER_ADDRESS + objects[0].get(i).getRCP_IMG();
+                    url = new URL(image);
+                    String pathl = "";
+                    int count;
 
-                        File f = new File(storeDir);
-                        if (!f.exists()) {
-                            f.mkdirs();
-                        }
-                        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                        InputStream is = con.getInputStream();
-                        String pathr = url.getPath();
-                        String filename = pathr.substring(pathr.lastIndexOf('/') + 1);
-                        pathl = storeDir + "/" + filename;
-                        FileOutputStream fos = new FileOutputStream(pathl);
-
-                        byte data[] = new byte[1024];
-                        long total = 0;
-                        publishProgress(objects[0].get(i));
-                        while ((count = is.read(data)) != -1) {
-                            total += count;
-                            // writing data to output file
-                            fos.write(data, 0, count);
-                        }
-
-                        is.close();
-                        fos.flush();
-                        fos.close();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    File f = new File(storeDir);
+                    if (!f.exists()) {
+                        f.mkdirs();
                     }
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    InputStream is = con.getInputStream();
+                    String pathr = url.getPath();
+                    String filename = pathr.substring(pathr.lastIndexOf('/') + 1);
+                    pathl = storeDir + "/" + filename;
+                    FileOutputStream fos = new FileOutputStream(pathl);
+
+                    byte data[] = new byte[1024];
+                    long total = 0;
+                    publishProgress(objects[0].get(i).getRCP_IMG());
+                    while ((count = is.read(data)) != -1) {
+                        total += count;
+                        // writing data to output file
+                        fos.write(data, 0, count);
+                    }
+
+                    is.close();
+                    fos.flush();
+                    fos.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+            }
             return null;
         }
 
@@ -254,13 +316,13 @@ public class RecipeViewImagesFragment extends DialogFragment  {
         }
 
         @Override
-        protected void onPostExecute(Void result){
+        protected void onPostExecute(Void result) {
             Toast.makeText(mContext, "Download Completed", Toast.LENGTH_LONG).show();
         }
     }
 
-    private void updateImageCounter(int index, int maxCount){
-        recipe_view_images_fullscreen_count_tv.setText(index+"/"+maxCount);
+    private void updateImageCounter(int index, int maxCount) {
+        recipe_view_images_fullscreen_count_tv.setText(index + "/" + maxCount);
     }
 
     // Empty constructor required for DialogFragment

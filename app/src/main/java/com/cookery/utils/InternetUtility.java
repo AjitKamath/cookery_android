@@ -15,6 +15,7 @@ import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.TasteMO;
 import com.cookery.models.TimelineMO;
+import com.cookery.models.TrendMO;
 import com.cookery.models.UserMO;
 
 import java.io.File;
@@ -50,7 +51,6 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_REVIEW_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_SEARCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_SUBMIT;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_TRENDING_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_USER_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_USER_VIEWED_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_DELETE;
@@ -62,6 +62,7 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TASTE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_DELETE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_SCOPE_MODIFY;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_USER_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TREND_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FETCH_PUBLIC;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FETCH_SELF;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FOLLOWERS_FETCH;
@@ -210,7 +211,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static Object searchRecipes(String query) {
+    public static Object searchRecipes(int user_id, String query) {
         if(USE_TEST_DATA){
             return TestData.getRecipesTestData();
         }
@@ -219,6 +220,7 @@ public class InternetUtility {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_RECIPE_SEARCH);
             paramMap.put("search_query", query);
+            paramMap.put("user_id", String.valueOf(user_id));
 
             String jsonStr = getResponseFromCookery(paramMap);
             return Utility.jsonToObject(jsonStr, RecipeMO.class);
@@ -282,7 +284,7 @@ public class InternetUtility {
             //Note: image upload doesnt work if you do not add form field to multipart.
             //form field should be added to multipart only after file part
             for(int i=0; i<recipe.getImages().size(); i++){
-                multipart.addFilePart("images["+i+"]", new File(recipe.getImages().get(i)));
+                multipart.addFilePart("images["+i+"]", new File(recipe.getImages().get(i).getRCP_IMG()));
             }
 
             multipart.addFormField(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_RECIPE_SUBMIT);
@@ -759,28 +761,6 @@ public class InternetUtility {
         }
     }
 
-    public static List<RecipeMO> fetchTrendingRecipes() {
-        if(USE_TEST_DATA){
-            return TestData.getRecipesTestData();
-        }
-
-        try {
-            Map<String, String> paramMap = new HashMap<>();
-            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_RECIPE_TRENDING_FETCH);
-
-            String jsonStr = getResponseFromCookery(paramMap);
-            return (List<RecipeMO>) Utility.jsonToObject(jsonStr, RecipeMO.class);
-        }
-        catch (IOException e){
-            Log.e(CLASS_NAME, e.getMessage());
-        }
-        catch (Exception e){
-            Log.e(CLASS_NAME, "Could not fetch trending recipes from the server : "+e);
-        }
-
-        return null;
-    }
-
     public static List<RecipeMO> fetchMyRecipes(int user_id, int index) {
         if(USE_TEST_DATA){
             return TestData.getRecipesTestData();
@@ -898,6 +878,29 @@ public class InternetUtility {
         }
         catch (Exception e){
             Log.e(CLASS_NAME, "Could not fetch user stories from the server : "+e);
+        }
+
+        return null;
+    }
+
+    public static List<TrendMO> getFetchTrends(int user_id) {
+        if(USE_TEST_DATA){
+            return null;
+        }
+
+        try {
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_TREND_FETCH);
+            paramMap.put("user_id", String.valueOf(user_id));
+
+            String jsonStr = getResponseFromCookery(paramMap);
+            return (List<TrendMO>) Utility.jsonToObject(jsonStr, TrendMO.class);
+        }
+        catch (IOException e){
+            Log.e(CLASS_NAME, e.getMessage());
+        }
+        catch (Exception e){
+            Log.e(CLASS_NAME, "Could not fetch trends from the server : "+e);
         }
 
         return null;

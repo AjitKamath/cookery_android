@@ -16,11 +16,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.DateTimeUtility;
@@ -34,6 +36,7 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
+import lombok.Setter;
 
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_USERS;
@@ -61,6 +64,24 @@ public class UserViewFragment extends DialogFragment {
 
     @InjectView(R.id.profile_view_public_profile_image_iv)
     CircleImageView profile_view_public_profile_image_iv;
+
+    @InjectView(R.id.profile_view_public_profile_image_likes_comments_ll)
+    LinearLayout profile_view_public_profile_image_likes_comments_ll;
+
+    @InjectView(R.id.profile_view_public_profile_image_likes_ll)
+    LinearLayout profile_view_public_profile_image_likes_ll;
+
+    @InjectView(R.id.profile_view_public_profile_image_likes_iv)
+    ImageView profile_view_public_profile_image_likes_iv;
+
+    @InjectView(R.id.profile_view_public_profile_image_likes_tv)
+    TextView profile_view_public_profile_image_likes_tv;
+
+    @InjectView(R.id.profile_view_public_profile_image_comments_ll)
+    LinearLayout profile_view_public_profile_image_comments_ll;
+
+    @InjectView(R.id.profile_view_public_profile_image_comments_tv)
+    TextView profile_view_public_profile_image_comments_tv;
 
     @InjectView(R.id.profile_view_public_profile_name_tv)
     TextView profile_view_public_profile_name_tv;
@@ -102,6 +123,7 @@ public class UserViewFragment extends DialogFragment {
     TextView profile_view_public_following_tv;
     /*components*/
 
+    @Setter
     private UserMO user;
     private UserMO loggedInUser;
 
@@ -152,10 +174,19 @@ public class UserViewFragment extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         Map<String, Object> paramsMap = new HashMap<>();
-                        paramsMap.put(GENERIC_OBJECT, user.getIMG());
+                        paramsMap.put(GENERIC_OBJECT, user);
+                        paramsMap.put(LOGGED_IN_USER, loggedInUser);
                         Utility.showFragment(getFragmentManager(), FRAGMENT_USER_VIEW, FRAGMENT_PROFILE_VIEW_IMAGE, new ProfileViewImageFragment(), paramsMap);
                     }
                 });
+            }
+
+            if(user.getIMG() != null && !user.getIMG().trim().isEmpty()){
+                setupLikeView(user);
+                //TODO: setup comments here
+            }
+            else{
+                profile_view_public_profile_image_likes_comments_ll.setVisibility(View.GONE);
             }
 
             profile_view_public_profile_name_tv.setText(user.getNAME());
@@ -220,6 +251,23 @@ public class UserViewFragment extends DialogFragment {
             Log.e(CLASS_NAME, "Error ! User/logged in user is null !");
         }
 
+    }
+
+    public void setupLikeView(final UserMO user) {
+        profile_view_public_profile_image_likes_iv.setBackgroundResource(Utility.getLikeImageId(user.isUserLiked()));
+        profile_view_public_profile_image_likes_tv.setText(Utility.getSmartNumber(user.getLikesCount()));
+
+        profile_view_public_profile_image_likes_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LikesMO like = new LikesMO();
+                like.setUSER_ID(loggedInUser.getUSER_ID());
+                like.setTYPE("USER");
+                like.setTYPE_ID(user.getUSER_ID());
+
+                new AsyncSubmitUserImageLike().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
+            }
+        });
     }
 
     private void updateRecipesCountView(UserMO user) {
@@ -381,6 +429,29 @@ public class UserViewFragment extends DialogFragment {
             }
             else{
                 Utility.showSnacks(profile_view_public_rl, "No Followers to show !", OK, Snackbar.LENGTH_LONG);
+            }
+        }
+    }
+
+    public class AsyncSubmitUserImageLike extends AsyncTask<Object, Void, Object> {
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected Object doInBackground(Object... objects) {
+            LikesMO like = (LikesMO) objects[0];
+            return InternetUtility.submitLike(like);
+        }
+
+        @Override
+        protected void onPostExecute(Object object) {
+            LikesMO like = (LikesMO) object;
+
+            if (like != null) {
+                user.setUserLiked(like.isUserLiked());
+                user.setLikesCount(like.getLikesCount());
+                setupLikeView(user);
             }
         }
     }

@@ -1,3 +1,7 @@
+plugins {
+    id "org.sonarqube" version "2.6.1"
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
@@ -17,6 +21,17 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectName", "Cookery Android DEV"
+        property "sonar.projectKey", "cookery_android_dev_key"
+        property "sonar.projectVersion", "1.0"
+        property "sonar.organization", "cookery"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.login", "a7500f7db8a84a7afc2b2933e77f2d0fc60611ac"
     }
 }
 
@@ -49,5 +64,8 @@ dependencies {
 
     compile 'com.theartofdev.edmodo:android-image-cropper:2.6.+'
     compile 'com.facebook.android:facebook-share:[4,5)'
+
+    compileOnly 'org.projectlombok:lombok:1.16.20'
+    annotationProcessor 'org.projectlombok:lombok:1.16.20'
 
 }

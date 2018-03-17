@@ -80,7 +80,7 @@
 1. integrated recipe reviews into recipe fragment.
 
 15 oct 2017
-1. get views and likes for a recipe.
+1. get views and likesCount for a recipe.
 2. add like to a recipe.
 
 -- git checkin on 15 oct 2017 --
@@ -305,3 +305,15 @@
 13 march 2018
 1. #217 - Token Based Request Authentication
 2. #188 - Database - Remove Obsolete Columns
+
+-- git checkin on 13 March 2018 --
+
+16 march 2018
+1. #172 - Trending Recipes
+2. #156 - Lombok
+
+17 march 2018
+1. #179 - Recipe View - Like Recipe Photo
+2. #184 - User View - Like User Photo
+3. #228 - SonarQube - Code Quality Check
+

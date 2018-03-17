@@ -197,7 +197,8 @@ public class ProfileViewFragment extends DialogFragment {
                 @Override
                 public void onClick(View v) {
                     Map<String, Object> paramsMap = new HashMap<>();
-                    paramsMap.put(GENERIC_OBJECT, loggedInUser.getIMG());
+                    paramsMap.put(GENERIC_OBJECT, loggedInUser);
+                    paramsMap.put(LOGGED_IN_USER, loggedInUser);
                     Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_PROFILE_VIEW_IMAGE, new ProfileViewImageFragment(), paramsMap);
                 }
             });
