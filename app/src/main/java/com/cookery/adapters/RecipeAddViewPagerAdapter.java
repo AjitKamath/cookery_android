@@ -17,7 +17,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -82,6 +81,7 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
 
     /*steps*/
     private TextView recipe_add_recipe_step_tv;
+    private LinearLayout recipe_add_recipe_step_buttons_ll;
     private ImageView recipe_add_recipe_step_clear_iv;
     private ImageView recipe_add_recipe_step_add_iv;
     private EditText recipe_add_recipe_step_et;
@@ -95,12 +95,14 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
 
     private MasterDataMO masterData;
     public RecipeMO recipe;
+    private View.OnTouchListener touchListener;
 
-    public RecipeAddViewPagerAdapter(Context context, FragmentManager fragmentManager, List<Integer> layoutsList, RecipeMO recipe, MasterDataMO masterData) {
+    public RecipeAddViewPagerAdapter(Context context, FragmentManager fragmentManager, List<Integer> layoutsList, RecipeMO recipe, MasterDataMO masterData, View.OnTouchListener touchListener) {
         this.mContext = context;
         this.fragmentManager = fragmentManager;
         this.layoutsList = layoutsList;
         this.recipe = recipe;
+        this.touchListener = touchListener;
         this.masterData = masterData;
     }
 
@@ -131,6 +133,7 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
 
     private void setupAddRecipeSteps(ViewGroup layout) {
         recipe_add_recipe_step_tv = layout.findViewById(R.id.recipe_add_recipe_step_tv);
+        recipe_add_recipe_step_buttons_ll = layout.findViewById(R.id.recipe_add_recipe_step_buttons_ll);
         recipe_add_recipe_step_add_iv = layout.findViewById(R.id.recipe_add_recipe_step_add_iv);
         recipe_add_recipe_step_clear_iv = layout.findViewById(R.id.recipe_add_recipe_step_clear_iv);
         recipe_add_recipe_step_et = layout.findViewById(R.id.recipe_add_recipe_step_et);
@@ -159,7 +162,7 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
                     updateStep(step);
                     resetStep();
 
-                    view.setTag(null);
+                    view.setTag(R.id.recipe_add_recipe_step_add_iv, null);
                 }
                 //user is trying to add a new step
                 else{
@@ -189,6 +192,7 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
             @Override
             public void afterTextChanged(Editable editable) {
                 updateStepCount();
+                updateStepsButtons();
             }
         });
 
@@ -213,8 +217,18 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
             }
         }));
 
+        updateStepsButtons();
         updateSteps();
         updateStepCount();
+    }
+
+    private void updateStepsButtons(){
+        if(String.valueOf(recipe_add_recipe_step_et.getText()).trim().isEmpty()){
+            recipe_add_recipe_step_buttons_ll.setVisibility(View.GONE);
+        }
+        else{
+            recipe_add_recipe_step_buttons_ll.setVisibility(View.VISIBLE);
+        }
     }
 
     private void updateSteps(){
@@ -284,14 +298,7 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
 
         common_component_add_recipe_heading_tv.setText("TELL US ABOUT YOUR RECIPE");
 
-        recipe_add_recipe_main_recipe_name_et.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.setFocusable(true);
-                v.setFocusableInTouchMode(true);
-                return false;
-            }
-        });
+        recipe_add_recipe_main_recipe_name_et.setOnTouchListener(touchListener);
 
         /*setup food type*/
         final List<FoodTypeMO> foodTypes = masterData.getFoodTypes();

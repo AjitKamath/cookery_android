@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -16,16 +15,19 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.adapters.RecipeAddImagesViewPagerAdapter;
 import com.cookery.adapters.RecipeAddViewPagerAdapter;
+import com.cookery.animators.HeightWidthAnimator;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.ImageMO;
@@ -38,11 +40,7 @@ import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 import com.theartofdev.edmodo.cropper.CropImage;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -85,6 +83,12 @@ public class AddRecipeFragment extends DialogFragment {
     @InjectView(R.id.recipe_add_images_tv)
     TextView recipe_add_images_tv;
 
+    @InjectView(R.id.recipe_add_header_ll)
+    LinearLayout recipe_add_header_ll;
+
+    @InjectView(R.id.recipe_add_collapse_expand_iv)
+    ImageView recipe_add_collapse_expand_iv;
+
     @InjectView(R.id.recipe_add_tl)
     TabLayout recipe_add_tl;
 
@@ -97,8 +101,7 @@ public class AddRecipeFragment extends DialogFragment {
 
     private RecipeMO recipe;
     private MasterDataMO masterData;
-
-    private String imagePathStr;
+    private static final int ANIMATION_SPEED = 250;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -171,6 +174,7 @@ public class AddRecipeFragment extends DialogFragment {
     private void setupPage() {
         setupImages(new ArrayList<ImageMO>());
         setupTabs();
+        collapseContent();
 
         recipe_add_close_iv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,7 +228,17 @@ public class AddRecipeFragment extends DialogFragment {
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        recipe_add_tabs_vp.setAdapter(new RecipeAddViewPagerAdapter(mContext, getFragmentManager(), viewPagerTabsList, recipe, masterData));
+        recipe_add_tabs_vp.setAdapter(new RecipeAddViewPagerAdapter(mContext, getFragmentManager(), viewPagerTabsList, recipe, masterData, new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.setFocusable(true);
+                v.setFocusableInTouchMode(true);
+
+                expandContent();
+
+                return false;
+            }
+        }));
         recipe_add_tabs_vp.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(recipe_add_tl));
         recipe_add_tabs_vp.setOffscreenPageLimit(viewPagerTabsList.size());
 
@@ -233,6 +247,14 @@ public class AddRecipeFragment extends DialogFragment {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 recipe_add_tabs_vp.setCurrentItem(tab.getPosition());
+
+                String tabText = String.valueOf(tab.getText());
+                if(tabText.equalsIgnoreCase("STEPS") || tabText.equalsIgnoreCase("ING.")){
+                    expandContent();
+                }
+                else{
+                    collapseContent();
+                }
             }
 
             @Override
@@ -245,6 +267,23 @@ public class AddRecipeFragment extends DialogFragment {
 
             }
         });
+    }
+
+    private void expandContent(){
+        recipe_add_collapse_expand_iv.setVisibility(View.VISIBLE);
+        recipe_add_collapse_expand_iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                collapseContent();
+            }
+        });
+
+        recipe_add_header_ll.startAnimation(new HeightWidthAnimator(recipe_add_header_ll, 0, HeightWidthAnimator.Type.HEIGHT, ANIMATION_SPEED));
+    }
+
+    private void collapseContent(){
+        recipe_add_collapse_expand_iv.setVisibility(View.GONE);
+        recipe_add_header_ll.startAnimation(new HeightWidthAnimator(recipe_add_header_ll, ViewGroup.LayoutParams.WRAP_CONTENT, HeightWidthAnimator.Type.HEIGHT, ANIMATION_SPEED));
     }
 
     private void setupImages(List<ImageMO> images) {
@@ -371,18 +410,6 @@ public class AddRecipeFragment extends DialogFragment {
                 Log.e(CLASS_NAME, "Error ! Something went wrong ! : "+error.getMessage());
             }
         }
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = timeStamp + "_";
-        File storageDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(imageFileName,  ".jpg", storageDir);
-
-        // Save a file: path for use with ACTION_VIEW intents
-        imagePathStr = image.getAbsolutePath();
-        return image;
     }
 
     //method iterates over each component in the activity and when it finds a text view..sets its font
