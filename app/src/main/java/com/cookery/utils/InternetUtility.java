@@ -933,7 +933,6 @@ public class InternetUtility {
         return null;
     }
 
-    //public static Object userRegistration(String name,String email, String mobile, String password, String gender)
     public static Object userRegistration(String name,String email, String password)
     {
         String flag="";

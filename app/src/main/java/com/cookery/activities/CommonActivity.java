@@ -32,6 +32,7 @@ import android.widget.TextView;
 import com.cookery.R;
 import com.cookery.adapters.HomeSearchAutoCompleteAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
+import com.cookery.fragments.AboutUsFragment;
 import com.cookery.fragments.AddMyListFragment;
 import com.cookery.fragments.FavoriteRecipesFragment;
 import com.cookery.fragments.LoginFragment;
@@ -60,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.cookery.utils.Constants.DAYS_UNTIL_PROMPT;
+import static com.cookery.utils.Constants.FRAGMENT_ABOUT_US;
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.FRAGMENT_MY_FAVORITES;
@@ -299,6 +301,21 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         });
     }
 
+    private void openAboutUs(){
+        String fragmentNameStr = FRAGMENT_ABOUT_US;
+
+        AboutUsFragment fragment = new AboutUsFragment();
+        FragmentManager manager = getFragmentManager();
+        Fragment frag = manager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            manager.beginTransaction().remove(frag).commit();
+        }
+
+        fragment.show(manager, fragmentNameStr);
+
+    }
+
     private void logout() {
         Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, null);
         LoginFragment dd = new LoginFragment();
@@ -435,6 +452,9 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         }
         else if(R.id.navigation_drawer_people == item.getItemId()){
             new AsyncTaskerFetchPeople().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+        else if(R.id.navigation_drawer_about_us == item.getItemId()){
+            openAboutUs();
         }
         else if(R.id.navigation_drawer_logout == item.getItemId()){
                 logout();

@@ -15,10 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.cookery.R;
-import com.cookery.activities.HomeActivity;
 import com.cookery.models.MessageMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
@@ -60,11 +58,6 @@ public class MyAccountFragment extends DialogFragment {
     @InjectView(R.id.tv_login)
     TextView tv_login;
 
-    @InjectView(R.id.et_mobile)
-    EditText et_mobile;
-
-    @InjectView(R.id.gender_toggle)
-    ToggleButton gender_toggle;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -131,15 +124,11 @@ public class MyAccountFragment extends DialogFragment {
     {
         String name = et_name.getText().toString();
         String email = et_email.getText().toString();
-        String mobile = et_mobile.getText().toString();
         String password = et_password.getText().toString();
-        String gender = gender_toggle.isChecked()?"F":"M";
-        if(validateUserDetails(name, email, mobile, password, gender))
+        if(validateUserDetails(name, email, password))
         {
             UserMO obj = new UserMO();
             obj.setEMAIL(email);
-            obj.setGENDER(gender);
-            obj.setMOBILE(mobile);
             obj.setNAME(name);
             obj.setPASSWORD(password);
 
@@ -149,7 +138,7 @@ public class MyAccountFragment extends DialogFragment {
     }
 
 
-    private boolean validateUserDetails(String name,String email, String mobile, String password, String gender)
+    private boolean validateUserDetails(String name,String email, String password)
     {
         boolean flag = true;
 
@@ -162,12 +151,6 @@ public class MyAccountFragment extends DialogFragment {
         if(email.length() == 0 || email.trim().equalsIgnoreCase("") || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches())
         {
             et_email.setError("Invalid email entered !!");
-            flag = false;
-        }
-
-        if(mobile.length() <= 9 || mobile.trim().equalsIgnoreCase(""))
-        {
-            et_mobile.setError("Invalid Mobile entered !!");
             flag = false;
         }
 
@@ -207,11 +190,10 @@ public class MyAccountFragment extends DialogFragment {
             {
                 Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, userobj);
                 dismiss();
-                ((HomeActivity) getActivity()).updateLoggedInUser();
-
+               // ((HomeActivity) getActivity()).updateLoggedInUser();
                // login();
                 Utility.closeWaitDialog(getFragmentManager(), fragment);
-
+                onBoardingApp();
             }
             else
             {
@@ -222,4 +204,20 @@ public class MyAccountFragment extends DialogFragment {
 
         }
     }
+
+    private void onBoardingApp(){
+        String fragmentNameStr = FRAGMENT_LOGIN;
+
+        OnBoardingSplashFragment fragment = new OnBoardingSplashFragment();
+        FragmentManager manager = getFragmentManager();
+        Fragment frag = manager.findFragmentByTag(fragmentNameStr);
+
+        if (frag != null) {
+            manager.beginTransaction().remove(frag).commit();
+        }
+
+        fragment.show(manager, fragmentNameStr);
+
+    }
+
 }

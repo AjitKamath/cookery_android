@@ -49,7 +49,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.DEFAULT_SOCIAL_PASSWORD;
-import static com.cookery.utils.Constants.FRAGMENT_REGISTER;
+import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
 
@@ -293,6 +293,7 @@ public class LoginFragment extends DialogFragment {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
 
+
         // For Gmail
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
@@ -323,7 +324,7 @@ public class LoginFragment extends DialogFragment {
     private void register()
     {
 
-        String fragmentNameStr = FRAGMENT_REGISTER;
+        String fragmentNameStr = FRAGMENT_LOGIN;
 
         FragmentManager manager = getFragmentManager();
         Fragment frag = manager.findFragmentByTag(fragmentNameStr);
@@ -398,7 +399,7 @@ public class LoginFragment extends DialogFragment {
             int user_id = msg.getUSER_ID();
             if (user_id != 0) {
                 Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, object);
-
+                dismiss();
                 //((HomeActivity) getActivity()).updateLoggedInUser();
             }
             else{
