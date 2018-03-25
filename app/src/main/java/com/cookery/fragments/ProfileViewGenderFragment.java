@@ -2,7 +2,6 @@ package com.cookery.fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -18,15 +17,14 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.models.MessageMO;
 import com.cookery.models.UserMO;
-import com.cookery.utils.InternetUtility;
-import com.cookery.utils.Utility;
+import com.cookery.utils.AsyncTaskUtility;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_GENDER;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.SCOPE_FOLLOWERS;
 import static com.cookery.utils.Constants.SCOPE_PUBLIC;
 import static com.cookery.utils.Constants.SCOPE_SELF;
@@ -62,7 +60,7 @@ public class ProfileViewGenderFragment extends DialogFragment {
     TextView profile_view_gender_ok_tv;
     /*components*/
 
-    private UserMO user;
+    private UserMO loggedInUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,26 +80,26 @@ public class ProfileViewGenderFragment extends DialogFragment {
     }
 
     private void getDataFromBundle() {
-        user = (UserMO) getArguments().get(GENERIC_OBJECT);
+        loggedInUser = (UserMO) getArguments().get(LOGGED_IN_USER);
     }
 
     private void setupPage() {
-        if(user.getGENDER() != null && !user.getGENDER().trim().isEmpty()){
+        if(loggedInUser.getGENDER() != null && !loggedInUser.getGENDER().trim().isEmpty()){
             profile_view_gender_he_rb.setChecked(false);
             profile_view_gender_she_rb.setChecked(false);
             profile_view_gender_other_rb.setChecked(false);
 
-            if("M".equalsIgnoreCase(user.getGENDER().trim())){
+            if("M".equalsIgnoreCase(loggedInUser.getGENDER().trim())){
                 profile_view_gender_he_rb.setChecked(true);
             }
-            else if("F".equalsIgnoreCase(user.getGENDER().trim())){
+            else if("F".equalsIgnoreCase(loggedInUser.getGENDER().trim())){
                 profile_view_gender_she_rb.setChecked(true);
             }
-            else if("O".equalsIgnoreCase(user.getGENDER().trim())){
+            else if("O".equalsIgnoreCase(loggedInUser.getGENDER().trim())){
                 profile_view_gender_other_rb.setChecked(true);
             }
             else{
-                Log.e(CLASS_NAME, "Error ! Could not identify the gender - "+user.getGENDER());
+                Log.e(CLASS_NAME, "Error ! Could not identify the gender - "+loggedInUser.getGENDER());
             }
         }
 
@@ -126,28 +124,30 @@ public class ProfileViewGenderFragment extends DialogFragment {
                 }
 
 
-                if(gender.equalsIgnoreCase(user.getGENDER().trim()) && newScopeId == user.getGENDER_SCOPE_ID()){
+                if(gender.equalsIgnoreCase(loggedInUser.getGENDER().trim()) && newScopeId == loggedInUser.getGENDER_SCOPE_ID()){
                     dismiss();
                 }
                 else{
-                    user.setGENDER(gender);
-                    user.setGENDER_SCOPE_ID(newScopeId);
-                    new AsyncTaskerUpdateUserGender().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    loggedInUser.setGENDER(gender);
+                    loggedInUser.setGENDER_SCOPE_ID(newScopeId);
+                    new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW_GENDER,
+                            AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "GENDER");
                 }
             }
         });
 
-        if(SCOPE_PUBLIC == user.getGENDER_SCOPE_ID()){
+        if(SCOPE_PUBLIC == loggedInUser.getGENDER_SCOPE_ID()){
             ((RadioButton)profile_view_scope_radio_buttons_rg.findViewById(R.id.profile_view_scope_radio_buttons_public_rb)).setChecked(true);
         }
-        else if(SCOPE_FOLLOWERS == user.getGENDER_SCOPE_ID()){
+        else if(SCOPE_FOLLOWERS == loggedInUser.getGENDER_SCOPE_ID()){
             ((RadioButton)profile_view_scope_radio_buttons_rg.findViewById(R.id.profile_view_scope_radio_buttons_followers_rb)).setChecked(true);
         }
-        else if(SCOPE_SELF == user.getGENDER_SCOPE_ID()){
+        else if(SCOPE_SELF == loggedInUser.getGENDER_SCOPE_ID()){
             ((RadioButton)profile_view_scope_radio_buttons_rg.findViewById(R.id.profile_view_scope_radio_buttons_myself_rb)).setChecked(true);
         }
         else{
-            Log.e(CLASS_NAME, "Error ! Could not identify the scope name : "+user.getGenderScopeName());
+            Log.e(CLASS_NAME, "Error ! Could not identify the scope name : "+loggedInUser.getGenderScopeName());
         }
     }
 
@@ -191,44 +191,8 @@ public class ProfileViewGenderFragment extends DialogFragment {
         }
     }
 
-    class AsyncTaskerUpdateUserGender extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.updateUserGender(user);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "updating your gender..");
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            MessageMO message = (MessageMO) object;
-
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-            if(message != null && !message.isError()){
-                if(getTargetFragment() instanceof ProfileViewFragment){
-                    ((ProfileViewFragment)getTargetFragment()).updateGender(user);
-                    dismiss();
-                }
-                else{
-                    Log.e(CLASS_NAME, "Fragment("+getTargetFragment()+") could not be understood");
-                }
-            }
-            else{
-                if(message == null){
-                    message = new MessageMO();
-                    message.setError(true);
-                    message.setErr_message("Something went wrong !");
-                }
-
-                message.setPurpose("USER_UPDATE_GENDER_FAILED");
-                Utility.showMessageDialog(getFragmentManager(), null, message);
-            }
-        }
+    public void updateGender(){
+        ((ProfileViewFragment)getTargetFragment()).updateGender(loggedInUser);
+        dismiss();
     }
 }

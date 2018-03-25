@@ -17,12 +17,13 @@ import android.widget.TextView;
 import com.cookery.R;
 import com.cookery.models.LikesMO;
 import com.cookery.models.UserMO;
-import com.cookery.utils.InternetUtility;
+import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.Utility;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.UI_FONT;
@@ -85,7 +86,7 @@ public class ProfileViewImageFragment extends DialogFragment {
         setupLikeView(user);
     }
 
-    private void setupLikeView(final UserMO user) {
+    public void setupLikeView(final UserMO user) {
         profile_view_image_fullscreen_likes_iv.setBackgroundResource(Utility.getLikeImageId(user.isUserLiked()));
         profile_view_image_fullscreen_likes_tv.setText(Utility.getSmartNumber(user.getLikesCount()));
 
@@ -97,7 +98,9 @@ public class ProfileViewImageFragment extends DialogFragment {
                 like.setTYPE("USER");
                 like.setTYPE_ID(user.getUSER_ID());
 
-                new AsyncSubmitUserImageLike().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW_IMAGE,
+                        AsyncTaskUtility.Purpose.SUBMIT_LIKE, loggedInUser, 0)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
             }
         });
 
@@ -143,31 +146,6 @@ public class ProfileViewImageFragment extends DialogFragment {
                 ((TextView) v).setTypeface(robotoCondensedLightFont);
             } else if (v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
-            }
-        }
-    }
-
-    public class AsyncSubmitUserImageLike extends AsyncTask<Object, Void, Object> {
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            LikesMO like = (LikesMO) objects[0];
-            return InternetUtility.submitLike(like);
-        }
-
-        @Override
-        protected void onPostExecute(Object result) {
-            LikesMO like = (LikesMO) result;
-
-            if (like != null) {
-                UserMO user = (UserMO) object;
-
-                user.setUserLiked(like.isUserLiked());
-                user.setLikesCount(like.getLikesCount());
-                setupLikeView(user);
             }
         }
     }

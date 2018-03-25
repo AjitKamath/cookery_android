@@ -47,6 +47,7 @@ import static com.cookery.utils.Constants.DB_DATE_TIME;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_LIKED_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.GENERIC_OBJECT2;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
@@ -108,6 +109,8 @@ public class RecipeViewReviewsFragment extends DialogFragment {
 
     private RecipeMO recipe;
     private UserMO loggedInUser;
+    private ReviewMO myReview;
+    private List<ReviewMO> reviews;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -117,7 +120,6 @@ public class RecipeViewReviewsFragment extends DialogFragment {
         Dialog d = getDialog();
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        getLoggedInUser();
         getDataFromBundle();
         setupPage();
         setFont(recipe_reviews_rl);
@@ -125,12 +127,10 @@ public class RecipeViewReviewsFragment extends DialogFragment {
         return view;
     }
 
-    private void getLoggedInUser() {
-        loggedInUser = Utility.getUserFromUserSecurity(mContext);
-    }
-
     private void getDataFromBundle() {
-        recipe = (RecipeMO) getArguments().get(GENERIC_OBJECT);
+        myReview = (ReviewMO) getArguments().get(GENERIC_OBJECT);
+        reviews = (List<ReviewMO>) getArguments().get(GENERIC_OBJECT2);
+        recipe = (RecipeMO) getArguments().get(SELECTED_ITEM);
     }
 
     private void setupPage() {
@@ -146,7 +146,7 @@ public class RecipeViewReviewsFragment extends DialogFragment {
             recipe_reviews_review_et.setVisibility(View.GONE);
             recipe_review_submit_fab.setVisibility(View.GONE);
 
-            if(recipe.getUserReview() != null){
+            if(myReview != null){
                 recipe_reviews_delete_iv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -160,13 +160,13 @@ public class RecipeViewReviewsFragment extends DialogFragment {
                     }
                 });
 
-                recipe_reviews_review_tv.setText(recipe.getUserReview().getREVIEW().trim());
+                recipe_reviews_review_tv.setText(myReview.getREVIEW().trim());
 
-                if(recipe.getUserReview().getMOD_DTM() != null && !recipe.getUserReview().getMOD_DTM().isEmpty()){
-                    recipe_reviews_review_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(recipe.getUserReview().getMOD_DTM(), DB_DATE_TIME)));
+                if(myReview.getMOD_DTM() != null && !myReview.getMOD_DTM().isEmpty()){
+                    recipe_reviews_review_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(myReview.getMOD_DTM(), DB_DATE_TIME)));
                 }
-                else if(recipe.getUserReview().getCREATE_DTM() != null && !recipe.getUserReview().getCREATE_DTM().isEmpty()){
-                    recipe_reviews_review_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(recipe.getUserReview().getCREATE_DTM(), DB_DATE_TIME)));
+                else if(myReview.getCREATE_DTM() != null && !myReview.getCREATE_DTM().isEmpty()){
+                    recipe_reviews_review_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(myReview.getCREATE_DTM(), DB_DATE_TIME)));
                 }
             }
         }
@@ -179,7 +179,7 @@ public class RecipeViewReviewsFragment extends DialogFragment {
             recipe_review_submit_fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(recipe.getUserReview().getRATING() == 0){
+                    if(myReview.getRATING() == 0){
                         Utility.showSnacks(recipe_reviews_review_rl, "You haven't rated the Recipe", OK, Snackbar.LENGTH_LONG);
                         return;
                     }
@@ -189,7 +189,7 @@ public class RecipeViewReviewsFragment extends DialogFragment {
                         return;
                     }
 
-                    recipe.getUserReview().setREVIEW(String.valueOf(recipe_reviews_review_et.getText()).trim());
+                    myReview.setREVIEW(String.valueOf(recipe_reviews_review_et.getText()).trim());
 
                     new AsyncSubmitReview().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, recipe);
                 }
@@ -198,7 +198,7 @@ public class RecipeViewReviewsFragment extends DialogFragment {
     }
 
     private void setupReviews() {
-        final RecipeViewReviewsRecyclerViewAdapter adapter = new RecipeViewReviewsRecyclerViewAdapter(mContext, loggedInUser, recipe.getReviews(), new View.OnLongClickListener() {
+        final RecipeViewReviewsRecyclerViewAdapter adapter = new RecipeViewReviewsRecyclerViewAdapter(mContext, loggedInUser, reviews, new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 new AsyncFetchLikedUsers().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (ReviewMO) view.getTag());
@@ -231,8 +231,8 @@ public class RecipeViewReviewsFragment extends DialogFragment {
     }
 
     private void setupStars() {
-        if(recipe.getUserReview() != null && recipe.getUserReview().getRATING() != 0){
-            selectStars(recipe.getUserReview().getRATING());
+        if(myReview != null && myReview.getRATING() != 0){
+            selectStars(myReview.getRATING());
         }
         else{
             selectStars(0);
@@ -241,7 +241,7 @@ public class RecipeViewReviewsFragment extends DialogFragment {
 
     public void deleteReview(){
         if(recipe.isUserReviewed()){
-            new AsyncDeleteReview().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, recipe.getUserReview());
+            new AsyncDeleteReview().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, myReview);
         }
         else{
             Log.e(CLASS_NAME, "Error ! Recipe.isUserReviewed is expected to be true.");
@@ -256,11 +256,11 @@ public class RecipeViewReviewsFragment extends DialogFragment {
         stars.add(recipe_reviews_star_4_iv);
         stars.add(recipe_reviews_star_5_iv);
 
-        if(recipe.getUserReview() == null){
+        if(myReview == null){
             recipe.setUserReview(new ReviewMO());
         }
 
-        recipe.getUserReview().setRATING(count);
+        myReview.setRATING(count);
 
         for(int i=0; i<stars.size(); i++){
             if(i < count){
@@ -376,7 +376,7 @@ public class RecipeViewReviewsFragment extends DialogFragment {
                 dismiss();
 
                 if(getTargetFragment() instanceof RecipeViewFragment){
-                    ((RecipeViewFragment)getTargetFragment()).updateRecipeView();
+                    //((RecipeViewFragment)getTargetFragment()).updateRecipeView();
                     ((RecipeViewFragment)getTargetFragment()).showReviewAddMessage();
                 }
             }
@@ -407,7 +407,7 @@ public class RecipeViewReviewsFragment extends DialogFragment {
                 dismiss();
 
                 if(getTargetFragment() instanceof RecipeViewFragment){
-                    ((RecipeViewFragment)getTargetFragment()).updateRecipeView();
+                    //((RecipeViewFragment)getTargetFragment()).updateRecipeView();
                     ((RecipeViewFragment)getTargetFragment()).showReviewDeleteMessage();
                 }
             }

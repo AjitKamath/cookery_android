@@ -198,7 +198,7 @@ public class RecipeViewImagesFragment extends DialogFragment {
             if (like != null) {
                 if (getTargetFragment() instanceof RecipeViewFragment) {
                     updateImageLikeView(like, layout);
-                    ((RecipeViewFragment) getTargetFragment()).updateRecipeView();
+                    //((RecipeViewFragment) getTargetFragment()).updateRecipeView();
                 }
             }
         }

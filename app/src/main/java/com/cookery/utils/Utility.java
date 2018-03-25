@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.cookery.R;
-import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MessageFragment;
 import com.cookery.fragments.MyRecipesFragment;
@@ -25,6 +24,7 @@ import com.cookery.fragments.ProfileViewImageFragment;
 import com.cookery.fragments.ProfileViewNameFragment;
 import com.cookery.fragments.ProfileViewPasswordFragment;
 import com.cookery.fragments.ProfileViewPhoneFragment;
+import com.cookery.fragments.RecipeAddFragment;
 import com.cookery.fragments.RecipeImagesFragment;
 import com.cookery.fragments.RecipeViewCommentsFragment;
 import com.cookery.fragments.RecipeViewFragment;
@@ -124,6 +124,15 @@ public class Utility extends Activity {
         }
         else{
             return R.drawable.heart_unselected;
+        }
+    }
+
+    public static int getReviewImageId(boolean isReviewed){
+        if(isReviewed){
+            return R.drawable.star;
+        }
+        else{
+            return R.drawable.star_unselected;
         }
     }
 
@@ -510,8 +519,8 @@ public class Utility extends Activity {
         }
 
 
-        if(fragment instanceof AddRecipeFragment){
-            AddRecipeFragment currentFrag = (AddRecipeFragment) fragment;
+        if(fragment instanceof RecipeAddFragment){
+            RecipeAddFragment currentFrag = (RecipeAddFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);
@@ -656,6 +665,22 @@ public class Utility extends Activity {
         }
         else if(fragment instanceof LoginFragment){
             LoginFragment currentFrag = (LoginFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof RecipeViewCommentsFragment){
+            RecipeViewCommentsFragment currentFrag = (RecipeViewCommentsFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof RecipeViewReviewsFragment){
+            RecipeViewReviewsFragment currentFrag = (RecipeViewReviewsFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);

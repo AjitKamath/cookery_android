@@ -321,3 +321,14 @@
 
 18 march 2018
 1. #211 - Recipe Add - Fix Recipe Steps
+
+-- git checkin on 18 March 2018 --
+
+22 march 2018
+1. #254 - Database connection counter mechanism for each database connection/disconnection.
+2. #228 - SonarQube - Code Quality Check
+3. #180 - Recipe View - Comment Recipe Photo
+4. #261 - AsyncTasker Utility Class
+
+23 march 2018
+1. #315 - Email Alerts !

@@ -24,7 +24,7 @@ import com.cookery.adapters.RecipesMiniRecyclerViewAdapter;
 import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.UserMO;
-import com.cookery.utils.InternetUtility;
+import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.Utility;
 
 import java.util.List;
@@ -32,6 +32,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
@@ -79,9 +80,13 @@ public class MyRecipesFragment extends DialogFragment {
         loggedInUser = (UserMO) getArguments().get(LOGGED_IN_USER);
     }
 
-    private void updateRecipes(List<RecipeMO> recipes, int index){
+    public void updateRecipes(List<RecipeMO> recipes, int index){
         ((RecipesMiniRecyclerViewAdapter)fragment_my_recipes_rv.getAdapter()).updateRecipes(recipes, index);
         fragment_my_recipes_srl.setRefreshing(false);
+    }
+
+    public void removeOnBottomReachedListener(){
+        ((RecipesMiniRecyclerViewAdapter)fragment_my_recipes_rv.getAdapter()).setOnBottomReachedListener(null);
     }
 
     private void setupMyRecipesFragment() {
@@ -125,7 +130,10 @@ public class MyRecipesFragment extends DialogFragment {
         adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
             @Override
             public void onBottomReached(int position) {
-                new AsyncTaskerFetchMyRecipes(adapter.getItemCount()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_MY_RECIPE,
+                        AsyncTaskUtility.Purpose.FETCH_MY_RECIPES, loggedInUser, adapter.getItemCount())
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                //new AsyncTaskerFetchMyRecipes(adapter.getItemCount()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -137,7 +145,10 @@ public class MyRecipesFragment extends DialogFragment {
         fragment_my_recipes_srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new AsyncTaskerFetchMyRecipes(0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_MY_RECIPE,
+                        AsyncTaskUtility.Purpose.FETCH_MY_RECIPES, loggedInUser, 0)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                //new AsyncTaskerFetchMyRecipes(0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
     }
@@ -173,34 +184,6 @@ public class MyRecipesFragment extends DialogFragment {
             }
             else if(v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
-            }
-        }
-    }
-
-    class AsyncTaskerFetchMyRecipes extends AsyncTask<Object, Void, Object> {
-        private int index;
-
-        public AsyncTaskerFetchMyRecipes(int index){
-            this.index = index;
-        }
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.fetchMyRecipes(loggedInUser.getUSER_ID(), index);
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            List<RecipeMO> myRecipes = (List<RecipeMO>) object;
-            if(myRecipes != null || !myRecipes.isEmpty()){
-                updateRecipes(myRecipes, index);
-            }
-            else{
-                ((RecipesMiniRecyclerViewAdapter)fragment_my_recipes_rv.getAdapter()).setOnBottomReachedListener(null);
             }
         }
     }

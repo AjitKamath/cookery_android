@@ -31,7 +31,7 @@
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/food_sample" />
+                    android:src="@drawable/placeholder" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -49,7 +49,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="20dp"
                             android:maxLines="1"
-                            android:text="MEXICAN ALOO PARATHA"
+                            android:text="RECIPE NAME"
                             android:textColor="@color/secondaryDarkText"
                             android:textSize="@dimen/secondary_text_size" />
 
@@ -73,7 +73,7 @@
                             android:layout_height="wrap_content"
                             android:maxLines="1"
                             android:maxWidth="140dp"
-                            android:text="BREAKFAST"
+                            android:text="FOOD TYPE"
                             android:textColor="@color/tertiaryDarkText"
                             android:textSize="@dimen/tertiary_text_size" />
 
@@ -96,7 +96,7 @@
                             android:layout_height="wrap_content"
                             android:layout_toRightOf="@+id/view_pager_recipes_recipe_mini_seperator_tv"
                             android:maxWidth="140dp"
-                            android:text="MEXICAN"
+                            android:text="CUISINE"
                             android:textColor="@color/tertiaryDarkText"
                             android:textSize="@dimen/tertiary_text_size" />
 
@@ -221,7 +221,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:text="Just now"
+                            android:text="DATE TIME"
                             android:textColor="@color/tertiaryDarkText"
                             android:textSize="@dimen/quaternary_text_size" />
 

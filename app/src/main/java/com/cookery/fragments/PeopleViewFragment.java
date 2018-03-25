@@ -2,7 +2,6 @@ package com.cookery.fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
@@ -33,19 +32,16 @@ import com.cookery.adapters.PeopleViewViewPagerAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
 import com.cookery.interfaces.ItemClickListener;
 import com.cookery.models.UserMO;
-import com.cookery.utils.InternetUtility;
+import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.cookery.utils.Constants.FRAGMENT_PEOPLE_VIEW;
-import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.UI_FONT;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
@@ -131,7 +127,9 @@ public class PeopleViewFragment extends DialogFragment {
                     return;
                 }
 
-                new AsyncFetchUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO)item).getUSER_ID());
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE,
+                        AsyncTaskUtility.Purpose.FETCH_USER_PUBLIC_DETAILS, loggedInUser, 0)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO)item).getUSER_ID());
             }
         }));
         people_view_tab_vp.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(people_view_tl));
@@ -166,7 +164,9 @@ public class PeopleViewFragment extends DialogFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(view.getTag() != null){
                     if(view.getTag() instanceof UserMO){
-                        new AsyncFetchUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO)view.getTag()).getUSER_ID());
+                        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE,
+                                AsyncTaskUtility.Purpose.FETCH_USER_PUBLIC_DETAILS, loggedInUser, 0)
+                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO)view.getTag()).getUSER_ID());
                     }
                     else{
                         Log.e(CLASS_NAME, "Error ! "+UN_IDENTIFIED_OBJECT_TYPE+" : "+view.getTag());
@@ -263,42 +263,6 @@ public class PeopleViewFragment extends DialogFragment {
             }
             else if(v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
-            }
-        }
-    }
-
-    class AsyncFetchUser extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-
-        @Override
-        protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching user details ..");
-        }
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.fetchUsersPublicDetails(Integer.parseInt(String.valueOf(objects[0])), loggedInUser.getUSER_ID());
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-            if (object == null) {
-                return;
-            }
-
-            List<UserMO> users = (List<UserMO>) object;
-
-            if (users != null && !users.isEmpty()) {
-                Map<String, Object> bundleMap = new HashMap<String, Object>();
-                bundleMap.put(GENERIC_OBJECT, users.get(0));
-
-                Utility.showFragment(getFragmentManager(), FRAGMENT_PEOPLE_VIEW, FRAGMENT_USER_VIEW, new UserViewFragment(), bundleMap);
-
-            }
-            else{
-                Log.e(CLASS_NAME, "Failed to fetch users details");
             }
         }
     }

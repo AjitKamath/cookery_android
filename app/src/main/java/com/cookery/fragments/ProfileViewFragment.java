@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -24,16 +23,14 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.activities.HomeActivity;
-import com.cookery.models.MessageMO;
 import com.cookery.models.Milestone;
 import com.cookery.models.UserMO;
+import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.DateTimeUtility;
-import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -48,11 +45,8 @@ import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_NAME;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_PASSWORD;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_PHONE;
-import static com.cookery.utils.Constants.FRAGMENT_USERS;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
-import static com.cookery.utils.Constants.OK;
-import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
 
 /**
@@ -234,7 +228,7 @@ public class ProfileViewFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 Map<String, Object> paramsMap = new HashMap<>();
-                paramsMap.put(GENERIC_OBJECT, loggedInUser);
+                paramsMap.put(LOGGED_IN_USER, loggedInUser);
                 Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_PROFILE_VIEW_EMAIL, new ProfileViewEmailFragment(), paramsMap);
             }
         });
@@ -261,7 +255,7 @@ public class ProfileViewFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 Map<String, Object> paramsMap = new HashMap<>();
-                paramsMap.put(GENERIC_OBJECT, loggedInUser);
+                paramsMap.put(LOGGED_IN_USER, loggedInUser);
                 Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_PROFILE_VIEW_GENDER, new ProfileViewGenderFragment(), paramsMap);
             }
         });
@@ -269,7 +263,9 @@ public class ProfileViewFragment extends DialogFragment {
         profile_view_follow_followers_ll.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                new AsyncTaskerFetchUserFollowers().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
+                        AsyncTaskUtility.Purpose.FETCH_USERS, loggedInUser, 0)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "FOLLOWERS");
                 return true;
             }
         });
@@ -277,7 +273,9 @@ public class ProfileViewFragment extends DialogFragment {
         profile_view_follow_following_ll.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                new AsyncTaskerFetchUserFollowing().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
+                        AsyncTaskUtility.Purpose.FETCH_USERS, loggedInUser, 0)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "FOLLOWINGS");
                 return true;
             }
         });
@@ -390,7 +388,10 @@ public class ProfileViewFragment extends DialogFragment {
 
     private void updatePhoto(String photoPath){
         loggedInUser.setIMG(photoPath);
-        new AsyncTaskerUpdateUserImage().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
+                AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "IMAGE");
     }
 
     @Override
@@ -446,106 +447,7 @@ public class ProfileViewFragment extends DialogFragment {
         }
     }
 
-    class AsyncTaskerUpdateUserImage extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.updateUserImage(loggedInUser);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "updating your photo..");
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            MessageMO message = (MessageMO) object;
-
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-            if(message != null && !message.isError()){
-                Utility.loadImageFromPath(mContext, loggedInUser.getIMG(), profile_view_profile_image_iv);
-                doUpdateLoggedInUser = true;
-            }
-            else{
-                if(message == null){
-                    message = new MessageMO();
-                    message.setError(true);
-                    message.setErr_message("Something went wrong !");
-                }
-
-                message.setPurpose("USER_UPDATE_IMAGE_FAILED");
-                Utility.showMessageDialog(getFragmentManager(), null, message);
-            }
-        }
-    }
-
-    class AsyncTaskerFetchUserFollowers extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.fetchUserFollowers(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), 0);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching followers ..");
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            List<UserMO> followers = (List<UserMO>) object;
-
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-            if(followers != null && !followers.isEmpty()){
-                Object array[] = new Object[]{"FOLLOWERS", followers};
-                Map<String, Object> params = new HashMap<String, Object>();
-                params.put(GENERIC_OBJECT, array);
-                params.put(SELECTED_ITEM, loggedInUser);
-                params.put(LOGGED_IN_USER, loggedInUser);
-
-                Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_USERS, new UsersFragment(), params);
-            }
-            else{
-                Utility.showSnacks(profile_view_rl, "No Followers to show !", OK, Snackbar.LENGTH_LONG);
-            }
-        }
-    }
-
-    class AsyncTaskerFetchUserFollowing extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.fetchUserFollowings(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), 0);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching users ..");
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            List<UserMO> followings = (List<UserMO>) object;
-
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-            if (followings != null && !followings.isEmpty()) {
-                Object array[] = new Object[]{"FOLLOWINGS", followings};
-                Map<String, Object> params = new HashMap<String, Object>();
-                params.put(GENERIC_OBJECT, array);
-                params.put(SELECTED_ITEM, loggedInUser);
-                params.put(LOGGED_IN_USER, loggedInUser);
-
-                Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_USERS, new UsersFragment(), params);
-            } else {
-                Utility.showSnacks(profile_view_rl, "No Followers to show !", OK, Snackbar.LENGTH_LONG);
-            }
-        }
+    public void updateUserImage(){
+        Utility.loadImageFromPath(mContext, loggedInUser.getIMG(), profile_view_profile_image_iv);
     }
 }

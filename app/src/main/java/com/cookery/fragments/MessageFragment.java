@@ -105,7 +105,7 @@ public class MessageFragment extends DialogFragment {
                 public void onClick(View view) {
                     dismiss();
 
-                    ((AddRecipeFragment) getTargetFragment()).dismiss();
+                    ((RecipeAddFragment) getTargetFragment()).dismiss();
                 }
             });
 

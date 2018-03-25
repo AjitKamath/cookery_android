@@ -57,10 +57,10 @@ import static com.cookery.utils.Constants.UI_FONT;
  * Created by ajit on 25/8/17.
  */
 
-public class AddRecipeFragment extends DialogFragment {
+public class RecipeAddFragment extends DialogFragment {
 
     private Context mContext;
-    private static final String CLASS_NAME = AddRecipeFragment.class.getName();
+    private static final String CLASS_NAME = RecipeAddFragment.class.getName();
 
     private UserMO loggerInUser;
 
@@ -378,7 +378,7 @@ public class AddRecipeFragment extends DialogFragment {
     }
 
     // Empty constructor required for DialogFragment
-    public AddRecipeFragment() {
+    public RecipeAddFragment() {
     }
 
     @Override

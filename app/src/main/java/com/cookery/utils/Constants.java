@@ -12,7 +12,7 @@ public final class Constants {
     private static final String SERVER_PROTOCOL = "http";
     private static final String SERVER_PORT = "";
 
-    private static final String SERVER_CODE_ANYWHERE_ADDRESS_AJIT = "cookery_php-ajitkamathk452607.codeanyapp.com";
+    private static final String SERVER_CODE_ANYWHERE_ADDRESS_AJIT = "www.finappl.com";
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_VISHAL = "cookery_php-dial2vishal53897.codeanyapp.com";
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_AJIT;
 
@@ -49,13 +49,14 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_MYLIST_UPDATE = "PHP_FUNCTION_KEY_MYLIST_UPDATE";
     public static final String PHP_FUNCTION_KEY_LIKE_SUBMIT = "LIKE_SUBMIT";
     public static final String PHP_FUNCTION_KEY_FAV_SUBMIT = "FAV_SUBMIT";
-    public static final String PHP_FUNCTION_KEY_COMMENT_RECIPE_FETCH_ALL = "COMMENT_RECIPE_FETCH_ALL";
+    public static final String PHP_FUNCTION_KEY_COMMENT_FETCH_ALL = "COMMENT_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_LIKE_FETCH_USERS = "LIKE_FETCH_USERS";
     public static final String PHP_FUNCTION_KEY_VIEW_FETCH_USERS = "VIEW_FETCH_USERS";
     public static final String PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL = "QUANTITY_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_FOOD_CUISINE_FETCH_ALL = "FOOD_CUISINE_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_RECIPE_USER_FETCH = "RECIPE_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_REVIEW_USER_FETCH = "REVIEW_USER_FETCH";
+    public static final String PHP_FUNCTION_KEY_REVIEW_USER_FETCH_ALL = "REVIEW_USER_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_TIMELINE_USER_FETCH = "TIMELINE_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_STORY_USER_FETCH = "STORY_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_USER_REGISTER = "USER_REGISTER";
@@ -172,6 +173,7 @@ public final class Constants {
     public static final String LOGGED_IN_USER = "LOGGED_IN_USER";
     public static final String MASTER = "MASTER";
     public static final String GENERIC_OBJECT = "GENERIC_OBJECT";
+    public static final String GENERIC_OBJECT2 = "GENERIC_OBJECT2";
     public static final String LIST_DATA = "LIST_DATA";
     public static final String SELECTED_ITEM = "SELECTED_ITEM";
 

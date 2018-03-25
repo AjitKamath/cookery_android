@@ -12,7 +12,8 @@ import lombok.Data;
 @Data
 public class CommentMO extends CommonMO implements Serializable {
     private int COM_ID;
-    private int RCP_ID;
+    private String TYPE;
+    private int TYPE_ID;
     private String COMMENT;
 
     private String userImage;

@@ -187,9 +187,9 @@ public class AddMyListFragment extends DialogFragment {
             public void onClick(View view) {
                 CuisineMO cuisine = (CuisineMO) view.getTag();
 
-                if(getTargetFragment() instanceof AddRecipeFragment){
+                if(getTargetFragment() instanceof RecipeAddFragment){
                     dismiss();
-                    ((AddRecipeFragment)getTargetFragment()).setCuisine(cuisine);
+                    ((RecipeAddFragment)getTargetFragment()).setCuisine(cuisine);
                 }
                 else{
                     // Utility.showUnimplemetedActionSnacks(common_selection_rl);

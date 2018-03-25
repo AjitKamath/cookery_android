@@ -24,7 +24,7 @@ import com.cookery.adapters.ReviewsMiniRecyclerViewAdapter;
 import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.UserMO;
-import com.cookery.utils.InternetUtility;
+import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.Utility;
 
 import java.util.List;
@@ -32,6 +32,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.cookery.utils.Constants.FRAGMENT_MY_REVIEWS;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
@@ -121,7 +122,9 @@ public class MyReviewsFragment extends DialogFragment {
         adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
             @Override
             public void onBottomReached(int position) {
-                new AsyncTaskerFetchMyReviews(adapter.getItemCount()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_MY_REVIEWS,
+                        AsyncTaskUtility.Purpose.FETCH_MY_REVIEWS, loggedInUser, adapter.getItemCount())
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -133,12 +136,14 @@ public class MyReviewsFragment extends DialogFragment {
         fragment_my_reviews_content_recipes_srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new AsyncTaskerFetchMyReviews(0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_MY_REVIEWS,
+                        AsyncTaskUtility.Purpose.FETCH_MY_REVIEWS, loggedInUser, 0)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
     }
 
-    private void updateReviews(List<ReviewMO> reviews, int index){
+    public void updateReviews(List<ReviewMO> reviews, int index){
         ((ReviewsMiniRecyclerViewAdapter)fragment_my_reviews_content_recipes_rv.getAdapter()).updateReviews(reviews, index);
         fragment_my_reviews_content_recipes_srl.setRefreshing(false);
     }
@@ -178,32 +183,7 @@ public class MyReviewsFragment extends DialogFragment {
         }
     }
 
-    class AsyncTaskerFetchMyReviews extends AsyncTask<Object, Void, Object> {
-        private int index;
-
-        public AsyncTaskerFetchMyReviews(int index){
-            this.index = index;
-        }
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.fetchMyReviews(loggedInUser.getUSER_ID(), index);
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            List<ReviewMO> myReviews = (List<ReviewMO>) object;
-
-            if(myReviews != null && !myReviews.isEmpty()){
-                updateReviews(myReviews, index);
-            }
-            else{
-                ((ReviewsMiniRecyclerViewAdapter)fragment_my_reviews_content_recipes_rv.getAdapter()).setOnBottomReachedListener(null);
-            }
-        }
+    public void removeOnBottomReachedListener() {
+        ((ReviewsMiniRecyclerViewAdapter)fragment_my_reviews_content_recipes_rv.getAdapter()).setOnBottomReachedListener(null);
     }
 }

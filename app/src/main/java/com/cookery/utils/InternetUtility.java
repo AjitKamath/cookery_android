@@ -32,7 +32,7 @@ import static com.cookery.utils.Constants.API_KEY_IDENTIFIER;
 import static com.cookery.utils.Constants.PHP_CONTROLLER;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_DELETE;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_RECIPE_FETCH_ALL;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FAV_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FOOD_CUISINE_FETCH_ALL;
@@ -57,6 +57,7 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_DELETE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_RECIPE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_USER_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_USER_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_STORY_USER_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TASTE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_DELETE;
@@ -459,7 +460,8 @@ public class InternetUtility {
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_COMMENT_SUBMIT);
-            paramMap.put("rcp_id", String.valueOf(comment.getRCP_ID()));
+            paramMap.put("type", comment.getTYPE());
+            paramMap.put("type_id", String.valueOf(comment.getTYPE_ID()));
             paramMap.put("user_id", String.valueOf(comment.getUSER_ID()));
             paramMap.put("comment", comment.getCOMMENT());
 
@@ -583,16 +585,17 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<CommentMO> fetchRecipeComments(UserMO loggedInUser, RecipeMO recipe, int index) {
+    public static List<CommentMO> fetchComments(UserMO loggedInUser, CommentMO comment, int index) {
         if(USE_TEST_DATA){
             return null;
         }
 
         try {
             Map<String, String> paramMap = new HashMap<>();
-            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_COMMENT_RECIPE_FETCH_ALL);
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_COMMENT_FETCH_ALL);
             paramMap.put("user_id", String.valueOf(loggedInUser.getUSER_ID()));
-            paramMap.put("rcp_id", String.valueOf(recipe.getRCP_ID()));
+            paramMap.put("type", comment.getTYPE());
+            paramMap.put("type_id", String.valueOf(comment.getTYPE_ID()));
             paramMap.put("index", String.valueOf(index));
 
             String jsonStr = getResponseFromCookery(paramMap);
@@ -792,7 +795,7 @@ public class InternetUtility {
 
         try {
             Map<String, String> paramMap = new HashMap<>();
-            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_REVIEW_USER_FETCH);
+            paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_REVIEW_USER_FETCH_ALL);
             paramMap.put("user_id", String.valueOf(user_id));
             paramMap.put("index", String.valueOf(index));
 

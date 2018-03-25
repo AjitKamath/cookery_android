@@ -42,7 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Vishal Varshney"
+                    android:text="First Name Last Name"
                     android:textColor="@color/primaryDarkText"
                     android:textSize="@dimen/secondary_text_size" />
 
@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
                     android:gravity="center"
-                    android:text="SUPER CHEF"
+                    android:text="USER RANK"
                     android:textColor="@color/secondaryDarkText"
                     android:textSize="@dimen/quaternary_text_size" />
 
@@ -106,13 +106,14 @@
         android:padding="5dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
         <TextView
             android:id="@+id/common_fragment_recipe_recipe_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CHICKEN KOLHAPURI"
+            android:text="RECIPE NAME"
             android:textColor="@color/primaryDarkText"
             android:textSize="@dimen/secondary_text_size" />
 
@@ -136,7 +137,7 @@
                 android:id="@+id/common_fragment_recipe_food_type_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BREAKFAST"
+                android:text="FOOD TYPE"
                 android:textColor="@color/secondaryDarkText"
                 android:textSize="@dimen/tertiary_text_size" />
 
@@ -153,7 +154,7 @@
                 android:id="@+id/common_fragment_recipe_cuisine_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="INDIAN"
+                android:text="CUISINE"
                 android:textColor="@color/secondaryDarkText"
                 android:textSize="@dimen/tertiary_text_size" />
 

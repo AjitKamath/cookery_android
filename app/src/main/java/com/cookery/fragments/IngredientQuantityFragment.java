@@ -37,7 +37,7 @@ import static com.cookery.utils.Constants.UI_FONT;
 /**
  * Created by ajit on 21/3/16.
  */
-public class AddRecipeIngredientQuantityFragment extends DialogFragment {
+public class IngredientQuantityFragment extends DialogFragment {
     private final String CLASS_NAME = this.getClass().getName();
     private Context mContext;
 
@@ -112,7 +112,7 @@ public class AddRecipeIngredientQuantityFragment extends DialogFragment {
                 ingredient.setQuantity((QuantityMO) fragment_ingredient_quantity_quantity_spinner.getSelectedView().getTag());
                 ingredient.setQTY(quantity);
 
-                ((AddRecipeFragment)getTargetFragment()).addIngredient(ingredient);
+                ((RecipeAddFragment)getTargetFragment()).addIngredient(ingredient);
             }
         });
     }
@@ -123,7 +123,7 @@ public class AddRecipeIngredientQuantityFragment extends DialogFragment {
     }
 
     // Empty constructor required for DialogFragment
-    public AddRecipeIngredientQuantityFragment() {}
+    public IngredientQuantityFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -33,13 +33,12 @@ import com.cookery.R;
 import com.cookery.adapters.HomeSearchAutoCompleteAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
 import com.cookery.fragments.AddMyListFragment;
-import com.cookery.fragments.AddRecipeFragment;
 import com.cookery.fragments.FavoriteRecipesFragment;
 import com.cookery.fragments.LoginFragment;
-import com.cookery.fragments.MyRecipesFragment;
 import com.cookery.fragments.MyReviewsFragment;
 import com.cookery.fragments.PeopleViewFragment;
 import com.cookery.fragments.ProfileViewFragment;
+import com.cookery.fragments.RecipeAddFragment;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.MasterDataMO;
@@ -51,6 +50,7 @@ import com.cookery.models.TasteMO;
 import com.cookery.models.TimelineMO;
 import com.cookery.models.TrendMO;
 import com.cookery.models.UserMO;
+import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
@@ -64,7 +64,6 @@ import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.FRAGMENT_MY_FAVORITES;
 import static com.cookery.utils.Constants.FRAGMENT_MY_LIST;
-import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_MY_REVIEWS;
 import static com.cookery.utils.Constants.FRAGMENT_PEOPLE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
@@ -323,7 +322,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         paramsMap.put(MASTER, masterData);
         paramsMap.put(GENERIC_OBJECT, new RecipeMO());
 
-        Utility.showFragment(getFragmentManager(), null, FRAGMENT_ADD_RECIPE, new AddRecipeFragment(), paramsMap);
+        Utility.showFragment(getFragmentManager(), null, FRAGMENT_ADD_RECIPE, new RecipeAddFragment(), paramsMap);
 
         /*String fragmentNameStr = FRAGMENT_ADD_RECIPE;
         String parentFragmentNameStr = null;
@@ -343,7 +342,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         Bundle bundle = new Bundle();
         bundle.putSerializable(MASTER, masterData);
 
-        AddRecipeFragment fragment = new AddRecipeFragment();
+        RecipeAddFragment fragment = new RecipeAddFragment();
         fragment.setArguments(bundle);
 
         if (parentFragment != null) {
@@ -422,7 +421,8 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             new AsyncTaskerFetchFavRecipes().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         else if(R.id.activity_home_drawer_my_recipes == item.getItemId()){
-            new AsyncTaskerFetchMyRecipes().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            new AsyncTaskUtility(this, AsyncTaskUtility.Purpose.FETCH_MY_RECIPES, loggedInUser, 0)
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         else if(R.id.activity_home_drawer_my_reviews == item.getItemId()){
             new AsyncTaskerFetchMyReviews().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -501,7 +501,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
                                 Map<String, Object> paramsMap = new HashMap<>();
                                 paramsMap.put(MASTER, masterData);
                                 paramsMap.put(GENERIC_OBJECT, new RecipeMO());
-                                Utility.showFragment(getFragmentManager(), null, FRAGMENT_ADD_RECIPE, new AddRecipeFragment(), paramsMap);
+                                Utility.showFragment(getFragmentManager(), null, FRAGMENT_ADD_RECIPE, new RecipeAddFragment(), paramsMap);
                             }
                         }
                     }
@@ -544,7 +544,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
         @Override
         protected List<MyListMO> doInBackground(Void... objects) {
-            //return InternetUtility.fetchUserList(loggedInUser.getUSER_ID(), 0);
             return InternetUtility.fetchUserList(loggedInUser.getUSER_ID());
         }
 
@@ -620,34 +619,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
                 showFavRecipesFragment(favRecipes);
 
                 Utility.closeWaitDialog(getFragmentManager(), fragment);
-            }
-        }
-    }
-
-    class AsyncTaskerFetchMyRecipes extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.fetchMyRecipes(loggedInUser.getUSER_ID(), 0);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "Loading My Recipes ..");
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-            List<RecipeMO> myRecipes = (List<RecipeMO>) object;
-            if(myRecipes != null || !myRecipes.isEmpty()){
-                Map<String, Object> paramsMap = new HashMap<>();
-                paramsMap.put(GENERIC_OBJECT, myRecipes);
-                paramsMap.put(LOGGED_IN_USER, loggedInUser);
-
-                Utility.showFragment(getFragmentManager(), null, FRAGMENT_MY_RECIPE, new MyRecipesFragment(), paramsMap);
             }
         }
     }

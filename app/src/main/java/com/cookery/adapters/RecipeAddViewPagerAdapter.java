@@ -27,7 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.fragments.AddRecipeIngredientQuantityFragment;
+import com.cookery.fragments.IngredientQuantityFragment;
 import com.cookery.fragments.SelectionFragment;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
@@ -478,7 +478,7 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
             parentFragment = fragmentManager.findFragmentByTag(parentFragmentNameStr);
         }
 
-        AddRecipeIngredientQuantityFragment fragment = new AddRecipeIngredientQuantityFragment();
+        IngredientQuantityFragment fragment = new IngredientQuantityFragment();
 
         if (parentFragment != null) {
             fragment.setTargetFragment(parentFragment, 0);

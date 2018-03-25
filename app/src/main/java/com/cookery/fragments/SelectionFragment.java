@@ -79,9 +79,9 @@ public class SelectionFragment extends DialogFragment {
                 public void onClick(View view) {
                     FoodTypeMO foodType = (FoodTypeMO) view.getTag();
 
-                    if(getTargetFragment() instanceof AddRecipeFragment){
+                    if(getTargetFragment() instanceof RecipeAddFragment){
                         dismiss();
-                        ((AddRecipeFragment)getTargetFragment()).setFoodType(foodType);
+                        ((RecipeAddFragment)getTargetFragment()).setFoodType(foodType);
                     }
                     else{
                         Utility.showUnimplemetedActionSnacks(common_selection_rl);
@@ -98,9 +98,9 @@ public class SelectionFragment extends DialogFragment {
                 public void onClick(View view) {
                     CuisineMO cuisine = (CuisineMO) view.getTag();
 
-                    if(getTargetFragment() instanceof AddRecipeFragment){
+                    if(getTargetFragment() instanceof RecipeAddFragment){
                         dismiss();
-                        ((AddRecipeFragment)getTargetFragment()).setCuisine(cuisine);
+                        ((RecipeAddFragment)getTargetFragment()).setCuisine(cuisine);
                     }
                     else{
                         Utility.showUnimplemetedActionSnacks(common_selection_rl);

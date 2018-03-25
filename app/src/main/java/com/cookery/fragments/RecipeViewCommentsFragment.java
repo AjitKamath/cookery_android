@@ -71,6 +71,7 @@ public class RecipeViewCommentsFragment extends DialogFragment {
     ImageView recipe_comments_comment_iv;
     //end of components
 
+    private List<CommentMO> comments;
     private RecipeMO recipe;
     private UserMO loggedInUser;
 
@@ -83,7 +84,6 @@ public class RecipeViewCommentsFragment extends DialogFragment {
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         getDataFromBundle();
-        getLoggedInUser();
 
         setupPage();
 
@@ -92,12 +92,10 @@ public class RecipeViewCommentsFragment extends DialogFragment {
         return view;
     }
 
-    private void getLoggedInUser() {
-        loggedInUser = Utility.getUserFromUserSecurity(mContext);
-    }
-
     private void getDataFromBundle() {
+        comments = (List<CommentMO>)  getArguments().get(GENERIC_OBJECT);
         recipe = (RecipeMO) getArguments().get(SELECTED_ITEM);
+        loggedInUser = (UserMO) getArguments().get(LOGGED_IN_USER);
     }
 
     private void setupPage() {
@@ -105,7 +103,7 @@ public class RecipeViewCommentsFragment extends DialogFragment {
     }
 
     private void setupComments() {
-        final RecipeCommentsRecyclerViewAdapter adapter = new RecipeCommentsRecyclerViewAdapter(mContext, loggedInUser, recipe.getComments(), new View.OnClickListener() {
+        final RecipeCommentsRecyclerViewAdapter adapter = new RecipeCommentsRecyclerViewAdapter(mContext, loggedInUser, comments, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(view.getId() == R.id.recipe_comments_item_delete_iv){
@@ -131,7 +129,11 @@ public class RecipeViewCommentsFragment extends DialogFragment {
         adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
             @Override
             public void onBottomReached(int position) {
-                new AsyncFetchComments(adapter.getItemCount()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                CommentMO comment = new CommentMO();
+                comment.setTYPE("RECIPE");
+                comment.setTYPE_ID(recipe.getRCP_ID());
+
+                new AsyncFetchComments(adapter.getItemCount()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, comment);
             }
         });
 
@@ -154,7 +156,8 @@ public class RecipeViewCommentsFragment extends DialogFragment {
 
                 if(comment != null && !comment.trim().isEmpty()){
                     CommentMO commentObj = new CommentMO();
-                    commentObj.setRCP_ID(recipe.getRCP_ID());
+                    commentObj.setTYPE("RECIPE");
+                    commentObj.setTYPE_ID(recipe.getRCP_ID());
                     commentObj.setUSER_ID(loggedInUser.getUSER_ID());
                     commentObj.setCOMMENT(comment);
 
@@ -231,7 +234,7 @@ public class RecipeViewCommentsFragment extends DialogFragment {
 
         @Override
         protected Object doInBackground(Object... objects) {
-            return InternetUtility.fetchRecipeComments(loggedInUser, recipe, index);
+            return InternetUtility.fetchComments(loggedInUser, (CommentMO) objects[0], index);
         }
 
         @Override
@@ -280,31 +283,8 @@ public class RecipeViewCommentsFragment extends DialogFragment {
                 Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
             }
             else{
-                new AsyncTaskerSubmitFetchRecipeComments().executeOnExecutor(THREAD_POOL_EXECUTOR);
                 recipe_comments_comment_et.setText("");
-                /*Utility.showSnacks(recipe_comments_rl, "Comment submitted", OK, Snackbar.LENGTH_SHORT);*/
-            }
-        }
-
-        class AsyncTaskerSubmitFetchRecipeComments extends AsyncTask<Void, Void, Object> {
-            @Override
-            protected void onPreExecute() {
-            }
-
-            @Override
-            protected Object doInBackground(Void... objects) {
-                return InternetUtility.fetchRecipeComments(loggedInUser, recipe, 0);
-            }
-
-            @Override
-            protected void onPostExecute(Object object) {
-                List<CommentMO> comments = (List<CommentMO>) object;
-                recipe.setComments(comments);
-                setupComments();
-
-                if(getTargetFragment() instanceof RecipeViewFragment){
-                    ((RecipeViewFragment)getTargetFragment()).updateRecipeView();
-                }
+                //TODO: fetch comments here
             }
         }
     }
@@ -333,7 +313,7 @@ public class RecipeViewCommentsFragment extends DialogFragment {
                 dismiss();
 
                 if(getTargetFragment() instanceof RecipeViewFragment){
-                    ((RecipeViewFragment)getTargetFragment()).updateRecipeView();
+                    //((RecipeViewFragment)getTargetFragment()).updateRecipeView();
                     ((RecipeViewFragment)getTargetFragment()).showCommentDeletedMessage();
                 }
             }

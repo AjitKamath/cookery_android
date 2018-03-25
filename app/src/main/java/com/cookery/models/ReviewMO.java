@@ -26,9 +26,11 @@ public class ReviewMO extends CommonMO implements Serializable {
     private String recipeOwnerImage;
     private String foodTypeName;
     private String foodCuisineName;
-    private List<String> recipeImages;
+    private List<ImageMO> recipeImages;
 
     private int likesCount;
+
+    private String avgRating;
 
     private List<UserMO> likedUsers;
 }
