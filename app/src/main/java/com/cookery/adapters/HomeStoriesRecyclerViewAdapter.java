@@ -325,7 +325,7 @@ public class HomeStoriesRecyclerViewAdapter extends RecyclerView.Adapter<HomeSto
             setupUserOnClickListener(holder.home_timeline_user_follow_unfollow_item_who_tv, story.getWhoUserId());
             setupUserOnClickListener(holder.home_timeline_user_follow_unfollow_item_whose_tv, story.getWhoseUserId());
             Utility.loadImageFromURL(mContext, story.getWhoseUserImage(), holder.home_timeline_user_follow_unfollow_item_photo_iv);
-            setupUserImageOnClickListener(holder.home_timeline_user_follow_unfollow_item_photo_iv, story.getWhoseUserImage());
+            setupUserImageOnClickListener(holder.home_timeline_user_follow_unfollow_item_photo_iv, story.getWhoseUserId());
 
             if(story.getWhoUserId() == loggedInUser.getUSER_ID()){
                 holder.home_timeline_user_follow_unfollow_item_who_tv.setText("You");
@@ -409,8 +409,8 @@ public class HomeStoriesRecyclerViewAdapter extends RecyclerView.Adapter<HomeSto
         component.setOnClickListener(listener);
     }
 
-    private void setupUserImageOnClickListener(View component, String image){
-        component.setTag(image);
+    private void setupUserImageOnClickListener(View component, int user_id){
+        component.setTag(user_id);
         component.setOnClickListener(listener);
     }
 

@@ -50,6 +50,7 @@ import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.TasteMO;
 import com.cookery.models.TimelineMO;
+import com.cookery.models.TrendMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
@@ -75,9 +76,6 @@ import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.MY_LISTS_EXISTS;
 import static com.cookery.utils.Constants.OK;
-import static com.cookery.utils.Constants.TOP_RECIPES_CHEF;
-import static com.cookery.utils.Constants.TOP_RECIPES_MONTH;
-import static com.cookery.utils.Constants.TRENDING_RECIPES;
 
 
 public abstract class CommonActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
@@ -172,7 +170,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     }
 
     private void setupSearch() {
-        HomeSearchAutoCompleteAdapter adapter = new HomeSearchAutoCompleteAdapter(mContext);
+        HomeSearchAutoCompleteAdapter adapter = new HomeSearchAutoCompleteAdapter(mContext, loggedInUser);
         getCommon_header_search_av().setThreshold(2);
         getCommon_header_search_av().setAutoCompleteDelay(1000);
         getCommon_header_search_av().setAdapter(adapter);
@@ -247,9 +245,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         getDrawer_layout().addDrawerListener(toggle);
         //toggle.syncState();
 
-        if (loggedInUser.getIMG() != null && !loggedInUser.getIMG().trim().isEmpty()) {
-            Utility.loadImageFromURL(mContext, loggedInUser.getIMG(), (ImageView) getNav_view().findViewById(R.id.navigation_header_iv));
-        }
+        Utility.loadImageFromURL(mContext, loggedInUser.getIMG(), (ImageView) getNav_view().findViewById(R.id.navigation_header_iv));
 
         if (loggedInUser.getNAME() != null && !loggedInUser.getNAME().trim().isEmpty()) {
             ((TextView) getNav_view().findViewById(R.id.navigation_header_name_tv)).setText(loggedInUser.getNAME());
@@ -550,6 +546,14 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         return null;
     }
 
+    private List<TrendMO> fetchTrends(){
+        if(loggedInUser != null && loggedInUser.getUSER_ID() != 0){
+            return InternetUtility.getFetchTrends(loggedInUser.getUSER_ID());
+        }
+
+        return null;
+    }
+
     class AsyncTaskerFetchMyLists extends AsyncTask<Void, Void, List<MyListMO>> {
         private Fragment fragment;
 
@@ -705,11 +709,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             homeContent[0] = fetchStories();
 
             //fetch trends
-            Map<String, List<RecipeMO>> allCategoriesRecipes = new HashMap<>();
-            allCategoriesRecipes.put(TRENDING_RECIPES, InternetUtility.fetchTrendingRecipes());
-            allCategoriesRecipes.put(TOP_RECIPES_MONTH, InternetUtility.fetchTrendingRecipes());
-            allCategoriesRecipes.put(TOP_RECIPES_CHEF, InternetUtility.fetchTrendingRecipes());
-            homeContent[1] = allCategoriesRecipes;
+            homeContent[1] = fetchTrends();
 
             //fetch timelines
             homeContent[2] = fetchTimelines();

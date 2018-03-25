@@ -37,6 +37,65 @@
                 app:border_color="@color/tertiaryDarkText"
                 app:border_width="1dp" />
 
+            <LinearLayout
+                android:id="@+id/profile_view_public_profile_image_likes_comments_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <LinearLayout
+                    android:id="@+id/profile_view_public_profile_image_likes_ll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/profile_view_public_profile_image_likes_iv"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:src="@drawable/heart_unselected" />
+
+                    <TextView
+                        android:id="@+id/profile_view_public_profile_image_likes_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="0"
+                        android:textSize="@dimen/tertiary_text_size" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/profile_view_public_profile_image_comments_ll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="25dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/profile_view_public_profile_image_comments_iv"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:src="@drawable/comment_disabled" />
+
+                    <TextView
+                        android:id="@+id/profile_view_public_profile_image_comments_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="0"
+                        android:textSize="@dimen/tertiary_text_size" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/profile_view_public_profile_name_tv"
                 android:layout_width="wrap_content"

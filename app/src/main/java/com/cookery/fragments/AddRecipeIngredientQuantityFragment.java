@@ -90,9 +90,7 @@ public class AddRecipeIngredientQuantityFragment extends DialogFragment {
             return;
         }
 
-        if(ingredient.getIMG() != null){
-            Utility.loadImageFromURL(mContext, ingredient.getIMG(), fragment_ingredient_quantity_ingredient_iv);
-        }
+        Utility.loadImageFromURL(mContext, ingredient.getIMG(), fragment_ingredient_quantity_ingredient_iv);
 
         fragment_ingredient_quantity_ingredient_tv.setText(ingredient.getING_NAME());
 

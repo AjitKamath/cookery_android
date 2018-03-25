@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.models.ImageMO;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
@@ -25,11 +26,11 @@ public class RecipeAddImagesViewPagerAdapter extends PagerAdapter {
     private Context mContext;
     private static final String CLASS_NAME = RecipeAddImagesViewPagerAdapter.class.getName();
 
-    public List<String> images;
+    public List<ImageMO> images;
     private View.OnClickListener listener;
     private boolean loadFromUrl;
 
-    public RecipeAddImagesViewPagerAdapter(Context context, List<String> images, boolean loadFromUrl, View.OnClickListener listener) {
+    public RecipeAddImagesViewPagerAdapter(Context context, List<ImageMO> images, boolean loadFromUrl, View.OnClickListener listener) {
         this.mContext = context;
         this.images = images;
         this.loadFromUrl = loadFromUrl;
@@ -61,10 +62,10 @@ public class RecipeAddImagesViewPagerAdapter extends PagerAdapter {
         recipe_add_images_item_close_iv.setTag(images.get(position));
 
         if(loadFromUrl){
-            Utility.loadImageFromURL(mContext, images.get(position), recipe_add_images_item_image_iv);
+            Utility.loadImageFromURL(mContext, images.get(position).getRCP_IMG(), recipe_add_images_item_image_iv);
         }
         else{
-            Utility.loadImageFromPath(mContext, images.get(position), recipe_add_images_item_image_iv);
+            Utility.loadImageFromPath(mContext, images.get(position).getRCP_IMG(), recipe_add_images_item_image_iv);
         }
 
         recipe_add_images_item_image_iv.setOnClickListener(listener);
@@ -76,7 +77,10 @@ public class RecipeAddImagesViewPagerAdapter extends PagerAdapter {
             images = new ArrayList<>();
         }
 
-        images.add(newImage);
+        ImageMO image = new ImageMO();
+        image.setRCP_IMG(newImage);
+
+        images.add(image);
         notifyDataSetChanged();
     }
 
@@ -87,7 +91,7 @@ public class RecipeAddImagesViewPagerAdapter extends PagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return images.get(position);
+        return images.get(position).getRCP_IMG();
     }
 
 

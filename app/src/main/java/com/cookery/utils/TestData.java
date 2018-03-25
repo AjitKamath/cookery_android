@@ -50,7 +50,6 @@ public class TestData {
         recipe.setFoodTypeName("DINNER");
         recipe.setFoodCuisineName("INDIAN");
         recipe.setUserName("Vishal Varhney");
-        recipe.setRCP_PROC("Kill it. boil it. eat it.");
         recipe.setIngredients(ingredients);
         recipe.setReviews(reviews);
         recipe.setComments(comments);
@@ -60,7 +59,6 @@ public class TestData {
         recipe.setRCP_NAME("MUSHROOM NOODLES");
         recipe.setFoodTypeName("BREAKFAST");
         recipe.setFoodCuisineName("CHINESE");
-        recipe.setRCP_PROC("Boil water. Burn chicken. Cut tomatoes. Eat and dance.");
         recipe.setIngredients(ingredients);
         recipe.setComments(comments);
         recipe.setReviews(reviews);
@@ -71,7 +69,6 @@ public class TestData {
         recipe.setRCP_NAME("MASALA DOSA");
         recipe.setFoodTypeName("BREAKFAST");
         recipe.setFoodCuisineName("SOUTH INDIAN");
-        recipe.setRCP_PROC("Water + salt + sugar + lemon = lemon juice");
         recipe.setIngredients(ingredients);
         recipe.setComments(comments);
         recipe.setReviews(reviews);

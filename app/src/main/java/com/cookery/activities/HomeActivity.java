@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import com.cookery.R;
 import com.cookery.adapters.HomeTimelinesTrendsViewPagerAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
-import com.cookery.fragments.ProfileViewImageFragment;
 import com.cookery.fragments.TimelineDeleteFragment;
 import com.cookery.fragments.TimelineHideFragment;
 import com.cookery.fragments.UserViewFragment;
@@ -39,11 +38,11 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_TIMELINE_DELETE;
 import static com.cookery.utils.Constants.FRAGMENT_TIMELINE_HIDE;
 import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
 public class HomeActivity extends CommonActivity{
 
@@ -99,19 +98,18 @@ public class HomeActivity extends CommonActivity{
         HomeTimelinesTrendsViewPagerAdapter adapter = new HomeTimelinesTrendsViewPagerAdapter(mContext, viewPagerTabsList, loggedInUser, array, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(view.getTag() != null && view.getId() == R.id.home_timeline_user_follow_unfollow_item_photo_iv){
-                    Map<String, Object> paramsMap = new HashMap<>();
-                    paramsMap.put(GENERIC_OBJECT, String.valueOf(view.getTag()));
-                    Utility.showFragment(getFragmentManager(), null, FRAGMENT_PROFILE_VIEW_IMAGE, new ProfileViewImageFragment(), paramsMap);
-                    return;
-                }
-
-                if(view.getTag() != null ) {
-                    if (view.getTag() instanceof RecipeMO) {
+                if(view.getTag() != null){
+                    if(view.getId() == R.id.home_timeline_user_follow_unfollow_item_photo_iv) {
+                        new AsyncFetchUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Integer) view.getTag());
+                    }
+                    else if (view.getTag() instanceof RecipeMO) {
                         new AsyncTaskerFetchRecipe().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (RecipeMO) view.getTag());
                     }
                     else if (view.getTag() instanceof UserMO) {
                         new AsyncFetchUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO)view.getTag()).getUSER_ID());
+                    }
+                    else{
+                        Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+view.getTag());
                     }
                 }
                 else{

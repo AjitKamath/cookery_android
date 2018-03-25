@@ -47,9 +47,7 @@ public class RecipeAddIngredientsRecyclerViewAdapter extends RecyclerView.Adapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         IngredientMO ingredient = ingredients.get(position);
 
-        if(ingredient.getIMG() != null){
-            Utility.loadImageFromURL(mContext, ingredient.getIMG(), holder.recipe_add_ingredients_item_iv);
-        }
+        Utility.loadImageFromURL(mContext, ingredient.getIMG(), holder.recipe_add_ingredients_item_iv);
 
         holder.recipe_add_ingredients_item_tv.setText(ingredient.getING_NAME().toUpperCase());
         holder.recipe_add_ingredients_item_qty_tv.setText(String.valueOf(ingredient.getQTY()));

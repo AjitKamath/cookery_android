@@ -42,16 +42,16 @@
             <ImageView
                 android:layout_toLeftOf="@+id/recipe_add_recipe_steps_item_delete_iv"
                 android:id="@+id/recipe_add_recipe_steps_item_edit_iv"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:src="@drawable/ic_mode_edit_grey600_36dp" />
 
             <ImageView
                 android:layout_alignParentRight="true"
                 android:id="@+id/recipe_add_recipe_steps_item_delete_iv"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_marginLeft="10dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginLeft="15dp"
                 android:src="@drawable/ic_delete_grey600_48dp" />
 
         </RelativeLayout>
@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/recipe_add_recipe_steps_item_buttons_ll"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="10dp">
 
             <TextView
                 android:id="@+id/recipe_add_recipe_steps_item_step_tv"

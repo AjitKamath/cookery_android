@@ -65,9 +65,7 @@ public class RecipeViewReviewsRecyclerViewAdapter extends RecyclerView.Adapter<R
 
         final ReviewMO review = reviews.get(position);
 
-        if(review.getUserImage() != null && !review.getUserImage().trim().isEmpty()){
-            Utility.loadImageFromURL(mContext, review.getUserImage(), holder.recipe_reviews_item_iv);
-        }
+        Utility.loadImageFromURL(mContext, review.getUserImage(), holder.recipe_reviews_item_iv);
 
         holder.recipe_reviews_item_user_name_tv.setText(review.getUserName());
         holder.recipe_reviews_item_tv.setText(review.getREVIEW());
@@ -106,14 +104,14 @@ public class RecipeViewReviewsRecyclerViewAdapter extends RecyclerView.Adapter<R
     }
 
     private void setupLike(ViewHolder holder, LikesMO like){
-        if(like.isLiked()){
+        if(like.isUserLiked()){
             holder.recipe_reviews_likes_iv.setImageResource(R.drawable.heart);
         }
         else{
             holder.recipe_reviews_likes_iv.setImageResource(R.drawable.heart_unselected);
         }
 
-        holder.recipe_reviews_item_likes_count_tv.setText(String.valueOf(like.getLikes()));
+        holder.recipe_reviews_item_likes_count_tv.setText(String.valueOf(like.getLikesCount()));
     }
 
     private void setupStars(ViewHolder holder, final ReviewMO review) {

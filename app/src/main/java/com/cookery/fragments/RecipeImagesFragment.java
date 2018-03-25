@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.adapters.RecipeAddImagesViewPagerAdapter;
+import com.cookery.models.ImageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.utils.Utility;
 
@@ -38,7 +39,7 @@ public class RecipeImagesFragment extends DialogFragment {
     ViewPager common_fragment_recipe_images_vp;
     //end of components
 
-    private List<String> imagesList;
+    private List<ImageMO> imagesList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

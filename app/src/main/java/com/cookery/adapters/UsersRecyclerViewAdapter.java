@@ -76,9 +76,7 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
 
         final UserMO user = usersList.get(position);
 
-        if(user.getIMG() != null && !user.getIMG().trim().isEmpty()){
-            Utility.loadImageFromURL(mContext, user.getIMG(), holder.users_item_iv);
-        }
+        Utility.loadImageFromURL(mContext, user.getIMG(), holder.users_item_iv);
 
         holder.users_item_username_tv.setText(user.getNAME().trim());
 

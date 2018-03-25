@@ -49,6 +49,7 @@ import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.TasteMO;
 import com.cookery.models.TimelineMO;
+import com.cookery.models.TrendMO;
 import com.cookery.models.UserMO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -254,6 +255,9 @@ public class Utility extends Activity {
             }
             else if(mappingClass.equals(FavouritesMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<FavouritesMO>>(){}.getType());
+            }
+            else if(mappingClass.equals(TrendMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<List<TrendMO>>(){}.getType());
             }
             else{
                 Log.e(CLASS_NAME, mappingClass+" is not identified for parsing JSON");

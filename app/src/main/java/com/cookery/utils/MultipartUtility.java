@@ -1,10 +1,6 @@
 package com.cookery.utils;
 
-import android.graphics.Bitmap;
-import android.util.Log;
-
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -16,7 +12,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
-
+import static com.cookery.utils.Constants.API_KEY_ANDROID;
+import static com.cookery.utils.Constants.API_KEY_IDENTIFIER;
 import static com.cookery.utils.Constants.SERVER_TIMEOUT;
 
 /**
@@ -57,7 +54,7 @@ public class MultipartUtility {
         httpConn.setDoInput(true);
         httpConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
         httpConn.setRequestProperty("User-Agent", "CodeJava Agent");
-        httpConn.setRequestProperty("Test", "Bonjour");
+        httpConn.setRequestProperty(API_KEY_IDENTIFIER, API_KEY_ANDROID);
         outputStream = httpConn.getOutputStream();
         writer = new PrintWriter(new OutputStreamWriter(outputStream, charset), true);
     }
@@ -141,6 +138,6 @@ public class MultipartUtility {
             return String.valueOf(response);
         }
 
-        return "-1";
+        return String.valueOf(status);
     }
 }

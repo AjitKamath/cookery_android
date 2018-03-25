@@ -11,9 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.models.ImageMO;
 import com.cookery.utils.Utility;
 
 import java.util.List;
@@ -24,10 +26,10 @@ public class RecipeViewImagesFullscreenViewPagerAdapter extends PagerAdapter {
     private Context mContext;
     private static final String CLASS_NAME = RecipeViewImagesFullscreenViewPagerAdapter.class.getName();
 
-    public List<String> images;
+    public List<ImageMO> images;
     private View.OnClickListener listener;
 
-    public RecipeViewImagesFullscreenViewPagerAdapter(Context context, List<String> images, View.OnClickListener listener) {
+    public RecipeViewImagesFullscreenViewPagerAdapter(Context context, List<ImageMO> images, View.OnClickListener listener) {
         this.mContext = context;
         this.images = images;
         this.listener = listener;
@@ -53,9 +55,26 @@ public class RecipeViewImagesFullscreenViewPagerAdapter extends PagerAdapter {
         }
 
         ImageView recipe_view_images_fullscreen_item_image_iv = layout.findViewById(R.id.recipe_view_images_fullscreen_item_image_iv);
-        Utility.loadImageFromURL(mContext, images.get(position), recipe_view_images_fullscreen_item_image_iv);
+        LinearLayout recipe_view_images_fullscreen_item_likes_ll = layout.findViewById(R.id.recipe_view_images_fullscreen_item_likes_ll);
+        ImageView recipe_view_images_fullscreen_item_likes_iv = layout.findViewById(R.id.recipe_view_images_fullscreen_item_likes_iv);
+        TextView recipe_view_images_fullscreen_item_likes_tv = layout.findViewById(R.id.recipe_view_images_fullscreen_item_likes_tv);
+        LinearLayout recipe_view_images_fullscreen_item_comments_ll = layout.findViewById(R.id.recipe_view_images_fullscreen_item_comments_ll);
+        TextView recipe_view_images_fullscreen_item_comments_tv = layout.findViewById(R.id.recipe_view_images_fullscreen_item_comments_tv);
+
+        if(images != null && !images.isEmpty()){
+            Utility.loadImageFromURL(mContext, images.get(position).getRCP_IMG(), recipe_view_images_fullscreen_item_image_iv);
+        }
+
+        recipe_view_images_fullscreen_item_likes_iv.setBackgroundResource(Utility.getLikeImageId(images.get(position).isUserLiked()));
+        recipe_view_images_fullscreen_item_likes_tv.setText(Utility.getSmartNumber(images.get(position).getLikesCount()));
+        recipe_view_images_fullscreen_item_comments_tv.setText(Utility.getSmartNumber(images.get(position).getCommentsCount()));
 
         recipe_view_images_fullscreen_item_image_iv.setOnClickListener(listener);
+        recipe_view_images_fullscreen_item_likes_ll.setOnClickListener(listener);
+        recipe_view_images_fullscreen_item_comments_ll.setOnClickListener(listener);
+
+        recipe_view_images_fullscreen_item_likes_ll.setTag(images.get(position));
+        recipe_view_images_fullscreen_item_comments_ll.setTag(images.get(position));
     }
 
     @Override
@@ -65,7 +84,7 @@ public class RecipeViewImagesFullscreenViewPagerAdapter extends PagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return images.get(position);
+        return images.get(position).getRCP_IMG();
     }
 
 

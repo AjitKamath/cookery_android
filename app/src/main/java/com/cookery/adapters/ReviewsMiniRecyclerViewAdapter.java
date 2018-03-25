@@ -62,8 +62,7 @@ public class ReviewsMiniRecyclerViewAdapter extends RecyclerView.Adapter<Reviews
 
         final ReviewMO review = reviews.get(position);
 
-        if(review.getRecipeImages() != null && !review.getRecipeImages().isEmpty() && review.getRecipeImages().get(0) != null
-                && !review.getRecipeImages().get(0).trim().isEmpty()){
+        if(review.getRecipeImages() != null && !review.getRecipeImages().isEmpty()){
             Utility.loadImageFromURL(mContext, review.getRecipeImages().get(0), holder.fragment_reviews_review_mini_item_iv);
         }
 

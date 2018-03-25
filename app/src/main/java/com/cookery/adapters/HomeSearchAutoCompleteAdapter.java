@@ -15,6 +15,7 @@ import com.cookery.R;
 import com.cookery.filters.HomeSearchAutoCompleteFilter;
 import com.cookery.models.IngredientMO;
 import com.cookery.models.RecipeMO;
+import com.cookery.models.UserMO;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
@@ -36,11 +37,13 @@ public class HomeSearchAutoCompleteAdapter extends ArrayAdapter<String> {
     public List<Object> filteredRecipes = new ArrayList<>();
     private int layout;
     public String query;
+    private UserMO loggedInUser;
 
-    public HomeSearchAutoCompleteAdapter(Context context) {
+    public HomeSearchAutoCompleteAdapter(Context context, UserMO loggedInUser) {
         super(context, R.layout.home_search_item);
         this.layout = R.layout.home_search_item;
         this.mContext = context;
+        this.loggedInUser = loggedInUser;
     }
 
     @Override
@@ -71,7 +74,7 @@ public class HomeSearchAutoCompleteAdapter extends ArrayAdapter<String> {
 
     @Override
     public Filter getFilter() {
-        return new HomeSearchAutoCompleteFilter(this);
+        return new HomeSearchAutoCompleteFilter(loggedInUser, this);
     }
 
     @Override
@@ -119,9 +122,7 @@ public class HomeSearchAutoCompleteAdapter extends ArrayAdapter<String> {
             home_search_item_match_tv.setText(matchMessage);
             home_search_item_match_type_tv.setText(matchType);
 
-            if(recipe.getUserImage() != null && !recipe.getUserImage().trim().isEmpty()){
-                Utility.loadImageFromURL(mContext, recipe.getUserImage(), home_search_item_user_iv);
-            }
+            Utility.loadImageFromURL(mContext, recipe.getUserImage(), home_search_item_user_iv);
 
             home_search_item_user_tv.setText(recipe.getUserName());
             home_search_item_rating_tv.setText(recipe.getAvgRating());
@@ -131,7 +132,7 @@ public class HomeSearchAutoCompleteAdapter extends ArrayAdapter<String> {
             home_search_item_recipe_tv.setText(recipe.getRCP_NAME());
 
             if(recipe.getImages() != null && !recipe.getImages().isEmpty()){
-                Utility.loadImageFromURL(mContext, recipe.getImages().get(0), home_search_item_recipe_iv);
+                Utility.loadImageFromURL(mContext, recipe.getImages().get(0).getRCP_IMG(), home_search_item_recipe_iv);
             }
 
             convertView.setTag(recipe);
