@@ -925,9 +925,7 @@ public class InternetUtility {
         return null;
     }
 
-    //public static Object userRegistration(String name,String email, String mobile, String password, String gender)
     public static Object userRegistration(String name,String email, String password)
-    public static Object userRegistraion(String name,String email, String mobile, String password, String gender)
     {
         String flag="";
 
