@@ -332,3 +332,9 @@
 
 23 march 2018
 1. #315 - Email Alerts !
+
+-- git checkin on 25 March 2018 --
+
+26 march 2018
+1. #244 - Recipe View - Show if user follows Liked/Viewed users
+

@@ -505,14 +505,14 @@ public class AsyncTaskUtility extends AsyncTask {
             else if ("LIKE".equalsIgnoreCase(String.valueOf(objects[0]))) {
                 waitFragment = Utility.showWaitDialog(fragmentManager, "fetching users who liked the Recipe ..");
 
-                List<UserMO> users = InternetUtility.fetchLikedUsers("RECIPE", ((RecipeMO) objects[1]).getRCP_ID(), index);
+                List<UserMO> users = InternetUtility.fetchLikedUsers(loggedInUser.getUSER_ID(), "RECIPE", ((RecipeMO) objects[1]).getRCP_ID(), index);
                 Object array[] = new Object[]{String.valueOf(objects[0]), users, objects[1]};
 
                 return array;
             } else if ("VIEW".equalsIgnoreCase(String.valueOf(objects[0]))) {
                 waitFragment = Utility.showWaitDialog(fragmentManager, "fetching users who viewed the Recipe ..");
 
-                List<UserMO> users = InternetUtility.fetchViewedUsers((RecipeMO) objects[1], index);
+                List<UserMO> users = InternetUtility.fetchViewedUsers(loggedInUser.getUSER_ID(), (RecipeMO) objects[1], index);
                 Object array[] = new Object[]{String.valueOf(objects[0]), users, objects[1]};
 
                 return array;

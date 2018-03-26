@@ -25,7 +25,9 @@ public class UserMO extends CommonMO implements Serializable {
     private int followingCount;
     private String newPassword;
     private int recipesCount;
+
     private boolean following;
+    private boolean followed;
 
     private String emailScopeName;
     private String genderScopeName;
@@ -39,4 +41,18 @@ public class UserMO extends CommonMO implements Serializable {
 
     private int likesCount;
     private int commentsCount;
+
+    public String getFollowMessage() {
+        if(following && followed){
+            return "You follow each other";
+        }
+        else if(following){
+            return "You follow "+getNAME();
+        }
+        else if(followed){
+            return getNAME()+" is following you";
+        }
+
+        return "";
+    }
 }

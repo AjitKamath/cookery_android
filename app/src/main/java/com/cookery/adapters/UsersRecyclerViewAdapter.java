@@ -80,13 +80,15 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
 
         holder.users_item_username_tv.setText(user.getNAME().trim());
 
-        if(user.isFollowing()){
+        holder.users_item_follow_tv.setText(user.getFollowMessage());
+
+        /*if(user.isFollowing()){
             holder.users_item_follow_tv.setVisibility(View.VISIBLE);
             holder.users_item_follow_tv.setText(Utility.getFollowingText(user.getNAME()));
         }
         else{
             holder.users_item_follow_tv.setVisibility(View.GONE);
-        }
+        }*/
 
         holder.users_item_datetime_tv.setText(DateTimeUtility.getCreateOrModifiedTime(user.getCREATE_DTM(), user.getMOD_DTM()));
 

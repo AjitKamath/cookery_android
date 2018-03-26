@@ -407,19 +407,19 @@ public class UsersFragment extends DialogFragment {
         protected Object doInBackground(Void... objects) {
             if ("LIKE".equalsIgnoreCase(purpose)) {
                 if(objectOfInterest instanceof RecipeMO){
-                    return InternetUtility.fetchLikedUsers("RECIPE", ((RecipeMO)objectOfInterest).getRCP_ID(), index);
+                    return InternetUtility.fetchLikedUsers(loggedInUser.getUSER_ID(), "RECIPE", ((RecipeMO)objectOfInterest).getRCP_ID(), index);
                 }
                 else if(objectOfInterest instanceof CommentMO){
-                    return InternetUtility.fetchLikedUsers("COMMENT", ((CommentMO)objectOfInterest).getCOM_ID(), index);
+                    return InternetUtility.fetchLikedUsers(loggedInUser.getUSER_ID(), "COMMENT", ((CommentMO)objectOfInterest).getCOM_ID(), index);
                 }
                 else if (objectOfInterest instanceof ReviewMO){
-                    return InternetUtility.fetchLikedUsers("REVIEW", ((ReviewMO)objectOfInterest).getREV_ID(), index);
+                    return InternetUtility.fetchLikedUsers(loggedInUser.getUSER_ID(), "REVIEW", ((ReviewMO)objectOfInterest).getREV_ID(), index);
                 }
                 else{
                     Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+objectOfInterest);
                 }
             } else if ("VIEW".equalsIgnoreCase(purpose)) {
-                return InternetUtility.fetchViewedUsers((RecipeMO)objectOfInterest, index);
+                return InternetUtility.fetchViewedUsers(loggedInUser.getUSER_ID(), (RecipeMO)objectOfInterest, index);
             }
             else if ("FOLLOWERS".equalsIgnoreCase(purpose)) {
                 return InternetUtility.fetchUserFollowers(((UserMO)objectOfInterest).getUSER_ID(), loggedInUser.getUSER_ID(), index);

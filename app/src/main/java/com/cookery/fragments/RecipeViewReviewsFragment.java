@@ -429,7 +429,7 @@ public class RecipeViewReviewsFragment extends DialogFragment {
         @Override
         protected Object doInBackground(ReviewMO... objects) {
             review = objects[0];
-            return InternetUtility.fetchLikedUsers("REVIEW", review.getREV_ID(), 0);
+            return InternetUtility.fetchLikedUsers(loggedInUser.getUSER_ID(), "REVIEW", review.getREV_ID(), 0);
         }
 
         @Override

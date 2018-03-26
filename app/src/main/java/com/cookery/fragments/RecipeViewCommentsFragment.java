@@ -27,7 +27,6 @@ import com.cookery.adapters.RecipeCommentsRecyclerViewAdapter;
 import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.CommentMO;
 import com.cookery.models.MessageMO;
-import com.cookery.models.RecipeMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
@@ -72,7 +71,7 @@ public class RecipeViewCommentsFragment extends DialogFragment {
     //end of components
 
     private List<CommentMO> comments;
-    private RecipeMO recipe;
+    private CommentMO comment;
     private UserMO loggedInUser;
 
     @Override
@@ -94,7 +93,7 @@ public class RecipeViewCommentsFragment extends DialogFragment {
 
     private void getDataFromBundle() {
         comments = (List<CommentMO>)  getArguments().get(GENERIC_OBJECT);
-        recipe = (RecipeMO) getArguments().get(SELECTED_ITEM);
+        comment = (CommentMO) getArguments().get(SELECTED_ITEM);
         loggedInUser = (UserMO) getArguments().get(LOGGED_IN_USER);
     }
 
@@ -129,9 +128,9 @@ public class RecipeViewCommentsFragment extends DialogFragment {
         adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
             @Override
             public void onBottomReached(int position) {
-                CommentMO comment = new CommentMO();
-                comment.setTYPE("RECIPE");
-                comment.setTYPE_ID(recipe.getRCP_ID());
+                CommentMO temp = new CommentMO();
+                temp.setTYPE(comment.getTYPE());
+                temp.setTYPE_ID(comment.getTYPE_ID());
 
                 new AsyncFetchComments(adapter.getItemCount()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, comment);
             }
@@ -152,14 +151,14 @@ public class RecipeViewCommentsFragment extends DialogFragment {
         recipe_comments_comment_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String comment = String.valueOf(recipe_comments_comment_et.getText());
+                String temp = String.valueOf(recipe_comments_comment_et.getText());
 
-                if(comment != null && !comment.trim().isEmpty()){
+                if(temp != null && !temp.trim().isEmpty()){
                     CommentMO commentObj = new CommentMO();
-                    commentObj.setTYPE("RECIPE");
-                    commentObj.setTYPE_ID(recipe.getRCP_ID());
+                    commentObj.setTYPE(comment.getTYPE());
+                    commentObj.setTYPE_ID(comment.getTYPE_ID());
                     commentObj.setUSER_ID(loggedInUser.getUSER_ID());
-                    commentObj.setCOMMENT(comment);
+                    commentObj.setCOMMENT(temp);
 
                     new AsyncTaskerSubmitRecipeComment().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, commentObj);
                 }
@@ -173,7 +172,7 @@ public class RecipeViewCommentsFragment extends DialogFragment {
     }
 
     public void deleteComment(CommentMO comment){
-        if(recipe.isUserReviewed()){
+        if(loggedInUser.getUSER_ID() == comment.getUSER_ID()){
             new AsyncDeleteComment().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, comment);
         }
         else{
@@ -335,7 +334,7 @@ public class RecipeViewCommentsFragment extends DialogFragment {
         @Override
         protected Object doInBackground(CommentMO... objects) {
             comment = objects[0];
-            return InternetUtility.fetchLikedUsers("COMMENT", comment.getCOM_ID(), 0);
+            return InternetUtility.fetchLikedUsers(loggedInUser.getUSER_ID(), "COMMENT", comment.getCOM_ID(), 0);
         }
 
         @Override

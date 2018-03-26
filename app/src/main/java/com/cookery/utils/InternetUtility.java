@@ -611,7 +611,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<UserMO> fetchLikedUsers(String type, int type_id, int index) {
+    public static List<UserMO> fetchLikedUsers(int loggedInUserId, String type, int type_id, int index) {
         if(USE_TEST_DATA){
             return null;
         }
@@ -619,6 +619,7 @@ public class InternetUtility {
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_LIKE_FETCH_USERS);
+            paramMap.put("logged_in_user_id", String.valueOf(loggedInUserId));
             paramMap.put("index", String.valueOf(index));
             paramMap.put("type", type);
             paramMap.put("type_id", String.valueOf(type_id));
@@ -636,7 +637,7 @@ public class InternetUtility {
         return null;
     }
 
-    public static List<UserMO> fetchViewedUsers(RecipeMO recipe, int index) {
+    public static List<UserMO> fetchViewedUsers(int loggedInUserId, RecipeMO recipe, int index) {
         if(USE_TEST_DATA){
             return null;
         }
@@ -644,6 +645,7 @@ public class InternetUtility {
         try {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_VIEW_FETCH_USERS);
+            paramMap.put("logged_in_user_id", String.valueOf(loggedInUserId));
             paramMap.put("rcp_id", String.valueOf(recipe.getRCP_ID()));
             paramMap.put("index", String.valueOf(index));
 

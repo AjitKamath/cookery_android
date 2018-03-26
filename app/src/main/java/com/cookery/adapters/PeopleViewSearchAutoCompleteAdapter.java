@@ -85,12 +85,14 @@ public class PeopleViewSearchAutoCompleteAdapter extends ArrayAdapter<String> {
                 people_view_users_item_email_tv.setVisibility(View.GONE);
             }
 
-            if(user.isFollowing()){
+            people_view_users_item_follow_tv.setText(user.getFollowMessage());
+
+            /*if(user.isFollowing()){
                 people_view_users_item_follow_tv.setText(Utility.getFollowingText(user.getNAME()));
             }
             else{
                 people_view_users_item_follow_tv.setVisibility(View.GONE);
-            }
+            }*/
 
             convertView.setTag(user);
 
