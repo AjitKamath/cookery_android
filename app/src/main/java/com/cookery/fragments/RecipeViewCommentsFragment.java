@@ -31,12 +31,14 @@ import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_LIKED_USERS;
@@ -56,6 +58,12 @@ public class RecipeViewCommentsFragment extends DialogFragment {
     //components
     @InjectView(R.id.recipe_comments_rl)
     RelativeLayout recipe_comments_rl;
+
+    @InjectView(R.id.recipe_comments_recipe_image_iv)
+    ImageView recipe_comments_recipe_image_iv;
+
+    @InjectView(R.id.recipe_comments_image_iv)
+    CircleImageView recipe_comments_image_iv;
 
     @InjectView(R.id.recipe_comments_srl)
     SwipeRefreshLayout recipe_comments_srl;
@@ -98,7 +106,22 @@ public class RecipeViewCommentsFragment extends DialogFragment {
     }
 
     private void setupPage() {
+        setupImage();
         setupComments();
+    }
+
+    private void setupImage() {
+        recipe_comments_recipe_image_iv.setVisibility(View.GONE);
+        recipe_comments_image_iv.setVisibility(View.GONE);
+
+        if(comment.getRecipeImage() != null || !comment.getRecipeImage().trim().isEmpty()){
+            recipe_comments_recipe_image_iv.setVisibility(View.VISIBLE);
+            Utility.loadImageFromURL(mContext, comment.getRecipeImage(), recipe_comments_recipe_image_iv);
+        }
+        else if(comment.getUserImage() != null || !comment.getUserImage().trim().isEmpty()){
+            recipe_comments_image_iv.setVisibility(View.VISIBLE);
+            Utility.loadImageFromURL(mContext, comment.getUserImage(), recipe_comments_image_iv);
+        }
     }
 
     private void setupComments() {
@@ -128,10 +151,6 @@ public class RecipeViewCommentsFragment extends DialogFragment {
         adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
             @Override
             public void onBottomReached(int position) {
-                CommentMO temp = new CommentMO();
-                temp.setTYPE(comment.getTYPE());
-                temp.setTYPE_ID(comment.getTYPE_ID());
-
                 new AsyncFetchComments(adapter.getItemCount()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, comment);
             }
         });
@@ -144,7 +163,7 @@ public class RecipeViewCommentsFragment extends DialogFragment {
         recipe_comments_srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new AsyncFetchComments(0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new AsyncFetchComments(0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, comment);
             }
         });
 
@@ -167,6 +186,15 @@ public class RecipeViewCommentsFragment extends DialogFragment {
     }
 
     private void updateComments(List<CommentMO> comments, int index){
+        setupComments();
+
+        if(this.comments == null){
+            this.comments = new ArrayList<>();
+        }
+
+        this.comments.clear();
+        this.comments.addAll(comments);
+
         ((RecipeCommentsRecyclerViewAdapter)recipe_comments_rv.getAdapter()).updateComments(comments, index);
         recipe_comments_srl.setRefreshing(false);
     }
@@ -238,7 +266,9 @@ public class RecipeViewCommentsFragment extends DialogFragment {
 
         @Override
         protected void onPostExecute(Object object) {
-            if(object != null){
+            List<CommentMO> comments = (List<CommentMO>) object;
+
+            if(comments != null && !comments.isEmpty()){
                 updateComments((List<CommentMO>) object, index);
             }
             else{
@@ -283,7 +313,8 @@ public class RecipeViewCommentsFragment extends DialogFragment {
             }
             else{
                 recipe_comments_comment_et.setText("");
-                //TODO: fetch comments here
+
+                new AsyncFetchComments(0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, comment);
             }
         }
     }

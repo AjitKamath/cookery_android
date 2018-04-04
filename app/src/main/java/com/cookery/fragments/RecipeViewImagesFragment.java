@@ -21,9 +21,11 @@ import android.widget.Toast;
 
 import com.cookery.R;
 import com.cookery.adapters.RecipeViewImagesFullscreenViewPagerAdapter;
+import com.cookery.models.CommentMO;
 import com.cookery.models.ImageMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.UserMO;
+import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
@@ -39,6 +41,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
 import static com.cookery.utils.Constants.GALLERY_DIR;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
@@ -113,7 +116,21 @@ public class RecipeViewImagesFragment extends DialogFragment {
 
                     new AsyncSubmitRecipeImageLike(view).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
                 } else if (R.id.recipe_view_images_fullscreen_item_comments_ll == view.getId()) {
-                    //TODO: comment recipe image
+                    ImageMO image = (ImageMO) view.getTag();
+
+                    if(image == null){
+                        Log.e(CLASS_NAME, "Image is null/empty");
+                        return;
+                    }
+
+                    CommentMO comment = new CommentMO();
+                    comment.setTYPE_ID(image.getRCP_IMG_ID());
+                    comment.setTYPE("RECIPE_IMG");
+                    comment.setRecipeImage(image.getRCP_IMG());
+
+                    new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE,
+                            AsyncTaskUtility.Purpose.FETCH_COMMENTS, loggedInUser, 0)
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, comment, 0);
                 } else {
                     Log.e(CLASS_NAME, "Could not identify the purpose of event on this view");
                 }

@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.models.IngredientMO;
+import com.cookery.models.IngredientAkaMO;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
@@ -27,10 +27,10 @@ public class RecipeAddIngredientsRecyclerViewAdapter extends RecyclerView.Adapte
     private static final String CLASS_NAME = RecipeAddIngredientsRecyclerViewAdapter.class.getName();
     private Context mContext;
 
-    public List<IngredientMO> ingredients;
+    public List<IngredientAkaMO> ingredients;
     private View.OnClickListener listener;
 
-    public RecipeAddIngredientsRecyclerViewAdapter(Context mContext, List<IngredientMO> ingredients, View.OnClickListener listener) {
+    public RecipeAddIngredientsRecyclerViewAdapter(Context mContext, List<IngredientAkaMO> ingredients, View.OnClickListener listener) {
         this.mContext = mContext;
         this.ingredients = ingredients;
         this.listener = listener;
@@ -45,11 +45,11 @@ public class RecipeAddIngredientsRecyclerViewAdapter extends RecyclerView.Adapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        IngredientMO ingredient = ingredients.get(position);
+        IngredientAkaMO ingredient = ingredients.get(position);
 
         Utility.loadImageFromURL(mContext, ingredient.getIMG(), holder.recipe_add_ingredients_item_iv);
 
-        holder.recipe_add_ingredients_item_tv.setText(ingredient.getING_NAME().toUpperCase());
+        holder.recipe_add_ingredients_item_tv.setText(ingredient.getING_AKA_NAME().toUpperCase());
         holder.recipe_add_ingredients_item_qty_tv.setText(String.valueOf(ingredient.getQTY()));
         holder.recipe_add_ingredients_item_qty_type_tv.setText(ingredient.getQuantity().getQTY_NAME().toUpperCase());
 
@@ -74,15 +74,15 @@ public class RecipeAddIngredientsRecyclerViewAdapter extends RecyclerView.Adapte
         return ingredients.size();
     }
 
-    public void addData(IngredientMO ingredient) {
+    public void addData(IngredientAkaMO ingredient) {
         if(ingredients == null){
             ingredients = new ArrayList<>();
         }
 
         if(!ingredients.isEmpty()){
             //check if the ingredien is already added, if yes, bring it on top
-            for(IngredientMO thisIngredient: ingredients){
-                if(thisIngredient.getING_NAME().equalsIgnoreCase(ingredient.getING_NAME())){
+            for(IngredientAkaMO thisIngredient: ingredients){
+                if(thisIngredient.getING_AKA_NAME().equalsIgnoreCase(ingredient.getING_AKA_NAME())){
                     ingredients.remove(thisIngredient);
                     break;
                 }
@@ -93,7 +93,7 @@ public class RecipeAddIngredientsRecyclerViewAdapter extends RecyclerView.Adapte
         notifyDataSetChanged();
     }
 
-    public void removeData(IngredientMO ingredient) {
+    public void removeData(IngredientAkaMO ingredient) {
         if(ingredients == null){
             ingredients = new ArrayList<>();
         }

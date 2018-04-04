@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.models.IngredientMO;
+import com.cookery.models.IngredientAkaMO;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
@@ -28,10 +28,10 @@ public class MyListIngredientsRecyclerViewAdapter extends RecyclerView.Adapter<M
     private static final String CLASS_NAME = MyListIngredientsRecyclerViewAdapter.class.getName();
     private Context mContext;
 
-    public List<IngredientMO> ingredients;
+    public List<IngredientAkaMO> ingredients;
     private View.OnClickListener listener;
 
-    public MyListIngredientsRecyclerViewAdapter(Context mContext, List<IngredientMO> ingredients, View.OnClickListener listener) {
+    public MyListIngredientsRecyclerViewAdapter(Context mContext, List<IngredientAkaMO> ingredients, View.OnClickListener listener) {
         this.mContext = mContext;
         this.ingredients = ingredients;
         this.listener = listener;
@@ -46,11 +46,11 @@ public class MyListIngredientsRecyclerViewAdapter extends RecyclerView.Adapter<M
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        IngredientMO ingredient = ingredients.get(position);
+        IngredientAkaMO ingredient = ingredients.get(position);
 
         Utility.loadImageFromURL(mContext, ingredient.getIMG(), holder.mylist_add_ingredients_item_iv);
 
-        holder.mylist_add_ingredients_item_tv.setText(ingredient.getING_NAME().toUpperCase());
+        holder.mylist_add_ingredients_item_tv.setText(ingredient.getING_AKA_NAME().toUpperCase());
         holder.mylist_add_ingredients_item_delete_iv.setTag(ingredient);
 
         holder.mylist_add_ingredients_item_delete_iv.setOnClickListener(listener);
@@ -71,15 +71,15 @@ public class MyListIngredientsRecyclerViewAdapter extends RecyclerView.Adapter<M
 
 
 
-    public void addData(IngredientMO ingredient) {
+    public void addData(IngredientAkaMO ingredient) {
         if(ingredients == null){
             ingredients = new ArrayList<>();
         }
 
         if(!ingredients.isEmpty()){
             //check if the ingredien is already added, if yes, bring it on top
-            for(IngredientMO thisIngredient: ingredients){
-                if(thisIngredient.getING_NAME().equalsIgnoreCase(ingredient.getING_NAME())){
+            for(IngredientAkaMO thisIngredient: ingredients){
+                if(thisIngredient.getING_AKA_NAME().equalsIgnoreCase(ingredient.getING_AKA_NAME())){
                     ingredients.remove(thisIngredient);
                     break;
                 }
@@ -90,7 +90,7 @@ public class MyListIngredientsRecyclerViewAdapter extends RecyclerView.Adapter<M
         notifyDataSetChanged();
     }
 
-    public void removeData(IngredientMO ingredient) {
+    public void removeData(IngredientAkaMO ingredient) {
         if(ingredients == null){
             ingredients = new ArrayList<>();
         }

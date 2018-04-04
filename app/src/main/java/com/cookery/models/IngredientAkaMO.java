@@ -9,9 +9,10 @@ import lombok.Data;
  */
 
 @Data
-public class IngredientMO implements Serializable {
+public class IngredientAkaMO implements Serializable {
+    private int ING_AKA_ID;
     private int ING_ID;
-    private String ING_NAME;
+    private String ING_AKA_NAME;
     private int QTY;
     private String IMG;
 

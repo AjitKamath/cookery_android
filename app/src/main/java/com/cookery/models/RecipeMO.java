@@ -19,7 +19,7 @@ public class RecipeMO extends CommonMO implements Serializable {
     private String foodTypeName;
     private String foodCuisineName;
 
-    private List<IngredientMO> ingredients;
+    private List<IngredientAkaMO> ingredients;
     private List<TasteMO> tastes;
     private List<ImageMO> images;
     private List<CommentMO> comments;

@@ -6,7 +6,7 @@ import com.cookery.models.CommentMO;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FavouritesMO;
 import com.cookery.models.FoodTypeMO;
-import com.cookery.models.IngredientMO;
+import com.cookery.models.IngredientAkaMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.MyListMO;
@@ -203,7 +203,7 @@ public class InternetUtility {
             paramMap.put("search_query", query);
 
             String jsonStr = getResponseFromCookery(paramMap);
-            return Utility.jsonToObject(jsonStr, IngredientMO.class);
+            return Utility.jsonToObject(jsonStr, IngredientAkaMO.class);
         }
         catch (Exception e){
             Log.e(CLASS_NAME, "Could not fetch Ingredients from the server : "+e);
@@ -297,8 +297,8 @@ public class InternetUtility {
 
             //ingredients
             for(int i =0; i<recipe.getIngredients().size(); i++){
-                multipart.addFormField("ing_id["+i+"]", String.valueOf(recipe.getIngredients().get(i).getING_ID()));
-                multipart.addFormField("ing_nm["+i+"]", String.valueOf(recipe.getIngredients().get(i).getING_NAME()));
+                multipart.addFormField("ing_aka_id["+i+"]", String.valueOf(recipe.getIngredients().get(i).getING_AKA_ID()));
+                multipart.addFormField("ing_aka_name["+i+"]", String.valueOf(recipe.getIngredients().get(i).getING_AKA_NAME()));
                 multipart.addFormField("ing_qty["+i+"]", String.valueOf(recipe.getIngredients().get(i).getQTY()));
                 multipart.addFormField("qty_id["+i+"]", String.valueOf(recipe.getIngredients().get(i).getQuantity().getQTY_ID()));
             }
@@ -370,8 +370,8 @@ public class InternetUtility {
 
             //ingredients
             for(int i =0; i<mylistObj.getListofingredients().size(); i++){
-                multipart.addFormField("ing_id["+i+"]", String.valueOf(mylistObj.getListofingredients().get(i).getING_ID()));
-                multipart.addFormField("ing_nm["+i+"]", String.valueOf(mylistObj.getListofingredients().get(i).getING_NAME()));
+                multipart.addFormField("ing_aka_id["+i+"]", String.valueOf(mylistObj.getListofingredients().get(i).getING_AKA_ID()));
+                multipart.addFormField("ing_aka_name["+i+"]", String.valueOf(mylistObj.getListofingredients().get(i).getING_AKA_NAME()));
             }
 
             return (MessageMO) Utility.jsonToObject(multipart.finish(), MessageMO.class);
@@ -399,7 +399,7 @@ public class InternetUtility {
             multipart.addFormField(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_SUBMIT_FROM_RECIPE);
 
             multipart.addFormField("list_id", String.valueOf(mylistObj.getLIST_ID()));
-            multipart.addFormField("ing_id", String.valueOf(mylistObj.getING_ID()));
+            multipart.addFormField("ing_aka_id", String.valueOf(mylistObj.getING_AKA_ID()));
 
             return (MessageMO) Utility.jsonToObject(multipart.finish(), MessageMO.class);
         }
@@ -432,8 +432,8 @@ public class InternetUtility {
 
             //ingredients
             for(int i =0; i<mylistObj.getListofingredients().size(); i++){
-                multipart.addFormField("ing_id["+i+"]", String.valueOf(mylistObj.getListofingredients().get(i).getING_ID()));
-                multipart.addFormField("ing_nm["+i+"]", String.valueOf(mylistObj.getListofingredients().get(i).getING_NAME()));
+                multipart.addFormField("ing_aka_id["+i+"]", String.valueOf(mylistObj.getListofingredients().get(i).getING_AKA_ID()));
+                multipart.addFormField("ing_aka_name["+i+"]", String.valueOf(mylistObj.getListofingredients().get(i).getING_AKA_NAME()));
             }
 
             return (MessageMO) Utility.jsonToObject(multipart.finish(), MessageMO.class);

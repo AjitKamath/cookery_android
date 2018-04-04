@@ -40,7 +40,7 @@ import com.cookery.models.CommentMO;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FavouritesMO;
 import com.cookery.models.FoodTypeMO;
-import com.cookery.models.IngredientMO;
+import com.cookery.models.IngredientAkaMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.MyListMO;
@@ -229,8 +229,8 @@ public class Utility extends Activity {
             else if(mappingClass.equals(CuisineMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<CuisineMO>>(){}.getType());
             }
-            else if(mappingClass.equals(IngredientMO.class)){
-                return gson.fromJson(jsonStr, new TypeToken<List<IngredientMO>>(){}.getType());
+            else if(mappingClass.equals(IngredientAkaMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<List<IngredientAkaMO>>(){}.getType());
             }
             else if(mappingClass.equals(QuantityMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<QuantityMO>>(){}.getType());

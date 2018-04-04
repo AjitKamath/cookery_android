@@ -31,7 +31,7 @@ import com.cookery.fragments.IngredientQuantityFragment;
 import com.cookery.fragments.SelectionFragment;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
-import com.cookery.models.IngredientMO;
+import com.cookery.models.IngredientAkaMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.TasteMO;
@@ -343,8 +343,8 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
                     return;
                 }
 
-                IngredientMO ingredient = new IngredientMO();
-                ingredient.setING_NAME(String.valueOf(recipe_add_ingredients_act.getText()));
+                IngredientAkaMO ingredient = new IngredientAkaMO();
+                ingredient.setING_AKA_NAME(String.valueOf(recipe_add_ingredients_act.getText()));
 
                 showQuantityFragment(ingredient);
             }
@@ -352,20 +352,20 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
         recipe_add_ingredients_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                showQuantityFragment((IngredientMO)view.getTag());
+                showQuantityFragment((IngredientAkaMO)view.getTag());
             }
         });
         /*auto complete*/
 
         /*ingredients list*/
-        RecipeAddIngredientsRecyclerViewAdapter adapter = new RecipeAddIngredientsRecyclerViewAdapter(mContext, new ArrayList<IngredientMO>(), new View.OnClickListener() {
+        RecipeAddIngredientsRecyclerViewAdapter adapter = new RecipeAddIngredientsRecyclerViewAdapter(mContext, new ArrayList<IngredientAkaMO>(), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(R.id.recipe_add_ingredients_item_delete_iv == view.getId()){
-                    removeIngredient((IngredientMO)view.getTag());
+                    removeIngredient((IngredientAkaMO)view.getTag());
                 }
                 else if(R.id.recipe_add_ingredients_item_edit_iv == view.getId()){
-                    showQuantityFragment((IngredientMO)view.getTag());
+                    showQuantityFragment((IngredientAkaMO)view.getTag());
                 }
                 else{
                     Log.e(CLASS_NAME, UN_IDENTIFIED_VIEW+view);
@@ -448,7 +448,7 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
         /*sweet ratings*/
     }
 
-    public void addIngredient(IngredientMO ingredient){
+    public void addIngredient(IngredientAkaMO ingredient){
         RecipeAddIngredientsRecyclerViewAdapter adapter = (RecipeAddIngredientsRecyclerViewAdapter)recipe_add_ingredients_ingredients_rv.getAdapter();
         adapter.addData(ingredient);
         recipe.setIngredients(adapter.ingredients);
@@ -456,14 +456,14 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
         updateIngredients();
     }
 
-    public void removeIngredient(IngredientMO ingredient){
+    public void removeIngredient(IngredientAkaMO ingredient){
         RecipeAddIngredientsRecyclerViewAdapter adapter = (RecipeAddIngredientsRecyclerViewAdapter)recipe_add_ingredients_ingredients_rv.getAdapter();
         adapter.removeData(ingredient);
         recipe.setIngredients(adapter.ingredients);
         updateIngredients();
     }
 
-    private void showQuantityFragment(IngredientMO ingredient) {
+    private void showQuantityFragment(IngredientAkaMO ingredient) {
         String fragmentNameStr = FRAGMENT_COMMON_SELECTION;
         String parentFragmentNameStr = FRAGMENT_ADD_RECIPE;
 

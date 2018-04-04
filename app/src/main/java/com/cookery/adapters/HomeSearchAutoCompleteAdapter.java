@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.filters.HomeSearchAutoCompleteFilter;
-import com.cookery.models.IngredientMO;
+import com.cookery.models.IngredientAkaMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.Utility;
@@ -57,8 +57,8 @@ public class HomeSearchAutoCompleteAdapter extends ArrayAdapter<String> {
 
     @Override
     public String getItem(int position) {
-        /*if(filteredIngredients.get(position) instanceof IngredientMO){
-            return String.valueOf(((IngredientMO) filteredIngredients.get(position)).getING_NAME());
+        /*if(filteredIngredients.get(position) instanceof IngredientAkaMO){
+            return String.valueOf(((IngredientAkaMO) filteredIngredients.get(position)).getING_AKA_NAME());
         }
         else if(filteredIngredients.get(position) instanceof RecipeMO){
             return String.valueOf(((RecipeMO) filteredIngredients.get(position)).getRCP_NAME());
@@ -99,10 +99,10 @@ public class HomeSearchAutoCompleteAdapter extends ArrayAdapter<String> {
                 matchType = recipe.getUserName();
             }
             else{
-                for(IngredientMO ingredient : recipe.getIngredients()){
-                    if(ingredient.getING_NAME().toUpperCase().contains(query.toUpperCase())){
+                for(IngredientAkaMO ingredient : recipe.getIngredients()){
+                    if(ingredient.getING_AKA_NAME().toUpperCase().contains(query.toUpperCase())){
                         matchMessage = ".. recipe made with ";
-                        matchType = ingredient.getING_NAME();
+                        matchType = ingredient.getING_AKA_NAME();
                         break;
                     }
                 }

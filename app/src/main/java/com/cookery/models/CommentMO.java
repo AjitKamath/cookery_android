@@ -20,6 +20,8 @@ public class CommentMO extends CommonMO implements Serializable {
     private boolean userLiked;
     private String userName;
 
+    private String recipeImage;
+
     private int likesCount;
 
     private List<UserMO> likedUsers;

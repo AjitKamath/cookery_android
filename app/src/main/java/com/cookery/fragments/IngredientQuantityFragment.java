@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.adapters.AddRecipeQuantitySpinnerAdapter;
-import com.cookery.models.IngredientMO;
+import com.cookery.models.IngredientAkaMO;
 import com.cookery.models.QuantityMO;
 import com.cookery.utils.Utility;
 
@@ -61,7 +61,7 @@ public class IngredientQuantityFragment extends DialogFragment {
     TextView fragment_ingredient_quantity_ok_tv;
     //end of components
 
-    private IngredientMO ingredient;
+    private IngredientAkaMO ingredient;
     private List<QuantityMO> quantities;
 
     @Override
@@ -80,7 +80,7 @@ public class IngredientQuantityFragment extends DialogFragment {
     }
 
     private void getDataFromBundle() {
-        ingredient = (IngredientMO) getArguments().get(SELECTED_ITEM);
+        ingredient = (IngredientAkaMO) getArguments().get(SELECTED_ITEM);
         quantities = (List<QuantityMO>) getArguments().get(LIST_DATA);
     }
 
@@ -92,7 +92,7 @@ public class IngredientQuantityFragment extends DialogFragment {
 
         Utility.loadImageFromURL(mContext, ingredient.getIMG(), fragment_ingredient_quantity_ingredient_iv);
 
-        fragment_ingredient_quantity_ingredient_tv.setText(ingredient.getING_NAME());
+        fragment_ingredient_quantity_ingredient_tv.setText(ingredient.getING_AKA_NAME());
 
         AddRecipeQuantitySpinnerAdapter adapter = new AddRecipeQuantitySpinnerAdapter(mContext, quantities);
         fragment_ingredient_quantity_quantity_spinner.setAdapter(adapter);

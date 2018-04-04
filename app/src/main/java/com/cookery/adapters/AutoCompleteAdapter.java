@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.filters.AutocompleteFilter;
-import com.cookery.models.IngredientMO;
+import com.cookery.models.IngredientAkaMO;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
@@ -54,8 +54,8 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
 
     @Override
     public String getItem(int position) {
-        /*if(filteredIngredients.get(position) instanceof IngredientMO){
-            return String.valueOf(((IngredientMO) filteredIngredients.get(position)).getING_NAME());
+        /*if(filteredIngredients.get(position) instanceof IngredientAkaMO){
+            return String.valueOf(((IngredientAkaMO) filteredIngredients.get(position)).getING_AKA_NAME());
         }
         else if(filteredIngredients.get(position) instanceof RecipeMO){
             return String.valueOf(((RecipeMO) filteredIngredients.get(position)).getRCP_NAME());
@@ -83,16 +83,16 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
         TextView autocomplete_tv = new TextView(mContext);
         ImageView autocomplete_iv;
 
-        if(filteredIngredients.get(position) instanceof IngredientMO){
+        if(filteredIngredients.get(position) instanceof IngredientAkaMO){
             // Get the data item from filtered list.
-            IngredientMO ingredient = (IngredientMO) filteredIngredients.get(position);
+            IngredientAkaMO ingredient = (IngredientAkaMO) filteredIngredients.get(position);
 
             LinearLayout autocomplete_ingredient_ll = convertView.findViewById(R.id.autocomplete_ingredient_ll);
 
             autocomplete_tv = convertView.findViewById(R.id.autocomplete_ingredient_tv);
             autocomplete_iv = convertView.findViewById(R.id.autocomplete_ingredient_iv);
 
-            autocomplete_tv.setText(ingredient.getING_NAME());
+            autocomplete_tv.setText(ingredient.getING_AKA_NAME());
             Utility.loadImageFromURL(mContext, ingredient.getIMG(), autocomplete_iv);
 
             convertView.setTag(ingredient);

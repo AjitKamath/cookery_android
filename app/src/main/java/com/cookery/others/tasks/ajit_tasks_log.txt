@@ -338,3 +338,9 @@
 26 march 2018
 1. #244 - Recipe View - Show if user follows Liked/Viewed users
 
+28 march 2018
+1. #340 - Ingredient & Ingredient AKA relationships
+
+4 april 2018
+1. #180 - Recipe View - Comment Recipe Photo
+
