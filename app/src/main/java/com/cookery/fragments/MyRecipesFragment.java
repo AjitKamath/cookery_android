@@ -113,6 +113,8 @@ public class MyRecipesFragment extends DialogFragment {
                                     // do something
                                     break;
 
+                                    default:break;
+
                             }
 
                             menu.dismiss();

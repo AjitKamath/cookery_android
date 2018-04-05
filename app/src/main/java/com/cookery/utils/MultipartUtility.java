@@ -90,14 +90,22 @@ public class MultipartUtility {
         writer.append(LINE_FEED);
         writer.flush();
 
-        FileInputStream inputStream = new FileInputStream(uploadFile);
-        byte[] buffer = new byte[4096];
-        int bytesRead = -1;
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, bytesRead);
+        FileInputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(uploadFile);
+            byte[] buffer = new byte[4096];
+            int bytesRead = -1;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
         }
-        outputStream.flush();
-        inputStream.close();
+        catch (IOException e){
+            throw e;
+        }
+        finally {
+            outputStream.flush();
+            inputStream.close();
+        }
 
         writer.append(LINE_FEED);
         writer.flush();

@@ -50,6 +50,7 @@ public class RecipeViewViewPagerAdapter extends PagerAdapter {
         switch(position){
             case 0: setupRecipeSteps(layout); break;
             case 1: setupRecipeIngredients(layout); break;
+            default: break;
         }
 
         setFont(layout);

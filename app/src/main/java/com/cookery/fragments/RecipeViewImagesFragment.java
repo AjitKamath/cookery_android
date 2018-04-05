@@ -177,7 +177,7 @@ public class RecipeViewImagesFragment extends DialogFragment {
                                 return true;
 
                             default:
-                                return true;
+                                return false;
                         }
                     }
                 });

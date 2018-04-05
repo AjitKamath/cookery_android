@@ -118,6 +118,7 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
             case 1: setupAddRecipeIngredients(layout); break;
             case 2: setupAddRecipeSteps(layout); break;
             case 3: setupAddRecipeTastes(layout); break;
+            default: break;
         }
 
         setFont(layout);

@@ -344,3 +344,7 @@
 4 april 2018
 1. #180 - Recipe View - Comment Recipe Photo
 
+-- git checkin on 4 April 2018 --
+
+5 april 2018
+1. #327 - Sonar Fixes

@@ -15,6 +15,6 @@ public class MessageMO implements Serializable {
     private boolean isError;
 
     private String purpose;
-    private Object object;
+    private transient Object object;
     private int user_id;
 }

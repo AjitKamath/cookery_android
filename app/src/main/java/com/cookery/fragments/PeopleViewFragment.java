@@ -3,7 +3,6 @@ package com.cookery.fragments;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -99,10 +98,6 @@ public class PeopleViewFragment extends DialogFragment {
 
     private void getLoggedInUser() {
         loggedInUser = Utility.getUserFromUserSecurity(mContext);
-    }
-
-    @Override
-    public void onDismiss(final DialogInterface dialog) {
     }
 
     private void setupPage() {

@@ -243,4 +243,12 @@ public final class Constants {
     public final static String TRENDS_USER_OF_THE_WEEK = "USER_OF_THE_WEEK";
     public final static String TRENDS_RECIPE_OF_THE_DAY = "RECIPE_OF_THE_DAY";
 
+    //Keys
+    public final static String SIMPLE_KEY_FOLLOWERS = "FOLLOWERS";
+    public final static String SIMPLE_KEY_FOLLOWING = "FOLLOWING";
+    public final static String SIMPLE_KEY_FAVORITES = "FAVORITES";
+    public final static String SIMPLE_KEY_VIEWED = "VIEWED";
+    public final static String SIMPLE_KEY_REVIEWED = "REVIEWED";
+    public final static String SIMPLE_KEY_UNIMPLEMENTED = "UNIMPL";
+
 }
