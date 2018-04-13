@@ -179,6 +179,16 @@ public class LoginFragment extends DialogFragment {
     }
 
     @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        return new Dialog(getActivity(), getTheme()){
+            @Override
+            public void onBackPressed() {
+                //do your stuff
+            }
+        };
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
 

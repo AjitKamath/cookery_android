@@ -2,13 +2,15 @@ package com.cookery.models;
 
 import java.io.Serializable;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by ajit on 17/3/18.
  */
 
-@Data
+@Getter
+@Setter
 public class ImageMO implements Serializable{
     private int RCP_IMG_ID;
     private String RCP_IMG;

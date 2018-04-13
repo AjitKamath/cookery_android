@@ -3,13 +3,15 @@ package com.cookery.models;
 import java.io.Serializable;
 import java.util.List;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by vishal on 24/12/17.
  */
 
-@Data
+@Getter
+@Setter
 public class MyListMO implements Serializable {
     private int LIST_ID;
     private String LIST_NAME;

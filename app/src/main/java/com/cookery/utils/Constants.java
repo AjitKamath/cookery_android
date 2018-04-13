@@ -169,6 +169,9 @@ public final class Constants {
     public static final String FRAGMENT_TIMELINE_DELETE = "FRAGMENT_TIMELINE_DELETE";
     public static final String FRAGMENT_PEOPLE_VIEW = "FRAGMENT_PEOPLE_VIEW";
     public static final String FRAGMENT_ABOUT_US = "FRAGMENT_ABOUT_US";
+    public static final String FRAGMENT_NO_INTERNET = "FRAGMENT_NO_INTERNET";
+    public static final String FRAGMENT_SOMETHING_WRONG = "FRAGMENT_SOMETHING_WRONG";
+    public static final String FRAGMENT_COOKERY_ERROR = "FRAGMENT_COOKERY_ERROR";
 
 
     //FRAGMENT OBJECT KEYS

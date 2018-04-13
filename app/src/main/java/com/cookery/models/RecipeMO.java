@@ -3,13 +3,15 @@ package com.cookery.models;
 import java.io.Serializable;
 import java.util.List;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by ajit on 27/8/17.
  */
 
-@Data
+@Getter
+@Setter
 public class RecipeMO extends CommonMO implements Serializable {
     private int RCP_ID;
     private String RCP_NAME;
