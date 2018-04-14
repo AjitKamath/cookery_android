@@ -31,7 +31,7 @@ import com.cookery.animators.HeightWidthAnimator;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.ImageMO;
-import com.cookery.models.IngredientMO;
+import com.cookery.models.IngredientAkaMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.RecipeMO;
@@ -349,7 +349,7 @@ public class RecipeAddFragment extends DialogFragment {
         updateImagesCount();
     }
 
-    public void addIngredient(IngredientMO ingredient){
+    public void addIngredient(IngredientAkaMO ingredient){
         ((RecipeAddViewPagerAdapter) recipe_add_tabs_vp.getAdapter()).addIngredient(ingredient);
     }
 

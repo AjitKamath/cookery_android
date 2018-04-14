@@ -32,6 +32,7 @@ import android.widget.TextView;
 import com.cookery.R;
 import com.cookery.adapters.HomeSearchAutoCompleteAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
+import com.cookery.exceptions.CookeryException;
 import com.cookery.fragments.AboutUsFragment;
 import com.cookery.fragments.AddMyListFragment;
 import com.cookery.fragments.FavoriteRecipesFragment;
@@ -84,7 +85,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     public UserMO loggedInUser;
     private Object homeContent[] = new Object[3];
 
-    private boolean initialLoad = false;
+    public boolean initialLoad = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +109,8 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         if (loggedInUser == null || loggedInUser.getUSER_ID() == 0) {
             Utility.showFragment(getFragmentManager(), null, FRAGMENT_LOGIN, new LoginFragment(), null);
         } else {
-            new AsyncTaskerFetchUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            new AsyncTaskUtility(getFragmentManager(), this, AsyncTaskUtility.Purpose.FETCH_USER_SELF, loggedInUser, 0)
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
@@ -237,7 +239,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         });
     }
 
-    private void setupNavigator() {
+    public void setupNavigator() {
         //drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, getDrawer_layout(), null, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         //ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, getDrawer_layout(), getToolbar(), R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -438,7 +440,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             new AsyncTaskerFetchFavRecipes().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         else if(R.id.activity_home_drawer_my_recipes == item.getItemId()){
-            new AsyncTaskUtility(this, AsyncTaskUtility.Purpose.FETCH_MY_RECIPES, loggedInUser, 0)
+            new AsyncTaskUtility(getFragmentManager(), this, AsyncTaskUtility.Purpose.FETCH_MY_RECIPES, loggedInUser, 0)
                     .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         else if(R.id.activity_home_drawer_my_reviews == item.getItemId()){
@@ -540,7 +542,13 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
 
     private List<TimelineMO> fetchStories(){
         if(loggedInUser != null && loggedInUser.getUSER_ID() != 0){
-            return InternetUtility.getFetchUserStories(loggedInUser.getUSER_ID(), 0);
+            try{
+                return InternetUtility.getFetchUserStories(loggedInUser.getUSER_ID(), 0);
+            }
+            catch (CookeryException ce){
+                Log.e(CLASS_NAME, "");
+            }
+
         }
 
         return null;
@@ -722,41 +730,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             if(timelines != null){
                 homeContent[2] = timelines;
                 setUpTabs(homeContent);
-            }
-        }
-    }
-
-    class AsyncTaskerFetchUser extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.fetchUser(loggedInUser.getUSER_ID());
-        }
-
-        @Override
-        protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching your data ..");
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-            List<UserMO> user = (List<UserMO>) object;
-
-            if(user != null && !user.isEmpty()) {
-                loggedInUser = user.get(0);
-                setupNavigator();
-
-                if(initialLoad){
-                    fetchHomeContent();
-                    fetchMasterContent();
-                    initialLoad = false;
-                }
-            }
-            else{
-                Utility.showFragment(getFragmentManager(), null, FRAGMENT_LOGIN, new LoginFragment(), null);
             }
         }
     }

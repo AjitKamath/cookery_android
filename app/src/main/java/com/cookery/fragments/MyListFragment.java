@@ -25,7 +25,7 @@ import android.widget.TextView;
 import com.cookery.R;
 import com.cookery.adapters.AutoCompleteAdapter;
 import com.cookery.adapters.MyListIngredientsRecyclerViewAdapter;
-import com.cookery.models.IngredientMO;
+import com.cookery.models.IngredientAkaMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.MyListMO;
 import com.cookery.models.UserMO;
@@ -86,8 +86,8 @@ public class MyListFragment extends DialogFragment {
     private MyListMO mylist;
     private UserMO loggedInUser;
     private int listid;
-    private int ing_id;
-    private String ing_name;
+    private int ing_aka_id;
+    private String ing_aka_name;
 
 
     @Override
@@ -114,10 +114,10 @@ public class MyListFragment extends DialogFragment {
             listid = (Integer) getArguments().get(LIST_ID);
         }
         if(null != getArguments().get(INGREDIENT_ID)) {
-            ing_id = (Integer) getArguments().get(INGREDIENT_ID);
+            ing_aka_id = (Integer) getArguments().get(INGREDIENT_ID);
         }
         if(null != getArguments().get(INGREDIENT_NAME)) {
-            ing_name = (String) getArguments().get(INGREDIENT_NAME);
+            ing_aka_name = (String) getArguments().get(INGREDIENT_NAME);
         }
     }
 
@@ -134,8 +134,8 @@ public class MyListFragment extends DialogFragment {
                 if (recipe_add_ingredients_list_act.getText().length() == 0) {
                     return;
                 }
-                IngredientMO ingredient = new IngredientMO();
-                ingredient.setING_NAME(String.valueOf(recipe_add_ingredients_list_act.getText()));
+                IngredientAkaMO ingredient = new IngredientAkaMO();
+                ingredient.setING_AKA_NAME(String.valueOf(recipe_add_ingredients_list_act.getText()));
                 addIngredient(ingredient);
 
             }
@@ -143,25 +143,25 @@ public class MyListFragment extends DialogFragment {
         recipe_add_ingredients_list_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                IngredientMO ingredient = new IngredientMO();
-                IngredientMO ing = (IngredientMO) view.getTag();
-                ingredient.setING_ID(ing.getING_ID());
-                ingredient.setING_NAME(ing.getING_NAME());
+                IngredientAkaMO ingredient = new IngredientAkaMO();
+                IngredientAkaMO ing = (IngredientAkaMO) view.getTag();
+                ingredient.setING_AKA_ID(ing.getING_AKA_ID());
+                ingredient.setING_AKA_NAME(ing.getING_AKA_NAME());
                 addIngredient(ingredient);
             }
         });
         /*auto complete*/
 
     /*ingredients list*/
-    IngredientMO ingobj;
+    IngredientAkaMO ingobj;
         for(MyListMO obj:mylistobj)
         {
-            ingobj = new IngredientMO();
-            ingobj.setING_ID(obj.getING_ID());
-            ingobj.setING_NAME(obj.getING_NAME());
+            ingobj = new IngredientAkaMO();
+            ingobj.setING_AKA_ID(obj.getING_AKA_ID());
+            ingobj.setING_AKA_NAME(obj.getING_AKA_NAME());
 
             if(mylist.getListofingredients() == null){
-                mylist.setListofingredients(new ArrayList<IngredientMO>());
+                mylist.setListofingredients(new ArrayList<IngredientAkaMO>());
             }
 
             mylist.getListofingredients().add(ingobj);
@@ -173,7 +173,7 @@ public class MyListFragment extends DialogFragment {
             @Override
                 public void onClick(View view) {
                     if (R.id.mylist_add_ingredients_item_delete_iv == view.getId()) {
-                        removeIngredient((IngredientMO) view.getTag());
+                        removeIngredient((IngredientAkaMO) view.getTag());
                     } else {
                         Log.e(CLASS_NAME, UN_IDENTIFIED_VIEW + view);
                     }
@@ -224,13 +224,13 @@ public class MyListFragment extends DialogFragment {
             new MyListFragment.AsyncTaskerViewMyList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, listid);
         }
         // Handling for Adding the selected ingredient from recipe to new list
-        else if(ing_id != 0)
+        else if(ing_aka_id != 0)
             {
                 ArrayList<MyListMO> mylistobj = new ArrayList<MyListMO>();
                 MyListMO myListMOobj = new MyListMO();
                 myListMOobj.setLIST_NAME("");
-                myListMOobj.setING_ID(ing_id);
-                myListMOobj.setING_NAME(ing_name);
+                myListMOobj.setING_AKA_ID(ing_aka_id);
+                myListMOobj.setING_AKA_NAME(ing_aka_name);
                 mylistobj.add(myListMOobj);
                 setupMyListViewFragment(mylistobj);
             }
@@ -248,8 +248,8 @@ public class MyListFragment extends DialogFragment {
                     if (recipe_add_ingredients_list_act.getText().length() == 0) {
                         return;
                     }
-                    IngredientMO ingredient = new IngredientMO();
-                    ingredient.setING_NAME(String.valueOf(recipe_add_ingredients_list_act.getText()));
+                    IngredientAkaMO ingredient = new IngredientAkaMO();
+                    ingredient.setING_AKA_NAME(String.valueOf(recipe_add_ingredients_list_act.getText()));
                     addIngredient(ingredient);
 
                 }
@@ -257,21 +257,21 @@ public class MyListFragment extends DialogFragment {
             recipe_add_ingredients_list_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    IngredientMO ingredient = new IngredientMO();
-                    IngredientMO ing = (IngredientMO) view.getTag();
-                    ingredient.setING_ID(ing.getING_ID());
-                    ingredient.setING_NAME(ing.getING_NAME());
+                    IngredientAkaMO ingredient = new IngredientAkaMO();
+                    IngredientAkaMO ing = (IngredientAkaMO) view.getTag();
+                    ingredient.setING_AKA_ID(ing.getING_AKA_ID());
+                    ingredient.setING_AKA_NAME(ing.getING_AKA_NAME());
                     addIngredient(ingredient);
                 }
             });
         /*auto complete*/
 
     /*ingredients list*/
-            MyListIngredientsRecyclerViewAdapter adapter = new MyListIngredientsRecyclerViewAdapter(mContext, new ArrayList<IngredientMO>(), new View.OnClickListener() {
+            MyListIngredientsRecyclerViewAdapter adapter = new MyListIngredientsRecyclerViewAdapter(mContext, new ArrayList<IngredientAkaMO>(), new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (R.id.mylist_add_ingredients_item_delete_iv == view.getId()) {
-                        removeIngredient((IngredientMO) view.getTag());
+                        removeIngredient((IngredientAkaMO) view.getTag());
                     } else if (R.id.recipe_add_ingredients_item_edit_iv == view.getId()) {
                     } else {
                         Log.e(CLASS_NAME, UN_IDENTIFIED_VIEW + view);
@@ -483,7 +483,7 @@ public class MyListFragment extends DialogFragment {
 
 
 
-    public void addIngredient(IngredientMO ingredient){
+    public void addIngredient(IngredientAkaMO ingredient){
         MyListIngredientsRecyclerViewAdapter adapter = (MyListIngredientsRecyclerViewAdapter)recipe_add_ingredients_list_rv.getAdapter();
         adapter.addData(ingredient);
         mylist.setListofingredients(adapter.ingredients);
@@ -491,7 +491,7 @@ public class MyListFragment extends DialogFragment {
         updateIngredients();
     }
 
-    public void removeIngredient(IngredientMO ingredient){
+    public void removeIngredient(IngredientAkaMO ingredient){
         MyListIngredientsRecyclerViewAdapter adapter = (MyListIngredientsRecyclerViewAdapter)recipe_add_ingredients_list_rv.getAdapter();
         adapter.removeData(ingredient);
         mylist.setListofingredients(adapter.ingredients);

@@ -338,3 +338,20 @@
 26 march 2018
 1. #244 - Recipe View - Show if user follows Liked/Viewed users
 
+28 march 2018
+1. #340 - Ingredient & Ingredient AKA relationships
+
+4 april 2018
+1. #180 - Recipe View - Comment Recipe Photo
+
+-- git checkin on 4 April 2018 --
+
+5 april 2018
+1. #327 - Sonar Fixes
+
+-- git checkin on 5 April 2018 --
+
+13 april 2018
+1. #241 Custom Exceptions
+2. #339 No Internet
+3. #294 Everywhere in PHP - Escape Special Characters

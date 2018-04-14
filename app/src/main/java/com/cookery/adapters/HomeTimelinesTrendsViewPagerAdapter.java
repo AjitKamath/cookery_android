@@ -60,6 +60,7 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
             case 0: setupStories(layout); break;
             case 1: setupTrend(layout); break;
             case 2: setupTimeline(layout); break;
+            default: break;
         }
 
         setFont(layout);

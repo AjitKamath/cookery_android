@@ -3,7 +3,7 @@ package com.cookery.utils;
 import com.cookery.models.CommentMO;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
-import com.cookery.models.IngredientMO;
+import com.cookery.models.IngredientAkaMO;
 import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class TestData {
     private static List<FoodTypeMO> foodTypes;
-    private static List<IngredientMO> ingredients;
+    private static List<IngredientAkaMO> ingredients;
     private static List<CuisineMO> cuisines;
     private static List<QuantityMO> quantities;
     private static List<TasteMO> tastes;
@@ -143,41 +143,41 @@ public class TestData {
         return cuisines;
     }
 
-    public static List<IngredientMO> getIngredientsTestData(){
+    public static List<IngredientAkaMO> getIngredientsTestData(){
         ingredients = new ArrayList<>();
-        IngredientMO ingredient = null;
+        IngredientAkaMO ingredient = null;
 
-        ingredient = new IngredientMO();
-        ingredient.setING_NAME("MILK");
-        ingredient.setING_ID(1);
+        ingredient = new IngredientAkaMO();
+        ingredient.setING_AKA_NAME("MILK");
+        ingredient.setING_AKA_ID(1);
         ingredient.setQTY(1);
         ingredient.setQTY_NAME("SPOON");
         ingredients.add(ingredient);
 
-        ingredient = new IngredientMO();
-        ingredient.setING_NAME("SALT");
-        ingredient.setING_ID(2);
+        ingredient = new IngredientAkaMO();
+        ingredient.setING_AKA_NAME("SALT");
+        ingredient.setING_AKA_ID(2);
         ingredient.setQTY(3);
         ingredient.setQTY_NAME("TABLE SPOON");
         ingredients.add(ingredient);
 
-        ingredient = new IngredientMO();
-        ingredient.setING_NAME("PEPPER");
-        ingredient.setING_ID(3);
+        ingredient = new IngredientAkaMO();
+        ingredient.setING_AKA_NAME("PEPPER");
+        ingredient.setING_AKA_ID(3);
         ingredient.setQTY(5);
         ingredient.setQTY_NAME("CUP");
         ingredients.add(ingredient);
 
-        ingredient = new IngredientMO();
-        ingredient.setING_NAME("CHILLY");
-        ingredient.setING_ID(4);
+        ingredient = new IngredientAkaMO();
+        ingredient.setING_AKA_NAME("CHILLY");
+        ingredient.setING_AKA_ID(4);
         ingredient.setQTY(5);
         ingredient.setQTY_NAME("BOWL");
         ingredients.add(ingredient);
 
-        ingredient = new IngredientMO();
-        ingredient.setING_NAME("WATER");
-        ingredient.setING_ID(5);
+        ingredient = new IngredientAkaMO();
+        ingredient.setING_AKA_NAME("WATER");
+        ingredient.setING_AKA_ID(5);
         ingredient.setQTY(3);
         ingredient.setQTY_NAME("PINCH");
         ingredients.add(ingredient);

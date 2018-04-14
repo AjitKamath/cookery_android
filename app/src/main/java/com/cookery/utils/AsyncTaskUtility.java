@@ -8,8 +8,12 @@ import android.util.Log;
 import android.view.View;
 
 import com.cookery.activities.HomeActivity;
+import com.cookery.exceptions.CookeryException;
+import com.cookery.fragments.CookeryErrorFragment;
+import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MyRecipesFragment;
 import com.cookery.fragments.MyReviewsFragment;
+import com.cookery.fragments.NoInternetFragment;
 import com.cookery.fragments.ProfileViewEmailFragment;
 import com.cookery.fragments.ProfileViewFragment;
 import com.cookery.fragments.ProfileViewGenderFragment;
@@ -17,6 +21,7 @@ import com.cookery.fragments.ProfileViewImageFragment;
 import com.cookery.fragments.RecipeViewCommentsFragment;
 import com.cookery.fragments.RecipeViewFragment;
 import com.cookery.fragments.RecipeViewReviewsFragment;
+import com.cookery.fragments.SomethingWrongFragment;
 import com.cookery.fragments.UserViewFragment;
 import com.cookery.fragments.UsersFragment;
 import com.cookery.models.CommentMO;
@@ -30,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.cookery.utils.AsyncTaskUtility.Purpose.CHECK_INTERNET;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_COMMENTS;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_MY_RECIPES;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_MY_REVIEWS;
@@ -37,9 +43,13 @@ import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_RECIPE;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_REVIEWS;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_USERS;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_USER_PUBLIC_DETAILS;
+import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_USER_SELF;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.SUBMIT_LIKE;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.UPDATE_USER;
+import static com.cookery.utils.Constants.FRAGMENT_COOKERY_ERROR;
+import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_NO_INTERNET;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
@@ -47,6 +57,7 @@ import static com.cookery.utils.Constants.FRAGMENT_RECIPE_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_LIKED_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEWS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_VIEWED_USERS;
+import static com.cookery.utils.Constants.FRAGMENT_SOMETHING_WRONG;
 import static com.cookery.utils.Constants.FRAGMENT_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
@@ -70,8 +81,8 @@ public class AsyncTaskUtility extends AsyncTask {
     private Integer index;
 
     public enum Purpose {
-        FETCH_USER_PUBLIC_DETAILS, FETCH_USERS, FETCH_RECIPE, FETCH_COMMENTS, FETCH_REVIEWS,
-        SUBMIT_LIKE, FETCH_MY_RECIPES, FETCH_MY_REVIEWS, UPDATE_USER
+        FETCH_USER_PUBLIC_DETAILS, FETCH_USER_SELF, FETCH_USERS, FETCH_RECIPE, FETCH_COMMENTS, FETCH_REVIEWS,
+        SUBMIT_LIKE, FETCH_MY_RECIPES, FETCH_MY_REVIEWS, UPDATE_USER, CHECK_INTERNET
     }
 
     private Purpose purpose;
@@ -81,28 +92,58 @@ public class AsyncTaskUtility extends AsyncTask {
 
     @Override
     protected Object doInBackground(Object[] objects) {
-        if (purpose == null) {
-            Log.e(CLASS_NAME, "Error ! Purpose is null ! ");
-        } else if (purpose == FETCH_USER_PUBLIC_DETAILS) {
-            return fetchUsersPublicDetails(objects);
-        } else if (purpose == FETCH_USERS) {
-            return fetchUsers(objects);
-        } else if (purpose == FETCH_RECIPE) {
-            return fetchRecipe(objects);
-        } else if (purpose == FETCH_COMMENTS) {
-            return fetchComments(objects);
-        } else if (purpose == FETCH_REVIEWS) {
-            return fetchReviews(objects);
-        } else if (purpose == SUBMIT_LIKE) {
-            return submitLike(objects);
-        } else if (purpose == FETCH_MY_RECIPES) {
-            return fetchMyRecipes();
-        } else if (purpose == FETCH_MY_REVIEWS) {
-            return fetchMyReviews();
-        } else if (purpose == UPDATE_USER) {
-            return updateUser(objects);
-        } else {
-            Log.e(CLASS_NAME, "Could not understand the purpose : " + purpose);
+        try{
+            if (purpose == null) {
+                Log.e(CLASS_NAME, "Error ! Purpose is null ! ");
+            }
+            else if (purpose == CHECK_INTERNET) {
+                return checkInternet();
+            }
+            else if (purpose == FETCH_USER_SELF) {
+                return fetchUser();
+            }else if (purpose == FETCH_USER_PUBLIC_DETAILS) {
+                return fetchUsersPublicDetails(objects);
+            } else if (purpose == FETCH_USERS) {
+                return fetchUsers(objects);
+            } else if (purpose == FETCH_RECIPE) {
+                return fetchRecipe(objects);
+            } else if (purpose == FETCH_COMMENTS) {
+                return fetchComments(objects);
+            } else if (purpose == FETCH_REVIEWS) {
+                return fetchReviews(objects);
+            } else if (purpose == SUBMIT_LIKE) {
+                return submitLike(objects);
+            } else if (purpose == FETCH_MY_RECIPES) {
+                return fetchMyRecipes();
+            } else if (purpose == FETCH_MY_REVIEWS) {
+                return fetchMyReviews();
+            } else if (purpose == UPDATE_USER) {
+                return updateUser(objects);
+            } else {
+                Log.e(CLASS_NAME, "Could not understand the purpose : " + purpose);
+            }
+        }
+        catch (CookeryException ce){
+            closeWaitFragment();
+
+            if(ce.getCode().equals(CookeryException.ErrorCode.NO_INTERNET)){
+                Utility.showFragment(fragmentManager, null, FRAGMENT_NO_INTERNET, new NoInternetFragment(), null);
+            }
+            else if(ce.getCode().equals(CookeryException.ErrorCode.ACCESS_DENIED)){
+                //TODO:You are not authorized. Please update Cookery to continue using.
+            }
+            else if(ce.getCode().equals(CookeryException.ErrorCode.BAD_JSON)){
+                Utility.showFragment(fragmentManager, null, FRAGMENT_COOKERY_ERROR, new CookeryErrorFragment(), null);
+            }
+            else if(ce.getCode().equals(CookeryException.ErrorCode.JSON_TO_OBJECT_MAPPING_ERROR)){
+                Utility.showFragment(fragmentManager, null, FRAGMENT_COOKERY_ERROR, new CookeryErrorFragment(), null);
+            }
+            else if(ce.getCode().equals(CookeryException.ErrorCode.NO_JSON_MAPPING_CLASS)){
+                Utility.showFragment(fragmentManager, null, FRAGMENT_COOKERY_ERROR, new CookeryErrorFragment(), null);
+            }
+            else if(ce.getCode().equals(CookeryException.ErrorCode.SOMETHING_WRONG)){
+                Utility.showFragment(fragmentManager, null, FRAGMENT_SOMETHING_WRONG, new SomethingWrongFragment(), null);
+            }
         }
 
         return null;
@@ -110,9 +151,7 @@ public class AsyncTaskUtility extends AsyncTask {
 
     @Override
     protected void onPostExecute(Object object) {
-        if (waitFragment != null) {
-            Utility.closeWaitDialog(fragmentManager, waitFragment);
-        }
+        closeWaitFragment();
 
         if (object == null) {
             return;
@@ -120,7 +159,14 @@ public class AsyncTaskUtility extends AsyncTask {
 
         if (purpose == FETCH_USER_PUBLIC_DETAILS) {
             postFetchUsersPublicDetails(object);
-        } else if (purpose == FETCH_USERS) {
+        }
+        else if(purpose == CHECK_INTERNET){
+            postCheckInternet(object);
+        }
+        else if(purpose == FETCH_USER_SELF){
+            postFetchUser(object);
+        }
+        else if (purpose == FETCH_USERS) {
             postFetchUsers(object);
         } else if (purpose == FETCH_RECIPE) {
             postFetchRecipe(object);
@@ -141,6 +187,27 @@ public class AsyncTaskUtility extends AsyncTask {
         }
     }
 
+    private Object checkInternet(){
+        return InternetUtility.isInternetAvailable();
+    }
+
+    private void postCheckInternet(Object object){
+        if((boolean)object){
+            if(getFragment(fragmentKey) instanceof NoInternetFragment){
+                ((NoInternetFragment) getFragment(fragmentKey)).dismiss();
+            }
+        }
+        else{
+            ((NoInternetFragment) getFragment(fragmentKey)).checkInternet();
+        }
+    }
+
+    private void closeWaitFragment() {
+        if (waitFragment != null) {
+            Utility.closeWaitDialog(fragmentManager, waitFragment);
+        }
+    }
+
     private Object updateUser(Object[] objects) {
         if(objects != null && objects.length > 0){
             if("EMAIL".equalsIgnoreCase(String.valueOf(objects[0]))){
@@ -158,6 +225,39 @@ public class AsyncTaskUtility extends AsyncTask {
         }
 
         return null;
+    }
+
+    private Object fetchUser(){
+        waitFragment = Utility.showWaitDialog(fragmentManager, "fetching your data ..");
+        return InternetUtility.fetchUser(loggedInUser.getUSER_ID());
+    }
+
+    private void postFetchUser(Object object){
+        if(object == null){
+            return;
+        }
+
+        if(activity != null){
+            if(activity instanceof HomeActivity){
+                HomeActivity homeActivity = (HomeActivity) activity;
+
+                List<UserMO> user = (List<UserMO>) object;
+
+                if(user != null && !user.isEmpty()) {
+                    loggedInUser = user.get(0);
+                    homeActivity.setupNavigator();
+
+                    if(homeActivity.initialLoad){
+                        homeActivity.fetchHomeContent();
+                        homeActivity.fetchMasterContent();
+                        homeActivity.initialLoad = false;
+                    }
+                }
+                else{
+                    Utility.showFragment(fragmentManager, null, FRAGMENT_LOGIN, new LoginFragment(), null);
+                }
+            }
+        }
     }
 
     private void postUpdateUser(Object object) {
@@ -321,9 +421,9 @@ public class AsyncTaskUtility extends AsyncTask {
         } else if (FRAGMENT_RECIPE.equalsIgnoreCase(fragmentKey)) {
             waitFragment = Utility.showWaitDialog(fragmentManager, "fetching reviews ..");
 
-            ReviewMO userReview = InternetUtility.fetchUsersRecipeReview(loggedInUser, (RecipeMO) objects[0]);
+            List<ReviewMO> userReview = (List<ReviewMO>) InternetUtility.fetchUsersRecipeReview(loggedInUser, (RecipeMO) objects[0]);
             List<ReviewMO> reviews = InternetUtility.fetchRecipeReviews(loggedInUser, (RecipeMO) objects[0], index);
-            Object array[] = new Object[]{objects[0], userReview, reviews};
+            Object array[] = new Object[]{objects[0], userReview == null || userReview.isEmpty() ? null : userReview.get(0), reviews};
 
             return array;
         } else {
@@ -553,7 +653,8 @@ public class AsyncTaskUtility extends AsyncTask {
     }
 
     //for n/w operations from an activity
-    public AsyncTaskUtility(Activity activity, Purpose purpose, UserMO loggedInUser, Integer index) {
+    public AsyncTaskUtility(FragmentManager fragmentManager, Activity activity, Purpose purpose, UserMO loggedInUser, Integer index) {
+        this.fragmentManager = fragmentManager;
         this.activity = activity;
         this.purpose = purpose;
         this.loggedInUser = loggedInUser;

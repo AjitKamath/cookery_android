@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/common_cookery_error_backgroud_iv"
+        android:scaleType="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/cookery_error"/>
+
+    <LinearLayout
+        android:background="@color/white"
+        android:layout_below="@+id/common_cookery_error_backgroud_iv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/Gray"
+            android:text="This was unexpected !"/>
+
+        <TextView
+            android:gravity="center"
+            android:textColor="@color/secondaryDarkText"
+            android:id="@+id/common_cookery_error_tv"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/tertiary_text_size"
+            android:text="Our engineers are fixing the melted ice-cream..err the issue !"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

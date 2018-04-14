@@ -2,13 +2,15 @@ package com.cookery.models;
 
 import java.io.Serializable;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by ajit on 29/10/17.
  */
 
-@Data
+@Getter
+@Setter
 public class TimelineMO extends CommonMO implements Serializable {
     private int TMLN_ID;
     private int REF_USER_ID;

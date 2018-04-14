@@ -2,16 +2,19 @@ package com.cookery.models;
 
 import java.io.Serializable;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by ajit on 27/8/17.
  */
 
-@Data
-public class IngredientMO implements Serializable {
+@Getter
+@Setter
+public class IngredientAkaMO implements Serializable {
+    private int ING_AKA_ID;
     private int ING_ID;
-    private String ING_NAME;
+    private String ING_AKA_NAME;
     private int QTY;
     private String IMG;
 

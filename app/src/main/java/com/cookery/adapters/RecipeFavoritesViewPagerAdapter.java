@@ -22,6 +22,10 @@ import com.cookery.models.RecipeMO;
 import java.util.List;
 import java.util.Map;
 
+import static com.cookery.utils.Constants.SIMPLE_KEY_FAVORITES;
+import static com.cookery.utils.Constants.SIMPLE_KEY_REVIEWED;
+import static com.cookery.utils.Constants.SIMPLE_KEY_UNIMPLEMENTED;
+import static com.cookery.utils.Constants.SIMPLE_KEY_VIEWED;
 import static com.cookery.utils.Constants.UI_FONT;
 
 public class RecipeFavoritesViewPagerAdapter extends PagerAdapter {
@@ -44,10 +48,10 @@ public class RecipeFavoritesViewPagerAdapter extends PagerAdapter {
 
         String choice = "";
         switch(position){
-            case 0: choice = "FAVORITES"; break;
-            case 1: choice = "VIEWED"; break;
-            case 2: choice = "REVIEWED"; break;
-            default: choice = "UNIMPL";
+            case 0: choice = SIMPLE_KEY_FAVORITES; break;
+            case 1: choice = SIMPLE_KEY_VIEWED; break;
+            case 2: choice = SIMPLE_KEY_REVIEWED; break;
+            default: choice = SIMPLE_KEY_UNIMPLEMENTED;
         }
 
         setupPage(layout, choice);
@@ -68,10 +72,10 @@ public class RecipeFavoritesViewPagerAdapter extends PagerAdapter {
         if(recipes == null || recipes.isEmpty()){
             String message = "";
             switch(choice){
-                case "FAVORITES": message = "No Favorites Recipes"; break;
-                case "VIEWED": message = "No Viewed Recipes"; break;
-                case "REVIEWED": message = "No Reviewed Recipes"; break;
-                default: message = "UNIMPL";
+                case SIMPLE_KEY_FAVORITES: message = "No Favorites Recipes"; break;
+                case SIMPLE_KEY_VIEWED: message = "No Viewed Recipes"; break;
+                case SIMPLE_KEY_REVIEWED: message = "No Reviewed Recipes"; break;
+                default: message = SIMPLE_KEY_UNIMPLEMENTED;
             }
 
             view_pager_recipes_recipes_mini_tv.setText(message);
@@ -110,10 +114,10 @@ public class RecipeFavoritesViewPagerAdapter extends PagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         switch(position){
-            case 0: return "FAVORITES";
-            case 1: return "VIEWED";
-            case 2: return "REVIEWED";
-            default: return "UNIMPL";
+            case 0: return SIMPLE_KEY_FAVORITES;
+            case 1: return SIMPLE_KEY_VIEWED;
+            case 2: return SIMPLE_KEY_REVIEWED;
+            default: return SIMPLE_KEY_UNIMPLEMENTED;
         }
     }
 

@@ -85,7 +85,7 @@ public class HomeActivity extends CommonActivity{
         ButterKnife.inject(this);
     }
 
-    private void setupTabs(Object array[]) {
+    private void prepareTabs(Object array[]) {
         final List<Integer> viewPagerTabsList = new ArrayList<>();
         viewPagerTabsList.add(R.layout.home_stories);
         viewPagerTabsList.add(R.layout.home_trends);
@@ -156,6 +156,7 @@ public class HomeActivity extends CommonActivity{
                 }
                 else{
                     Log.e(CLASS_NAME, "Error ! Unimplemented menu item !");
+                    return true;
                 }
 
                 return false;
@@ -226,7 +227,7 @@ public class HomeActivity extends CommonActivity{
 
     @Override
     protected void setUpTabs(Object array[]) {
-        this.setupTabs(array);
+        this.prepareTabs(array);
     }
 
 

@@ -12,10 +12,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.cookery.R;
+import com.cookery.exceptions.CookeryException;
+import com.cookery.fragments.CookeryErrorFragment;
 import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MessageFragment;
 import com.cookery.fragments.MyRecipesFragment;
 import com.cookery.fragments.MyReviewsFragment;
+import com.cookery.fragments.NoInternetFragment;
 import com.cookery.fragments.PeopleViewFragment;
 import com.cookery.fragments.ProfileViewEmailFragment;
 import com.cookery.fragments.ProfileViewFragment;
@@ -31,6 +34,7 @@ import com.cookery.fragments.RecipeViewFragment;
 import com.cookery.fragments.RecipeViewImagesFragment;
 import com.cookery.fragments.RecipeViewReviewsFragment;
 import com.cookery.fragments.RecipeViewStepsFragment;
+import com.cookery.fragments.SomethingWrongFragment;
 import com.cookery.fragments.TimelineDeleteFragment;
 import com.cookery.fragments.TimelineHideFragment;
 import com.cookery.fragments.UserViewFragment;
@@ -40,7 +44,7 @@ import com.cookery.models.CommentMO;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FavouritesMO;
 import com.cookery.models.FoodTypeMO;
-import com.cookery.models.IngredientMO;
+import com.cookery.models.IngredientAkaMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.MyListMO;
@@ -213,12 +217,10 @@ public class Utility extends Activity {
 
     public static Object jsonToObject(String jsonStr, Class mappingClass){
         if(jsonStr == null || jsonStr.isEmpty()){
-            Log.e(CLASS_NAME, "JSON is null");
-            return null;
+            throw new CookeryException(CookeryException.ErrorCode.NO_JSON_MAPPING_CLASS);
         }
         else if (mappingClass == null){
-            Log.e(CLASS_NAME, "No mapping class has been passed to map json into object");
-            return null;
+            throw new CookeryException(CookeryException.ErrorCode.JSON_TO_OBJECT_MAPPING_ERROR);
         }
 
         try{
@@ -229,8 +231,8 @@ public class Utility extends Activity {
             else if(mappingClass.equals(CuisineMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<CuisineMO>>(){}.getType());
             }
-            else if(mappingClass.equals(IngredientMO.class)){
-                return gson.fromJson(jsonStr, new TypeToken<List<IngredientMO>>(){}.getType());
+            else if(mappingClass.equals(IngredientAkaMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<List<IngredientAkaMO>>(){}.getType());
             }
             else if(mappingClass.equals(QuantityMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<QuantityMO>>(){}.getType());
@@ -274,11 +276,9 @@ public class Utility extends Activity {
             }
         }
         catch (Exception e){
-            Log.e(CLASS_NAME, "Error in parsing the json("+jsonStr+") into the mapping class("+mappingClass+")");
-            Log.e(CLASS_NAME, e.getMessage());
+            throw new CookeryException("Error in parsing the json("+jsonStr+") into the mapping class("+mappingClass+")",
+                    CookeryException.ErrorCode.BAD_JSON);
         }
-
-        return null;
     }
 
     public static void loadImageFromURL(Context context, String imageAddress, ImageView imageView){
@@ -681,6 +681,30 @@ public class Utility extends Activity {
         }
         else if(fragment instanceof RecipeViewReviewsFragment){
             RecipeViewReviewsFragment currentFrag = (RecipeViewReviewsFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof NoInternetFragment){
+            NoInternetFragment currentFrag = (NoInternetFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof CookeryErrorFragment){
+            CookeryErrorFragment currentFrag = (CookeryErrorFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof SomethingWrongFragment){
+            SomethingWrongFragment currentFrag = (SomethingWrongFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);

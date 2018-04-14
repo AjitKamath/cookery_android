@@ -2,13 +2,15 @@ package com.cookery.models;
 
 import java.io.Serializable;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by ajit on 27/8/17.
  */
 
-@Data
+@Getter
+@Setter
 public class CuisineMO implements Serializable {
     private int FOOD_CSN_ID;
     private String FOOD_CSN_NAME;

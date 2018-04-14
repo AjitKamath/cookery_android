@@ -2,13 +2,15 @@ package com.cookery.models;
 
 import java.io.Serializable;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by ajit on 22/1/18.
  */
 
-@Data
+@Getter
+@Setter
 public class Milestone implements Serializable{
     private int MLT_ID;
     private int RANK_ID;

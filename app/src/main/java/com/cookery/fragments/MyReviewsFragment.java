@@ -104,6 +104,7 @@ public class MyReviewsFragment extends DialogFragment {
                                 case R.id.activity_home_drawer_my_favorites:
                                     // do something
                                     break;
+                                    default:break;
 
                             }
 

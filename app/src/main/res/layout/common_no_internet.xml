@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/common_no_internet_backgroud_iv"
+        android:scaleType="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/no_internet"/>
+
+    <LinearLayout
+        android:background="@color/white"
+        android:layout_below="@+id/common_no_internet_backgroud_iv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/Gray"
+            android:text="No Internet"/>
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/common_no_internet_iv"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/hourglass"/>
+
+            <TextView
+                android:id="@+id/common_wait_tv"
+                android:layout_marginLeft="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/Gray"
+                android:text="Sending SOS .."/>
+
+        </LinearLayout>
+
+        <TextView
+            android:gravity="center"
+            android:textColor="@color/secondaryDarkText"
+            android:id="@+id/common_no_internet_tv"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/tertiary_text_size"
+            android:text="Either your internet is down or you are stranded in a lonely island."/>
+
+    </LinearLayout>
+
+</RelativeLayout>

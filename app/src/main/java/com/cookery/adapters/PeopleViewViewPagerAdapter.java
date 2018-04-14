@@ -29,6 +29,8 @@ import com.cookery.utils.Utility;
 
 import java.util.List;
 
+import static com.cookery.utils.Constants.SIMPLE_KEY_FOLLOWERS;
+import static com.cookery.utils.Constants.SIMPLE_KEY_FOLLOWING;
 import static com.cookery.utils.Constants.UI_FONT;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_VIEW;
 
@@ -86,7 +88,7 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
             else{
                 people_view_followers_following_message_tv.setVisibility(View.GONE);
 
-                setupUsers(layout, followers, "FOLLOWERS");
+                setupUsers(layout, followers, SIMPLE_KEY_FOLLOWERS);
             }
         }
         else{
@@ -107,7 +109,7 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
             else{
                 people_view_followers_following_message_tv.setVisibility(View.GONE);
 
-                setupUsers(layout, following, "FOLLOWING");
+                setupUsers(layout, following, SIMPLE_KEY_FOLLOWING);
             }
         }
         else{
@@ -149,8 +151,8 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position){
-            case 0 : return "FOLLOWING";
-            case 1: return "FOLLOWERS";
+            case 0 : return SIMPLE_KEY_FOLLOWING;
+            case 1: return SIMPLE_KEY_FOLLOWERS;
             default: return "UNIMPLEMENTED";
         }
     }
@@ -202,10 +204,10 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
             layout = (ViewGroup) objects[0];
             people_view_followers_following_srl = (SwipeRefreshLayout) objects[1];
 
-            if("FOLLOWERS".equalsIgnoreCase(purpose)){
+            if(SIMPLE_KEY_FOLLOWERS.equalsIgnoreCase(purpose)){
                 return InternetUtility.fetchUserFollowers(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), index);
             }
-            else if("FOLLOWING".equalsIgnoreCase(purpose)){
+            else if(SIMPLE_KEY_FOLLOWING.equalsIgnoreCase(purpose)){
                 return InternetUtility.fetchUserFollowings(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), index);
             }
             else{
@@ -217,10 +219,10 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
 
         @Override
         protected void onPreExecute() {
-            if("FOLLOWERS".equalsIgnoreCase(purpose)){
+            if(SIMPLE_KEY_FOLLOWERS.equalsIgnoreCase(purpose)){
                 fragment = Utility.showWaitDialog(fragManager, "fetching people who follow you..");
             }
-            else if("FOLLOWING".equalsIgnoreCase(purpose)){
+            else if(SIMPLE_KEY_FOLLOWING.equalsIgnoreCase(purpose)){
                 fragment = Utility.showWaitDialog(fragManager, "fetching people whom you follow..");
             }
             else{
@@ -237,12 +239,12 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
                 Utility.closeWaitDialog(fragManager, fragment);
 
                 Object[] users = (Object[])people;
-                if("FOLLOWERS".equalsIgnoreCase(purpose)){
+                if(SIMPLE_KEY_FOLLOWERS.equalsIgnoreCase(purpose)){
                     users[0] = fetchedUsers;
                     setupFollowers(layout);
                     people_view_followers_following_srl.setRefreshing(false);
                 }
-                else if("FOLLOWING".equalsIgnoreCase(purpose)){
+                else if(SIMPLE_KEY_FOLLOWING.equalsIgnoreCase(purpose)){
                     users[1] = fetchedUsers;
                     setupFollowing(layout);
                     people_view_followers_following_srl.setRefreshing(false);

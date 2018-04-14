@@ -278,6 +278,7 @@ public class RecipeViewFragment extends DialogFragment {
                 CommentMO comment = new CommentMO();
                 comment.setTYPE_ID(recipe.getRCP_ID());
                 comment.setTYPE("RECIPE");
+                comment.setRecipeImage(recipe.getImages().get(0).getRCP_IMG());
 
                 new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE,
                         AsyncTaskUtility.Purpose.FETCH_COMMENTS, loggedInUser, 0)
@@ -317,7 +318,21 @@ public class RecipeViewFragment extends DialogFragment {
                             .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like, view);
                 }
                 else if(R.id.recipe_view_images_fullscreen_item_comments_ll == view.getId()){
-                    //TODO: comment recipe image
+                    ImageMO image = (ImageMO) view.getTag();
+
+                    if(image == null){
+                        Log.e(CLASS_NAME, "Image is null/empty");
+                        return;
+                    }
+
+                    CommentMO comment = new CommentMO();
+                    comment.setTYPE_ID(image.getRCP_IMG_ID());
+                    comment.setTYPE("RECIPE_IMG");
+                    comment.setRecipeImage(image.getRCP_IMG());
+
+                    new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE,
+                            AsyncTaskUtility.Purpose.FETCH_COMMENTS, loggedInUser, 0)
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, comment, 0);
                 }
                 else{
                     Log.e(CLASS_NAME, "Could not identify the purpose of event on this view");

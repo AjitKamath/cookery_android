@@ -1,12 +1,14 @@
 package com.cookery.models;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by ajit on 10/10/17.
  */
 
-@Data
+@Getter
+@Setter
 public class LikesMO {
     private int USER_ID;
     private int TYPE_ID;
