@@ -246,16 +246,27 @@ public class RecipeViewImagesFragment extends DialogFragment {
                     String pathr = url.getPath();
                     String filename = pathr.substring(pathr.lastIndexOf('/') + 1);
                     pathl = storeDir + "/" + filename;
-                    FileOutputStream fos = new FileOutputStream(pathl);
+                    FileOutputStream fos = null;
+                    try {
+                        fos = new FileOutputStream(pathl);
 
-                    byte data[] = new byte[1024];
-                    long total = 0;
-                    while ((count = is.read(data)) != -1) {
-                        total += count;
-                        // writing data to output file
-                        fos.write(data, 0, count);
+                        byte data[] = new byte[1024];
+                        long total = 0;
+                        while ((count = is.read(data)) != -1) {
+                            total += count;
+                            // writing data to output file
+                            fos.write(data, 0, count);
 
+                        }
                     }
+                    catch (IOException exp)
+                    {
+                        exp.printStackTrace();
+                    }
+                    finally {
+                        fos.close();
+                    }
+
                     is.close();
                     fos.flush();
                     fos.close();
@@ -306,24 +317,32 @@ public class RecipeViewImagesFragment extends DialogFragment {
                     String pathr = url.getPath();
                     String filename = pathr.substring(pathr.lastIndexOf('/') + 1);
                     pathl = storeDir + "/" + filename;
-                    FileOutputStream fos = new FileOutputStream(pathl);
+                    FileOutputStream fos=null;
+                    try {
+                        fos = new FileOutputStream(pathl);
 
-                    byte data[] = new byte[1024];
-                    long total = 0;
-                    publishProgress(objects[0].get(i).getRCP_IMG());
-                    while ((count = is.read(data)) != -1) {
-                        total += count;
-                        // writing data to output file
-                        fos.write(data, 0, count);
+                        byte data[] = new byte[1024];
+                        long total = 0;
+                        publishProgress(objects[0].get(i).getRCP_IMG());
+                        while ((count = is.read(data)) != -1) {
+                            total += count;
+                            // writing data to output file
+                            fos.write(data, 0, count);
+                        }
                     }
-
+                    catch (IOException exp)
+                    {
+                     exp.printStackTrace();
+                    }
+                    finally {
+                        fos.close();
+                    }
                     is.close();
                     fos.flush();
-                    fos.close();
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
             }
             return null;
         }
