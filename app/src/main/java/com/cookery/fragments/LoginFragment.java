@@ -48,7 +48,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.cookery.utils.Constants.DEFAULT_SOCIAL_PASSWORD;
+import static com.cookery.utils.Constants.DEFAULT_SOCIAL_KEY;
 import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
@@ -133,7 +133,7 @@ public class LoginFragment extends DialogFragment {
             GoogleSignInAccount acct = result.getSignInAccount();
             UserMO userobj = new UserMO();
             userobj.setNAME(acct.getGivenName()+" "+acct.getFamilyName());
-            userobj.setPASSWORD(DEFAULT_SOCIAL_PASSWORD);
+            userobj.setPASSWORD(DEFAULT_SOCIAL_KEY);
             userobj.setEMAIL(acct.getEmail());
 
             checkSocialRegistration(userobj);
@@ -242,7 +242,7 @@ public class LoginFragment extends DialogFragment {
                                 try {
                                     UserMO userobj = new UserMO();
                                     userobj.setNAME(object.getString("first_name") + " " + object.getString("last_name"));
-                                    userobj.setPASSWORD(DEFAULT_SOCIAL_PASSWORD);
+                                    userobj.setPASSWORD(DEFAULT_SOCIAL_KEY);
                                     userobj.setEMAIL(object.getString("email"));
                                     checkSocialRegistration(userobj);
                                 }

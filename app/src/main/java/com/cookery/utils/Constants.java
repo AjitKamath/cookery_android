@@ -14,7 +14,7 @@ public final class Constants {
 
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_AJIT = "www.finappl.com";
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_VISHAL = "cookery_php-dial2vishal53897.codeanyapp.com";
-    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_AJIT;
+    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_VISHAL;
 
     private static final String SERVER_CODEANYWHERE_PUBLIC_DIR = "public";
 
@@ -231,7 +231,7 @@ public final class Constants {
     public final static int LAUNCHES_UNTIL_PROMPT = 7;//Min number of launches
 
     // Social Registration
-    public final static String DEFAULT_SOCIAL_PASSWORD = "DEFAULT_SOCIAL_PASSWORD";
+    public final static String DEFAULT_SOCIAL_KEY = "DEFAULT_SOCIAL_KEY";
 
     //security keys
     public final static String UNIQUE_IDENTIFIER = "UNIQUE_IDENTIFIER";
