@@ -80,6 +80,7 @@ public class OnBoardingSplashFragment extends DialogFragment {
     });
 
 
+
     prev_btn.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
