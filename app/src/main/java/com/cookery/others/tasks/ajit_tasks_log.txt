@@ -355,3 +355,12 @@
 1. #241 Custom Exceptions
 2. #339 No Internet
 3. #294 Everywhere in PHP - Escape Special Characters
+
+-- git checkin on 13 April 2018 --
+
+14 april 2018
+1. #264 - User View - Comment User Photo
+2. #273 - Everywhere - Liked Users
+
+16 april 2018
+1. #291 - Categorize Ingredients

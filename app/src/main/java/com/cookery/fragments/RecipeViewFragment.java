@@ -24,15 +24,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.adapters.RecipeViewImagesFullscreenViewPagerAdapter;
+import com.cookery.adapters.ImagesFullscreenViewPagerAdapter;
 import com.cookery.adapters.RecipeViewViewPagerAdapter;
 import com.cookery.models.CommentMO;
 import com.cookery.models.FavouritesMO;
-import com.cookery.models.ImageMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
+import com.cookery.models.RecipeImageMO;
 import com.cookery.models.RecipeMO;
-import com.cookery.models.ReviewMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.InternetUtility;
@@ -52,10 +51,8 @@ import butterknife.InjectView;
 import lombok.Setter;
 
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_STEPS;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
-import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
@@ -278,30 +275,27 @@ public class RecipeViewFragment extends DialogFragment {
                 CommentMO comment = new CommentMO();
                 comment.setTYPE_ID(recipe.getRCP_ID());
                 comment.setTYPE("RECIPE");
-                comment.setRecipeImage(recipe.getImages().get(0).getRCP_IMG());
 
                 new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE,
                         AsyncTaskUtility.Purpose.FETCH_COMMENTS, loggedInUser, 0)
-                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, comment, 0);
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, recipe, comment);
             }
         });
     }
 
     private void setupImages() {
-        common_fragment_recipe_vp.setAdapter(new RecipeViewImagesFullscreenViewPagerAdapter(mContext, recipe.getImages(), new View.OnClickListener() {
+        common_fragment_recipe_vp.setAdapter(new ImagesFullscreenViewPagerAdapter(mContext, recipe.getImages(), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(R.id.recipe_view_images_fullscreen_item_image_iv == view.getId()){
-                    Object array[] = new Object[]{common_fragment_recipe_vp.getCurrentItem(), recipe.getImages()};
-
-                    Map<String, Object> bundleMap = new HashMap<String, Object>();
-                    bundleMap.put(GENERIC_OBJECT, array);
-                    bundleMap.put(LOGGED_IN_USER, loggedInUser);
-
-                    Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE, FRAGMENT_RECIPE_IMAGES, new RecipeViewImagesFragment(), bundleMap);
+                if(R.id.common_images_fullscreen_item_image_rl == view.getId()){
+                    new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE,
+                            AsyncTaskUtility.Purpose.FETCH_RECIPE_IMAGES, loggedInUser, 0)
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, recipe, common_fragment_recipe_vp.getCurrentItem());
                 }
-                else if(R.id.recipe_view_images_fullscreen_item_likes_ll == view.getId()){
-                    ImageMO image = (ImageMO) view.getTag();
+                else if(R.id.common_like_view_ll == view.getId()){
+                    RecipeImageMO image = (RecipeImageMO) view.getTag();
+
+                    Utility.addRemoveLike(view);
 
                     if(image == null){
                         Log.e(CLASS_NAME, "Image is null/empty");
@@ -317,26 +311,42 @@ public class RecipeViewFragment extends DialogFragment {
                             AsyncTaskUtility.Purpose.SUBMIT_LIKE, loggedInUser, 0)
                             .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like, view);
                 }
-                else if(R.id.recipe_view_images_fullscreen_item_comments_ll == view.getId()){
-                    ImageMO image = (ImageMO) view.getTag();
-
-                    if(image == null){
-                        Log.e(CLASS_NAME, "Image is null/empty");
-                        return;
-                    }
+                else if(R.id.common_images_fullscreen_item_comments_ll == view.getId()){
+                    RecipeImageMO image = (RecipeImageMO) view.getTag();
+                    image.setRecipeName(recipe.getRCP_NAME());
 
                     CommentMO comment = new CommentMO();
                     comment.setTYPE_ID(image.getRCP_IMG_ID());
                     comment.setTYPE("RECIPE_IMG");
-                    comment.setRecipeImage(image.getRCP_IMG());
 
                     new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE,
                             AsyncTaskUtility.Purpose.FETCH_COMMENTS, loggedInUser, 0)
-                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, comment, 0);
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,image, comment);
                 }
                 else{
                     Log.e(CLASS_NAME, "Could not identify the purpose of event on this view");
                 }
+            }
+        }, new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(v.getId() == R.id.common_like_view_ll){
+                    RecipeImageMO image = (RecipeImageMO) v.getTag();
+
+                    LikesMO like = new LikesMO();
+                    like.setUSER_ID(loggedInUser.getUSER_ID());
+                    like.setTYPE("RECIPE_IMG");
+                    like.setTYPE_ID(image.getRCP_IMG_ID());
+
+                    new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE,
+                            AsyncTaskUtility.Purpose.FETCH_USERS, loggedInUser, 0)
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "LIKE", like , image);
+                }
+                else{
+                    Log.e(CLASS_NAME, "Long click for this view not yet implemented");
+                }
+
+                return false;
             }
         }));
 
@@ -364,27 +374,10 @@ public class RecipeViewFragment extends DialogFragment {
         recipe_view_images_count_tv.setText(index + "/" + maxCount);
     }
 
+    @Deprecated
     public void updateRecipeLikeView(LikesMO like) {
         common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(like.getLikesCount()));
         common_fragment_recipe_like_iv.setImageResource(Utility.getLikeImageId(recipe.isUserLiked()));
-    }
-
-    public void updateReviewView(ReviewMO review) {
-        common_fragment_recipe_rating_tv.setText(String.valueOf(review.getAvgRating()));
-        common_fragment_recipe_rating_iv.setImageResource(Utility.getReviewImageId(review.isUserReviewed()));
-    }
-
-    public void updateRecipeImageLikeView(LikesMO like, View layout) {
-        layout.findViewById(R.id.recipe_view_images_fullscreen_item_likes_iv).setBackgroundResource(Utility.getLikeImageId(like.isUserLiked()));
-        ((TextView)layout.findViewById(R.id.recipe_view_images_fullscreen_item_likes_tv)).setText(Utility.getSmartNumber(like.getLikesCount()));
-
-        for(ImageMO image : recipe.getImages()){
-            if(image.getRCP_IMG_ID() == like.getTYPE_ID()){
-                image.setLikesCount(like.getLikesCount());
-                image.setUserLiked(like.isUserLiked());
-                break;
-            }
-        }
     }
 
     public void updateFavoriteView(ArrayList<FavouritesMO> fav) {
@@ -413,16 +406,20 @@ public class RecipeViewFragment extends DialogFragment {
                 new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE,
                         AsyncTaskUtility.Purpose.SUBMIT_LIKE, loggedInUser, 0)
                         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
-                //new AsyncSubmitRecipeLike().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
             }
         });
 
         common_fragment_recipe_like_ll.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                LikesMO like = new LikesMO();
+                like.setUSER_ID(loggedInUser.getUSER_ID());
+                like.setTYPE("RECIPE");
+                like.setTYPE_ID(recipe.getRCP_ID());
+
                 new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE,
                         AsyncTaskUtility.Purpose.FETCH_USERS, loggedInUser, 0)
-                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "LIKE", recipe , 0);
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "LIKE", like , recipe);
                 return true;
             }
         });

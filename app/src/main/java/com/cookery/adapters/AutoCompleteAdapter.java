@@ -54,18 +54,6 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
 
     @Override
     public String getItem(int position) {
-        /*if(filteredIngredients.get(position) instanceof IngredientAkaMO){
-            return String.valueOf(((IngredientAkaMO) filteredIngredients.get(position)).getING_AKA_NAME());
-        }
-        else if(filteredIngredients.get(position) instanceof RecipeMO){
-            return String.valueOf(((RecipeMO) filteredIngredients.get(position)).getRCP_NAME());
-        }
-        else{
-            Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+filteredIngredients.get(position));
-        }
-
-        return "ERROR";*/
-
         return "";
     }
 
@@ -80,8 +68,9 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         convertView = inflater.inflate(layout, parent, false);
 
-        TextView autocomplete_tv = new TextView(mContext);
-        ImageView autocomplete_iv;
+        TextView autocomplete_ingredient_tv = new TextView(mContext);
+        ImageView autocomplete_ingredient_iv;
+        TextView autocomplete_ingredient_category_tv;
 
         if(filteredIngredients.get(position) instanceof IngredientAkaMO){
             // Get the data item from filtered list.
@@ -89,11 +78,16 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
 
             LinearLayout autocomplete_ingredient_ll = convertView.findViewById(R.id.autocomplete_ingredient_ll);
 
-            autocomplete_tv = convertView.findViewById(R.id.autocomplete_ingredient_tv);
-            autocomplete_iv = convertView.findViewById(R.id.autocomplete_ingredient_iv);
+            autocomplete_ingredient_tv = convertView.findViewById(R.id.autocomplete_ingredient_tv);
+            autocomplete_ingredient_iv = convertView.findViewById(R.id.autocomplete_ingredient_iv);
+            autocomplete_ingredient_category_tv = convertView.findViewById(R.id.autocomplete_ingredient_category_tv);
 
-            autocomplete_tv.setText(ingredient.getING_AKA_NAME());
-            Utility.loadImageFromURL(mContext, ingredient.getIMG(), autocomplete_iv);
+            autocomplete_ingredient_tv.setText(ingredient.getING_AKA_NAME());
+            autocomplete_ingredient_category_tv.setText(ingredient.getIngredientCategoryName());
+
+            if(ingredient.getImages() != null && !ingredient.getImages().isEmpty()){
+                Utility.loadImageFromURL(mContext, ingredient.getImages().get(0).getING_IMG(), autocomplete_ingredient_iv);
+            }
 
             convertView.setTag(ingredient);
 
@@ -103,7 +97,7 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
             Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+filteredIngredients.get(position));
         }
 
-        query = String.valueOf(autocomplete_tv.getText());
+        query = String.valueOf(autocomplete_ingredient_tv.getText());
 
         return convertView;
     }

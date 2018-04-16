@@ -1,0 +1,4 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <item name="common_like_view_like" type="id"/>
+    <item name="common_like_view_like_count" type="id"/>
+</resources>

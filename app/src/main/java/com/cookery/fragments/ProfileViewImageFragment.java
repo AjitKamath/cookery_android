@@ -23,7 +23,7 @@ import com.cookery.utils.Utility;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
+import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.UI_FONT;
@@ -39,14 +39,8 @@ public class ProfileViewImageFragment extends DialogFragment {
     @InjectView(R.id.profile_view_image_fullscreen_iv)
     ImageView profile_view_image_fullscreen_iv;
 
-    @InjectView(R.id.profile_view_image_fullscreen_likes_ll)
-    LinearLayout profile_view_image_fullscreen_likes_ll;
-
-    @InjectView(R.id.profile_view_image_fullscreen_likes_iv)
-    ImageView profile_view_image_fullscreen_likes_iv;
-
-    @InjectView(R.id.profile_view_image_fullscreen_likes_tv)
-    TextView profile_view_image_fullscreen_likes_tv;
+    @InjectView(R.id.common_like_view_ll)
+    LinearLayout common_like_view_ll;
 
     @InjectView(R.id.profile_view_image_fullscreen_comments_ll)
     LinearLayout profile_view_image_fullscreen_comments_ll;
@@ -86,28 +80,46 @@ public class ProfileViewImageFragment extends DialogFragment {
         setupLikeView(user);
     }
 
-    public void setupLikeView(final UserMO user) {
-        profile_view_image_fullscreen_likes_iv.setBackgroundResource(Utility.getLikeImageId(user.isUserLiked()));
-        profile_view_image_fullscreen_likes_tv.setText(Utility.getSmartNumber(user.getLikesCount()));
+    private void setupLikeView(UserMO user) {
+        Utility.setupLikeView(common_like_view_ll, user.isUserLiked(), user.getLikesCount());
 
-        profile_view_image_fullscreen_likes_ll.setOnClickListener(new View.OnClickListener() {
+        common_like_view_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UserMO user = (UserMO) v.getTag();
+
+                Utility.addRemoveLike(v);
+
                 LikesMO like = new LikesMO();
                 like.setUSER_ID(loggedInUser.getUSER_ID());
                 like.setTYPE("USER");
                 like.setTYPE_ID(user.getUSER_ID());
 
-                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW_IMAGE,
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_COMMENTS,
                         AsyncTaskUtility.Purpose.SUBMIT_LIKE, loggedInUser, 0)
                         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
             }
         });
 
-        if(getTargetFragment() instanceof UserViewFragment){
-            ((UserViewFragment)getTargetFragment()).setUser(user);
-            ((UserViewFragment)getTargetFragment()).setupLikeView(user);
-        }
+        common_like_view_ll.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                UserMO user = (UserMO) v.getTag();
+
+                LikesMO like = new LikesMO();
+                like.setUSER_ID(loggedInUser.getUSER_ID());
+                like.setTYPE("USER");
+                like.setTYPE_ID(user.getUSER_ID());
+
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_COMMENTS,
+                        AsyncTaskUtility.Purpose.FETCH_USERS, loggedInUser, 0)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "LIKE", like , user);
+
+                return false;
+            }
+        });
+
+        common_like_view_ll.setTag(user);
     }
 
     // Empty constructor required for DialogFragment

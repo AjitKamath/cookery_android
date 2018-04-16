@@ -256,7 +256,7 @@ public class MessageFragment extends DialogFragment {
                 @Override
                 public void onClick(View view) {
                     dismiss();
-                    ((RecipeViewCommentsFragment) getTargetFragment()).deleteComment((CommentMO) mesage.getObject());
+                    ((CommentsFragment) getTargetFragment()).deleteComment((CommentMO) mesage.getObject());
                 }
             });
 

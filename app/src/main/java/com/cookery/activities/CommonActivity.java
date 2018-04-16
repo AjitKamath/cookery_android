@@ -252,6 +252,10 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
             ((TextView) getNav_view().findViewById(R.id.navigation_header_name_tv)).setText(loggedInUser.getNAME());
         }
 
+        if(loggedInUser.getCurrentRank() != null && !loggedInUser.getCurrentRank().trim().isEmpty()){
+            ((TextView) getNav_view().findViewById(R.id.common_nav_header_rank_tv)).setText(loggedInUser.getCurrentRank());
+        }
+
         if (loggedInUser.getEMAIL() != null && !loggedInUser.getEMAIL().trim().isEmpty()) {
             ((TextView) getNav_view().findViewById(R.id.navigation_header_email_tv)).setText(loggedInUser.getEMAIL());
         }
@@ -342,33 +346,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         paramsMap.put(GENERIC_OBJECT, new RecipeMO());
 
         Utility.showFragment(getFragmentManager(), null, FRAGMENT_ADD_RECIPE, new RecipeAddFragment(), paramsMap);
-
-        /*String fragmentNameStr = FRAGMENT_ADD_RECIPE;
-        String parentFragmentNameStr = null;
-
-        FragmentManager manager = getFragmentManager();
-        Fragment frag = manager.findFragmentByTag(fragmentNameStr);
-
-        if (frag != null) {
-            manager.beginTransaction().remove(frag).commit();
-        }
-
-        Fragment parentFragment = null;
-        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
-            parentFragment = manager.findFragmentByTag(parentFragmentNameStr);
-        }
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(MASTER, masterData);
-
-        RecipeAddFragment fragment = new RecipeAddFragment();
-        fragment.setArguments(bundle);
-
-        if (parentFragment != null) {
-            fragment.setTargetFragment(parentFragment, 0);
-        }
-
-        fragment.show(manager, fragmentNameStr);*/
     }
 
     private void showFavRecipesFragment(Map<String, List<RecipeMO>> favRecipes) {

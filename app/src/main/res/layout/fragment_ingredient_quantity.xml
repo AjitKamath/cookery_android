@@ -37,9 +37,18 @@
             android:id="@+id/fragment_ingredient_quantity_ingredient_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MILK"
+            android:text="INGREDIENT"
             android:textColor="@color/secondaryDarkText"
             android:textSize="@dimen/primary_text_size" />
+
+        <TextView
+            android:id="@+id/fragment_ingredient_quantity_ingredient_category_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CATEGORY"
+            android:textColor="@color/tertiaryDarkText"
+            android:textSize="@dimen/tertiary_text_size" />
+
     </LinearLayout>
 
     <LinearLayout

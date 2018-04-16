@@ -4,81 +4,80 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.adapters.RecipeAddImagesViewPagerAdapter;
-import com.cookery.models.RecipeImageMO;
-import com.cookery.models.RecipeMO;
-import com.cookery.utils.Utility;
-
-import java.util.List;
+import com.cookery.models.CommentMO;
+import com.cookery.models.UserMO;
+import com.cookery.utils.AsyncTaskUtility;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.FRAGMENT_COMMENT_DELETE;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
+import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
 
 /**
  * Created by ajit on 21/3/16.
  */
-public class RecipeImagesFragment extends DialogFragment {
+public class DeleteCommentFragment extends DialogFragment {
     private final String CLASS_NAME = this.getClass().getName();
     private Context mContext;
 
-    //components
-    @InjectView(R.id.common_fragment_recipe_images_vp)
-    ViewPager common_fragment_recipe_images_vp;
-    //end of components
+    @InjectView(R.id.delete_comment_ll)
+    LinearLayout delete_comment_ll;
 
-    private List<RecipeImageMO> imagesList;
+    private CommentMO comment;
+    private UserMO loggedInUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.common_fragment_recipe_images, container);
+        View view = inflater.inflate(R.layout.delete_comment, container);
         ButterKnife.inject(this, view);
 
         Dialog d = getDialog();
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         getDataFromBundle();
-
         setupPage();
 
         return view;
     }
 
-    private void getDataFromBundle() {
-        imagesList = ((RecipeMO)getArguments().get(GENERIC_OBJECT)).getImages();
+    private void setupPage() {
+        delete_comment_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_COMMENT_DELETE,
+                        AsyncTaskUtility.Purpose.DELETE_COMMENT, loggedInUser, 0)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, comment);
+            }
+        });
     }
 
-    private void setupPage() {
-        if(imagesList == null || imagesList.isEmpty()){
-            Log.e(CLASS_NAME, "Error ! Object is null");
-            return;
-        }
+    public void deleteComment(CommentMO comment) {
+        dismiss();
 
-        common_fragment_recipe_images_vp.setAdapter(new RecipeAddImagesViewPagerAdapter(mContext, imagesList, false, new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                RecipeMO temp = new RecipeMO();
-                temp.setImages(imagesList);
+        ((CommentsFragment)getTargetFragment()).deleteComment(comment);
+    }
 
-                Utility.showRecipeImagesFragment(getFragmentManager(), temp);
-            }
-        }));
+    private void getDataFromBundle() {
+        comment = (CommentMO) getArguments().get(SELECTED_ITEM);
+        loggedInUser = (UserMO)getArguments().get(LOGGED_IN_USER);
     }
 
     // Empty constructor required for DialogFragment
-    public RecipeImagesFragment() {}
+    public DeleteCommentFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,9 +90,9 @@ public class RecipeImagesFragment extends DialogFragment {
         super.onStart();
 
         Dialog d = getDialog();
-        if (d!=null) {
+        if (d != null) {
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
-            int height = ViewGroup.LayoutParams.MATCH_PARENT;;
+            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
             d.getWindow().setLayout(width, height);
         }
     }
@@ -106,12 +105,11 @@ public class RecipeImagesFragment extends DialogFragment {
         int count = group.getChildCount();
         View v;
 
-        for(int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             v = group.getChildAt(i);
-            if(v instanceof TextView) {
+            if (v instanceof TextView) {
                 ((TextView) v).setTypeface(robotoCondensedLightFont);
-            }
-            else if(v instanceof ViewGroup) {
+            } else if (v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
             }
         }

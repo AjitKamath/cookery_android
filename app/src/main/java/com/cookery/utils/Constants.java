@@ -77,6 +77,7 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_TIMELINE_DELETE = "TIMELINE_DELETE";
     public static final String PHP_FUNCTION_KEY_USER_SEARCH = "USER_SEARCH";
     public static final String PHP_FUNCTION_KEY_TREND_FETCH = "TREND_FETCH";
+    public static final String PHP_FUNCTION_KEY_FETCH_RECIPE_IMAGES = "RECIPE_IMAGES_FETCH";
     /*PHP function keys*/
 
     /*Timeline keys*/
@@ -138,11 +139,12 @@ public final class Constants {
     public static final String FRAGMENT_ADD_RECIPE = "FRAGMENT_ADD_RECIPE";
     public static final String FRAGMENT_MY_FAVORITES = "FRAGMENT_MY_FAVORITES";
     public static final String FRAGMENT_RECIPE = "FRAGMENT_RECIPE";
-    public static final String FRAGMENT_RECIPE_COMMENTS = "FRAGMENT_RECIPE_COMMENTS";
+    public static final String FRAGMENT_COMMENTS = "FRAGMENT_COMMENTS";
+    public static final String FRAGMENT_COMMENT_DELETE = "FRAGMENT_COMMENT_DELETE";
     public static final String FRAGMENT_RECIPE_REVIEW = "FRAGMENT_RECIPE_REVIEW";
     public static final String FRAGMENT_RECIPE_REVIEWS = "FRAGMENT_RECIPE_REVIEWS";
     public static final String FRAGMENT_RECIPE_IMAGES = "FRAGMENT_RECIPE_IMAGES";
-    public static final String FRAGMENT_RECIPE_LIKED_USERS = "FRAGMENT_RECIPE_LIKED_USERS";
+    public static final String FRAGMENT_LIKED_USERS = "FRAGMENT_LIKED_USERS";
     public static final String FRAGMENT_RECIPE_VIEWED_USERS = "FRAGMENT_RECIPE_VIEWED_USERS";
     public static final String FRAGMENT_RECIPE_STEPS = "FRAGMENT_RECIPE_STEPS";
     public static final String FRAGMENT_COMMON_SELECTION = "FRAGMENT_COMMON_SELECTION";

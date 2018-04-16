@@ -35,7 +35,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/happy"
+                android:src="@drawable/placeholder"
                 app:border_color="@color/white"
                 app:border_width="1dp" />
 
@@ -50,7 +50,7 @@
                     android:id="@+id/navigation_header_name_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Vishal Varshney"
+                    android:text="First Name Last Name"
                     android:textColor="@color/primaryLightText"
                     android:textSize="@dimen/primary_text_size" />
 
@@ -58,7 +58,7 @@
                     android:id="@+id/common_nav_header_rank_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FOODIE"
+                    android:text="User Rank"
                     android:textColor="@color/secondaryLightText"
                     android:textSize="@dimen/tertiary_text_size" />
 
@@ -67,7 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="dial2vishal@gmail.com"
+                    android:text="email@domain.com"
                     android:textColor="@color/secondaryLightText"
                     android:textSize="@dimen/tertiary_text_size" />
 

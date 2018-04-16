@@ -12,6 +12,7 @@ import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.MyListMO;
 import com.cookery.models.QuantityMO;
+import com.cookery.models.RecipeImageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.TasteMO;
@@ -36,6 +37,7 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_DELETE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FAV_SUBMIT;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FETCH_RECIPE_IMAGES;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FOOD_CUISINE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FOOD_TYPE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_INGREDIENT_FETCH;
@@ -83,7 +85,6 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_PHONE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_VIEW_FETCH_USERS;
 import static com.cookery.utils.Constants.SERVER_ADDRESS_PUBLIC;
 import static com.cookery.utils.Constants.SERVER_CHARSET;
-import static com.cookery.utils.Constants.SUCCESS;
 
 /**
  * Created by ajit on 13/9/17.
@@ -279,8 +280,7 @@ public class InternetUtility {
     }
 
 
-    public static MessageMO submitRecipeComment(CommentMO comment) {
-        MessageMO message = new MessageMO();
+    public static Object submitComment(CommentMO comment) {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_COMMENT_SUBMIT);
         paramMap.put("type", comment.getTYPE());
@@ -288,13 +288,7 @@ public class InternetUtility {
         paramMap.put("user_id", String.valueOf(comment.getUSER_ID()));
         paramMap.put("comment", comment.getCOMMENT());
 
-        String response = getResponseFromCookery(paramMap);
-
-        if (SUCCESS.equalsIgnoreCase(response)) {
-            message.setError(false);
-        }
-
-        return message;
+        return Utility.jsonToObject(getResponseFromCookery(paramMap), CommentMO.class);
     }
 
     public static Object submitRecipeReview(UserMO loggedInUser, RecipeMO recipe) {
@@ -317,7 +311,7 @@ public class InternetUtility {
         return Utility.jsonToObject(getResponseFromCookery(paramMap), MessageMO.class);
     }
 
-    public static Object deleteRecipeComment(UserMO loggedInUser, CommentMO comment) {
+    public static Object deleteComment(UserMO loggedInUser, CommentMO comment) {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_COMMENT_DELETE);
         paramMap.put("com_id", String.valueOf(comment.getCOM_ID()));
@@ -692,5 +686,15 @@ public class InternetUtility {
 
         String jsonStr = getResponseFromCookery(paramMap);
         return Utility.jsonToObject(jsonStr, UserMO.class);
+    }
+
+    public static Object fetchRecipeImages(UserMO loggedInUser, RecipeMO recipe) {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_FETCH_RECIPE_IMAGES);
+        paramMap.put("user_id", String.valueOf(loggedInUser.getUSER_ID()));
+        paramMap.put("rcp_id", String.valueOf(recipe.getRCP_ID()));
+
+        String jsonStr = getResponseFromCookery(paramMap);
+        return Utility.jsonToObject(jsonStr, RecipeImageMO.class);
     }
 }

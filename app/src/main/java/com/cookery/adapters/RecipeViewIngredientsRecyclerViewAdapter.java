@@ -65,9 +65,12 @@ public class RecipeViewIngredientsRecyclerViewAdapter extends RecyclerView.Adapt
     public void onBindViewHolder(ViewHolder holder, int position) {
         final IngredientAkaMO ingredient = ingredients.get(position);
 
-        Utility.loadImageFromURL(mContext, ingredient.getIMG(), holder.recipe_view_ingredients_item_iv);
+        if(ingredient.getImages() != null && !ingredient.getImages().isEmpty()){
+            Utility.loadImageFromURL(mContext, ingredient.getImages().get(0).getING_IMG(), holder.recipe_view_ingredients_item_iv);
+        }
 
         holder.recipe_view_ingredients_item_tv.setText(ingredient.getING_AKA_NAME().toUpperCase());
+        holder.recipe_view_ingredients_category_item_tv.setText(ingredient.getIngredientCategoryName());
         holder.recipe_view_ingredients_item_qty_tv.setText(String.valueOf(ingredient.getING_QTY()));
         holder.recipe_view_ingredients_item_qty_type_tv.setText(ingredient.getQTY_NAME().toUpperCase());
 
@@ -127,6 +130,7 @@ public class RecipeViewIngredientsRecyclerViewAdapter extends RecyclerView.Adapt
             View.OnCreateContextMenuListener, View.OnLongClickListener  {
         public CircleImageView recipe_view_ingredients_item_iv;
         public TextView recipe_view_ingredients_item_tv;
+        public TextView recipe_view_ingredients_category_item_tv;
         public TextView recipe_view_ingredients_item_qty_tv;
         public TextView recipe_view_ingredients_item_qty_type_tv;
         public View recipe_view_ingredients_item_divider_view;
@@ -137,6 +141,7 @@ public class RecipeViewIngredientsRecyclerViewAdapter extends RecyclerView.Adapt
             super(view);
             recipe_view_ingredients_item_iv = view.findViewById(R.id.recipe_view_ingredients_item_iv);
             recipe_view_ingredients_item_tv = view.findViewById(R.id.recipe_view_ingredients_item_tv);
+            recipe_view_ingredients_category_item_tv = view.findViewById(R.id.recipe_view_ingredients_category_item_tv);
             recipe_view_ingredients_item_qty_tv = view.findViewById(R.id.recipe_view_ingredients_item_qty_tv);
             recipe_view_ingredients_item_qty_type_tv = view.findViewById(R.id.recipe_view_ingredients_item_qty_type_tv);
             recipe_view_ingredients_item_divider_view = view.findViewById(R.id.recipe_view_ingredients_item_divider_view);

@@ -34,15 +34,32 @@
                 app:border_color="@color/white"
                 app:border_width="1dp" />
 
-            <TextView
-                android:id="@+id/recipe_add_ingredients_item_tv"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:maxWidth="200dp"
-                android:text="NOODLES"
-                android:textColor="@color/primaryDarkText"
-                android:textSize="@dimen/secondary_text_size" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/recipe_add_ingredients_item_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:maxWidth="200dp"
+                    android:text="INGREDIENT"
+                    android:textColor="@color/primaryDarkText"
+                    android:textSize="@dimen/secondary_text_size" />
+
+                <TextView
+                    android:id="@+id/recipe_add_ingredients_category_item_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:maxWidth="200dp"
+                    android:text="CATEGORY"
+                    android:textColor="@color/tertiaryDarkText"
+                    android:textSize="@dimen/quaternary_text_size" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

@@ -1,0 +1,27 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/common_like_view_ll"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/common_like_view_iv"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="true"
+        android:src="@drawable/heart_unselected" />
+
+    <TextView
+        android:id="@+id/common_like_view_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="@color/tertiaryDarkText"
+        android:textSize="@dimen/tertiary_text_size" />
+
+</LinearLayout>

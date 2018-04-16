@@ -7,22 +7,20 @@ package com.cookery.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.CommentMO;
-import com.cookery.models.LikesMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.DateTimeUtility;
-import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
@@ -41,6 +39,7 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
     private View.OnLongClickListener longClickListener;
     private OnBottomReachedListener onBottomReachedListener;
     private UserMO loggedInUser;
+    public boolean stopOnBottomListener;
 
     public RecipeCommentsRecyclerViewAdapter(Context mContext, UserMO loggedInUser, List<CommentMO> comments, View.OnClickListener listener, View.OnLongClickListener longClickListener) {
         this.mContext = mContext;
@@ -83,15 +82,9 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
             holder.recipe_comments_item_delete_iv.setVisibility(View.GONE);
         }
 
-        if(comment.isUserLiked()){
-            holder.recipe_comments_likes_iv.setImageResource(R.drawable.heart);
-        }
-        else{
-            holder.recipe_comments_likes_iv.setImageResource(R.drawable.heart_unselected);
-        }
+        Utility.setupLikeView(holder.common_like_view_ll, comment.isUserLiked(), comment.getLikesCount());
 
         holder.recipe_comments_item_tv.setText(comment.getCOMMENT());
-        holder.recipe_comments_item_likes_count_tv.setText(Utility.getSmartNumber(comment.getLikesCount()));
 
         if(comment.getMOD_DTM() != null && !comment.getMOD_DTM().trim().isEmpty()){
             holder.recipe_comments_item_date_time_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(comment.getMOD_DTM(), DB_DATE_TIME)));
@@ -100,33 +93,12 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
             holder.recipe_comments_item_date_time_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(comment.getCREATE_DTM(), DB_DATE_TIME)));
         }
 
-        holder.recipe_comments_likes_iv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LikesMO like = new LikesMO();
-                like.setUSER_ID(loggedInUser.getUSER_ID());
-                like.setTYPE("COMMENT");
-                like.setTYPE_ID(comment.getCOM_ID());
+        holder.common_like_view_ll.setOnClickListener(listener);
+        holder.common_like_view_ll.setOnLongClickListener(longClickListener);
 
-                new AsyncSubmitLike().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like, holder);
-            }
-        });
-
-        holder.recipe_comments_likes_iv.setTag(comment);
-        holder.recipe_comments_likes_iv.setOnLongClickListener(longClickListener);
+        holder.common_like_view_ll.setTag(comment);
 
         setFont(holder.recipe_comments_item_cv);
-    }
-
-    private void setupLike(ViewHolder holder, LikesMO like){
-        if(like.isUserLiked()){
-            holder.recipe_comments_likes_iv.setImageResource(R.drawable.heart);
-        }
-        else{
-            holder.recipe_comments_likes_iv.setImageResource(R.drawable.heart_unselected);
-        }
-
-        holder.recipe_comments_item_likes_count_tv.setText(String.valueOf(like.getLikesCount()));
     }
 
     @Override
@@ -157,6 +129,13 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
         }
     }
 
+    public void deleteComment(CommentMO comment){
+        if(comments != null){
+            comments.remove(comment);
+            notifyDataSetChanged();
+        }
+    }
+
     public void updateComments(List<CommentMO> newComments, int index) {
         if(comments == null){
             comments = new ArrayList<>();
@@ -176,7 +155,7 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
         public TextView recipe_comments_item_username_tv;
         public ImageView recipe_comments_item_delete_iv;
         public TextView recipe_comments_item_tv;
-        public ImageView recipe_comments_likes_iv;
+        public LinearLayout common_like_view_ll;
         public TextView recipe_comments_item_likes_count_tv;
         public TextView recipe_comments_item_date_time_tv;
 
@@ -187,35 +166,8 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
             recipe_comments_item_username_tv = view.findViewById(R.id.recipe_comments_item_username_tv);
             recipe_comments_item_delete_iv = view.findViewById(R.id.recipe_comments_item_delete_iv);
             recipe_comments_item_tv = view.findViewById(R.id.recipe_comments_item_tv);
-            recipe_comments_likes_iv = view.findViewById(R.id.recipe_comments_likes_iv);
-            recipe_comments_item_likes_count_tv = view.findViewById(R.id.recipe_comments_item_likes_count_tv);
+            common_like_view_ll = view.findViewById(R.id.common_like_view_ll);
             recipe_comments_item_date_time_tv = view.findViewById(R.id.recipe_comments_item_date_time_tv);
-        }
-    }
-
-    public class AsyncSubmitLike extends AsyncTask<Object, Void, Object> {
-        private ViewHolder holder;
-
-        @Override
-        protected void onPreExecute(){
-        }
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            LikesMO like = (LikesMO) objects[0];
-            holder = (ViewHolder) objects[1];
-
-
-            return InternetUtility.submitLike(like);
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            LikesMO like = (LikesMO) object;
-
-            if(like != null){
-                setupLike(holder, like);
-            }
         }
     }
 }

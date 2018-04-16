@@ -5,11 +5,12 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
 
 import com.cookery.activities.HomeActivity;
 import com.cookery.exceptions.CookeryException;
+import com.cookery.fragments.CommentsFragment;
 import com.cookery.fragments.CookeryErrorFragment;
+import com.cookery.fragments.DeleteCommentFragment;
 import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MyRecipesFragment;
 import com.cookery.fragments.MyReviewsFragment;
@@ -18,8 +19,8 @@ import com.cookery.fragments.ProfileViewEmailFragment;
 import com.cookery.fragments.ProfileViewFragment;
 import com.cookery.fragments.ProfileViewGenderFragment;
 import com.cookery.fragments.ProfileViewImageFragment;
-import com.cookery.fragments.RecipeViewCommentsFragment;
 import com.cookery.fragments.RecipeViewFragment;
+import com.cookery.fragments.RecipeViewImagesFragment;
 import com.cookery.fragments.RecipeViewReviewsFragment;
 import com.cookery.fragments.SomethingWrongFragment;
 import com.cookery.fragments.UserViewFragment;
@@ -36,25 +37,29 @@ import java.util.List;
 import java.util.Map;
 
 import static com.cookery.utils.AsyncTaskUtility.Purpose.CHECK_INTERNET;
+import static com.cookery.utils.AsyncTaskUtility.Purpose.DELETE_COMMENT;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_COMMENTS;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_MY_RECIPES;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_MY_REVIEWS;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_RECIPE;
+import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_RECIPE_IMAGES;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_REVIEWS;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_USERS;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_USER_PUBLIC_DETAILS;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_USER_SELF;
+import static com.cookery.utils.AsyncTaskUtility.Purpose.SUBMIT_COMMENT;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.SUBMIT_LIKE;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.UPDATE_USER;
+import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_COOKERY_ERROR;
+import static com.cookery.utils.Constants.FRAGMENT_LIKED_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_NO_INTERNET;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE_COMMENTS;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE_LIKED_USERS;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEWS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_VIEWED_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_SOMETHING_WRONG;
@@ -81,8 +86,9 @@ public class AsyncTaskUtility extends AsyncTask {
     private Integer index;
 
     public enum Purpose {
-        FETCH_USER_PUBLIC_DETAILS, FETCH_USER_SELF, FETCH_USERS, FETCH_RECIPE, FETCH_COMMENTS, FETCH_REVIEWS,
-        SUBMIT_LIKE, FETCH_MY_RECIPES, FETCH_MY_REVIEWS, UPDATE_USER, CHECK_INTERNET
+        FETCH_USER_PUBLIC_DETAILS, FETCH_USER_SELF, FETCH_USERS, FETCH_RECIPE, FETCH_RECIPE_IMAGES,
+        FETCH_COMMENTS, FETCH_REVIEWS, DELETE_COMMENT,
+        SUBMIT_LIKE, SUBMIT_COMMENT, FETCH_MY_RECIPES, FETCH_MY_REVIEWS, UPDATE_USER, CHECK_INTERNET
     }
 
     private Purpose purpose;
@@ -107,19 +113,27 @@ public class AsyncTaskUtility extends AsyncTask {
                 return fetchUsers(objects);
             } else if (purpose == FETCH_RECIPE) {
                 return fetchRecipe(objects);
+            }else if (purpose == FETCH_RECIPE_IMAGES) {
+                return fetchRecipeImages(objects);
             } else if (purpose == FETCH_COMMENTS) {
                 return fetchComments(objects);
             } else if (purpose == FETCH_REVIEWS) {
                 return fetchReviews(objects);
             } else if (purpose == SUBMIT_LIKE) {
                 return submitLike(objects);
+            }else if (purpose == SUBMIT_COMMENT) {
+                return submitComment(objects);
             } else if (purpose == FETCH_MY_RECIPES) {
                 return fetchMyRecipes();
             } else if (purpose == FETCH_MY_REVIEWS) {
                 return fetchMyReviews();
             } else if (purpose == UPDATE_USER) {
                 return updateUser(objects);
-            } else {
+            }
+            else if(purpose == DELETE_COMMENT){
+                return deleteComment(objects);
+            }
+            else {
                 Log.e(CLASS_NAME, "Could not understand the purpose : " + purpose);
             }
         }
@@ -170,20 +184,70 @@ public class AsyncTaskUtility extends AsyncTask {
             postFetchUsers(object);
         } else if (purpose == FETCH_RECIPE) {
             postFetchRecipe(object);
-        } else if (purpose == FETCH_COMMENTS) {
+        }
+        else if (purpose == FETCH_RECIPE_IMAGES) {
+            postFetchRecipeImages(object);
+        }else if (purpose == FETCH_COMMENTS) {
             postFetchComments(object);
         } else if (purpose == FETCH_REVIEWS) {
             postFetchReviews(object);
         } else if (purpose == SUBMIT_LIKE) {
             postSubmitLike(object);
-        } else if (purpose == FETCH_MY_RECIPES) {
+        }
+        else if (purpose == SUBMIT_COMMENT) {
+            postSubmitComment(object);
+        }else if (purpose == FETCH_MY_RECIPES) {
             postFetchMyRecipes(object);
         } else if (purpose == FETCH_MY_REVIEWS) {
             postFetchMyReviews(object);
         } else if (purpose == UPDATE_USER) {
             postUpdateUser(object);
+        }else if (purpose == DELETE_COMMENT) {
+            postDeleteComment(object);
         } else {
             Log.e(CLASS_NAME, "Could not understand the purpose : " + purpose);
+        }
+    }
+
+    private Object deleteComment(Object[] objects){
+        InternetUtility.deleteComment(loggedInUser, (CommentMO) objects[0]);
+        return objects[0];
+    }
+
+    private void postDeleteComment(Object object){
+        ((DeleteCommentFragment) getFragment(fragmentKey)).deleteComment((CommentMO) object);
+    }
+
+    private Object submitComment(Object[] objects) {
+        return InternetUtility.submitComment((CommentMO)objects[0]);
+    }
+
+    private void postSubmitComment(Object object) {
+        List<CommentMO> comments = (List<CommentMO>) object;
+
+        if(getFragment(fragmentKey) instanceof CommentsFragment && comments != null && !comments.isEmpty()){
+            CommentsFragment fragment = (CommentsFragment) getFragment(fragmentKey);
+            fragment.addComment(comments.get(0));
+        }
+    }
+
+    private Object fetchRecipeImages(Object object){
+        Object[] objects = (Object[]) object;
+
+        return new Object[]{InternetUtility.fetchRecipeImages(loggedInUser, (RecipeMO)objects[0]), objects[1]};
+    }
+
+    private void postFetchRecipeImages(Object object){
+        Object[] objects = (Object[]) object;
+
+        if(getFragment(fragmentKey) instanceof RecipeViewFragment){
+            Object array[] = new Object[]{objects[1], objects[0]};
+
+            Map<String, Object> bundleMap = new HashMap<>();
+            bundleMap.put(GENERIC_OBJECT, array);
+            bundleMap.put(LOGGED_IN_USER, loggedInUser);
+
+            Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_RECIPE_IMAGES, new RecipeViewImagesFragment(), bundleMap);
         }
     }
 
@@ -237,14 +301,14 @@ public class AsyncTaskUtility extends AsyncTask {
             return;
         }
 
+        List<UserMO> user = (List<UserMO>) object;
+
         if(activity != null){
             if(activity instanceof HomeActivity){
                 HomeActivity homeActivity = (HomeActivity) activity;
 
-                List<UserMO> user = (List<UserMO>) object;
-
                 if(user != null && !user.isEmpty()) {
-                    loggedInUser = user.get(0);
+                    homeActivity.loggedInUser = user.get(0);
                     homeActivity.setupNavigator();
 
                     if(homeActivity.initialLoad){
@@ -257,6 +321,12 @@ public class AsyncTaskUtility extends AsyncTask {
                     Utility.showFragment(fragmentManager, null, FRAGMENT_LOGIN, new LoginFragment(), null);
                 }
             }
+        }
+        else if(getFragment(fragmentKey) instanceof ProfileViewFragment){
+            Map<String, Object> paramsMap = new HashMap<>();
+            paramsMap.put(GENERIC_OBJECT, user.get(0));
+            paramsMap.put(LOGGED_IN_USER, user.get(0));
+            Utility.showFragment(fragmentManager, FRAGMENT_PROFILE_VIEW, FRAGMENT_PROFILE_VIEW_IMAGE, new ProfileViewImageFragment(), paramsMap);
         }
     }
 
@@ -363,21 +433,7 @@ public class AsyncTaskUtility extends AsyncTask {
     }
 
     private Object submitLike(Object[] objects) {
-        LikesMO like = (LikesMO) objects[0];
-
-        if ("RECIPE_IMG".equalsIgnoreCase(like.getTYPE())) {
-            Object array[] = new Object[]{InternetUtility.submitLike((LikesMO) objects[0]), objects[1]};
-            return array;
-        } else if ("RECIPE".equalsIgnoreCase(like.getTYPE())) {
-            Object array[] = new Object[]{InternetUtility.submitLike((LikesMO) objects[0])};
-            return array;
-        }
-        else if ("USER".equalsIgnoreCase(like.getTYPE())) {
-            Object array[] = new Object[]{InternetUtility.submitLike((LikesMO) objects[0])};
-            return array;
-        }
-
-        return null;
+        return InternetUtility.submitLike((LikesMO) objects[0]);
     }
 
     private void postSubmitLike(Object object) {
@@ -385,8 +441,7 @@ public class AsyncTaskUtility extends AsyncTask {
             return;
         }
 
-        Object array[] = (Object[]) object;
-        LikesMO like = (LikesMO) array[0];
+        LikesMO like = (LikesMO) object;
         if (FRAGMENT_RECIPE.equalsIgnoreCase(fragmentKey)) {
             RecipeViewFragment fragment = (RecipeViewFragment) getFragment(fragmentKey);
 
@@ -394,7 +449,7 @@ public class AsyncTaskUtility extends AsyncTask {
                 fragment.updateRecipeLikeView(like);
             }
             else if ("RECIPE_IMG".equalsIgnoreCase(like.getTYPE())) {
-                fragment.updateRecipeImageLikeView(like, (View) array[1]);
+                //fragment.updateRecipeImageLikeView(like, (View) array[1]);
             } else {
                 Log.e(CLASS_NAME, "Could not understand");
             }
@@ -405,11 +460,8 @@ public class AsyncTaskUtility extends AsyncTask {
             if ("USER".equalsIgnoreCase(like.getTYPE())) {
                 loggedInUser.setUserLiked(like.isUserLiked());
                 loggedInUser.setLikesCount(like.getLikesCount());
-                fragment.setupLikeView(loggedInUser);
+                //fragment.setupLikeView(loggedInUser);
             }
-        }
-        else {
-            Log.e(CLASS_NAME, "Missing required objects");
         }
     }
 
@@ -456,22 +508,12 @@ public class AsyncTaskUtility extends AsyncTask {
     }
 
     private Object fetchComments(Object[] objects) {
-        if (objects == null || objects.length < 1) {
-            Log.e(CLASS_NAME, "Error ! Required objects are missing");
-        } else if (!(objects[0] instanceof CommentMO)) {
-            Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE + objects[0]);
-        } else if (FRAGMENT_RECIPE.equalsIgnoreCase(fragmentKey)) {
+        if(!(getFragment(fragmentKey) instanceof CommentsFragment)){
             waitFragment = Utility.showWaitDialog(fragmentManager, "fetching comments ..");
-
-            List<CommentMO> comments = InternetUtility.fetchComments(loggedInUser, (CommentMO) objects[0], index);
-            Object array[] = new Object[]{objects[0], comments};
-
-            return array;
-        } else {
-            Log.e(CLASS_NAME, "Something wrong !");
         }
 
-        return null;
+        List<CommentMO> comments = InternetUtility.fetchComments(loggedInUser, (CommentMO) objects[1], index);
+        return new Object[]{objects[0], comments, objects[1]};
     }
 
     private void postFetchComments(Object object) {
@@ -480,18 +522,41 @@ public class AsyncTaskUtility extends AsyncTask {
         }
 
         Object array[] = (Object[]) object;
-        if (array.length == 2) {
-            if (FRAGMENT_RECIPE.equalsIgnoreCase(fragmentKey)) {
-                Map<String, Object> params = new HashMap<>();
-                params.put(GENERIC_OBJECT, array[1]);
-                params.put(SELECTED_ITEM, array[0]);
-                params.put(LOGGED_IN_USER, loggedInUser);
-                Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_RECIPE_COMMENTS, new RecipeViewCommentsFragment(), params);
-            } else {
-                Log.e(CLASS_NAME, "Something went wrong !");
+        List<CommentMO> comments = (List<CommentMO>) array[1];
+
+        if(getFragment(fragmentKey) instanceof CommentsFragment){
+            CommentsFragment fragment = (CommentsFragment) getFragment(fragmentKey);
+
+            if(comments != null && !comments.isEmpty()){
+                fragment.updateComments(comments, index);
             }
-        } else {
-            Log.e(CLASS_NAME, "Missing required objects");
+            else{
+                fragment.disableOnBottomListener();
+            }
+        }
+        else if(getFragment(fragmentKey) instanceof RecipeViewFragment){
+            Map<String, Object> params = new HashMap<>();
+            params.put(SELECTED_ITEM, array[0]);
+            params.put(GENERIC_OBJECT, comments);
+            params.put(GENERIC_OBJECT2, array[2]);
+            params.put(LOGGED_IN_USER, loggedInUser);
+            Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_COMMENTS, new CommentsFragment(), params);
+        }
+        else if(getFragment(fragmentKey) instanceof UserViewFragment){
+            Map<String, Object> params = new HashMap<>();
+            params.put(SELECTED_ITEM, array[0]);
+            params.put(GENERIC_OBJECT, comments);
+            params.put(GENERIC_OBJECT2, array[2]);
+            params.put(LOGGED_IN_USER, loggedInUser);
+            Utility.showFragment(fragmentManager, FRAGMENT_USER_VIEW, FRAGMENT_COMMENTS, new CommentsFragment(), params);
+        }
+        else if(getFragment(fragmentKey) instanceof ProfileViewFragment){
+            Map<String, Object> params = new HashMap<>();
+            params.put(SELECTED_ITEM, array[0]);
+            params.put(GENERIC_OBJECT, comments);
+            params.put(GENERIC_OBJECT2, array[2]);
+            params.put(LOGGED_IN_USER, loggedInUser);
+            Utility.showFragment(fragmentManager, FRAGMENT_PROFILE_VIEW, FRAGMENT_COMMENTS, new CommentsFragment(), params);
         }
     }
 
@@ -546,7 +611,7 @@ public class AsyncTaskUtility extends AsyncTask {
             params.put(SELECTED_ITEM, array[2]);
             params.put(LOGGED_IN_USER, loggedInUser);
 
-            Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_RECIPE_LIKED_USERS, new UsersFragment(), params);
+            Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_LIKED_USERS, new UsersFragment(), params);
         } else if ("VIEW".equalsIgnoreCase(String.valueOf(array[0]))) {
             Map<String, Object> params = new HashMap<>();
             params.put(GENERIC_OBJECT, array);
@@ -578,9 +643,16 @@ public class AsyncTaskUtility extends AsyncTask {
         List<UserMO> users = (List<UserMO>) object;
 
         if (users != null && !users.isEmpty()) {
-            Map<String, Object> bundleMap = new HashMap<String, Object>();
-            bundleMap.put(GENERIC_OBJECT, users.get(0));
-            Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_USER_VIEW, new UserViewFragment(), bundleMap);
+            Map<String, Object> paramsMap = new HashMap<>();
+            paramsMap.put(GENERIC_OBJECT, users.get(0));
+            paramsMap.put(LOGGED_IN_USER, loggedInUser);
+
+            if(getFragment(fragmentKey) instanceof UserViewFragment){
+                Utility.showFragment(fragmentManager, FRAGMENT_USER_VIEW, FRAGMENT_PROFILE_VIEW_IMAGE, new ProfileViewImageFragment(), paramsMap);
+            }
+            else if(getFragment(fragmentKey) instanceof RecipeViewFragment){
+                Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_USER_VIEW, new UserViewFragment(), paramsMap);
+            }
         } else {
             Log.e(CLASS_NAME, "Failed to fetch users details");
         }
@@ -599,14 +671,13 @@ public class AsyncTaskUtility extends AsyncTask {
                     waitFragment = Utility.showWaitDialog(fragmentManager, "fetching users ..");
                     users = InternetUtility.fetchUserFollowings(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), index);
                 }
-
                 return new Object[]{String.valueOf(objects[0]), users};
             }
             else if ("LIKE".equalsIgnoreCase(String.valueOf(objects[0]))) {
-                waitFragment = Utility.showWaitDialog(fragmentManager, "fetching users who liked the Recipe ..");
+                waitFragment = Utility.showWaitDialog(fragmentManager, "fetching users who liked the "+((LikesMO) objects[1]).getTYPE()+" ..");
 
-                List<UserMO> users = InternetUtility.fetchLikedUsers(loggedInUser.getUSER_ID(), "RECIPE", ((RecipeMO) objects[1]).getRCP_ID(), index);
-                Object array[] = new Object[]{String.valueOf(objects[0]), users, objects[1]};
+                List<UserMO> users = InternetUtility.fetchLikedUsers(loggedInUser.getUSER_ID(), ((LikesMO) objects[1]).getTYPE(), ((LikesMO) objects[1]).getTYPE_ID(), index);
+                Object array[] = new Object[]{String.valueOf(objects[0]), users, objects[2]};
 
                 return array;
             } else if ("VIEW".equalsIgnoreCase(String.valueOf(objects[0]))) {
