@@ -30,6 +30,15 @@
             android:orientation="vertical"
             android:padding="10dp">
 
+            <TextView
+                android:id="@+id/profile_view_profile_image_change_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="CHANGE"
+                android:textColor="@color/app_color"
+                android:textSize="@dimen/quaternary_text_size" />
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_view_profile_image_iv"
                 android:layout_width="100dp"
@@ -38,14 +47,41 @@
                 app:border_color="@color/tertiaryDarkText"
                 app:border_width="1dp" />
 
-            <TextView
-                android:id="@+id/profile_view_profile_image_change_tv"
+            <LinearLayout
+                android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="CHANGE"
-                android:textColor="@color/app_color"
-                android:textSize="@dimen/quaternary_text_size" />
+                android:orientation="horizontal">
+
+                <include layout="@layout/common_like_view" />
+
+                <LinearLayout
+                    android:id="@+id/profile_view_comment_ll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/profile_view_comment_iv"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:src="@drawable/comment_enabled" />
+
+                    <TextView
+                        android:id="@+id/profile_view_comment_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textColor="@color/tertiaryDarkText"
+                        android:textSize="@dimen/tertiary_text_size" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 

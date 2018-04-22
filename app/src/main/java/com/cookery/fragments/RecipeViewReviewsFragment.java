@@ -21,31 +21,32 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.adapters.RecipeViewReviewsRecyclerViewAdapter;
 import com.cookery.interfaces.OnBottomReachedListener;
+import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.UserMO;
+import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.DateTimeUtility;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.cookery.utils.Constants.DB_DATE_TIME;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE_LIKED_USERS;
+import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEW;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEWS;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.GENERIC_OBJECT2;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
@@ -88,11 +89,14 @@ public class RecipeViewReviewsFragment extends DialogFragment {
     @InjectView(R.id.recipe_view_reviews_review_et)
     EditText recipe_reviews_review_et;
 
-    @InjectView(R.id.recipe_view_reviews_review_rl)
-    RelativeLayout recipe_reviews_review_rl;
+    @InjectView(R.id.recipe_view_reviews_review_ll)
+    LinearLayout recipe_view_reviews_review_ll;
 
     @InjectView(R.id.recipe_view_reviews_review_tv)
     TextView recipe_reviews_review_tv;
+
+    @InjectView(R.id.common_like_view_ll)
+    LinearLayout common_like_view_ll;
 
     @InjectView(R.id.recipe_view_reviews_review_datetime_tv)
     TextView recipe_reviews_review_datetime_tv;
@@ -131,6 +135,7 @@ public class RecipeViewReviewsFragment extends DialogFragment {
         myReview = (ReviewMO) getArguments().get(GENERIC_OBJECT);
         reviews = (List<ReviewMO>) getArguments().get(GENERIC_OBJECT2);
         recipe = (RecipeMO) getArguments().get(SELECTED_ITEM);
+        loggedInUser = (UserMO) getArguments().get(LOGGED_IN_USER);
     }
 
     private void setupPage() {
@@ -142,7 +147,7 @@ public class RecipeViewReviewsFragment extends DialogFragment {
     private void setupReview() {
         if(recipe.isUserReviewed()){
             recipe_reviews_delete_iv.setVisibility(View.VISIBLE);
-            recipe_reviews_review_rl.setVisibility(View.VISIBLE);
+            recipe_view_reviews_review_ll.setVisibility(View.VISIBLE);
             recipe_reviews_review_et.setVisibility(View.GONE);
             recipe_review_submit_fab.setVisibility(View.GONE);
 
@@ -162,17 +167,32 @@ public class RecipeViewReviewsFragment extends DialogFragment {
 
                 recipe_reviews_review_tv.setText(myReview.getREVIEW().trim());
 
-                if(myReview.getMOD_DTM() != null && !myReview.getMOD_DTM().isEmpty()){
-                    recipe_reviews_review_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(myReview.getMOD_DTM(), DB_DATE_TIME)));
-                }
-                else if(myReview.getCREATE_DTM() != null && !myReview.getCREATE_DTM().isEmpty()){
-                    recipe_reviews_review_datetime_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(myReview.getCREATE_DTM(), DB_DATE_TIME)));
-                }
+                recipe_reviews_review_datetime_tv.setText(DateTimeUtility.getCreateOrModifiedTime(myReview.getCREATE_DTM(),
+                        myReview.getMOD_DTM()));
+
+                Utility.setupLikeView(common_like_view_ll, myReview.isUserLiked(), myReview.getLikesCount());
+
+                common_like_view_ll.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addRemoveLike(v, myReview);
+                    }
+                });
+
+                common_like_view_ll.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        showLikedUsers(myReview);
+                        return false;
+                    }
+                });
+
+                common_like_view_ll.setTag(myReview);
             }
         }
         else{
             recipe_reviews_delete_iv.setVisibility(View.GONE);
-            recipe_reviews_review_rl.setVisibility(View.GONE);
+            recipe_view_reviews_review_ll.setVisibility(View.GONE);
             recipe_reviews_review_et.setVisibility(View.VISIBLE);
             recipe_review_submit_fab.setVisibility(View.VISIBLE);
 
@@ -180,12 +200,12 @@ public class RecipeViewReviewsFragment extends DialogFragment {
                 @Override
                 public void onClick(View view) {
                     if(myReview.getRATING() == 0){
-                        Utility.showSnacks(recipe_reviews_review_rl, "You haven't rated the Recipe", OK, Snackbar.LENGTH_LONG);
+                        Utility.showSnacks(recipe_view_reviews_review_ll, "You haven't rated the Recipe", OK, Snackbar.LENGTH_LONG);
                         return;
                     }
 
                     if(recipe_reviews_review_et.getText() == null || String.valueOf(recipe_reviews_review_et.getText()).trim().isEmpty()){
-                        Utility.showSnacks(recipe_reviews_review_rl, "You haven't reviewed the Recipe", OK, Snackbar.LENGTH_LONG);
+                        Utility.showSnacks(recipe_view_reviews_review_ll, "You haven't reviewed the Recipe", OK, Snackbar.LENGTH_LONG);
                         return;
                     }
 
@@ -197,11 +217,42 @@ public class RecipeViewReviewsFragment extends DialogFragment {
         }
     }
 
+    private void showLikedUsers(ReviewMO review){
+        LikesMO like = new LikesMO();
+        like.setUSER_ID(loggedInUser.getUSER_ID());
+        like.setTYPE("REVIEW");
+        like.setTYPE_ID(review.getREV_ID());
+
+        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_COMMENTS,
+                AsyncTaskUtility.Purpose.FETCH_USERS, loggedInUser, 0)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "LIKE", like , review);
+    }
+
+    private void addRemoveLike(View v, ReviewMO review) {
+        Utility.addRemoveLike(v);
+
+        LikesMO like = new LikesMO();
+        like.setUSER_ID(loggedInUser.getUSER_ID());
+        like.setTYPE("REVIEW");
+        like.setTYPE_ID(review.getREV_ID());
+
+        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE_REVIEWS,
+                AsyncTaskUtility.Purpose.SUBMIT_LIKE, loggedInUser, 0)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
+    }
+
     private void setupReviews() {
-        final RecipeViewReviewsRecyclerViewAdapter adapter = new RecipeViewReviewsRecyclerViewAdapter(mContext, loggedInUser, reviews, new View.OnLongClickListener() {
+        final RecipeViewReviewsRecyclerViewAdapter adapter = new RecipeViewReviewsRecyclerViewAdapter(mContext, reviews, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v.getId() == R.id.common_like_view){
+                    addRemoveLike(v, (ReviewMO) v.getTag());
+                }
+            }
+        }, new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                new AsyncFetchLikedUsers().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (ReviewMO) view.getTag());
+                showLikedUsers((ReviewMO) view.getTag());
                 return true;
             }
         });
@@ -413,44 +464,6 @@ public class RecipeViewReviewsFragment extends DialogFragment {
             }
             else{
                 Log.e(CLASS_NAME, "Error ! Could not delete Review");
-            }
-        }
-    }
-
-    class AsyncFetchLikedUsers extends AsyncTask<ReviewMO, Void, Object> {
-        private Fragment fragment;
-        private ReviewMO review;
-
-        @Override
-        protected void onPreExecute(){
-            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching users who liked the Review ..");
-        }
-
-        @Override
-        protected Object doInBackground(ReviewMO... objects) {
-            review = objects[0];
-            return InternetUtility.fetchLikedUsers(loggedInUser.getUSER_ID(), "REVIEW", review.getREV_ID(), 0);
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-            if(object == null){
-                return;
-            }
-
-            List<UserMO> users = (List<UserMO>) object;
-
-            if(users != null && !users.isEmpty()){
-                Object array[] = new Object[]{"LIKE", users};
-
-                Map<String, Object> params = new HashMap<String, Object>();
-                params.put(GENERIC_OBJECT, array);
-                params.put(SELECTED_ITEM, review);
-                params.put(LOGGED_IN_USER, loggedInUser);
-
-                Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE_REVIEW, FRAGMENT_RECIPE_LIKED_USERS, new UsersFragment(), params);
             }
         }
     }

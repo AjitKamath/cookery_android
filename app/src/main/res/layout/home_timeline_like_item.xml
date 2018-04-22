@@ -103,24 +103,13 @@
 
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="35dp"
-                    android:layout_marginTop="15dp">
+                <include layout="@layout/home_timeline_comment_card" />
 
-                    <TextView
-                        android:id="@+id/fragment_timelines_timeline_like_review_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLength="150"
-                        android:text="@string/sample_commnet"
-                        android:textColor="@color/tertiaryDarkText"
-                        android:textSize="10sp" />
-
-                </RelativeLayout>
+                <include layout="@layout/home_timeline_review_card" />
 
                 <include layout="@layout/home_timeline_recipe_card" />
+
+                <include layout="@layout/home_timeline_user_card" />
 
             </LinearLayout>
 

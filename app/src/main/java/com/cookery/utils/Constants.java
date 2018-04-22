@@ -4,8 +4,6 @@ package com.cookery.utils;
  * Created by ajit on 6/1/15.
  */
 public final class Constants {
-    public static final boolean USE_TEST_DATA = false;
-
     /*server properties*/
     private static final String SLASH = "/";
     private static final String COLON = ":";
@@ -14,7 +12,7 @@ public final class Constants {
 
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_AJIT = "www.finappl.com";
     private static final String SERVER_CODE_ANYWHERE_ADDRESS_VISHAL = "cookery_php-dial2vishal53897.codeanyapp.com";
-    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_VISHAL;
+    private static final String SERVER_CODE_ANYWHERE_ADDRESS_ACTIVE = SERVER_CODE_ANYWHERE_ADDRESS_AJIT;
 
     private static final String SERVER_CODEANYWHERE_PUBLIC_DIR = "public";
 
@@ -77,6 +75,7 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_TIMELINE_DELETE = "TIMELINE_DELETE";
     public static final String PHP_FUNCTION_KEY_USER_SEARCH = "USER_SEARCH";
     public static final String PHP_FUNCTION_KEY_TREND_FETCH = "TREND_FETCH";
+    public static final String PHP_FUNCTION_KEY_FETCH_RECIPE_IMAGES = "RECIPE_IMAGES_FETCH";
     /*PHP function keys*/
 
     /*Timeline keys*/
@@ -86,13 +85,21 @@ public final class Constants {
 
     public static final String TIMELINE_LIKE_RECIPE_ADD = "LIKE_RECIPE_ADD";
     public static final String TIMELINE_LIKE_RECIPE_REMOVE = "LIKE_RECIPE_REMOVE";
+    public static final String TIMELINE_LIKE_RECIPE_IMG_ADD = "LIKE_RECIPE_IMG_ADD";
+    public static final String TIMELINE_LIKE_RECIPE_IMG_REMOVE = "LIKE_RECIPE_IMG_REMOVE";
     public static final String TIMELINE_LIKE_COMMENT_ADD = "LIKE_COMMENT_ADD";
     public static final String TIMELINE_LIKE_COMMENT_REMOVE = "LIKE_COMMENT_REMOVE";
     public static final String TIMELINE_LIKE_REVIEW_ADD = "LIKE_REVIEW_ADD";
     public static final String TIMELINE_LIKE_REVIEW_REMOVE = "LIKE_REVIEW_REMOVE";
+    public static final String TIMELINE_LIKE_USER_ADD = "LIKE_USER_ADD";
+    public static final String TIMELINE_LIKE_USER_REMOVE = "LIKE_USER_REMOVE";
 
     public static final String TIMELINE_COMMENT_RECIPE_ADD = "COMMENT_RECIPE_ADD";
     public static final String TIMELINE_COMMENT_RECIPE_REMOVE = "COMMENT_RECIPE_REMOVE";
+    public static final String TIMELINE_COMMENT_RECIPE_IMG_ADD = "COMMENT_RECIPE_IMG_ADD";
+    public static final String TIMELINE_COMMENT_RECIPE_IMG_REMOVE = "COMMENT_RECIPE_IMG_REMOVE";
+    public static final String TIMELINE_COMMENT_USER_ADD = "COMMENT_USER_ADD";
+    public static final String TIMELINE_COMMENT_USER_REMOVE = "COMMENT_USER_REMOVE";
 
     public static final String TIMELINE_REVIEW_RECIPE_ADD = "REVIEW_RECIPE_ADD";
     public static final String TIMELINE_REVIEW_RECIPE_REMOVE = "REVIEW_RECIPE_REMOVE";
@@ -113,15 +120,6 @@ public final class Constants {
     public static final String UI_DATE = "d MMM ''yy";
     /*Date Time*/
 
-    //fragment keys
-    public static final int GALLERY_CHOICE = 1111;
-    public static final int CAMERA_CHOICE = 2222;
-    public static final int CLOSE_CHOICE = 3333;
-
-    /*Async Task Purpose Keys*/
-    public static final String ASYNC_TASK_GET_ALL_CATEGORY_RECIPES = "ASYNC_TASK_GET_ALL_CATEGORY_RECIPES";
-    /*Async Task Purpose Keys*/
-
 
     //flag value for affirmative/non affirmative
     public static final String AFFIRMATIVE = "Y";
@@ -138,22 +136,20 @@ public final class Constants {
     public static final String FRAGMENT_ADD_RECIPE = "FRAGMENT_ADD_RECIPE";
     public static final String FRAGMENT_MY_FAVORITES = "FRAGMENT_MY_FAVORITES";
     public static final String FRAGMENT_RECIPE = "FRAGMENT_RECIPE";
-    public static final String FRAGMENT_RECIPE_COMMENTS = "FRAGMENT_RECIPE_COMMENTS";
+    public static final String FRAGMENT_COMMENTS = "FRAGMENT_COMMENTS";
+    public static final String FRAGMENT_COMMENT_DELETE = "FRAGMENT_COMMENT_DELETE";
     public static final String FRAGMENT_RECIPE_REVIEW = "FRAGMENT_RECIPE_REVIEW";
     public static final String FRAGMENT_RECIPE_REVIEWS = "FRAGMENT_RECIPE_REVIEWS";
     public static final String FRAGMENT_RECIPE_IMAGES = "FRAGMENT_RECIPE_IMAGES";
-    public static final String FRAGMENT_RECIPE_LIKED_USERS = "FRAGMENT_RECIPE_LIKED_USERS";
+    public static final String FRAGMENT_LIKED_USERS = "FRAGMENT_LIKED_USERS";
     public static final String FRAGMENT_RECIPE_VIEWED_USERS = "FRAGMENT_RECIPE_VIEWED_USERS";
     public static final String FRAGMENT_RECIPE_STEPS = "FRAGMENT_RECIPE_STEPS";
     public static final String FRAGMENT_COMMON_SELECTION = "FRAGMENT_COMMON_SELECTION";
     public static final String FRAGMENT_COMMON_WAIT = "FRAGMENT_COMMON_WAIT";
     public static final String FRAGMENT_COMMON_MESSAGE = "FRAGMENT_COMMON_MESSAGE";
-    public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
     public static final String FRAGMENT_MY_RECIPE = "FRAGMENT_MY_RECIPE";
     public static final String FRAGMENT_MY_LIST = "FRAGMENT_MY_LIST";
     public static final String FRAGMENT_MY_REVIEWS = "FRAGMENT_MY_REVIEWS";
-    public static final String FRAGMENT_MY_TIMELINES = "FRAGMENT_MY_TIMELINES";
-    public static final String FRAGMENT_TEMP_LOGIN = "FRAGMENT_TEMP_LOGIN";
     public static final String FRAGMENT_PROFILE_VIEW = "FRAGMENT_PROFILE_VIEW";
     public static final String FRAGMENT_PROFILE_VIEW_NAME = "FRAGMENT_PROFILE_VIEW_NAME";
     public static final String FRAGMENT_PROFILE_VIEW_EMAIL = "FRAGMENT_PROFILE_VIEW_EMAIL";
@@ -162,7 +158,6 @@ public final class Constants {
     public static final String FRAGMENT_PROFILE_VIEW_GENDER = "FRAGMENT_PROFILE_VIEW_GENDER";
     public static final String FRAGMENT_PROFILE_VIEW_IMAGE = "FRAGMENT_PROFILE_VIEW_IMAGE";
     public static final String FRAGMENT_LOGIN = "FRAGMENT_LOGIN";
-    public static final String FRAGMENT_REGISTER = "FRAGMENT_REGISTER";
     public static final String FRAGMENT_USER_VIEW = "FRAGMENT_USER_VIEW";
     public static final String FRAGMENT_USERS = "FRAGMENT_USERS";
     public static final String FRAGMENT_TIMELINE_HIDE = "FRAGMENT_TIMELINE_HIDE";
@@ -182,44 +177,18 @@ public final class Constants {
     public static final String LIST_DATA = "LIST_DATA";
     public static final String SELECTED_ITEM = "SELECTED_ITEM";
 
-    public static final String TRENDING_RECIPES = "TRENDING RECIPES";
-    public static final String TOP_RECIPES_MONTH = "TOP RECIPES OF THE MONTH";
-    public static final String TOP_RECIPES_CHEF = "RECIPES FROM OUR TOP CHEF";
-    public static final String MY_RECIPES = "MY RECIPES";
-    public static final String MY_REVIEWS = "MY REVIEWS";
-    public static final String MY_TIMELINES = "MY TIMELINES";
-    public static final String MY_LISTS = "MY_LISTS";
-    public static final String MY_INGREDIENTS = "MY_INGREDIENTS";
     public static final String MY_LISTS_EXISTS = "MY_LISTS_EXISTS";
     public static final String LIST_ID = "LIST_ID";
     public static final String INGREDIENT_ID = "INGREDIENT_ID";
     public static final String INGREDIENT_NAME = "INGREDIENT_NAME";
 
-    //check master keys
-    public static final String CHECK_MASTER_FOR_CATEGORIES = "CHECK_MASTER_FOR_CATEGORIES";
-    public static final String CHECK_MASTER_FOR_TENURES = "CHECK_MASTER_FOR_TENURES";
-    public static final String CHECK_MASTER_FOR_ALL = "CHECK_MASTER_FOR_ALL";
-
-
-    //SHARED PREFS KEYS
-    public static final String SHARED_PREF_FILE_NAME = "BMB_PREFS";
-    public static final String SHARED_PREF_ACTIVE_USER_ID = "ACTIVE_USER_ID";
-
     //Messages
     public static final String UN_IDENTIFIED_PARENT_FRAGMENT = "Target Fragment hasn't been set before calling the current fragment";
     public static final String UN_IDENTIFIED_OBJECT_TYPE = "Object Type could not be identified for the object : ";
     public static final String UN_IDENTIFIED_VIEW = "Could not identify the view which has been clicked";
-    public static final String EMAIL_NOT_VERIFIED = "EMAIL NOT VERIFIED";
-    public static final String VERIFICATION_EMAIL_SENT = " VERIFICATION MAIL SENT";
 
     //Snacks
-    public static final String VERIFY_EMAIL = "VERIFY";
     public static final String OK = "OK";
-    public static final String SAVED = "Saved";
-    public static final String SOMETHING_WENT_WRONG = "Something Went Wrong";
-
-    public static final int REQUEST_TAKE_PHOTO = 1;
-    public static final int REQUEST_GALLERY_PHOTO = 2;
 
     //scopes
     public static final int SCOPE_PUBLIC = 1;
@@ -254,4 +223,5 @@ public final class Constants {
     public final static String SIMPLE_KEY_REVIEWED = "REVIEWED";
     public final static String SIMPLE_KEY_UNIMPLEMENTED = "UNIMPL";
 
+    public final static float DEFAULT_CROP_RATIO = 0.05f;   //must be between 0 to less than 0.5
 }

@@ -11,7 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ImageMO implements Serializable{
+public class RecipeImageMO implements Serializable{
     private int RCP_IMG_ID;
     private String RCP_IMG;
     private int RCP_ID;
@@ -20,4 +20,6 @@ public class ImageMO implements Serializable{
 
     private int likesCount;
     private int commentsCount;
+
+    private String recipeName;
 }

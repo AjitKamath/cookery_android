@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.models.ImageMO;
+import com.cookery.models.RecipeImageMO;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
@@ -26,11 +26,11 @@ public class RecipeAddImagesViewPagerAdapter extends PagerAdapter {
     private Context mContext;
     private static final String CLASS_NAME = RecipeAddImagesViewPagerAdapter.class.getName();
 
-    public List<ImageMO> images;
+    public List<RecipeImageMO> images;
     private View.OnClickListener listener;
     private boolean loadFromUrl;
 
-    public RecipeAddImagesViewPagerAdapter(Context context, List<ImageMO> images, boolean loadFromUrl, View.OnClickListener listener) {
+    public RecipeAddImagesViewPagerAdapter(Context context, List<RecipeImageMO> images, boolean loadFromUrl, View.OnClickListener listener) {
         this.mContext = context;
         this.images = images;
         this.loadFromUrl = loadFromUrl;
@@ -77,7 +77,7 @@ public class RecipeAddImagesViewPagerAdapter extends PagerAdapter {
             images = new ArrayList<>();
         }
 
-        ImageMO image = new ImageMO();
+        RecipeImageMO image = new RecipeImageMO();
         image.setRCP_IMG(newImage);
 
         images.add(image);

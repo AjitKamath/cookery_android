@@ -51,6 +51,9 @@ public class IngredientQuantityFragment extends DialogFragment {
     @InjectView(R.id.fragment_ingredient_quantity_ingredient_tv)
     TextView fragment_ingredient_quantity_ingredient_tv;
 
+    @InjectView(R.id.fragment_ingredient_quantity_ingredient_category_tv)
+    TextView fragment_ingredient_quantity_ingredient_category_tv;
+
     @InjectView(R.id.fragment_ingredient_quantity_quantity_spinner)
     Spinner fragment_ingredient_quantity_quantity_spinner;
 
@@ -90,9 +93,12 @@ public class IngredientQuantityFragment extends DialogFragment {
             return;
         }
 
-        Utility.loadImageFromURL(mContext, ingredient.getIMG(), fragment_ingredient_quantity_ingredient_iv);
+        if(ingredient.getImages() != null && !ingredient.getImages().isEmpty()){
+            Utility.loadImageFromURL(mContext, ingredient.getImages().get(0).getING_IMG(), fragment_ingredient_quantity_ingredient_iv);
+        }
 
         fragment_ingredient_quantity_ingredient_tv.setText(ingredient.getING_AKA_NAME());
+        fragment_ingredient_quantity_ingredient_category_tv.setText(ingredient.getIngredientCategoryName());
 
         AddRecipeQuantitySpinnerAdapter adapter = new AddRecipeQuantitySpinnerAdapter(mContext, quantities);
         fragment_ingredient_quantity_quantity_spinner.setAdapter(adapter);

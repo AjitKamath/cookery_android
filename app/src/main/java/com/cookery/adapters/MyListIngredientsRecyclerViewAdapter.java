@@ -48,7 +48,9 @@ public class MyListIngredientsRecyclerViewAdapter extends RecyclerView.Adapter<M
     public void onBindViewHolder(ViewHolder holder, int position) {
         IngredientAkaMO ingredient = ingredients.get(position);
 
-        Utility.loadImageFromURL(mContext, ingredient.getIMG(), holder.mylist_add_ingredients_item_iv);
+        if(ingredient.getImages() != null && !ingredient.getImages().isEmpty()) {
+            Utility.loadImageFromURL(mContext, ingredient.getImages().get(0).getING_IMG(), holder.mylist_add_ingredients_item_iv);
+        }
 
         holder.mylist_add_ingredients_item_tv.setText(ingredient.getING_AKA_NAME().toUpperCase());
         holder.mylist_add_ingredients_item_delete_iv.setTag(ingredient);

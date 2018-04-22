@@ -9,11 +9,14 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.exceptions.CookeryException;
+import com.cookery.fragments.CommentsFragment;
 import com.cookery.fragments.CookeryErrorFragment;
+import com.cookery.fragments.DeleteCommentFragment;
 import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MessageFragment;
 import com.cookery.fragments.MyRecipesFragment;
@@ -29,7 +32,6 @@ import com.cookery.fragments.ProfileViewPasswordFragment;
 import com.cookery.fragments.ProfileViewPhoneFragment;
 import com.cookery.fragments.RecipeAddFragment;
 import com.cookery.fragments.RecipeImagesFragment;
-import com.cookery.fragments.RecipeViewCommentsFragment;
 import com.cookery.fragments.RecipeViewFragment;
 import com.cookery.fragments.RecipeViewImagesFragment;
 import com.cookery.fragments.RecipeViewReviewsFragment;
@@ -49,6 +51,7 @@ import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.MyListMO;
 import com.cookery.models.QuantityMO;
+import com.cookery.models.RecipeImageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.TasteMO;
@@ -65,10 +68,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_WAIT;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
@@ -122,13 +125,60 @@ public class Utility extends Activity {
         }
     }
 
+    //TODO: use setupLikeView istead of this method
+    @Deprecated
     public static int getLikeImageId(boolean isLiked){
         if(isLiked){
-            return R.drawable.heart;
+            return getLikeImage();
         }
         else{
-            return R.drawable.heart_unselected;
+            return getUnLikeImage();
         }
+    }
+
+    public static void setupLikeView(ViewGroup view, boolean userLiked, int likesCount) {
+        ImageView image = view.findViewById(R.id.common_like_view_iv);
+        TextView text = view.findViewById(R.id.common_like_view_tv);
+
+        image.setBackgroundResource(userLiked ? getLikeImage() : getUnLikeImage());
+        text.setText(Utility.getSmartNumber(likesCount));
+
+        image.setTag(R.id.common_like_view_like, userLiked ? "LIKED" : "");
+        text.setTag(R.id.common_like_view_like_count, likesCount);
+    }
+
+    public static void addRemoveLike(View view){
+        ImageView image = view.findViewById(R.id.common_like_view_iv);
+        TextView text = view.findViewById(R.id.common_like_view_tv);
+
+        int likes = Integer.parseInt(String.valueOf(text.getTag(R.id.common_like_view_like_count)));
+
+        if("LIKED".equalsIgnoreCase(String.valueOf(image.getTag(R.id.common_like_view_like)))){
+            likes = likes - 1;
+
+            image.setBackgroundResource(getUnLikeImage());
+            text.setText(Utility.getSmartNumber(likes));
+
+            image.setTag(R.id.common_like_view_like, "");
+        }
+        else{
+            likes = likes + 1;
+
+            image.setBackgroundResource(getLikeImage());
+            text.setText(Utility.getSmartNumber(likes));
+
+            image.setTag(R.id.common_like_view_like, "LIKED");
+        }
+
+        text.setTag(R.id.common_like_view_like_count, likes);
+    }
+
+    private static int getLikeImage(){
+        return R.drawable.heart;
+    }
+
+    private static int getUnLikeImage(){
+        return R.drawable.heart_unselected;
     }
 
     public static int getReviewImageId(boolean isReviewed){
@@ -217,10 +267,12 @@ public class Utility extends Activity {
 
     public static Object jsonToObject(String jsonStr, Class mappingClass){
         if(jsonStr == null || jsonStr.isEmpty()){
-            throw new CookeryException(CookeryException.ErrorCode.NO_JSON_MAPPING_CLASS);
+            Log.e(CLASS_NAME, "JSON is null");
+            return null;
         }
         else if (mappingClass == null){
-            throw new CookeryException(CookeryException.ErrorCode.JSON_TO_OBJECT_MAPPING_ERROR);
+            Log.e(CLASS_NAME, "No mapping class has been passed to map json into object");
+            return null;
         }
 
         try{
@@ -270,15 +322,20 @@ public class Utility extends Activity {
             else if(mappingClass.equals(TrendMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<TrendMO>>(){}.getType());
             }
+            else if(mappingClass.equals(RecipeImageMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<List<RecipeImageMO>>(){}.getType());
+            }
             else{
                 Log.e(CLASS_NAME, mappingClass+" is not identified for parsing JSON");
                 throw new Exception();
             }
         }
         catch (Exception e){
-            throw new CookeryException("Error in parsing the json("+jsonStr+") into the mapping class("+mappingClass+")",
-                    CookeryException.ErrorCode.BAD_JSON);
+            Log.e(CLASS_NAME, "Error in parsing the json("+jsonStr+") into the mapping class("+mappingClass+")");
+            Log.e(CLASS_NAME, e.getMessage());
         }
+
+        return null;
     }
 
     public static void loadImageFromURL(Context context, String imageAddress, ImageView imageView){
@@ -383,7 +440,7 @@ public class Utility extends Activity {
             return;
         }
 
-        String fragmentNameStr = FRAGMENT_RECIPE_COMMENTS;
+        String fragmentNameStr = FRAGMENT_COMMENTS;
 
         Fragment frag = fragmentManager.findFragmentByTag(fragmentNameStr);
 
@@ -400,7 +457,7 @@ public class Utility extends Activity {
         Bundle bundle = new Bundle();
         bundle.putSerializable(SELECTED_ITEM, recipe);
 
-        RecipeViewCommentsFragment fragment = new RecipeViewCommentsFragment();
+        CommentsFragment fragment = new CommentsFragment();
         fragment.setArguments(bundle);
 
         if (parentFragment != null) {
@@ -517,7 +574,6 @@ public class Utility extends Activity {
                 bundle.putSerializable(iterMap.getKey(), (Serializable) iterMap.getValue());
             }
         }
-
 
         if(fragment instanceof RecipeAddFragment){
             RecipeAddFragment currentFrag = (RecipeAddFragment) fragment;
@@ -671,8 +727,8 @@ public class Utility extends Activity {
             }
             currentFrag.show(fragmentManager, fragKey);
         }
-        else if(fragment instanceof RecipeViewCommentsFragment){
-            RecipeViewCommentsFragment currentFrag = (RecipeViewCommentsFragment) fragment;
+        else if(fragment instanceof CommentsFragment){
+            CommentsFragment currentFrag = (CommentsFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);
@@ -681,14 +737,6 @@ public class Utility extends Activity {
         }
         else if(fragment instanceof RecipeViewReviewsFragment){
             RecipeViewReviewsFragment currentFrag = (RecipeViewReviewsFragment) fragment;
-            currentFrag.setArguments(bundle);
-            if (parentFragment != null) {
-                currentFrag.setTargetFragment(parentFragment, 0);
-            }
-            currentFrag.show(fragmentManager, fragKey);
-        }
-        else if(fragment instanceof NoInternetFragment){
-            NoInternetFragment currentFrag = (NoInternetFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);
@@ -711,12 +759,37 @@ public class Utility extends Activity {
             }
             currentFrag.show(fragmentManager, fragKey);
         }
+        else if(fragment instanceof NoInternetFragment){
+            NoInternetFragment currentFrag = (NoInternetFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof DeleteCommentFragment){
+            DeleteCommentFragment currentFrag = (DeleteCommentFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof RecipeViewFragment){
+            RecipeViewFragment currentFrag = (RecipeViewFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
         else{
             Log.e(CLASS_NAME, "Error ! "+fragment+" fragment hasn't been configured in "+CLASS_NAME+" showFragment method yet.");
         }
     }
 
-    public static int getPlaceHolder(){
-        return R.drawable.placeholder;
+    public static void hideSoftKeyboard (Activity activity, View view){
+        InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }
 }

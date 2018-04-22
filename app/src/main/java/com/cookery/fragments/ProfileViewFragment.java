@@ -23,6 +23,8 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.activities.HomeActivity;
+import com.cookery.models.CommentMO;
+import com.cookery.models.LikesMO;
 import com.cookery.models.Milestone;
 import com.cookery.models.UserMO;
 import com.cookery.utils.AsyncTaskUtility;
@@ -38,10 +40,11 @@ import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
+import static com.cookery.utils.Constants.DEFAULT_CROP_RATIO;
+import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_EMAIL;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_GENDER;
-import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_NAME;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_PASSWORD;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_PHONE;
@@ -69,6 +72,15 @@ public class ProfileViewFragment extends DialogFragment {
 
     @InjectView(R.id.profile_view_profile_image_change_tv)
     TextView profile_view_profile_image_change_tv;
+
+    @InjectView(R.id.common_like_view_ll)
+    LinearLayout common_like_view_ll;
+
+    @InjectView(R.id.profile_view_comment_ll)
+    LinearLayout profile_view_comment_ll;
+
+    @InjectView(R.id.profile_view_comment_tv)
+    TextView profile_view_comment_tv;
 
     @InjectView(R.id.profile_view_profile_name_tv)
     TextView profile_view_profile_name_tv;
@@ -190,10 +202,9 @@ public class ProfileViewFragment extends DialogFragment {
             profile_view_profile_image_iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Map<String, Object> paramsMap = new HashMap<>();
-                    paramsMap.put(GENERIC_OBJECT, loggedInUser);
-                    paramsMap.put(LOGGED_IN_USER, loggedInUser);
-                    Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_PROFILE_VIEW_IMAGE, new ProfileViewImageFragment(), paramsMap);
+                    new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
+                            AsyncTaskUtility.Purpose.FETCH_USER_SELF, loggedInUser, 0)
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
             });
         }
@@ -211,9 +222,12 @@ public class ProfileViewFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 Fragment fragment = getFragmentManager().findFragmentByTag(FRAGMENT_PROFILE_VIEW);
-                CropImage.activity().start(mContext, fragment);
+                CropImage.activity().setInitialCropWindowPaddingRatio(DEFAULT_CROP_RATIO).start(mContext, fragment);
             }
         });
+
+        setupLikeView();
+        setupCommenView();
 
         profile_view_profile_name_change_iv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,6 +295,59 @@ public class ProfileViewFragment extends DialogFragment {
         });
 
         setupRanksAndMilestones();
+    }
+
+    private void setupCommenView() {
+        profile_view_comment_tv.setText(Utility.getSmartNumber(loggedInUser.getCommentsCount()));
+
+        profile_view_comment_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CommentMO comment = new CommentMO();
+                comment.setTYPE_ID(loggedInUser.getUSER_ID());
+                comment.setTYPE("USER");
+
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
+                        AsyncTaskUtility.Purpose.FETCH_COMMENTS, loggedInUser, 0)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, loggedInUser, comment);
+            }
+        });
+    }
+
+    private void setupLikeView() {
+        Utility.setupLikeView(common_like_view_ll, loggedInUser.isUserLiked(), loggedInUser.getLikesCount());
+
+        common_like_view_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utility.addRemoveLike(v);
+
+                LikesMO like = new LikesMO();
+                like.setUSER_ID(loggedInUser.getUSER_ID());
+                like.setTYPE("USER");
+                like.setTYPE_ID(loggedInUser.getUSER_ID());
+
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_COMMENTS,
+                        AsyncTaskUtility.Purpose.SUBMIT_LIKE, loggedInUser, 0)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
+            }
+        });
+
+        common_like_view_ll.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                LikesMO like = new LikesMO();
+                like.setUSER_ID(loggedInUser.getUSER_ID());
+                like.setTYPE("USER");
+                like.setTYPE_ID(loggedInUser.getUSER_ID());
+
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_COMMENTS,
+                        AsyncTaskUtility.Purpose.FETCH_USERS, loggedInUser, 0)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "LIKE", like , loggedInUser);
+
+                return false;
+            }
+        });
     }
 
     private void setupRanksAndMilestones(){

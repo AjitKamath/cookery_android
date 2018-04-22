@@ -30,10 +30,10 @@ import com.cookery.adapters.RecipeAddViewPagerAdapter;
 import com.cookery.animators.HeightWidthAnimator;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
-import com.cookery.models.ImageMO;
 import com.cookery.models.IngredientAkaMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.MessageMO;
+import com.cookery.models.RecipeImageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.InternetUtility;
@@ -47,6 +47,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static android.app.Activity.RESULT_OK;
+import static com.cookery.utils.Constants.DEFAULT_CROP_RATIO;
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.MASTER;
@@ -172,7 +173,7 @@ public class RecipeAddFragment extends DialogFragment {
     }
 
     private void setupPage() {
-        setupImages(new ArrayList<ImageMO>());
+        setupImages(new ArrayList<RecipeImageMO>());
         setupTabs();
         collapseContent();
 
@@ -286,15 +287,15 @@ public class RecipeAddFragment extends DialogFragment {
         recipe_add_header_ll.startAnimation(new HeightWidthAnimator(recipe_add_header_ll, ViewGroup.LayoutParams.WRAP_CONTENT, HeightWidthAnimator.Type.HEIGHT, ANIMATION_SPEED));
     }
 
-    private void setupImages(List<ImageMO> images) {
+    private void setupImages(List<RecipeImageMO> images) {
         recipe_add_images_vp.setAdapter(new RecipeAddImagesViewPagerAdapter(mContext, images, false, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(view.getId() == R.id.recipe_add_images_item_close_iv){
                     String imageStr = String.valueOf(view.getTag());
-                    List<ImageMO> images = ((RecipeAddImagesViewPagerAdapter)recipe_add_images_vp.getAdapter()).images;
+                    List<RecipeImageMO> images = ((RecipeAddImagesViewPagerAdapter)recipe_add_images_vp.getAdapter()).images;
 
-                    for(ImageMO image : images){
+                    for(RecipeImageMO image : images){
                         if(image.getRCP_IMG().equalsIgnoreCase(imageStr)){
                             images.remove(image);
                             break;
@@ -325,9 +326,8 @@ public class RecipeAddFragment extends DialogFragment {
         recipe_add_images_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Utility.pickPhotos(getFragmentManager(), FRAGMENT_ADD_RECIPE);*/
                 Fragment fragment = getFragmentManager().findFragmentByTag(FRAGMENT_ADD_RECIPE);
-                CropImage.activity().start(getActivity(), fragment);
+                CropImage.activity().setInitialCropWindowPaddingRatio(DEFAULT_CROP_RATIO).start(mContext, fragment);
             }
         });
 

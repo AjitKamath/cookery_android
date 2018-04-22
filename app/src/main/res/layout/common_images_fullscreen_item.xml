@@ -3,10 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/common_images_fullscreen_item_image_rl">
 
     <ImageView
-        android:id="@+id/recipe_view_images_fullscreen_item_image_iv"
+        android:id="@+id/common_images_fullscreen_item_image_iv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
@@ -19,32 +20,10 @@
         android:gravity="center_vertical|right"
         android:background="@drawable/linear_gradient">
 
-        <LinearLayout
-            android:id="@+id/recipe_view_images_fullscreen_item_likes_ll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/recipe_view_images_fullscreen_item_likes_iv"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:src="@drawable/heart_unselected" />
-
-            <TextView
-                android:id="@+id/recipe_view_images_fullscreen_item_likes_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="0"
-                android:textColor="@color/primaryLightText"
-                android:textSize="@dimen/tertiary_text_size" />
-
-        </LinearLayout>
+        <include layout="@layout/common_like_view" />
 
         <LinearLayout
-            android:id="@+id/recipe_view_images_fullscreen_item_comments_ll"
+            android:id="@+id/common_images_fullscreen_item_comments_ll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
@@ -53,13 +32,13 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/recipe_view_images_fullscreen_item_comments_iv"
+                android:id="@+id/common_images_fullscreen_item_comments_iv"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:src="@drawable/comment_enabled" />
 
             <TextView
-                android:id="@+id/recipe_view_images_fullscreen_item_comments_tv"
+                android:id="@+id/common_images_fullscreen_item_comments_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"

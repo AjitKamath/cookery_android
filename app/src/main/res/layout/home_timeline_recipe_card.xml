@@ -8,7 +8,7 @@
     android:layout_marginRight="1dp"
     android:layout_marginBottom="2dp"
     android:background="@color/white"
-    android:id="@+id/common_component_card_timeline_recipe_cv"
+    android:id="@+id/home_timeline_recipe_card_cv"
     app:cardCornerRadius="5dp"
     card_view:cardPreventCornerOverlap="true">
 
@@ -18,7 +18,7 @@
 
         <LinearLayout
             android:padding="2dp"
-            android:id="@+id/common_component_card_timeline_recipe_ll"
+            android:id="@+id/home_timeline_recipe_card_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -40,7 +40,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/common_component_card_timeline_recipe_recipe_name_tv"
+                    android:id="@+id/home_timeline_recipe_card_recipe_name_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -55,7 +55,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/common_component_card_timeline_recipe_recipe_type_tv"
+                        android:id="@+id/home_timeline_recipe_card_recipe_food_type_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLength="18"
@@ -76,7 +76,7 @@
                         android:textSize="9sp" />
 
                     <TextView
-                        android:id="@+id/common_component_card_timeline_recipe_recipe_cuisine_tv"
+                        android:id="@+id/home_timeline_recipe_card_recipe_cuisine_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLength="18"
@@ -91,10 +91,10 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/common_component_card_timeline_recipe_recipe_iv"
+            android:id="@+id/home_timeline_recipe_card_recipe_image_iv"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:layout_below="@+id/common_component_card_timeline_recipe_ll"
+            android:layout_below="@+id/home_timeline_recipe_card_ll"
             android:layout_marginTop="2dp"
             android:scaleType="centerCrop"
             android:src="@drawable/placeholder" />

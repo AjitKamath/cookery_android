@@ -168,6 +168,10 @@ public class MultipartUtility {
                 Log.e(CLASS_NAME, "Error ! Possibly unimplemented function key ?");
                 throw new CookeryException(CookeryException.ErrorCode.SOMETHING_WRONG);
             }
+            else if (status == HttpURLConnection.HTTP_GATEWAY_TIMEOUT) {
+                Log.e(CLASS_NAME, "Error ! Server took too long to respond");
+                throw new CookeryException(CookeryException.ErrorCode.GATEWAY_TIMEOUT);
+            }
             else{
                 Log.e(CLASS_NAME, "Error ! No idea on what went wrong ! status code : "+status);
                 throw new CookeryException(CookeryException.ErrorCode.SOMETHING_WRONG);

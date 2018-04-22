@@ -25,6 +25,7 @@ import com.cookery.adapters.UsersRecyclerViewAdapter;
 import com.cookery.interfaces.ItemClickListener;
 import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.CommentMO;
+import com.cookery.models.RecipeImageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.UserMO;
@@ -217,6 +218,16 @@ public class UsersFragment extends DialogFragment {
                 Log.e(CLASS_NAME, "Unimplemented purpose("+purpose+") for a recipe");
             }
         }
+        else if(objectOfInterest instanceof RecipeImageMO){
+            setupSelectedImage((RecipeImageMO) objectOfInterest);
+
+            if("LIKE".equalsIgnoreCase(purpose)){
+                users_tv.setText(((RecipeImageMO) objectOfInterest).getLikesCount()+" LIKED THE RECIPE IMAGE");
+            }
+            else{
+                Log.e(CLASS_NAME, "Unimplemented purpose("+purpose+") for a recipe image");
+            }
+        }
         else if(objectOfInterest instanceof CommentMO){
             setupSelectedComment((CommentMO) objectOfInterest);
 
@@ -233,7 +244,7 @@ public class UsersFragment extends DialogFragment {
 
             if("LIKE".equalsIgnoreCase(purpose)){
                 ReviewMO review = (ReviewMO) objectOfInterest;
-                users_tv.setText(((RecipeMO) objectOfInterest).getLikesCount()+" LIKED "+Utility.getUserNameOrYour(review.getUserName(), review.getUSER_ID(), loggedInUser.getUSER_ID())+" REVIEW");
+                users_tv.setText(((ReviewMO) objectOfInterest).getLikesCount()+" LIKED "+Utility.getUserNameOrYour(review.getUserName(), review.getUSER_ID(), loggedInUser.getUSER_ID())+" REVIEW");
             }
             else{
                 Log.e(CLASS_NAME, "Unimplemented purpose("+purpose+") for a review");
@@ -307,6 +318,15 @@ public class UsersFragment extends DialogFragment {
         users_type_review_date_tv.setText(DateTimeUtility.getCreateOrModifiedTime(review.getCREATE_DTM(), review.getMOD_DTM()));
 
         selectStars(review.getRATING());
+    }
+
+    private void setupSelectedImage(RecipeImageMO image){
+        users_type_recipe_ll.setVisibility(View.VISIBLE);
+        Utility.loadImageFromURL(mContext, image.getRCP_IMG(), users_type_recipe_iv);
+
+        users_type_recipe_name_tv.setVisibility(View.GONE);
+        users_type_recipe_type_tv.setVisibility(View.GONE);
+        users_type_recipe_cuisine_tv.setVisibility(View.GONE);
     }
 
     private void selectStars(int count) {

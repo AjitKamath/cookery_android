@@ -6,22 +6,19 @@ package com.cookery.adapters;
 
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.interfaces.OnBottomReachedListener;
-import com.cookery.models.LikesMO;
 import com.cookery.models.ReviewMO;
-import com.cookery.models.UserMO;
 import com.cookery.utils.DateTimeUtility;
-import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
@@ -35,15 +32,15 @@ public class RecipeViewReviewsRecyclerViewAdapter extends RecyclerView.Adapter<R
     private Context mContext;
 
     private List<ReviewMO> reviews;
-    private View.OnLongClickListener listener;
+    private View.OnClickListener listener;
+    private View.OnLongClickListener longClickListener;
     private OnBottomReachedListener onBottomReachedListener;
-    private UserMO loggedInUser;
 
-    public RecipeViewReviewsRecyclerViewAdapter(Context mContext, UserMO loggedInUser, List<ReviewMO> reviews, View.OnLongClickListener listener) {
+    public RecipeViewReviewsRecyclerViewAdapter(Context mContext, List<ReviewMO> reviews, View.OnClickListener listener, View.OnLongClickListener longClickListener) {
         this.mContext = mContext;
-        this.loggedInUser = loggedInUser;
         this.reviews = reviews;
         this.listener = listener;
+        this.longClickListener = longClickListener;
     }
 
     @Override
@@ -69,14 +66,8 @@ public class RecipeViewReviewsRecyclerViewAdapter extends RecyclerView.Adapter<R
 
         holder.recipe_reviews_item_user_name_tv.setText(review.getUserName());
         holder.recipe_reviews_item_tv.setText(review.getREVIEW());
-        holder.recipe_reviews_item_likes_count_tv.setText(String.valueOf(review.getLikesCount()));
 
-        if(review.isUserLiked()){
-            holder.recipe_reviews_likes_iv.setImageResource(R.drawable.heart);
-        }
-        else{
-            holder.recipe_reviews_likes_iv.setImageResource(R.drawable.heart_unselected);
-        }
+        Utility.setupLikeView(holder.common_like_view, review.isUserLiked(), review.getLikesCount());
 
         setupStars(holder, review);
 
@@ -87,31 +78,10 @@ public class RecipeViewReviewsRecyclerViewAdapter extends RecyclerView.Adapter<R
             holder.recipe_reviews_item_date_time_tv.setText(DateTimeUtility.getSmartDateTime(DateTimeUtility.convertStringToDateTime(review.getCREATE_DTM(), DB_DATE_TIME)));
         }
 
-        holder.recipe_reviews_likes_iv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LikesMO like = new LikesMO();
-                like.setUSER_ID(loggedInUser.getUSER_ID());
-                like.setTYPE("REVIEW");
-                like.setTYPE_ID(review.getREV_ID());
+        holder.common_like_view.setOnClickListener(listener);
+        holder.common_like_view.setOnLongClickListener(longClickListener);
 
-                new AsyncSubmitLike().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like, holder);
-            }
-        });
-
-        holder.recipe_reviews_likes_iv.setTag(review);
-        holder.recipe_reviews_likes_iv.setOnLongClickListener(listener);
-    }
-
-    private void setupLike(ViewHolder holder, LikesMO like){
-        if(like.isUserLiked()){
-            holder.recipe_reviews_likes_iv.setImageResource(R.drawable.heart);
-        }
-        else{
-            holder.recipe_reviews_likes_iv.setImageResource(R.drawable.heart_unselected);
-        }
-
-        holder.recipe_reviews_item_likes_count_tv.setText(String.valueOf(like.getLikesCount()));
+        holder.common_like_view.setTag(review);
     }
 
     private void setupStars(ViewHolder holder, final ReviewMO review) {
@@ -160,8 +130,7 @@ public class RecipeViewReviewsRecyclerViewAdapter extends RecyclerView.Adapter<R
         public ImageView recipe_reviews_item_iv;
         public TextView recipe_reviews_item_user_name_tv;
         public TextView recipe_reviews_item_tv;
-        public ImageView recipe_reviews_likes_iv;
-        public TextView recipe_reviews_item_likes_count_tv;
+        public LinearLayout common_like_view;
         public ImageView recipe_reviews_item_star_1_iv;
         public ImageView recipe_reviews_item_star_2_iv;
         public ImageView recipe_reviews_item_star_3_iv;
@@ -175,40 +144,13 @@ public class RecipeViewReviewsRecyclerViewAdapter extends RecyclerView.Adapter<R
             recipe_reviews_item_iv = view.findViewById(R.id.recipe_reviews_item_iv);
             recipe_reviews_item_user_name_tv = view.findViewById(R.id.recipe_reviews_item_user_name_tv);
             recipe_reviews_item_tv = view.findViewById(R.id.recipe_reviews_item_tv);
-            recipe_reviews_likes_iv = view.findViewById(R.id.recipe_reviews_likes_iv);
-            recipe_reviews_item_likes_count_tv = view.findViewById(R.id.recipe_reviews_item_likes_count_tv);
+            common_like_view = view.findViewById(R.id.common_like_view);
             recipe_reviews_item_star_1_iv = view.findViewById(R.id.recipe_reviews_item_star_1_iv);
             recipe_reviews_item_star_2_iv = view.findViewById(R.id.recipe_reviews_item_star_2_iv);
             recipe_reviews_item_star_3_iv = view.findViewById(R.id.recipe_reviews_item_star_3_iv);
             recipe_reviews_item_star_4_iv = view.findViewById(R.id.recipe_reviews_item_star_4_iv);
             recipe_reviews_item_star_5_iv = view.findViewById(R.id.recipe_reviews_item_star_5_iv);
             recipe_reviews_item_date_time_tv = view.findViewById(R.id.recipe_reviews_item_date_time_tv);
-        }
-    }
-
-    public class AsyncSubmitLike extends AsyncTask<Object, Void, Object> {
-        private ViewHolder holder;
-
-        @Override
-        protected void onPreExecute(){
-        }
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            LikesMO like = (LikesMO) objects[0];
-            holder = (ViewHolder) objects[1];
-
-
-            return InternetUtility.submitLike(like);
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            LikesMO like = (LikesMO) object;
-
-            if(like != null){
-                setupLike(holder, like);
-            }
         }
     }
 }

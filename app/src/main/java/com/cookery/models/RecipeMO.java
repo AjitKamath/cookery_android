@@ -23,7 +23,7 @@ public class RecipeMO extends CommonMO implements Serializable {
 
     private List<IngredientAkaMO> ingredients;
     private List<TasteMO> tastes;
-    private List<ImageMO> images;
+    private List<RecipeImageMO> images;
     private List<CommentMO> comments;
     private List<ReviewMO> reviews;
     private List<String> steps;

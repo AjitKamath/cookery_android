@@ -1,5 +1,7 @@
 package com.cookery.models;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LikesMO {
+public class LikesMO implements Serializable {
     private int USER_ID;
     private int TYPE_ID;
     private String  TYPE;

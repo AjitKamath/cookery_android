@@ -20,13 +20,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cookery.R;
-import com.cookery.adapters.RecipeViewImagesFullscreenViewPagerAdapter;
+import com.cookery.adapters.ImagesFullscreenViewPagerAdapter;
 import com.cookery.models.CommentMO;
-import com.cookery.models.ImageMO;
 import com.cookery.models.LikesMO;
+import com.cookery.models.RecipeImageMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.AsyncTaskUtility;
-import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import java.io.File;
@@ -42,6 +41,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
 import static com.cookery.utils.Constants.GALLERY_DIR;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
@@ -56,14 +56,14 @@ public class RecipeViewImagesFragment extends DialogFragment {
     private Context mContext;
 
     //components
-    @InjectView(R.id.recipe_view_images_fullscreen_vp)
+    @InjectView(R.id.common_images_fullscreen_vp)
     ViewPager recipe_view_images_fullscreen_vp;
 
-    @InjectView(R.id.recipe_view_images_fullscreen_count_tv)
+    @InjectView(R.id.common_images_fullscreen_count_tv)
     TextView recipe_view_images_fullscreen_count_tv;
     //end of components
 
-    @InjectView(R.id.recipe_view_images_download)
+    @InjectView(R.id.common_images_download)
     ImageView recipe_view_images_download;
 
     private Object object;
@@ -72,7 +72,7 @@ public class RecipeViewImagesFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.recipe_view_images_fullscreen, container);
+        View view = inflater.inflate(R.layout.common_images_fullscreen, container);
         ButterKnife.inject(this, view);
 
         Dialog d = getDialog();
@@ -96,13 +96,15 @@ public class RecipeViewImagesFragment extends DialogFragment {
         Object array[] = (Object[]) object;
 
         int imageIndex = (Integer) array[0];
-        final List<ImageMO> images = (List<ImageMO>) array[1];
+        final List<RecipeImageMO> images = (List<RecipeImageMO>) array[1];
 
-        recipe_view_images_fullscreen_vp.setAdapter(new RecipeViewImagesFullscreenViewPagerAdapter(mContext, images, new View.OnClickListener() {
+        recipe_view_images_fullscreen_vp.setAdapter(new ImagesFullscreenViewPagerAdapter(mContext, images, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (R.id.recipe_view_images_fullscreen_item_likes_ll == view.getId()) {
-                    ImageMO image = (ImageMO) view.getTag();
+                if (R.id.common_like_view_ll == view.getId()) {
+                    RecipeImageMO image = (RecipeImageMO) view.getTag();
+
+                    Utility.addRemoveLike(view);
 
                     if (image == null) {
                         Log.e(CLASS_NAME, "Image is null/empty");
@@ -114,9 +116,11 @@ public class RecipeViewImagesFragment extends DialogFragment {
                     like.setTYPE("RECIPE_IMG");
                     like.setTYPE_ID(image.getRCP_IMG_ID());
 
-                    new AsyncSubmitRecipeImageLike(view).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
-                } else if (R.id.recipe_view_images_fullscreen_item_comments_ll == view.getId()) {
-                    ImageMO image = (ImageMO) view.getTag();
+                    new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE_IMAGES,
+                            AsyncTaskUtility.Purpose.SUBMIT_LIKE, loggedInUser, 0)
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, like);
+                } else if (R.id.common_images_fullscreen_item_comments_ll == view.getId()) {
+                    RecipeImageMO image = (RecipeImageMO) view.getTag();
 
                     if(image == null){
                         Log.e(CLASS_NAME, "Image is null/empty");
@@ -134,6 +138,11 @@ public class RecipeViewImagesFragment extends DialogFragment {
                 } else {
                     Log.e(CLASS_NAME, "Could not identify the purpose of event on this view");
                 }
+            }
+        }, new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
             }
         }));
         recipe_view_images_fullscreen_vp.setCurrentItem(imageIndex);
@@ -186,49 +195,14 @@ public class RecipeViewImagesFragment extends DialogFragment {
         });
     }
 
-    private void updateImageLikeView(LikesMO like, View layout) {
-        layout.findViewById(R.id.recipe_view_images_fullscreen_item_likes_iv).setBackgroundResource(Utility.getLikeImageId(like.isUserLiked()));
-        ((TextView) layout.findViewById(R.id.recipe_view_images_fullscreen_item_likes_tv)).setText(Utility.getSmartNumber(like.getLikesCount()));
-    }
-
-    public class AsyncSubmitRecipeImageLike extends AsyncTask<Object, Void, Object> {
-        View layout;
-
-        public AsyncSubmitRecipeImageLike(View layout) {
-            this.layout = layout;
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            LikesMO like = (LikesMO) objects[0];
-            return InternetUtility.submitLike(like);
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            LikesMO like = (LikesMO) object;
-
-            if (like != null) {
-                if (getTargetFragment() instanceof RecipeViewFragment) {
-                    updateImageLikeView(like, layout);
-                    //((RecipeViewFragment) getTargetFragment()).updateRecipeView();
-                }
-            }
-        }
-    }
-
-    class AsyncTaskerDownloadRecipeImages extends AsyncTask<ImageMO, Void, Void> {
+    class AsyncTaskerDownloadRecipeImages extends AsyncTask<RecipeImageMO, Void, Void> {
         @Override
         protected void onPreExecute() {
             Toast.makeText(mContext, "Downloading Recipe Image", Toast.LENGTH_LONG).show();
         }
 
         @Override
-        protected Void doInBackground(ImageMO... objects) {
+        protected Void doInBackground(RecipeImageMO... objects) {
             URL url;
             String storeDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + GALLERY_DIR;
             try {
@@ -290,14 +264,14 @@ public class RecipeViewImagesFragment extends DialogFragment {
         }
     }
 
-    class AsyncTaskerDownloadAllRecipeImages extends AsyncTask<List<ImageMO>, String, Void> {
+    class AsyncTaskerDownloadAllRecipeImages extends AsyncTask<List<RecipeImageMO>, String, Void> {
         @Override
         protected void onPreExecute() {
             Toast.makeText(mContext, "Downloading Recipe Images", Toast.LENGTH_LONG).show();
         }
 
         @Override
-        protected Void doInBackground(List<ImageMO>... objects) {
+        protected Void doInBackground(List<RecipeImageMO>... objects) {
             URL url;
             String storeDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + GALLERY_DIR;
 

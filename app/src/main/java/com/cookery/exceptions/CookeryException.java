@@ -14,7 +14,7 @@ public class CookeryException extends RuntimeException {
     }
 
     public enum ErrorCode{
-        SOMETHING_WRONG, NO_INTERNET, ACCESS_DENIED, JSON_TO_OBJECT_MAPPING_ERROR, NO_JSON,
+        SOMETHING_WRONG, NO_INTERNET, ACCESS_DENIED, GATEWAY_TIMEOUT, JSON_TO_OBJECT_MAPPING_ERROR, NO_JSON,
         NO_JSON_MAPPING_CLASS, BAD_JSON;
     }
 

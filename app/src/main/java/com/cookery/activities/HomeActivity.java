@@ -1,6 +1,6 @@
 package com.cookery.activities;
 
-import android.app.Fragment;
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,11 +23,10 @@ import com.cookery.adapters.HomeTimelinesTrendsViewPagerAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
 import com.cookery.fragments.TimelineDeleteFragment;
 import com.cookery.fragments.TimelineHideFragment;
-import com.cookery.fragments.UserViewFragment;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.TimelineMO;
 import com.cookery.models.UserMO;
-import com.cookery.utils.InternetUtility;
+import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
@@ -40,7 +39,6 @@ import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.FRAGMENT_TIMELINE_DELETE;
 import static com.cookery.utils.Constants.FRAGMENT_TIMELINE_HIDE;
-import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
@@ -95,18 +93,22 @@ public class HomeActivity extends CommonActivity{
             content_home_timelines_trends_tl.addTab(content_home_timelines_trends_tl.newTab());
         }
 
+        final Activity activity = this;
         HomeTimelinesTrendsViewPagerAdapter adapter = new HomeTimelinesTrendsViewPagerAdapter(mContext, viewPagerTabsList, loggedInUser, array, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(view.getTag() != null){
                     if(view.getId() == R.id.home_timeline_user_follow_unfollow_item_photo_iv) {
-                        new AsyncFetchUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Integer) view.getTag());
+                        new AsyncTaskUtility(getFragmentManager(), activity, AsyncTaskUtility.Purpose.FETCH_USER_PUBLIC_DETAILS, loggedInUser, 0)
+                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Integer) view.getTag());
                     }
                     else if (view.getTag() instanceof RecipeMO) {
-                        new AsyncTaskerFetchRecipe().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (RecipeMO) view.getTag());
+                        new AsyncTaskUtility(getFragmentManager(), activity, AsyncTaskUtility.Purpose.FETCH_RECIPE, loggedInUser, 0)
+                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (RecipeMO) view.getTag());
                     }
                     else if (view.getTag() instanceof UserMO) {
-                        new AsyncFetchUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO)view.getTag()).getUSER_ID());
+                        new AsyncTaskUtility(getFragmentManager(), activity, AsyncTaskUtility.Purpose.FETCH_USER_PUBLIC_DETAILS, loggedInUser, 0)
+                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO)view.getTag()).getUSER_ID());
                     }
                     else{
                         Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+view.getTag());
@@ -228,42 +230,5 @@ public class HomeActivity extends CommonActivity{
     @Override
     protected void setUpTabs(Object array[]) {
         this.prepareTabs(array);
-    }
-
-
-    class AsyncFetchUser extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-
-        @Override
-        protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching user details ..");
-        }
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.fetchUsersPublicDetails(Integer.parseInt(String.valueOf(objects[0])), loggedInUser.getUSER_ID());
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-            if (object == null) {
-                return;
-            }
-
-            List<UserMO> users = (List<UserMO>) object;
-
-            if (users != null && !users.isEmpty()) {
-                Map<String, Object> bundleMap = new HashMap<String, Object>();
-                bundleMap.put(GENERIC_OBJECT, users.get(0));
-
-                Utility.showFragment(getFragmentManager(), null, FRAGMENT_USER_VIEW, new UserViewFragment(), bundleMap);
-
-            }
-            else{
-                Log.e(CLASS_NAME, "Failed to fetch users details");
-            }
-        }
     }
 }
