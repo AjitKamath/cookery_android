@@ -351,7 +351,12 @@ public class ProfileViewFragment extends DialogFragment {
 
     public void updateEmail(UserMO user){
         profile_view_profile_email_tv.setText(user.getEMAIL());
-        profile_view_profile_email_verify_tv.setText("NOT VERIFIED");
+        if(user.getVeri_code() == 0){
+            profile_view_profile_email_verify_tv.setText("VERIFIED");
+        }
+        else{
+            profile_view_profile_email_verify_tv.setText("NOT VERIFIED");
+        }
         profile_view_profile_email_verify_tv.setTextColor(ContextCompat.getColor(mContext, R.color.red));
         profile_view_profile_email_scope_iv.setImageResource(Utility.getScopeImageId(user.getEMAIL_SCOPE_ID()));
 

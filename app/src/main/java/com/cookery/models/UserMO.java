@@ -44,6 +44,8 @@ public class UserMO extends CommonMO implements Serializable {
     private int likesCount;
     private int commentsCount;
 
+    private int veri_code;
+
     public String getFollowMessage() {
         if(following && followed){
             return "You follow each other";
