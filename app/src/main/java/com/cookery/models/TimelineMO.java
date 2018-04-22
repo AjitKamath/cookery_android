@@ -1,6 +1,7 @@
 package com.cookery.models;
 
 import java.io.Serializable;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +32,7 @@ public class TimelineMO extends CommonMO implements Serializable {
     private String recipeTypeName;
     private String recipeCuisineName;
     private String recipeOwnerImg;
-    private String recipeImage;
+    private List<RecipeImageMO> recipeImage;
     /*recipe*/
 
     /*comment*/

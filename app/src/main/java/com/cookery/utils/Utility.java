@@ -775,6 +775,14 @@ public class Utility extends Activity {
             }
             currentFrag.show(fragmentManager, fragKey);
         }
+        else if(fragment instanceof RecipeViewFragment){
+            RecipeViewFragment currentFrag = (RecipeViewFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
         else{
             Log.e(CLASS_NAME, "Error ! "+fragment+" fragment hasn't been configured in "+CLASS_NAME+" showFragment method yet.");
         }

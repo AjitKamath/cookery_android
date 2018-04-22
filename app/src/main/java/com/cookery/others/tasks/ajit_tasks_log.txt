@@ -364,3 +364,9 @@
 
 16 april 2018
 1. #291 - Categorize Ingredients
+
+-- git checkin on 16 April 2018 --
+
+20 april 2018
+1. #240 - Timeline - handle new timelines & stories (like/unlike recipe/user photos)
+2. #284 - Recipe Add & Profile View - Full image as default crop

@@ -1,0 +1,31 @@
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginLeft="1dp"
+    android:layout_marginRight="1dp"
+    android:layout_marginBottom="2dp"
+    android:background="@color/white"
+    android:id="@+id/home_timeline_comment_card_cv"
+    app:cardCornerRadius="5dp"
+    card_view:cardPreventCornerOverlap="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/home_timeline_comment_card_comment_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLength="150"
+            android:text="@string/sample_commnet"
+            android:textColor="@color/tertiaryDarkText"
+            android:textSize="10sp" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

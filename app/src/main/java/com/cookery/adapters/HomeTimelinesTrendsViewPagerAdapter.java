@@ -78,7 +78,7 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
         SwipeRefreshLayout home_stories_srl = layout.findViewById(R.id.home_stories_srl);
         home_stories_rv = layout.findViewById(R.id.home_stories_rv);
 
-        final HomeStoriesRecyclerViewAdapter adapter = new HomeStoriesRecyclerViewAdapter(mContext, stories, listener, menuItemListener);
+        final HomeStoriesRecyclerViewAdapter adapter = new HomeStoriesRecyclerViewAdapter(mContext, loggedInUser, stories, listener, menuItemListener);
         adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
             @Override
             public void onBottomReached(int position) {
@@ -104,7 +104,7 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
         SwipeRefreshLayout home_timelines_srl = layout.findViewById(R.id.home_timelines_srl);
         home_timelines_rv = layout.findViewById(R.id.home_timelines_rv);
 
-        final HomeTimelinesRecyclerViewAdapter adapter = new HomeTimelinesRecyclerViewAdapter(mContext, timelines, listener, menuItemListener);
+        final HomeTimelinesRecyclerViewAdapter adapter = new HomeTimelinesRecyclerViewAdapter(mContext, loggedInUser, timelines, listener, menuItemListener);
         adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
             @Override
             public void onBottomReached(int position) {

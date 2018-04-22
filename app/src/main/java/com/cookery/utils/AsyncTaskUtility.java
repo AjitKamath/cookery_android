@@ -155,6 +155,9 @@ public class AsyncTaskUtility extends AsyncTask {
             else if(ce.getCode().equals(CookeryException.ErrorCode.NO_JSON_MAPPING_CLASS)){
                 Utility.showFragment(fragmentManager, null, FRAGMENT_COOKERY_ERROR, new CookeryErrorFragment(), null);
             }
+            else if(ce.getCode().equals(CookeryException.ErrorCode.GATEWAY_TIMEOUT)){
+                //TODO:It seems that bee's are too busy today. Arranging more bees for you.
+            }
             else if(ce.getCode().equals(CookeryException.ErrorCode.SOMETHING_WRONG)){
                 Utility.showFragment(fragmentManager, null, FRAGMENT_SOMETHING_WRONG, new SomethingWrongFragment(), null);
             }
@@ -561,22 +564,10 @@ public class AsyncTaskUtility extends AsyncTask {
     }
 
     private Object fetchRecipe(Object[] objects) {
-        if (objects == null || objects.length < 1) {
-            Log.e(CLASS_NAME, "Error ! Required objects are missing");
-        } else if (!(objects[0] instanceof RecipeMO)) {
-            Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE + objects[0]);
-        } else if (FRAGMENT_RECIPE.equalsIgnoreCase(fragmentKey)) {
-            waitFragment = Utility.showWaitDialog(fragmentManager, "updating the Recipe ..");
+        waitFragment = Utility.showWaitDialog(fragmentManager, "fetching the Recipe ..");
 
-            List<RecipeMO> recipes = (List<RecipeMO>) InternetUtility.fetchRecipe((RecipeMO) objects[0], loggedInUser.getUSER_ID());
-            Object array[] = new Object[]{recipes == null || recipes.isEmpty() ? null : recipes.get(0)};
-
-            return array;
-        } else {
-            Log.e(CLASS_NAME, "Could not understand : " + objects[1]);
-        }
-
-        return null;
+        List<RecipeMO> recipes = (List<RecipeMO>) InternetUtility.fetchRecipe((RecipeMO) objects[0], loggedInUser.getUSER_ID());
+        return recipes == null || recipes.isEmpty() ? null : recipes.get(0);
     }
 
     private void postFetchRecipe(Object object) {
@@ -584,20 +575,24 @@ public class AsyncTaskUtility extends AsyncTask {
             return;
         }
 
-        Object array[] = (Object[]) object;
-        if (array.length == 1) {
-            if (FRAGMENT_RECIPE.equalsIgnoreCase(fragmentKey)) {
-                RecipeViewFragment fragment = (RecipeViewFragment) getFragment(fragmentKey);
-                fragment.setRecipe((RecipeMO) array[0]);
-                fragment.setupPage();
-            } else {
-                Log.e(CLASS_NAME, "Something wrong !");
+        RecipeMO recipe = (RecipeMO) object;
+
+        if(activity != null){
+            if(activity instanceof HomeActivity){
+                Map<String, Object> paramsMap = new HashMap<>();
+                paramsMap.put(SELECTED_ITEM, recipe);
+
+                Utility.showFragment(fragmentManager, null, FRAGMENT_RECIPE, new RecipeViewFragment(), paramsMap);
             }
+        }
+        else if (FRAGMENT_RECIPE.equalsIgnoreCase(fragmentKey)) {
+            RecipeViewFragment fragment = (RecipeViewFragment) getFragment(fragmentKey);
+            fragment.setRecipe(recipe);
+            fragment.setupPage();
         } else {
-            Log.e(CLASS_NAME, "Missing required objects");
+            Log.e(CLASS_NAME, "Something wrong !");
         }
     }
-
 
     private void postFetchUsers(Object object) {
         if (object == null) {
@@ -647,12 +642,21 @@ public class AsyncTaskUtility extends AsyncTask {
             paramsMap.put(GENERIC_OBJECT, users.get(0));
             paramsMap.put(LOGGED_IN_USER, loggedInUser);
 
-            if(getFragment(fragmentKey) instanceof UserViewFragment){
-                Utility.showFragment(fragmentManager, FRAGMENT_USER_VIEW, FRAGMENT_PROFILE_VIEW_IMAGE, new ProfileViewImageFragment(), paramsMap);
+            if(activity != null){
+                if(activity instanceof HomeActivity){
+                    Utility.showFragment(fragmentManager, null, FRAGMENT_USER_VIEW, new UserViewFragment(), paramsMap);
+                }
             }
-            else if(getFragment(fragmentKey) instanceof RecipeViewFragment){
-                Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_USER_VIEW, new UserViewFragment(), paramsMap);
+            else{
+                if(getFragment(fragmentKey) instanceof UserViewFragment){
+                    Utility.showFragment(fragmentManager, FRAGMENT_USER_VIEW, FRAGMENT_PROFILE_VIEW_IMAGE, new ProfileViewImageFragment(), paramsMap);
+                }
+                else if(getFragment(fragmentKey) instanceof RecipeViewFragment){
+                    Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_USER_VIEW, new UserViewFragment(), paramsMap);
+                }
             }
+
+
         } else {
             Log.e(CLASS_NAME, "Failed to fetch users details");
         }

@@ -40,6 +40,7 @@ import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
+import static com.cookery.utils.Constants.DEFAULT_CROP_RATIO;
 import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_EMAIL;
@@ -221,7 +222,7 @@ public class ProfileViewFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 Fragment fragment = getFragmentManager().findFragmentByTag(FRAGMENT_PROFILE_VIEW);
-                CropImage.activity().start(mContext, fragment);
+                CropImage.activity().setInitialCropWindowPaddingRatio(DEFAULT_CROP_RATIO).start(mContext, fragment);
             }
         });
 

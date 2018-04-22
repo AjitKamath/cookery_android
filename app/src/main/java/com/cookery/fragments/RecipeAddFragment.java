@@ -47,6 +47,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static android.app.Activity.RESULT_OK;
+import static com.cookery.utils.Constants.DEFAULT_CROP_RATIO;
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.MASTER;
@@ -325,9 +326,8 @@ public class RecipeAddFragment extends DialogFragment {
         recipe_add_images_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Utility.pickPhotos(getFragmentManager(), FRAGMENT_ADD_RECIPE);*/
                 Fragment fragment = getFragmentManager().findFragmentByTag(FRAGMENT_ADD_RECIPE);
-                CropImage.activity().start(getActivity(), fragment);
+                CropImage.activity().setInitialCropWindowPaddingRatio(DEFAULT_CROP_RATIO).start(mContext, fragment);
             }
         });
 

@@ -64,7 +64,7 @@
                                 android:id="@+id/fragment_timelines_timeline_comment_what_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text=" commented on "
+                                android:text=" what "
                                 android:textColor="@color/primaryDarkText"
                                 android:textSize="10sp" />
 
@@ -82,9 +82,10 @@
                                 android:layout_centerVertical="true"
                                 android:layout_toRightOf="@+id/fragment_timelines_timeline_comment_whose_tv"
                                 android:layout_marginLeft="5dp"
+                                android:id="@+id/fragment_timelines_timeline_comment_on_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="recipe"
+                                android:text="on"
                                 android:textColor="@color/primaryDarkText"
                                 android:textSize="10sp" />
 
@@ -121,6 +122,8 @@
                 </RelativeLayout>
 
                 <include layout="@layout/home_timeline_recipe_card" />
+
+                <include layout="@layout/home_timeline_user_card" />
 
             </LinearLayout>
 
