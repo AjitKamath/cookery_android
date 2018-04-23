@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.cookery.fragments.MyRecipesFragment;
 import com.cookery.fragments.MyReviewsFragment;
 import com.cookery.fragments.NoInternetFragment;
 import com.cookery.fragments.PeopleViewFragment;
+import com.cookery.fragments.PickPhotoFragment;
 import com.cookery.fragments.ProfileViewEmailFragment;
 import com.cookery.fragments.ProfileViewFragment;
 import com.cookery.fragments.ProfileViewGenderFragment;
@@ -61,13 +63,21 @@ import com.cookery.models.UserMO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.cookery.utils.Constants.DEFAULT_CROP_RATIO;
 import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_WAIT;
@@ -512,7 +522,7 @@ public class Utility extends Activity {
         return fragment;
     }
 
-    public static Fragment showRecipeImagesFragment(FragmentManager fragManager, RecipeMO recipe) {
+    public static Fragment showRecipeImagesFragment(FragmentManager fragManager, List<Uri> images) {
         String fragmentNameStr = FRAGMENT_RECIPE_IMAGES;
 
         Fragment frag = fragManager.findFragmentByTag(fragmentNameStr);
@@ -522,7 +532,7 @@ public class Utility extends Activity {
         }
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable(GENERIC_OBJECT, recipe);
+        bundle.putSerializable(GENERIC_OBJECT, (Serializable) images);
 
         RecipeImagesFragment fragment = new RecipeImagesFragment();
         fragment.setArguments(bundle);
@@ -530,6 +540,38 @@ public class Utility extends Activity {
         fragment.show(fragManager, fragmentNameStr);
 
         return fragment;
+    }
+
+    public static String saveFile(Uri sourceuri){
+        String sourceFilename= sourceuri.getPath();
+        String ext = sourceFilename.substring(sourceFilename.lastIndexOf("."));
+        String destinationFilename = android.os.Environment.getExternalStorageDirectory().getPath()+File.separatorChar+(new Date().getTime())+ext;
+
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+
+        try {
+            bis = new BufferedInputStream(new FileInputStream(sourceFilename));
+            bos = new BufferedOutputStream(new FileOutputStream(destinationFilename, false));
+            byte[] buf = new byte[1024];
+            bis.read(buf);
+            do {
+                bos.write(buf);
+            } while(bis.read(buf) != -1);
+
+            return destinationFilename;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bis != null) bis.close();
+                if (bos != null) bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return "";
     }
 
     /*public static List<Bitmap> getTestImages(Context context){
@@ -783,8 +825,40 @@ public class Utility extends Activity {
             }
             currentFrag.show(fragmentManager, fragKey);
         }
+        else if(fragment instanceof PickPhotoFragment){
+            PickPhotoFragment currentFrag = (PickPhotoFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
         else{
             Log.e(CLASS_NAME, "Error ! "+fragment+" fragment hasn't been configured in "+CLASS_NAME+" showFragment method yet.");
+        }
+    }
+
+    public static void startCropImageActivity(Context mContext, Object fragmentOrActivity){
+        if(fragmentOrActivity instanceof Fragment){
+            CropImage
+                    .activity()
+                    .setAllowRotation(true)
+                    .setAutoZoomEnabled(true)
+                    .setFixAspectRatio(true)
+                    .setInitialCropWindowPaddingRatio(DEFAULT_CROP_RATIO)
+                    .start(mContext, (Fragment) fragmentOrActivity);
+        }
+        else if(fragmentOrActivity instanceof Activity){
+            CropImage
+                    .activity()
+                    .setAllowRotation(true)
+                    .setAutoZoomEnabled(true)
+                    .setFixAspectRatio(true)
+                    .setInitialCropWindowPaddingRatio(DEFAULT_CROP_RATIO)
+                    .start((Activity) fragmentOrActivity);
+        }
+        else{
+            Log.e(CLASS_NAME, "Something went wrong");
         }
     }
 

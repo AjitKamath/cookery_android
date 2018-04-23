@@ -1,7 +1,9 @@
 package com.cookery.activities;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -37,6 +39,7 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_TIMELINE_DELETE;
 import static com.cookery.utils.Constants.FRAGMENT_TIMELINE_HIDE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
@@ -195,6 +198,12 @@ public class HomeActivity extends CommonActivity{
 
     public void deleteTimeline(TimelineMO timeline){
         ((HomeTimelinesTrendsViewPagerAdapter)content_home_timelines_trends_vp.getAdapter()).deleteTimeline(timeline);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Fragment recipeAddFragment = getFragmentManager().findFragmentByTag(FRAGMENT_ADD_RECIPE);
+        recipeAddFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

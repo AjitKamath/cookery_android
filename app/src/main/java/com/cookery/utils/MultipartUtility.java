@@ -110,11 +110,11 @@ public class MultipartUtility {
                 outputStream.write(buffer, 0, bytesRead);
             }
 
-            writer.append(LINE_FEED);
-
-            writer.flush();
+            outputStream.flush();
             inputStream.close();
-            outputStream.close();
+
+            writer.append(LINE_FEED);
+            writer.flush();
         }
         catch (IOException ioe){
             throw new CookeryException(CookeryException.ErrorCode.NO_INTERNET, ioe);

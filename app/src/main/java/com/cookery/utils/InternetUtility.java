@@ -31,7 +31,6 @@ import java.util.Map;
 
 import static com.cookery.utils.Constants.API_KEY_ANDROID;
 import static com.cookery.utils.Constants.API_KEY_IDENTIFIER;
-import static com.cookery.utils.Constants.PHP_CONTROLLER;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_DELETE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_FETCH_ALL;
@@ -44,9 +43,6 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_INGREDIENT_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_FETCH_USERS;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_FETCH;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_SUBMIT;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_SUBMIT_FROM_RECIPE;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_UPDATE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_VIEW;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_FAVORITE_FETCH;
@@ -83,7 +79,7 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_NAME;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_PASSWORD;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_PHONE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_VIEW_FETCH_USERS;
-import static com.cookery.utils.Constants.SERVER_ADDRESS_PUBLIC;
+import static com.cookery.utils.Constants.PHP_SERVICE_URL;
 import static com.cookery.utils.Constants.SERVER_CHARSET;
 
 /**
@@ -186,7 +182,7 @@ public class InternetUtility {
     }
 
     public static Object submitRecipe(RecipeMO recipe) {
-        MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS_PUBLIC + PHP_CONTROLLER, SERVER_CHARSET);
+        MultipartUtility multipart = getMultipartUtility();
 
         //images
         //Note: image upload doesnt work if you do not add form field to multipart.
@@ -235,8 +231,7 @@ public class InternetUtility {
     }
 
     public static MessageMO saveList(MyListMO mylistObj) {
-        MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS_PUBLIC + PHP_CONTROLLER, SERVER_CHARSET);
-        multipart.addFormField(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_SUBMIT);
+        MultipartUtility multipart = getMultipartUtility();
 
         multipart.addFormField("list_name", String.valueOf(mylistObj.getLIST_NAME()));
         multipart.addFormField("user_id", String.valueOf(mylistObj.getUSER_ID()));
@@ -252,8 +247,7 @@ public class InternetUtility {
     }
 
     public static MessageMO saveListFromRecipe(MyListMO mylistObj) {
-        MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS_PUBLIC + PHP_CONTROLLER, SERVER_CHARSET);
-        multipart.addFormField(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_SUBMIT_FROM_RECIPE);
+        MultipartUtility multipart = getMultipartUtility();
 
         multipart.addFormField("list_id", String.valueOf(mylistObj.getLIST_ID()));
         multipart.addFormField("ing_aka_id", String.valueOf(mylistObj.getING_AKA_ID()));
@@ -263,8 +257,7 @@ public class InternetUtility {
 
 
     public static MessageMO updateList(MyListMO mylistObj) {
-        MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS_PUBLIC + PHP_CONTROLLER, SERVER_CHARSET);
-        multipart.addFormField(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_UPDATE);
+        MultipartUtility multipart = getMultipartUtility();
 
         multipart.addFormField("list_id", String.valueOf(mylistObj.getLIST_ID()));
         multipart.addFormField("list_name", String.valueOf(mylistObj.getLIST_NAME()));
@@ -403,12 +396,7 @@ public class InternetUtility {
     }
 
     public static String getResponseFromCookery(Map<String, String> paramMap) throws CookeryException {
-        final String url = SERVER_ADDRESS_PUBLIC + PHP_CONTROLLER;
-
-        MultipartUtility multipart = new MultipartUtility(url, SERVER_CHARSET);
-
-        //keep security related stuff in header only
-        multipart.addHeaderField(API_KEY_IDENTIFIER, API_KEY_ANDROID + 1);
+        MultipartUtility multipart = getMultipartUtility();
 
         if (paramMap != null && !paramMap.isEmpty()) {
             for (Map.Entry<String, String> iter : paramMap.entrySet()) {
@@ -422,13 +410,22 @@ public class InternetUtility {
 
         Log.i(CLASS_NAME, "*");
         Log.i(CLASS_NAME, "*** POST (" + (double) (end.getTime() - start.getTime()) / 1000 + " seconds)***");
-        Log.i(CLASS_NAME, "URL : " + url);
+        Log.i(CLASS_NAME, "URL : " + PHP_SERVICE_URL);
         Log.i(CLASS_NAME, "PARAMS : " + paramMap);
         Log.i(CLASS_NAME, "RESPONSE : " + response);
         Log.i(CLASS_NAME, "*** POST ***");
         Log.i(CLASS_NAME, "*");
 
         return response;
+    }
+
+    private static MultipartUtility getMultipartUtility(){
+        MultipartUtility multipart = new MultipartUtility(PHP_SERVICE_URL, SERVER_CHARSET);
+
+        //keep security related stuff in header only
+        multipart.addHeaderField(API_KEY_IDENTIFIER, API_KEY_ANDROID + 1);
+
+        return multipart;
     }
 
     public static List<RecipeMO> fetchMyRecipes(int user_id, int index) {
@@ -603,7 +600,7 @@ public class InternetUtility {
     }
 
     public static Object updateUserImage(UserMO user) {
-        MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS_PUBLIC + PHP_CONTROLLER, SERVER_CHARSET);
+        MultipartUtility multipart = getMultipartUtility();
 
         //images
         //Note: image upload doesnt work if you do not add form field to multipart.

@@ -19,6 +19,7 @@ import com.cookery.fragments.ProfileViewEmailFragment;
 import com.cookery.fragments.ProfileViewFragment;
 import com.cookery.fragments.ProfileViewGenderFragment;
 import com.cookery.fragments.ProfileViewImageFragment;
+import com.cookery.fragments.RecipeAddFragment;
 import com.cookery.fragments.RecipeViewFragment;
 import com.cookery.fragments.RecipeViewImagesFragment;
 import com.cookery.fragments.RecipeViewReviewsFragment;
@@ -49,7 +50,9 @@ import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_USER_PUBLIC_DETAI
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_USER_SELF;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.SUBMIT_COMMENT;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.SUBMIT_LIKE;
+import static com.cookery.utils.AsyncTaskUtility.Purpose.SUBMIT_RECIPE;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.UPDATE_USER;
+import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_COOKERY_ERROR;
 import static com.cookery.utils.Constants.FRAGMENT_LIKED_USERS;
@@ -87,7 +90,7 @@ public class AsyncTaskUtility extends AsyncTask {
 
     public enum Purpose {
         FETCH_USER_PUBLIC_DETAILS, FETCH_USER_SELF, FETCH_USERS, FETCH_RECIPE, FETCH_RECIPE_IMAGES,
-        FETCH_COMMENTS, FETCH_REVIEWS, DELETE_COMMENT,
+        FETCH_COMMENTS, FETCH_REVIEWS, DELETE_COMMENT,SUBMIT_RECIPE,
         SUBMIT_LIKE, SUBMIT_COMMENT, FETCH_MY_RECIPES, FETCH_MY_REVIEWS, UPDATE_USER, CHECK_INTERNET
     }
 
@@ -129,6 +132,9 @@ public class AsyncTaskUtility extends AsyncTask {
                 return fetchMyReviews();
             } else if (purpose == UPDATE_USER) {
                 return updateUser(objects);
+            }
+            else if (purpose == SUBMIT_RECIPE) {
+                return submitRecipe(objects);
             }
             else if(purpose == DELETE_COMMENT){
                 return deleteComment(objects);
@@ -207,8 +213,37 @@ public class AsyncTaskUtility extends AsyncTask {
             postUpdateUser(object);
         }else if (purpose == DELETE_COMMENT) {
             postDeleteComment(object);
+        }else if (purpose == SUBMIT_RECIPE) {
+            postSubmitRecipe(object);
         } else {
             Log.e(CLASS_NAME, "Could not understand the purpose : " + purpose);
+        }
+    }
+
+    private Object submitRecipe(Object[] objects){
+        waitFragment = Utility.showWaitDialog(fragmentManager, "submitting your recipe ..");
+        return InternetUtility.submitRecipe((RecipeMO) objects[0]);
+    }
+
+    private void postSubmitRecipe(Object object){
+        if(object == null){
+            return;
+        }
+
+
+        MessageMO message = (MessageMO) object;
+        message.setPurpose("ADD_RECIPE");
+
+        Utility.showMessageDialog(fragmentManager, getFragment(FRAGMENT_ADD_RECIPE), message);
+
+        if(message.isError()){
+            Log.e(CLASS_NAME, "Error : "+message.getErr_message());
+        }
+        else{
+            Log.i(CLASS_NAME, message.getErr_message());
+
+            RecipeAddFragment recipeAddFragment = (RecipeAddFragment) getFragment(FRAGMENT_ADD_RECIPE);
+            recipeAddFragment.dismiss();
         }
     }
 

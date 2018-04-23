@@ -370,3 +370,15 @@
 20 april 2018
 1. #240 - Timeline - handle new timelines & stories (like/unlike recipe/user photos)
 2. #284 - Recipe Add & Profile View - Full image as default crop
+
+-- git checkin on 22 April 2018 --
+
+22 april 2018
+1. #283 - Recipe Add - pick multiple images
+
+24 april 2018
+1. #268 Profile View - Profile Photo Likes & Comments
+2. #243 Service Request Authorisation - Handle API Key failure in Android
+3. #324 Likes - Change Image, then Call Service
+4. #340 Ingredient & Ingredient AKA relationships
+5. #373 Fix Connection & Transaction Counter

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -15,8 +16,6 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.adapters.RecipeAddImagesViewPagerAdapter;
-import com.cookery.models.RecipeImageMO;
-import com.cookery.models.RecipeMO;
 import com.cookery.utils.Utility;
 
 import java.util.List;
@@ -39,7 +38,7 @@ public class RecipeImagesFragment extends DialogFragment {
     ViewPager common_fragment_recipe_images_vp;
     //end of components
 
-    private List<RecipeImageMO> imagesList;
+    private List<Uri> imagesList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,7 +56,7 @@ public class RecipeImagesFragment extends DialogFragment {
     }
 
     private void getDataFromBundle() {
-        imagesList = ((RecipeMO)getArguments().get(GENERIC_OBJECT)).getImages();
+        imagesList = ((List<Uri>)getArguments().get(GENERIC_OBJECT));
     }
 
     private void setupPage() {
@@ -69,10 +68,7 @@ public class RecipeImagesFragment extends DialogFragment {
         common_fragment_recipe_images_vp.setAdapter(new RecipeAddImagesViewPagerAdapter(mContext, imagesList, false, new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                RecipeMO temp = new RecipeMO();
-                temp.setImages(imagesList);
-
-                Utility.showRecipeImagesFragment(getFragmentManager(), temp);
+                Utility.showRecipeImagesFragment(getFragmentManager(), imagesList);
             }
         }));
     }

@@ -6,6 +6,7 @@ package com.cookery.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.models.RecipeImageMO;
 import com.cookery.utils.Utility;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.cookery.utils.Constants.UI_FONT;
@@ -26,11 +25,11 @@ public class RecipeAddImagesViewPagerAdapter extends PagerAdapter {
     private Context mContext;
     private static final String CLASS_NAME = RecipeAddImagesViewPagerAdapter.class.getName();
 
-    public List<RecipeImageMO> images;
+    public List<Uri> images;
     private View.OnClickListener listener;
     private boolean loadFromUrl;
 
-    public RecipeAddImagesViewPagerAdapter(Context context, List<RecipeImageMO> images, boolean loadFromUrl, View.OnClickListener listener) {
+    public RecipeAddImagesViewPagerAdapter(Context context, List<Uri> images, boolean loadFromUrl, View.OnClickListener listener) {
         this.mContext = context;
         this.images = images;
         this.loadFromUrl = loadFromUrl;
@@ -62,26 +61,14 @@ public class RecipeAddImagesViewPagerAdapter extends PagerAdapter {
         recipe_add_images_item_close_iv.setTag(images.get(position));
 
         if(loadFromUrl){
-            Utility.loadImageFromURL(mContext, images.get(position).getRCP_IMG(), recipe_add_images_item_image_iv);
+            Utility.loadImageFromURL(mContext, images.get(position).getPath(), recipe_add_images_item_image_iv);
         }
         else{
-            Utility.loadImageFromPath(mContext, images.get(position).getRCP_IMG(), recipe_add_images_item_image_iv);
+            Utility.loadImageFromPath(mContext, images.get(position).getPath(), recipe_add_images_item_image_iv);
         }
 
         recipe_add_images_item_image_iv.setOnClickListener(listener);
         recipe_add_images_item_close_iv.setOnClickListener(listener);
-    }
-
-    public void updateData(String newImage){
-        if(images == null){
-            images = new ArrayList<>();
-        }
-
-        RecipeImageMO image = new RecipeImageMO();
-        image.setRCP_IMG(newImage);
-
-        images.add(image);
-        notifyDataSetChanged();
     }
 
     @Override
@@ -91,7 +78,7 @@ public class RecipeAddImagesViewPagerAdapter extends PagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return images.get(position).getRCP_IMG();
+        return images.get(position).getPath();
     }
 
 

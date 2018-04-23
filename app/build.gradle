@@ -68,4 +68,5 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.16.20'
     annotationProcessor 'org.projectlombok:lombok:1.16.20'
 
+    compile 'com.github.andremion:louvre:v1.2.3'
 }

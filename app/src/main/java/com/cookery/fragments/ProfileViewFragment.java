@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -40,7 +41,6 @@ import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
-import static com.cookery.utils.Constants.DEFAULT_CROP_RATIO;
 import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_EMAIL;
@@ -191,6 +191,8 @@ public class ProfileViewFragment extends DialogFragment {
             ((HomeActivity)getActivity()).updateLoggedInUser();
             doUpdateLoggedInUser = false;
         }
+
+        super.onDismiss(dialog);
     }
 
     private void setupPage() {
@@ -222,7 +224,7 @@ public class ProfileViewFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 Fragment fragment = getFragmentManager().findFragmentByTag(FRAGMENT_PROFILE_VIEW);
-                CropImage.activity().setInitialCropWindowPaddingRatio(DEFAULT_CROP_RATIO).start(mContext, fragment);
+                Utility.startCropImageActivity(mContext, fragment);
             }
         });
 
@@ -453,8 +455,9 @@ public class ProfileViewFragment extends DialogFragment {
         }
     }
 
-    private void updatePhoto(String photoPath){
-        loggedInUser.setIMG(photoPath);
+    private void updatePhoto(Uri photoPath){
+        String fileInStoragePath = Utility.saveFile(photoPath);
+        loggedInUser.setIMG(fileInStoragePath);
 
         new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
                 AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
@@ -466,7 +469,7 @@ public class ProfileViewFragment extends DialogFragment {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                updatePhoto(result.getUri().getPath());
+                updatePhoto(result.getUri());
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 Log.e(CLASS_NAME, "Error ! Something went wrong ! : "+error.getMessage());

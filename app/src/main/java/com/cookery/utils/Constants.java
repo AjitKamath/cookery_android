@@ -24,6 +24,7 @@ public final class Constants {
 
     //PHP
     public static final String PHP_CONTROLLER = "Controller.php";
+    public static final String PHP_SERVICE_URL = SERVER_ADDRESS_PUBLIC + PHP_CONTROLLER;
 
     /*PHP function keys*/
     public static final String PHP_FUNCTION_KEY = "function_key";
@@ -167,6 +168,7 @@ public final class Constants {
     public static final String FRAGMENT_NO_INTERNET = "FRAGMENT_NO_INTERNET";
     public static final String FRAGMENT_SOMETHING_WRONG = "FRAGMENT_SOMETHING_WRONG";
     public static final String FRAGMENT_COOKERY_ERROR = "FRAGMENT_COOKERY_ERROR";
+    public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
 
 
     //FRAGMENT OBJECT KEYS
@@ -224,4 +226,6 @@ public final class Constants {
     public final static String SIMPLE_KEY_UNIMPLEMENTED = "UNIMPL";
 
     public final static float DEFAULT_CROP_RATIO = 0.05f;   //must be between 0 to less than 0.5
+    public final static int LOUVRE_REQUEST_CODE = 1111;
+    public final static int LOUVRE_MAX_IMAGES = 10;
 }
