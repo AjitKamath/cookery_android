@@ -4,18 +4,15 @@ import android.util.Log;
 
 import com.cookery.exceptions.CookeryException;
 import com.cookery.models.CommentMO;
-import com.cookery.models.CuisineMO;
 import com.cookery.models.FavouritesMO;
-import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientAkaMO;
 import com.cookery.models.LikesMO;
+import com.cookery.models.MasterDataMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.MyListMO;
-import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeImageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
-import com.cookery.models.TasteMO;
 import com.cookery.models.TimelineMO;
 import com.cookery.models.TrendMO;
 import com.cookery.models.UserMO;
@@ -36,15 +33,13 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_DELETE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FAV_SUBMIT;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FETCH_MASTER_DATA;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FETCH_RECIPE_IMAGES;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FOOD_CUISINE_FETCH_ALL;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FOOD_TYPE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_INGREDIENT_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_FETCH_USERS;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_VIEW;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_FAVORITE_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_REVIEW_FETCH;
@@ -58,7 +53,6 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_USER_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_USER_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_STORY_USER_FETCH;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TASTE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_DELETE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_SCOPE_MODIFY;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_USER_FETCH;
@@ -136,14 +130,6 @@ public class InternetUtility {
         return Utility.jsonToObject(jsonStr, RecipeMO.class);
     }
 
-    public static Object fetchAllFoodTypes() {
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_FOOD_TYPE_FETCH_ALL);
-
-        String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, FoodTypeMO.class);
-    }
-
     public static Object fetchIngredients(String query) {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_INGREDIENT_FETCH);
@@ -161,14 +147,6 @@ public class InternetUtility {
 
         String jsonStr = getResponseFromCookery(paramMap);
         return Utility.jsonToObject(jsonStr, RecipeMO.class);
-    }
-
-    public static Object fetchAllTastes() {
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_TASTE_FETCH_ALL);
-
-        String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, TasteMO.class);
     }
 
     public static Object fetchUsersRecipeReview(UserMO loggedInUser, RecipeMO recipe) {
@@ -376,23 +354,6 @@ public class InternetUtility {
 
         String jsonStr = getResponseFromCookery(paramMap);
         return (List<ReviewMO>) Utility.jsonToObject(jsonStr, ReviewMO.class);
-    }
-
-    public static Object fetchAllQuantities() {
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL);
-
-        String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, QuantityMO.class);
-    }
-
-    public static Object fetchAllCuisines() {
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_FOOD_CUISINE_FETCH_ALL);
-
-        String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, CuisineMO.class);
-
     }
 
     public static String getResponseFromCookery(Map<String, String> paramMap) throws CookeryException {
@@ -693,5 +654,13 @@ public class InternetUtility {
 
         String jsonStr = getResponseFromCookery(paramMap);
         return Utility.jsonToObject(jsonStr, RecipeImageMO.class);
+    }
+
+    public static Object fetchMasterData() {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_FETCH_MASTER_DATA);
+
+        String jsonStr = getResponseFromCookery(paramMap);
+        return Utility.jsonToObject(jsonStr, MasterDataMO.class);
     }
 }

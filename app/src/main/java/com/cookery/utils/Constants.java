@@ -42,10 +42,7 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_REVIEW_DELETE = "REVIEW_DELETE";
     public static final String PHP_FUNCTION_KEY_COMMENT_DELETE = "COMMENT_DELETE";
     public static final String PHP_FUNCTION_KEY_REVIEW_RECIPE = "REVIEW_RECIPE_FETCH";
-    public static final String PHP_FUNCTION_KEY_MYLIST_SUBMIT = "PHP_FUNCTION_KEY_MYLIST_SUBMIT";
-    public static final String PHP_FUNCTION_KEY_MYLIST_SUBMIT_FROM_RECIPE = "PHP_FUNCTION_KEY_MYLIST_SUBMIT_FROM_RECIPE";
     public static final String PHP_FUNCTION_KEY_MYLIST_VIEW = "PHP_FUNCTION_KEY_MYLIST_VIEW";
-    public static final String PHP_FUNCTION_KEY_MYLIST_UPDATE = "PHP_FUNCTION_KEY_MYLIST_UPDATE";
     public static final String PHP_FUNCTION_KEY_LIKE_SUBMIT = "LIKE_SUBMIT";
     public static final String PHP_FUNCTION_KEY_FAV_SUBMIT = "FAV_SUBMIT";
     public static final String PHP_FUNCTION_KEY_COMMENT_FETCH_ALL = "COMMENT_FETCH_ALL";
@@ -77,6 +74,7 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_USER_SEARCH = "USER_SEARCH";
     public static final String PHP_FUNCTION_KEY_TREND_FETCH = "TREND_FETCH";
     public static final String PHP_FUNCTION_KEY_FETCH_RECIPE_IMAGES = "RECIPE_IMAGES_FETCH";
+    public static final String PHP_FUNCTION_KEY_FETCH_MASTER_DATA = "MASTER_DATA_FETCH_ALL";
     /*PHP function keys*/
 
     /*Timeline keys*/

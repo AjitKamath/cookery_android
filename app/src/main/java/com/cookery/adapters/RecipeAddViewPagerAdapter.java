@@ -314,7 +314,7 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
         /*setup food type*/
 
         /*setup cuisine*/
-        final List<CuisineMO> cuisines = masterData.getCuisines();
+        final List<CuisineMO> cuisines = masterData.getFoodCuisines();
         setCuisine(getDefaultCuisine(cuisines));
 
         recipe_add_recipe_main_recipe_cuisine_ll.setOnClickListener(new View.OnClickListener() {

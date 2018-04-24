@@ -1,5 +1,6 @@
 package com.cookery.activities;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -41,14 +42,10 @@ import com.cookery.fragments.MyReviewsFragment;
 import com.cookery.fragments.PeopleViewFragment;
 import com.cookery.fragments.ProfileViewFragment;
 import com.cookery.fragments.RecipeAddFragment;
-import com.cookery.models.CuisineMO;
-import com.cookery.models.FoodTypeMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.MyListMO;
-import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
-import com.cookery.models.TasteMO;
 import com.cookery.models.TimelineMO;
 import com.cookery.models.TrendMO;
 import com.cookery.models.UserMO;
@@ -78,7 +75,7 @@ import static com.cookery.utils.Constants.MY_LISTS_EXISTS;
 import static com.cookery.utils.Constants.OK;
 
 
-public abstract class CommonActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+public abstract class CommonActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String CLASS_NAME = CommonActivity.class.getName();
     private Context mContext = this;
     private MasterDataMO masterData;
@@ -144,9 +141,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         AlertDialog dialog = new AlertDialog.Builder(this).setPositiveButton(getString(R.string.rate_us), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface paramAnonymousDialogInterface, int paramAnonymousInt) {
                 // TODO: URL of App
-                //mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PNAME)));
                 mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.cookery")));
-                //dismiss();
             }
         }).setNegativeButton(getString(R.string.remind_me_later), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface paramAnonymousDialogInterface, int paramAnonymousInt) {
@@ -158,7 +153,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
                     editor.putBoolean("dontshowagain", true);
                     editor.commit();
                 }
-             //   dialog.dismiss();
             }
         }).setMessage(R.string.rate_msg).setTitle(R.string.rate_title).create();
         dialog.show();
@@ -242,9 +236,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     public void setupNavigator() {
         //drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, getDrawer_layout(), null, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        //ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, getDrawer_layout(), getToolbar(), R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         getDrawer_layout().addDrawerListener(toggle);
-        //toggle.syncState();
 
         Utility.loadImageFromURL(mContext, loggedInUser.getIMG(), (ImageView) getNav_view().findViewById(R.id.navigation_header_iv));
 
@@ -280,29 +272,13 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
         getNav_view().setNavigationItemSelectedListener(this);
     }
 
-    @Override
-    public void onClick(View view) {
-        /*if(R.id.fab_seek_ll == view.getId()){
-        }
-        else if(R.id.fab_share_ll == view.getId()){
-            showFabToolbar(false);
-            //showShareFragment(null);
-        }
-        else{
-            Log.e(CLASS_NAME, "Could not identify the view");
-            Utility.showSnacks(getWrapper_home_cl(), "Could not identify the view", OK, Snackbar.LENGTH_INDEFINITE);
-        }*/
-    }
-
     private void setupFab() {
+        final Activity activity = this;
         getFab().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (masterData == null) {
-                    new AsyncTaskerFetchMasterData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "FETCH_AND_SHOW_ADD_RECIPE");
-                } else {
-                    showAddRecipeFragment(masterData);
-                }
+                new AsyncTaskUtility(getFragmentManager(), activity,  AsyncTaskUtility.Purpose.FETCH_MASTER_DATA, loggedInUser, 0)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
     }
@@ -408,7 +384,7 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     }
 
     public void fetchMasterContent(){
-        new AsyncTaskerFetchMasterData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "JUST_FETCH");
+        //new AsyncTaskerFetchMasterData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "JUST_FETCH");
     }
 
     @Override
@@ -461,53 +437,6 @@ public abstract class CommonActivity extends AppCompatActivity implements View.O
     protected abstract ImageView getCommon_header_search_iv();
 
     protected abstract void setUpTabs(Object array[]);
-
-    class AsyncTaskerFetchMasterData extends AsyncTask<String, Void, Object> {
-        String whatToDo;
-        Fragment fragment;
-
-        @Override
-        protected Object doInBackground(String... objects) {
-            whatToDo = String.valueOf(objects[0]);
-
-            MasterDataMO masterData = new MasterDataMO();
-            masterData.setFoodTypes((List<FoodTypeMO>) InternetUtility.fetchAllFoodTypes());
-            masterData.setCuisines((List<CuisineMO>)InternetUtility.fetchAllCuisines());
-            masterData.setQuantities((List<QuantityMO>)InternetUtility.fetchAllQuantities());
-            masterData.setTastes((List<TasteMO>)InternetUtility.fetchAllTastes());
-
-            return masterData;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "loading data ..");
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-            MasterDataMO temp = (MasterDataMO) object;
-
-            if(temp.getFoodTypes() != null && !temp.getFoodTypes().isEmpty()) {
-                if(temp.getCuisines() != null && !temp.getCuisines().isEmpty()){
-                    if(temp.getQuantities() != null && !temp.getQuantities().isEmpty()){
-                        if(temp.getTastes() != null && !temp.getTastes().isEmpty()){
-                            masterData = temp;
-
-                            if("FETCH_AND_SHOW_ADD_RECIPE".equalsIgnoreCase(whatToDo)){
-                                Map<String, Object> paramsMap = new HashMap<>();
-                                paramsMap.put(MASTER, masterData);
-                                paramsMap.put(GENERIC_OBJECT, new RecipeMO());
-                                Utility.showFragment(getFragmentManager(), null, FRAGMENT_ADD_RECIPE, new RecipeAddFragment(), paramsMap);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     private List<TimelineMO> fetchTimelines(){
         if(loggedInUser != null && loggedInUser.getUSER_ID() != 0){

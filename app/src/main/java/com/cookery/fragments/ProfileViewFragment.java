@@ -10,7 +10,6 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -58,7 +57,6 @@ import static com.cookery.utils.Constants.UI_FONT;
 public class ProfileViewFragment extends DialogFragment {
     private final String CLASS_NAME = this.getClass().getName();
     private Context mContext;
-    private FragmentActivity activity;
 
     /*components*/
     @InjectView(R.id.profile_view_rl)
@@ -461,8 +459,7 @@ public class ProfileViewFragment extends DialogFragment {
     }
 
     private void updatePhoto(Uri photoPath){
-        String fileInStoragePath = Utility.saveFile(photoPath);
-        loggedInUser.setIMG(fileInStoragePath);
+        loggedInUser.setIMG(photoPath.getPath());
 
         new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
                 AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)

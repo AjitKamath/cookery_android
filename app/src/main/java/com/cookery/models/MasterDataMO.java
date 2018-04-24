@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MasterDataMO implements Serializable {
-    private List<CuisineMO> cuisines;
+    private List<CuisineMO> foodCuisines;
     private List<FoodTypeMO> foodTypes;
     private List<QuantityMO> quantities;
     private List<TasteMO> tastes;

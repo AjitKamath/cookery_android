@@ -28,6 +28,7 @@ import com.cookery.fragments.UserViewFragment;
 import com.cookery.fragments.UsersFragment;
 import com.cookery.models.CommentMO;
 import com.cookery.models.LikesMO;
+import com.cookery.models.MasterDataMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
@@ -40,6 +41,7 @@ import java.util.Map;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.CHECK_INTERNET;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.DELETE_COMMENT;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_COMMENTS;
+import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_MASTER_DATA;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_MY_RECIPES;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_MY_REVIEWS;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_RECIPE;
@@ -71,6 +73,7 @@ import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.GENERIC_OBJECT2;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
+import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
@@ -90,8 +93,11 @@ public class AsyncTaskUtility extends AsyncTask {
 
     public enum Purpose {
         FETCH_USER_PUBLIC_DETAILS, FETCH_USER_SELF, FETCH_USERS, FETCH_RECIPE, FETCH_RECIPE_IMAGES,
-        FETCH_COMMENTS, FETCH_REVIEWS, DELETE_COMMENT,SUBMIT_RECIPE,
-        SUBMIT_LIKE, SUBMIT_COMMENT, FETCH_MY_RECIPES, FETCH_MY_REVIEWS, UPDATE_USER, CHECK_INTERNET
+        FETCH_COMMENTS, FETCH_REVIEWS, FETCH_MY_RECIPES, FETCH_MY_REVIEWS, FETCH_MASTER_DATA,
+        SUBMIT_LIKE, SUBMIT_COMMENT, SUBMIT_RECIPE,
+        DELETE_COMMENT,
+        CHECK_INTERNET,
+        UPDATE_USER
     }
 
     private Purpose purpose;
@@ -132,6 +138,9 @@ public class AsyncTaskUtility extends AsyncTask {
                 return fetchMyReviews();
             } else if (purpose == UPDATE_USER) {
                 return updateUser(objects);
+            }
+            else if (purpose == FETCH_MASTER_DATA) {
+                return fetchMasterData();
             }
             else if (purpose == SUBMIT_RECIPE) {
                 return submitRecipe(objects);
@@ -215,8 +224,39 @@ public class AsyncTaskUtility extends AsyncTask {
             postDeleteComment(object);
         }else if (purpose == SUBMIT_RECIPE) {
             postSubmitRecipe(object);
+        }else if (purpose == FETCH_MASTER_DATA) {
+            postFetchMasterData(object);
         } else {
             Log.e(CLASS_NAME, "Could not understand the purpose : " + purpose);
+        }
+    }
+
+    private Object fetchMasterData(){
+        waitFragment = Utility.showWaitDialog(fragmentManager, "wait a moment ..");
+        return InternetUtility.fetchMasterData();
+    }
+
+    private void postFetchMasterData(Object object) {
+        MasterDataMO masterData = (MasterDataMO) object;
+
+        if(masterData != null && masterData.getFoodCuisines() != null && !masterData.getFoodCuisines().isEmpty()
+                && masterData.getFoodTypes() != null && !masterData.getFoodTypes().isEmpty()
+                && masterData.getQuantities() != null && !masterData.getQuantities().isEmpty()
+                && masterData.getTastes() != null && !masterData.getTastes().isEmpty()){
+
+            if(activity != null && activity instanceof HomeActivity){
+                Map<String, Object> paramsMap = new HashMap<>();
+                paramsMap.put(MASTER, masterData);
+                paramsMap.put(GENERIC_OBJECT, new RecipeMO());
+
+                Utility.showFragment(fragmentManager, null, FRAGMENT_ADD_RECIPE, new RecipeAddFragment(), paramsMap);
+            }
+            else{
+                Log.e(CLASS_NAME, "Error ! Un Expected Activity : "+activity);
+            }
+        }
+        else{
+            Log.e(CLASS_NAME, "Error ! Could not fetch some master data");
         }
     }
 

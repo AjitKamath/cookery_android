@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.exceptions.CookeryException;
 import com.cookery.fragments.CommentsFragment;
 import com.cookery.fragments.CookeryErrorFragment;
 import com.cookery.fragments.DeleteCommentFragment;
@@ -50,6 +51,7 @@ import com.cookery.models.FavouritesMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientAkaMO;
 import com.cookery.models.LikesMO;
+import com.cookery.models.MasterDataMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.MyListMO;
 import com.cookery.models.QuantityMO;
@@ -65,25 +67,17 @@ import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import static com.cookery.utils.Constants.DEFAULT_CROP_RATIO;
-import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_WAIT;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
@@ -96,10 +90,6 @@ import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
 public class Utility extends Activity {
     private static final String CLASS_NAME = Utility.class.getName();
-
-    public static String getFollowingText(String username){
-        return "you follow "+username;
-    }
 
     public static String getUserNameOrYou(String username, int userId, int loggedInUserId){
         if(userId != 0 && userId == loggedInUserId){
@@ -275,7 +265,7 @@ public class Utility extends Activity {
         return null;
     }
 
-    public static Object jsonToObject(String jsonStr, Class mappingClass){
+    public static Object jsonToObject(String jsonStr, Class mappingClass) throws CookeryException{
         if(jsonStr == null || jsonStr.isEmpty()){
             Log.e(CLASS_NAME, "JSON is null");
             return null;
@@ -335,17 +325,20 @@ public class Utility extends Activity {
             else if(mappingClass.equals(RecipeImageMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<RecipeImageMO>>(){}.getType());
             }
+            else if(mappingClass.equals(MasterDataMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<MasterDataMO>(){}.getType());
+            }
             else{
                 Log.e(CLASS_NAME, mappingClass+" is not identified for parsing JSON");
-                throw new Exception();
+                throw new CookeryException(CookeryException.ErrorCode.NO_JSON_MAPPING_CLASS);
             }
         }
         catch (Exception e){
             Log.e(CLASS_NAME, "Error in parsing the json("+jsonStr+") into the mapping class("+mappingClass+")");
             Log.e(CLASS_NAME, e.getMessage());
-        }
 
-        return null;
+            throw new CookeryException(CookeryException.ErrorCode.JSON_TO_OBJECT_MAPPING_ERROR, e);
+        }
     }
 
     public static void loadImageFromURL(Context context, String imageAddress, ImageView imageView){
@@ -402,72 +395,6 @@ public class Utility extends Activity {
         bundle.putSerializable(SELECTED_ITEM, recipe);
 
         RecipeViewFragment fragment = new RecipeViewFragment();
-        fragment.setArguments(bundle);
-
-        if (parentFragment != null) {
-            fragment.setTargetFragment(parentFragment, 0);
-        }
-
-        fragment.show(fragmentManager, fragmentNameStr);
-    }
-
-    public static void showRecipeReviewFragment(FragmentManager fragmentManager, String parentFragmentNameStr, RecipeMO recipe){
-        if(recipe == null){
-            Log.e(CLASS_NAME, "Recipe is null");
-            return;
-        }
-
-        String fragmentNameStr = FRAGMENT_RECIPE_REVIEW;
-
-        Fragment frag = fragmentManager.findFragmentByTag(fragmentNameStr);
-
-        if (frag != null) {
-            fragmentManager.beginTransaction().remove(frag).commit();
-        }
-
-        Fragment parentFragment = null;
-        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
-            parentFragment = fragmentManager.findFragmentByTag(parentFragmentNameStr);
-        }
-
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(GENERIC_OBJECT, recipe);
-
-        RecipeViewReviewsFragment fragment = new RecipeViewReviewsFragment();
-        fragment.setArguments(bundle);
-
-        if (parentFragment != null) {
-            fragment.setTargetFragment(parentFragment, 0);
-        }
-
-        fragment.show(fragmentManager, fragmentNameStr);
-    }
-
-    public static void showRecipeCommentsFragment(FragmentManager fragmentManager, String parentFragmentNameStr, RecipeMO recipe){
-        if(recipe == null){
-            Log.e(CLASS_NAME, "Recipe is null");
-            return;
-        }
-
-        String fragmentNameStr = FRAGMENT_COMMENTS;
-
-        Fragment frag = fragmentManager.findFragmentByTag(fragmentNameStr);
-
-        if (frag != null) {
-            fragmentManager.beginTransaction().remove(frag).commit();
-        }
-
-        Fragment parentFragment = null;
-        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
-            parentFragment = fragmentManager.findFragmentByTag(parentFragmentNameStr);
-        }
-
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(SELECTED_ITEM, recipe);
-
-        CommentsFragment fragment = new CommentsFragment();
         fragment.setArguments(bundle);
 
         if (parentFragment != null) {
@@ -541,60 +468,6 @@ public class Utility extends Activity {
 
         return fragment;
     }
-
-    public static String saveFile(Uri sourceuri){
-        String sourceFilename= sourceuri.getPath();
-        String ext = sourceFilename.substring(sourceFilename.lastIndexOf("."));
-        String destinationFilename = android.os.Environment.getExternalStorageDirectory().getPath()+File.separatorChar+(new Date().getTime())+ext;
-
-        BufferedInputStream bis = null;
-        BufferedOutputStream bos = null;
-
-        try {
-            bis = new BufferedInputStream(new FileInputStream(sourceFilename));
-            bos = new BufferedOutputStream(new FileOutputStream(destinationFilename, false));
-            byte[] buf = new byte[1024];
-            bis.read(buf);
-            do {
-                bos.write(buf);
-            } while(bis.read(buf) != -1);
-
-            return destinationFilename;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (bis != null) bis.close();
-                if (bos != null) bos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return "";
-    }
-
-    /*public static List<Bitmap> getTestImages(Context context){
-        List<Bitmap> images = new ArrayList<>();
-        Bitmap bitmap = null;
-
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.food_sample);
-        images.add(bitmap);
-
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.food_sample);
-        images.add(bitmap);
-
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.food_sample);
-        images.add(bitmap);
-
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.food_sample);
-        images.add(bitmap);
-
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.food_sample);
-        images.add(bitmap);
-
-        return images;
-    }*/
 
     public static void showFragment(FragmentManager fragmentManager, String parentFragKey, String fragKey, Object fragment, Map<String, Object> params){
         Fragment frag = fragmentManager.findFragmentByTag(fragKey);

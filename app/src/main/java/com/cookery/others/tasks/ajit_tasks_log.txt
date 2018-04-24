@@ -382,3 +382,9 @@
 3. #324 Likes - Change Image, then Call Service
 4. #340 Ingredient & Ingredient AKA relationships
 5. #373 Fix Connection & Transaction Counter
+
+-- git checkin on 22 April 2018 --
+
+24 april 2018
+1. #399 Recipe Add/Profile View - Image Upload is Failing !
+2. #293 Fetch Master Data in Single Shot

@@ -134,7 +134,7 @@ public class RecipeAddFragment extends DialogFragment {
 
     private void getDataFromBundle() {
         masterData = (MasterDataMO) getArguments().get(MASTER);
-        if(masterData == null || masterData.getCuisines() == null || masterData.getCuisines().isEmpty()
+        if(masterData == null || masterData.getFoodCuisines() == null || masterData.getFoodCuisines().isEmpty()
                 || masterData.getFoodTypes() == null || masterData.getFoodTypes().isEmpty()
                 || masterData.getQuantities() == null || masterData.getQuantities().isEmpty()
                 || masterData.getTastes() == null || masterData.getTastes().isEmpty()){
