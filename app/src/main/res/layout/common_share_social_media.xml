@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:padding="10dp"
+    android:orientation="vertical"
+    android:weightSum="2">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/secondary_text_size"
+        android:textColor="@color/secondaryDarkText"
+        android:text="Share using"/>
+
+    <LinearLayout
+        android:layout_marginTop="30dp"
+        android:id="@+id/common_share_social_media_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <com.facebook.share.widget.ShareButton
+            android:id="@+id/common_share_social_media_fb"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:drawableLeft="@drawable/com_facebook_button_icon_blue"
+            android:textColor="@color/white"
+            android:text="facebook"/>
+
+        <ImageView
+            android:layout_marginLeft="10dp"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:background="@drawable/whatsapplogo"/>
+
+    </LinearLayout>
+
+</LinearLayout>

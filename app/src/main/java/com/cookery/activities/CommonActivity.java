@@ -39,7 +39,6 @@ import com.cookery.fragments.AddMyListFragment;
 import com.cookery.fragments.FavoriteRecipesFragment;
 import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MyReviewsFragment;
-import com.cookery.fragments.PeopleViewFragment;
 import com.cookery.fragments.ProfileViewFragment;
 import com.cookery.fragments.RecipeAddFragment;
 import com.cookery.models.MasterDataMO;
@@ -65,7 +64,6 @@ import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.FRAGMENT_MY_FAVORITES;
 import static com.cookery.utils.Constants.FRAGMENT_MY_LIST;
 import static com.cookery.utils.Constants.FRAGMENT_MY_REVIEWS;
-import static com.cookery.utils.Constants.FRAGMENT_PEOPLE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LAUNCHES_UNTIL_PROMPT;
@@ -78,41 +76,40 @@ import static com.cookery.utils.Constants.OK;
 public abstract class CommonActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String CLASS_NAME = CommonActivity.class.getName();
     private Context mContext = this;
-    private MasterDataMO masterData;
     public UserMO loggedInUser;
     private Object homeContent[] = new Object[3];
-
-    public boolean initialLoad = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initialLoad = true;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        setupSearch();
-        setupFab();
-
-        verifyLoggedInUser();
-        setupRateUs(mContext);
     }
 
-    private void verifyLoggedInUser() {
+    public void updateContent(){
+        fetchHomeContent();
+        fetchMasterContent();
+    }
+
+    protected boolean initialLoggedInUserCheck(){
         loggedInUser = Utility.getUserFromUserSecurity(mContext);
         if (loggedInUser == null || loggedInUser.getUSER_ID() == 0) {
             Utility.showFragment(getFragmentManager(), null, FRAGMENT_LOGIN, new LoginFragment(), null);
-        } else {
-            new AsyncTaskUtility(getFragmentManager(), this, AsyncTaskUtility.Purpose.FETCH_USER_SELF, loggedInUser, 0)
-                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            return false;
         }
+
+        return true;
     }
 
+    public void updateUserSecurity(UserMO user){
+        loggedInUser = user;
+        Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, user);
+    }
 
-    public void setupRateUs(Context mContext) {
+    public void setupRateUs() {
         SharedPreferences prefs = mContext.getSharedPreferences(mContext.getResources().getString(R.string.app_name), Context.MODE_PRIVATE);
         if (prefs.getBoolean("dontshowagain", false)) { return ; }
         SharedPreferences.Editor editor = prefs.edit();
@@ -156,15 +153,9 @@ public abstract class CommonActivity extends AppCompatActivity implements Naviga
             }
         }).setMessage(R.string.rate_msg).setTitle(R.string.rate_title).create();
         dialog.show();
-}
-
-
-    public void updateLoggedInUser() {
-        Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, null);
-        verifyLoggedInUser();
     }
 
-    private void setupSearch() {
+    protected void setupSearch() {
         HomeSearchAutoCompleteAdapter adapter = new HomeSearchAutoCompleteAdapter(mContext, loggedInUser);
         getCommon_header_search_av().setThreshold(2);
         getCommon_header_search_av().setAutoCompleteDelay(1000);
@@ -238,24 +229,27 @@ public abstract class CommonActivity extends AppCompatActivity implements Naviga
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, getDrawer_layout(), null, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         getDrawer_layout().addDrawerListener(toggle);
 
-        Utility.loadImageFromURL(mContext, loggedInUser.getIMG(), (ImageView) getNav_view().findViewById(R.id.navigation_header_iv));
+        Utility.loadImageFromURL(mContext, loggedInUser.getIMG(), (ImageView) getNav_view().getHeaderView(0).findViewById(R.id.navigation_header_iv));
 
         if (loggedInUser.getNAME() != null && !loggedInUser.getNAME().trim().isEmpty()) {
-            ((TextView) getNav_view().findViewById(R.id.navigation_header_name_tv)).setText(loggedInUser.getNAME());
+            ((TextView) getNav_view().getHeaderView(0).findViewById(R.id.navigation_header_name_tv)).setText(loggedInUser.getNAME());
         }
 
         if(loggedInUser.getCurrentRank() != null && !loggedInUser.getCurrentRank().trim().isEmpty()){
-            ((TextView) getNav_view().findViewById(R.id.common_nav_header_rank_tv)).setText(loggedInUser.getCurrentRank());
+            ((TextView) getNav_view().getHeaderView(0).findViewById(R.id.common_nav_header_rank_tv)).setText(loggedInUser.getCurrentRank());
         }
 
         if (loggedInUser.getEMAIL() != null && !loggedInUser.getEMAIL().trim().isEmpty()) {
-            ((TextView) getNav_view().findViewById(R.id.navigation_header_email_tv)).setText(loggedInUser.getEMAIL());
+            ((TextView) getNav_view().getHeaderView(0).findViewById(R.id.navigation_header_email_tv)).setText(loggedInUser.getEMAIL());
         }
 
-        getNav_view().findViewById(R.id.navigation_header_user_details_ll).setOnClickListener(new View.OnClickListener() {
+        getNav_view().getHeaderView(0).findViewById(R.id.navigation_header_user_details_ll).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AsyncTaskerFetchUserDetails().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new AsyncTaskUtility(getFragmentManager(), getActivity(), AsyncTaskUtility.Purpose.FETCH_USER_SELF, loggedInUser, 0)
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                //new AsyncTaskerFetchUserDetails().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -272,12 +266,11 @@ public abstract class CommonActivity extends AppCompatActivity implements Naviga
         getNav_view().setNavigationItemSelectedListener(this);
     }
 
-    private void setupFab() {
-        final Activity activity = this;
+    protected void setupFab() {
         getFab().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AsyncTaskUtility(getFragmentManager(), activity,  AsyncTaskUtility.Purpose.FETCH_MASTER_DATA, loggedInUser, 0)
+                new AsyncTaskUtility(getFragmentManager(), getActivity(),  AsyncTaskUtility.Purpose.FETCH_MASTER_DATA, loggedInUser, 0)
                         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
@@ -355,7 +348,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Naviga
         }
 
         Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put(MASTER, masterData);
+        //paramsMap.put(MASTER, masterData);
         paramsMap.put(GENERIC_OBJECT, mylists);
 
         for (Map.Entry<String, Object> iterMap : paramsMap.entrySet()) {
@@ -406,7 +399,8 @@ public abstract class CommonActivity extends AppCompatActivity implements Naviga
             share();
         }
         else if(R.id.navigation_drawer_people == item.getItemId()){
-            new AsyncTaskerFetchPeople().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            new AsyncTaskUtility(getFragmentManager(), this, AsyncTaskUtility.Purpose.FETCH_PEOPLE, loggedInUser, 0)
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         else if(R.id.navigation_drawer_about_us == item.getItemId()){
             openAboutUs();
@@ -668,35 +662,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Naviga
         }
     }
 
-    class AsyncTaskerFetchPeople extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            Object[] people = new Object[2];
-
-            people[0] = InternetUtility.fetchUserFollowers(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), 0);
-            people[1] = InternetUtility.fetchUserFollowings(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), 0);
-
-            return people;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching people who follow you and whom you follow..");
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            Object[] people = (Object[]) object;
-
-            if(people != null && people.length != 0) {
-                Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-                Map<String, Object> params = new HashMap<>();
-                params.put(GENERIC_OBJECT, people);
-                Utility.showFragment(getFragmentManager(), null, FRAGMENT_PEOPLE_VIEW, new PeopleViewFragment(), params);
-            }
-        }
+    private Activity getActivity(){
+        return this;
     }
 }

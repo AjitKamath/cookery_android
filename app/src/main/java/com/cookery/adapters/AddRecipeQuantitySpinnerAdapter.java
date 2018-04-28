@@ -6,12 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.models.QuantityMO;
+import com.cookery.models.IngredientUOMMO;
 
 import java.util.List;
 
@@ -26,9 +25,9 @@ public class AddRecipeQuantitySpinnerAdapter extends BaseAdapter {
     private LayoutInflater inflter;
     private static final int LAYOUT = R.layout.quantity_spinner_item;
 
-    private List<QuantityMO> quantities;
+    private List<IngredientUOMMO> quantities;
 
-    public AddRecipeQuantitySpinnerAdapter(Context applicationContext, List<QuantityMO> quantities) {
+    public AddRecipeQuantitySpinnerAdapter(Context applicationContext, List<IngredientUOMMO> quantities) {
         this.context = applicationContext;
         this.quantities = quantities;
         this.inflter = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -65,7 +64,7 @@ public class AddRecipeQuantitySpinnerAdapter extends BaseAdapter {
             mHolder = (ViewHolder) convertView.getTag(LAYOUT);
         }
 
-        mHolder.quantity_spinner_item_tv.setText(String.valueOf(quantities.get(i).getQTY_NAME()));
+        mHolder.quantity_spinner_item_tv.setText(String.valueOf(quantities.get(i).getING_UOM_NAME()));
         mHolder.quantity_spinner_item_ll.setTag(quantities.get(i));
 
         setFont(mHolder.quantity_spinner_item_ll);

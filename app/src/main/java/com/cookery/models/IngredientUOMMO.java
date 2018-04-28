@@ -11,8 +11,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class QuantityMO  implements Serializable {
-    private int QTY_ID;
-    private String QTY_NAME;
+public class IngredientUOMMO implements Serializable {
+    private int ING_UOM_ID;
+    private String ING_UOM_NAME;
     private String IS_DEF;
 }

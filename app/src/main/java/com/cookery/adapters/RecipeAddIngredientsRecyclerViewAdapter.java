@@ -53,8 +53,8 @@ public class RecipeAddIngredientsRecyclerViewAdapter extends RecyclerView.Adapte
 
         holder.recipe_add_ingredients_item_tv.setText(ingredient.getING_AKA_NAME().toUpperCase());
         holder.recipe_add_ingredients_category_item_tv.setText(ingredient.getIngredientCategoryName());
-        holder.recipe_add_ingredients_item_qty_tv.setText(String.valueOf(ingredient.getQTY()));
-        holder.recipe_add_ingredients_item_qty_type_tv.setText(ingredient.getQuantity().getQTY_NAME().toUpperCase());
+        holder.recipe_add_ingredients_item_qty_tv.setText(String.valueOf(ingredient.getING_UOM_VALUE()));
+        holder.recipe_add_ingredients_item_qty_type_tv.setText(ingredient.getQuantity().getING_UOM_NAME().toUpperCase());
 
         holder.recipe_add_ingredients_item_edit_iv.setTag(ingredient);
         holder.recipe_add_ingredients_item_delete_iv.setTag(ingredient);

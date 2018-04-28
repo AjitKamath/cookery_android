@@ -12,12 +12,12 @@ import com.cookery.fragments.CommentsFragment;
 import com.cookery.fragments.CookeryErrorFragment;
 import com.cookery.fragments.DeleteCommentFragment;
 import com.cookery.fragments.LoginFragment;
+import com.cookery.fragments.MessageFragment;
 import com.cookery.fragments.MyRecipesFragment;
 import com.cookery.fragments.MyReviewsFragment;
 import com.cookery.fragments.NoInternetFragment;
-import com.cookery.fragments.ProfileViewEmailFragment;
+import com.cookery.fragments.PeopleViewFragment;
 import com.cookery.fragments.ProfileViewFragment;
-import com.cookery.fragments.ProfileViewGenderFragment;
 import com.cookery.fragments.ProfileViewImageFragment;
 import com.cookery.fragments.RecipeAddFragment;
 import com.cookery.fragments.RecipeViewFragment;
@@ -41,9 +41,12 @@ import java.util.Map;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.CHECK_INTERNET;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.DELETE_COMMENT;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_COMMENTS;
+import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_FOLLOWERS;
+import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_FOLLOWING;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_MASTER_DATA;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_MY_RECIPES;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_MY_REVIEWS;
+import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_PEOPLE;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_RECIPE;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_RECIPE_IMAGES;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_REVIEWS;
@@ -56,17 +59,17 @@ import static com.cookery.utils.AsyncTaskUtility.Purpose.SUBMIT_RECIPE;
 import static com.cookery.utils.AsyncTaskUtility.Purpose.UPDATE_USER;
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
+import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
 import static com.cookery.utils.Constants.FRAGMENT_COOKERY_ERROR;
-import static com.cookery.utils.Constants.FRAGMENT_LIKED_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_NO_INTERNET;
+import static com.cookery.utils.Constants.FRAGMENT_PEOPLE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEWS;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE_VIEWED_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_SOMETHING_WRONG;
 import static com.cookery.utils.Constants.FRAGMENT_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
@@ -76,6 +79,7 @@ import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_PARENT_FRAGMENT;
 
 /**
  * Created by ajit on 19/3/18.
@@ -94,6 +98,7 @@ public class AsyncTaskUtility extends AsyncTask {
     public enum Purpose {
         FETCH_USER_PUBLIC_DETAILS, FETCH_USER_SELF, FETCH_USERS, FETCH_RECIPE, FETCH_RECIPE_IMAGES,
         FETCH_COMMENTS, FETCH_REVIEWS, FETCH_MY_RECIPES, FETCH_MY_REVIEWS, FETCH_MASTER_DATA,
+        FETCH_PEOPLE, FETCH_FOLLOWERS, FETCH_FOLLOWING,
         SUBMIT_LIKE, SUBMIT_COMMENT, SUBMIT_RECIPE,
         DELETE_COMMENT,
         CHECK_INTERNET,
@@ -115,7 +120,7 @@ public class AsyncTaskUtility extends AsyncTask {
                 return checkInternet();
             }
             else if (purpose == FETCH_USER_SELF) {
-                return fetchUser();
+                return fetchUserSelf();
             }else if (purpose == FETCH_USER_PUBLIC_DETAILS) {
                 return fetchUsersPublicDetails(objects);
             } else if (purpose == FETCH_USERS) {
@@ -138,6 +143,15 @@ public class AsyncTaskUtility extends AsyncTask {
                 return fetchMyReviews();
             } else if (purpose == UPDATE_USER) {
                 return updateUser(objects);
+            }
+            else if (purpose == FETCH_PEOPLE) {
+                return fetchPeople();
+            }
+            else if (purpose == FETCH_FOLLOWERS) {
+                return fetchFollowers();
+            }
+            else if (purpose == FETCH_FOLLOWING) {
+                return fetchFollowings();
             }
             else if (purpose == FETCH_MASTER_DATA) {
                 return fetchMasterData();
@@ -196,7 +210,7 @@ public class AsyncTaskUtility extends AsyncTask {
             postCheckInternet(object);
         }
         else if(purpose == FETCH_USER_SELF){
-            postFetchUser(object);
+            postFetchUserSelf(object);
         }
         else if (purpose == FETCH_USERS) {
             postFetchUsers(object);
@@ -224,10 +238,90 @@ public class AsyncTaskUtility extends AsyncTask {
             postDeleteComment(object);
         }else if (purpose == SUBMIT_RECIPE) {
             postSubmitRecipe(object);
+        }else if (purpose == FETCH_PEOPLE) {
+            postFetchPeople(object);
+        }
+        else if (purpose == FETCH_FOLLOWERS) {
+            postFetchFollowers(object);
+        }
+        else if (purpose == FETCH_FOLLOWING) {
+            postFetchFollowings(object);
         }else if (purpose == FETCH_MASTER_DATA) {
             postFetchMasterData(object);
         } else {
             Log.e(CLASS_NAME, "Could not understand the purpose : " + purpose);
+        }
+    }
+
+    private Object fetchFollowers(){
+        return InternetUtility.fetchUserFollowers(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), index);
+    }
+
+    private void postFetchFollowers(Object object) {
+        List<UserMO> users = (List<UserMO>) object;
+
+        if(getFragment(fragmentKey) instanceof PeopleViewFragment){
+            PeopleViewFragment fragment = (PeopleViewFragment) getFragment(fragmentKey);
+
+            if(users != null && !users.isEmpty()){
+                fragment.updateUsers("FOLLOWERS", users, index);
+            }
+        }
+        else{
+            Log.e(CLASS_NAME, UN_IDENTIFIED_PARENT_FRAGMENT+fragmentKey);
+        }
+    }
+
+    private Object fetchFollowings(){
+        return InternetUtility.fetchUserFollowings(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), index);
+    }
+
+    private void postFetchFollowings(Object object) {
+        List<UserMO> users = (List<UserMO>) object;
+
+        if(getFragment(fragmentKey) instanceof PeopleViewFragment){
+            PeopleViewFragment fragment = (PeopleViewFragment) getFragment(fragmentKey);
+
+            if(users != null && !users.isEmpty()){
+                fragment.updateUsers("FOLLOWINGS", users, index);
+            }
+        }
+        else{
+            Log.e(CLASS_NAME, UN_IDENTIFIED_PARENT_FRAGMENT+fragmentKey);
+        }
+    }
+
+    private Object fetchPeople(){
+        waitFragment = Utility.showWaitDialog(fragmentManager, "fetching people who follow you &amp; whom you follow..");
+
+        Object[] people = new Object[2];
+
+        people[0] = InternetUtility.fetchUserFollowers(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), index);
+        people[1] = InternetUtility.fetchUserFollowings(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), index);
+
+        return people;
+    }
+
+    private void postFetchPeople(Object object) {
+        Object[] people = (Object[]) object;
+
+        if(people != null && people.length != 0) {
+            if(activity != null){
+                if(activity instanceof HomeActivity){
+                    Map<String, Object> params = new HashMap<>();
+                    params.put(GENERIC_OBJECT, people);
+                    Utility.showFragment(fragmentManager, null, FRAGMENT_PEOPLE_VIEW, new PeopleViewFragment(), params);
+                }
+                else{
+                    Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+activity);
+                }
+            }
+            else{
+                Log.e(CLASS_NAME, "Error ! Activity is null");
+            }
+        }
+        else{
+            Log.e(CLASS_NAME, "Error ! Could not fetch followers/following users");
         }
     }
 
@@ -241,7 +335,7 @@ public class AsyncTaskUtility extends AsyncTask {
 
         if(masterData != null && masterData.getFoodCuisines() != null && !masterData.getFoodCuisines().isEmpty()
                 && masterData.getFoodTypes() != null && !masterData.getFoodTypes().isEmpty()
-                && masterData.getQuantities() != null && !masterData.getQuantities().isEmpty()
+                && masterData.getIngredientUOMs() != null && !masterData.getIngredientUOMs().isEmpty()
                 && masterData.getTastes() != null && !masterData.getTastes().isEmpty()){
 
             if(activity != null && activity instanceof HomeActivity){
@@ -350,31 +444,12 @@ public class AsyncTaskUtility extends AsyncTask {
         }
     }
 
-    private Object updateUser(Object[] objects) {
-        if(objects != null && objects.length > 0){
-            if("EMAIL".equalsIgnoreCase(String.valueOf(objects[0]))){
-                return new Object[]{objects[0], InternetUtility.updateUserEmail(loggedInUser)};
-            }
-            else if("IMAGE".equalsIgnoreCase(String.valueOf(objects[0]))){
-                return new Object[]{objects[0], InternetUtility.updateUserImage(loggedInUser)};
-            }
-            else if("GENDER".equalsIgnoreCase(String.valueOf(objects[0]))){
-                return new Object[]{objects[0], InternetUtility.updateUserGender(loggedInUser)};
-            }
-            else{
-                Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+objects);
-            }
-        }
-
-        return null;
-    }
-
-    private Object fetchUser(){
+    private Object fetchUserSelf(){
         waitFragment = Utility.showWaitDialog(fragmentManager, "fetching your data ..");
         return InternetUtility.fetchUser(loggedInUser.getUSER_ID());
     }
 
-    private void postFetchUser(Object object){
+    private void postFetchUserSelf(Object object){
         if(object == null){
             return;
         }
@@ -386,14 +461,11 @@ public class AsyncTaskUtility extends AsyncTask {
                 HomeActivity homeActivity = (HomeActivity) activity;
 
                 if(user != null && !user.isEmpty()) {
-                    homeActivity.loggedInUser = user.get(0);
-                    homeActivity.setupNavigator();
+                    homeActivity.updateUserSecurity(user.get(0));
 
-                    if(homeActivity.initialLoad){
-                        homeActivity.fetchHomeContent();
-                        homeActivity.fetchMasterContent();
-                        homeActivity.initialLoad = false;
-                    }
+                    Map<String, Object> params = new HashMap<>();
+                    params.put(GENERIC_OBJECT, user.get(0));
+                    Utility.showFragment(fragmentManager, null, FRAGMENT_PROFILE_VIEW, new ProfileViewFragment(), params);
                 }
                 else{
                     Utility.showFragment(fragmentManager, null, FRAGMENT_LOGIN, new LoginFragment(), null);
@@ -408,47 +480,66 @@ public class AsyncTaskUtility extends AsyncTask {
         }
     }
 
-    private void postUpdateUser(Object object) {
-        Object[] objs = (Object[]) object;
-
-        String what = String.valueOf(objs[0]);
-        MessageMO message = (MessageMO) objs[1];
-
-        if(message != null && !message.isError()){
-            Fragment fragment = getFragment(fragmentKey);
-
-            if(fragment instanceof ProfileViewEmailFragment){
-                if("EMAIL".equalsIgnoreCase(what)){
-                    ((ProfileViewEmailFragment)fragment).updateEmail();
-                    message.setPurpose("USER_UPDATE_EMAIL_SUCCESS");
-                }
+    private Object updateUser(Object[] objects) {
+        if(objects != null && objects.length > 0){
+            if("EMAIL".equalsIgnoreCase(String.valueOf(objects[0]))){
+                return new Object[]{objects[0], InternetUtility.updateUserEmail(loggedInUser)};
             }
-            else if(fragment instanceof ProfileViewGenderFragment){
-                if("GENDER".equalsIgnoreCase(what)){
-                    ((ProfileViewGenderFragment)fragment).updateGender();
-                    message.setPurpose("USER_UPDATE_GENDER_SUCCESS");
-                }
+            else if("IMAGE".equalsIgnoreCase(String.valueOf(objects[0]))){
+                return new Object[]{objects[0], InternetUtility.updateUserImage(loggedInUser)};
             }
-            else if(fragment instanceof ProfileViewFragment){
-                if("IMAGE".equalsIgnoreCase(what)){
-                    ((ProfileViewFragment)fragment).updateUserImage();
-                    message.setPurpose("USER_UPDATE_IMAGE_SUCCESS");
-                }
+            else if("GENDER".equalsIgnoreCase(String.valueOf(objects[0]))){
+                return new Object[]{objects[0], InternetUtility.updateUserGender(loggedInUser)};
+            }
+            else if("NAME".equalsIgnoreCase(String.valueOf(objects[0]))){
+                return new Object[]{objects[0], InternetUtility.updateUserName(loggedInUser)};
+            }
+            else if("PHONE".equalsIgnoreCase(String.valueOf(objects[0]))){
+                return new Object[]{objects[0], InternetUtility.updateUserPhone(loggedInUser)};
+            }
+            else if("PASSWORD".equalsIgnoreCase(String.valueOf(objects[0]))){
+                return new Object[]{objects[0], InternetUtility.updateUserPassword(loggedInUser)};
             }
             else{
-                Log.e(CLASS_NAME, "Fragment("+fragment+") could not be understood");
-                return;
-            }
-        }
-        else{
-            if(message == null){
-                message = new MessageMO();
-                message.setError(true);
-                message.setErr_message("Something went wrong !");
+                Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+objects);
             }
         }
 
-        Utility.showMessageDialog(fragmentManager, null, message);
+        return null;
+    }
+
+    private void postUpdateUser(Object object) {
+        Object[] objects = (Object[]) object;
+
+        if(objects == null || objects.length == 0){
+            Log.e(CLASS_NAME, "Error ! Objecs are empty");
+            return;
+        }
+
+        String what = String.valueOf(objects[0]);
+        List<UserMO> users = (List<UserMO>)objects[1];
+
+        if(users != null && !users.isEmpty() && users.get(0) != null && users.get(0).getUSER_ID() != 0){
+            UserMO user = users.get(0);
+
+            Fragment fragment = getFragment(fragmentKey);
+            ((HomeActivity)fragment.getActivity()).updateUserSecurity(user);
+        }
+        else{
+            Log.e(CLASS_NAME, "Error ! Could not update user's : "+what);
+
+            if(what.equalsIgnoreCase("PASSWORD")){
+                MessageMO message = new MessageMO();
+                message.setErr_code(0);
+                message.setError(true);
+                message.setPurpose("USER_UPDATE_PASSWORD_FAILED");
+                message.setErr_message("Incorrect Password !");
+
+                Map<String, Object> params = new HashMap<>();
+                params.put(GENERIC_OBJECT, message);
+                Utility.showFragment(fragmentManager, fragmentKey, FRAGMENT_COMMON_MESSAGE, new MessageFragment(), params);
+            }
+        }
     }
 
     private Object fetchMyReviews() {
@@ -515,31 +606,11 @@ public class AsyncTaskUtility extends AsyncTask {
     }
 
     private void postSubmitLike(Object object) {
-        if (object == null) {
-            return;
-        }
-
         LikesMO like = (LikesMO) object;
-        if (FRAGMENT_RECIPE.equalsIgnoreCase(fragmentKey)) {
-            RecipeViewFragment fragment = (RecipeViewFragment) getFragment(fragmentKey);
 
-            if ("RECIPE".equalsIgnoreCase(like.getTYPE())) {
-                fragment.updateRecipeLikeView(like);
-            }
-            else if ("RECIPE_IMG".equalsIgnoreCase(like.getTYPE())) {
-                //fragment.updateRecipeImageLikeView(like, (View) array[1]);
-            } else {
-                Log.e(CLASS_NAME, "Could not understand");
-            }
-        }
-        else if(FRAGMENT_PROFILE_VIEW_IMAGE.equalsIgnoreCase(fragmentKey)){
-            ProfileViewImageFragment fragment = (ProfileViewImageFragment) getFragment(fragmentKey);
-
-            if ("USER".equalsIgnoreCase(like.getTYPE())) {
-                loggedInUser.setUserLiked(like.isUserLiked());
-                loggedInUser.setLikesCount(like.getLikesCount());
-                //fragment.setupLikeView(loggedInUser);
-            }
+        if (like == null) {
+            Log.e(CLASS_NAME, "Error ! Failed to like/unlike");
+            return;
         }
     }
 
@@ -675,29 +746,45 @@ public class AsyncTaskUtility extends AsyncTask {
         }
 
         Object array[] = (Object[]) object;
-        if ("LIKE".equalsIgnoreCase(String.valueOf(array[0]))) {
-            Map<String, Object> params = new HashMap<>();
-            params.put(GENERIC_OBJECT, array);
-            params.put(SELECTED_ITEM, array[2]);
-            params.put(LOGGED_IN_USER, loggedInUser);
 
-            Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_LIKED_USERS, new UsersFragment(), params);
-        } else if ("VIEW".equalsIgnoreCase(String.valueOf(array[0]))) {
-            Map<String, Object> params = new HashMap<>();
-            params.put(GENERIC_OBJECT, array);
-            params.put(SELECTED_ITEM, array[2]);
-            params.put(LOGGED_IN_USER, loggedInUser);
+        if(getFragment(fragmentKey) instanceof RecipeViewFragment){
+            if ("LIKE".equalsIgnoreCase(String.valueOf(array[0]))) {
+                Map<String, Object> params = new HashMap<>();
+                params.put(GENERIC_OBJECT, array);
+                params.put(SELECTED_ITEM, array[2]);
+                params.put(LOGGED_IN_USER, loggedInUser);
 
-            Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_RECIPE_VIEWED_USERS, new UsersFragment(), params);
+                Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_USERS, new UsersFragment(), params);
+            } else if ("VIEW".equalsIgnoreCase(String.valueOf(array[0]))) {
+                Map<String, Object> params = new HashMap<>();
+                params.put(GENERIC_OBJECT, array);
+                params.put(SELECTED_ITEM, array[2]);
+                params.put(LOGGED_IN_USER, loggedInUser);
+
+                Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_USERS, new UsersFragment(), params);
+            }
         }
-        else if ("FOLLOWERS".equalsIgnoreCase(String.valueOf(array[0])) || "FOLLOWINGS".equalsIgnoreCase(String.valueOf(array[0]))) {
-            Object temp[] = new Object[]{String.valueOf(array[0]), array[1]};
-            Map<String, Object> params = new HashMap<String, Object>();
-            params.put(GENERIC_OBJECT, temp);
-            params.put(SELECTED_ITEM, loggedInUser);
-            params.put(LOGGED_IN_USER, loggedInUser);
+        else if(getFragment(fragmentKey) instanceof ProfileViewFragment){
+            if ("FOLLOWERS".equalsIgnoreCase(String.valueOf(array[0])) || "FOLLOWINGS".equalsIgnoreCase(String.valueOf(array[0]))) {
+                Object temp[] = new Object[]{String.valueOf(array[0]), array[1]};
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put(GENERIC_OBJECT, temp);
+                params.put(SELECTED_ITEM, loggedInUser);
+                params.put(LOGGED_IN_USER, loggedInUser);
 
-            Utility.showFragment(fragmentManager, FRAGMENT_PROFILE_VIEW, FRAGMENT_USERS, new UsersFragment(), params);
+                Utility.showFragment(fragmentManager, FRAGMENT_PROFILE_VIEW, FRAGMENT_USERS, new UsersFragment(), params);
+            }
+        }
+        else if(getFragment(fragmentKey) instanceof UsersFragment){
+            List<UserMO> users = (List<UserMO>) array[1];
+
+            if(users != null && !users.isEmpty()){
+                UsersFragment fragment = (UsersFragment) getFragment(fragmentKey);
+                fragment.updateUsers((List<UserMO>) array[1], index);
+            }
+        }
+        else{
+            Log.e(CLASS_NAME, UN_IDENTIFIED_PARENT_FRAGMENT+fragmentKey);
         }
     }
 
@@ -729,6 +816,12 @@ public class AsyncTaskUtility extends AsyncTask {
                 else if(getFragment(fragmentKey) instanceof RecipeViewFragment){
                     Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_USER_VIEW, new UserViewFragment(), paramsMap);
                 }
+                else if(getFragment(fragmentKey) instanceof PeopleViewFragment){
+                    Utility.showFragment(fragmentManager, FRAGMENT_PEOPLE_VIEW, FRAGMENT_USER_VIEW, new UserViewFragment(), paramsMap);
+                }
+                else if(getFragment(fragmentKey) instanceof UsersFragment){
+                    Utility.showFragment(fragmentManager, FRAGMENT_USERS, FRAGMENT_USER_VIEW, new UserViewFragment(), paramsMap);
+                }
             }
 
 
@@ -743,24 +836,34 @@ public class AsyncTaskUtility extends AsyncTask {
                 List<UserMO> users = null;
 
                 if("FOLLOWERS".equalsIgnoreCase(String.valueOf(objects[0]))){
-                    waitFragment = Utility.showWaitDialog(fragmentManager, "fetching followers ..");
+                    if(!(getFragment(fragmentKey) instanceof UsersFragment)){
+                        waitFragment = Utility.showWaitDialog(fragmentManager, "fetching followers ..");
+                    }
+
                     users = InternetUtility.fetchUserFollowers(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), index);
                 }
                 else if("FOLLOWINGS".equalsIgnoreCase(String.valueOf(objects[0]))){
-                    waitFragment = Utility.showWaitDialog(fragmentManager, "fetching users ..");
+                    if(!(getFragment(fragmentKey) instanceof UsersFragment)){
+                        waitFragment = Utility.showWaitDialog(fragmentManager, "fetching users ..");
+                    }
+
                     users = InternetUtility.fetchUserFollowings(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), index);
                 }
                 return new Object[]{String.valueOf(objects[0]), users};
             }
             else if ("LIKE".equalsIgnoreCase(String.valueOf(objects[0]))) {
-                waitFragment = Utility.showWaitDialog(fragmentManager, "fetching users who liked the "+((LikesMO) objects[1]).getTYPE()+" ..");
+                if(!(getFragment(fragmentKey) instanceof UsersFragment)){
+                    waitFragment = Utility.showWaitDialog(fragmentManager, "fetching users who liked the "+((LikesMO) objects[1]).getTYPE()+" ..");
+                }
 
                 List<UserMO> users = InternetUtility.fetchLikedUsers(loggedInUser.getUSER_ID(), ((LikesMO) objects[1]).getTYPE(), ((LikesMO) objects[1]).getTYPE_ID(), index);
                 Object array[] = new Object[]{String.valueOf(objects[0]), users, objects[2]};
 
                 return array;
             } else if ("VIEW".equalsIgnoreCase(String.valueOf(objects[0]))) {
-                waitFragment = Utility.showWaitDialog(fragmentManager, "fetching users who viewed the Recipe ..");
+                if(!(getFragment(fragmentKey) instanceof UsersFragment)){
+                    waitFragment = Utility.showWaitDialog(fragmentManager, "fetching users who viewed the Recipe ..");
+                }
 
                 List<UserMO> users = InternetUtility.fetchViewedUsers(loggedInUser.getUSER_ID(), (RecipeMO) objects[1], index);
                 Object array[] = new Object[]{String.valueOf(objects[0]), users, objects[1]};

@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -20,13 +19,11 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.models.UserMO;
-import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.Utility;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_EMAIL;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.SCOPE_FOLLOWERS;
@@ -95,10 +92,7 @@ public class ProfileViewEmailFragment extends DialogFragment {
                 else{
                     loggedInUser.setEMAIL(String.valueOf(profile_view_email_et.getText()).trim());
                     loggedInUser.setEMAIL_SCOPE_ID(newScopeId);
-
-                    new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW_EMAIL,
-                            AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
-                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "EMAIL");
+                    updateEmail();
                 }
             }
         });
@@ -157,7 +151,7 @@ public class ProfileViewEmailFragment extends DialogFragment {
         }
     }
 
-    public void updateEmail(){
+    private void updateEmail(){
         ((ProfileViewFragment)getTargetFragment()).updateEmail(loggedInUser);
         dismiss();
     }

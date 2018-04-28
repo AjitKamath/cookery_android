@@ -30,6 +30,7 @@ import com.cookery.models.TimelineMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.Utility;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +44,7 @@ import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_TIMELINE_DELETE;
 import static com.cookery.utils.Constants.FRAGMENT_TIMELINE_HIDE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.LOUVRE_REQUEST_CODE;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
 public class HomeActivity extends CommonActivity{
@@ -84,6 +86,16 @@ public class HomeActivity extends CommonActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.inject(this);
+
+        if(initialLoggedInUserCheck()){
+            fetchHomeContent();
+            fetchMasterContent();
+
+            setupSearch();
+            setupFab();
+            setupRateUs();
+            setupNavigator();
+        }
     }
 
     private void prepareTabs(Object array[]) {
@@ -202,8 +214,10 @@ public class HomeActivity extends CommonActivity{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Fragment recipeAddFragment = getFragmentManager().findFragmentByTag(FRAGMENT_ADD_RECIPE);
-        recipeAddFragment.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE || requestCode == LOUVRE_REQUEST_CODE){
+            Fragment recipeAddFragment = getFragmentManager().findFragmentByTag(FRAGMENT_ADD_RECIPE);
+            recipeAddFragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override

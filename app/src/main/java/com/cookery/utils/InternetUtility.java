@@ -180,8 +180,8 @@ public class InternetUtility {
         for (int i = 0; i < recipe.getIngredients().size(); i++) {
             multipart.addFormField("ing_aka_id[" + i + "]", String.valueOf(recipe.getIngredients().get(i).getING_AKA_ID()));
             multipart.addFormField("ing_aka_name[" + i + "]", String.valueOf(recipe.getIngredients().get(i).getING_AKA_NAME()));
-            multipart.addFormField("ing_qty[" + i + "]", String.valueOf(recipe.getIngredients().get(i).getQTY()));
-            multipart.addFormField("qty_id[" + i + "]", String.valueOf(recipe.getIngredients().get(i).getQuantity().getQTY_ID()));
+            multipart.addFormField("ing_uom_value[" + i + "]", String.valueOf(recipe.getIngredients().get(i).getING_UOM_VALUE()));
+            multipart.addFormField("ing_uom_id[" + i + "]", String.valueOf(recipe.getIngredients().get(i).getQuantity().getING_UOM_ID()));
         }
 
         /*steps*/
@@ -513,7 +513,7 @@ public class InternetUtility {
         paramMap.put("name", String.valueOf(user.getNAME()));
 
         String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, MessageMO.class);
+        return Utility.jsonToObject(jsonStr, UserMO.class);
     }
 
     public static Object updateUserEmail(UserMO user) {
@@ -524,7 +524,7 @@ public class InternetUtility {
         paramMap.put("scope_id", String.valueOf(user.getEMAIL_SCOPE_ID()));
 
         String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, MessageMO.class);
+        return Utility.jsonToObject(jsonStr, UserMO.class);
     }
 
     public static Object updateUserPassword(UserMO user) {
@@ -535,7 +535,7 @@ public class InternetUtility {
         paramMap.put("new_password", String.valueOf(user.getNewPassword()));
 
         String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, MessageMO.class);
+        return Utility.jsonToObject(jsonStr, UserMO.class);
     }
 
     public static Object updateUserPhone(UserMO user) {
@@ -546,7 +546,7 @@ public class InternetUtility {
         paramMap.put("scope_id", String.valueOf(user.getMOBILE_SCOPE_ID()));
 
         String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, MessageMO.class);
+        return Utility.jsonToObject(jsonStr, UserMO.class);
     }
 
     public static Object updateUserGender(UserMO user) {
@@ -557,7 +557,7 @@ public class InternetUtility {
         paramMap.put("scope_id", String.valueOf(user.getGENDER_SCOPE_ID()));
 
         String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, MessageMO.class);
+        return Utility.jsonToObject(jsonStr, UserMO.class);
     }
 
     public static Object updateUserImage(UserMO user) {
@@ -571,7 +571,7 @@ public class InternetUtility {
         multipart.addFormField("user_id", String.valueOf(user.getUSER_ID()));
 
         String jsonStr = multipart.finish();
-        return Utility.jsonToObject(jsonStr, MessageMO.class);
+        return Utility.jsonToObject(jsonStr, UserMO.class);
     }
 
     public static List<UserMO> fetchUsersPublicDetails(int userId, int loggedInUserId) {

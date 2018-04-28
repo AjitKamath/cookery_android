@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.adapters.RecipeAddImagesViewPagerAdapter;
-import com.cookery.utils.Utility;
 
 import java.util.List;
 
@@ -68,7 +67,6 @@ public class RecipeImagesFragment extends DialogFragment {
         common_fragment_recipe_images_vp.setAdapter(new RecipeAddImagesViewPagerAdapter(mContext, imagesList, false, new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Utility.showRecipeImagesFragment(getFragmentManager(), imagesList);
             }
         }));
     }

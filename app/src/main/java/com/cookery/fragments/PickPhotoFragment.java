@@ -34,7 +34,7 @@ public class PickPhotoFragment extends DialogFragment {
     private final String CLASS_NAME = this.getClass().getName();
     private Context mContext;
 
-    @InjectView(R.id.common_pick_image_camera_ll)
+    @InjectView(R.id.common_share_social_media_ll)
     LinearLayout common_pick_image_camera_ll;
 
     @InjectView(R.id.common_pick_image_gallery_ll)

@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.activities.HomeActivity;
 import com.cookery.adapters.OnBoardingSplashViewPagerAdapter;
 
 import butterknife.ButterKnife;
@@ -72,7 +71,6 @@ public class OnBoardingSplashFragment extends DialogFragment {
         public void onClick(View view) {
             if(currentpage == mDots.length-1){
              dismiss();
-                ((HomeActivity) getActivity()).updateLoggedInUser();
             }else {
                 on_boarding_splash_vp.setCurrentItem(currentpage + 1);
             }

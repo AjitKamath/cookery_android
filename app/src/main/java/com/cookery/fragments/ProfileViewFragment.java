@@ -22,7 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.activities.HomeActivity;
+import com.cookery.activities.CommonActivity;
 import com.cookery.models.CommentMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.Milestone;
@@ -160,7 +160,6 @@ public class ProfileViewFragment extends DialogFragment {
     /*components*/
 
     private UserMO loggedInUser;
-    private boolean doUpdateLoggedInUser = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -185,12 +184,9 @@ public class ProfileViewFragment extends DialogFragment {
 
     @Override
     public void onDismiss(final DialogInterface dialog) {
-        if(doUpdateLoggedInUser){
-            ((HomeActivity)getActivity()).updateLoggedInUser();
-            doUpdateLoggedInUser = false;
-        }
-
         super.onDismiss(dialog);
+
+        ((CommonActivity)getActivity()).setupNavigator();
     }
 
     private void setupPage() {
@@ -201,19 +197,15 @@ public class ProfileViewFragment extends DialogFragment {
 
             profile_view_profile_image_iv.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
-                            AsyncTaskUtility.Purpose.FETCH_USER_SELF, loggedInUser, 0)
-                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                }
+                public void onClick(View v) {}
             });
         }
 
         profile_view_profile_name_tv.setText(loggedInUser.getNAME());
 
-        updateEmail(loggedInUser);
-        updatePhone(loggedInUser);
-        updateGender(loggedInUser);
+        setupEmail(loggedInUser);
+        setupPhone(loggedInUser);
+        setupGender(loggedInUser);
 
         profile_view_followers_tv.setText(loggedInUser.getFollowersCount()+" FOLLOWERS");
         profile_view_following_tv.setText(loggedInUser.getFollowingCount()+" FOLLOWING");
@@ -410,13 +402,14 @@ public class ProfileViewFragment extends DialogFragment {
         //Next milestone
     }
 
-    public void updateName(String name){
-        profile_view_profile_name_tv.setText(name);
+    public void updateName(String userName){
+        profile_view_profile_name_tv.setText(userName);
 
-        doUpdateLoggedInUser = true;
+        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW, AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "NAME");
     }
 
-    public void updateEmail(UserMO user){
+    private void setupEmail(UserMO user){
         profile_view_profile_email_tv.setText(user.getEMAIL());
         if(user.getVeri_code() == 0){
             profile_view_profile_email_verify_tv.setText("VERIFIED");
@@ -426,18 +419,28 @@ public class ProfileViewFragment extends DialogFragment {
         }
         profile_view_profile_email_verify_tv.setTextColor(ContextCompat.getColor(mContext, R.color.red));
         profile_view_profile_email_scope_iv.setImageResource(Utility.getScopeImageId(user.getEMAIL_SCOPE_ID()));
-
-        doUpdateLoggedInUser = true;
     }
 
-    public void updatePhone(UserMO user){
+    public void updateEmail(UserMO user){
+        setupEmail(user);
+
+        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
+                AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "EMAIL");
+    }
+
+    public void updatePassword(UserMO user){
+        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
+                AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "PASSWORD");
+    }
+
+    private void setupPhone(UserMO user){
         if(user.getMOBILE() != null && !user.getMOBILE().trim().isEmpty()){
             profile_view_profile_phone_tv.setText(user.getMOBILE());
             profile_view_profile_phone_verify_tv.setText("NOT VERIFIED");
             profile_view_profile_phone_verify_tv.setTextColor(ContextCompat.getColor(mContext, R.color.red));
             profile_view_profile_phone_scope_iv.setImageResource(Utility.getScopeImageId(user.getMOBILE_SCOPE_ID()));
-
-            doUpdateLoggedInUser = true;
         }
         else{
             profile_view_profile_phone_tv.setText("Not Set");
@@ -445,12 +448,18 @@ public class ProfileViewFragment extends DialogFragment {
         }
     }
 
-    public void updateGender(UserMO user){
+    public void updatePhone(UserMO user){
+        setupPhone(user);
+
+        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
+                AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "PHONE");
+    }
+
+    private void setupGender(UserMO user){
         if(user.getGENDER() != null && !user.getGENDER().trim().isEmpty()) {
             profile_view_profile_gender_tv.setText(Utility.getGender(user.getGENDER()));
             profile_view_profile_gender_scope_iv.setImageResource(Utility.getScopeImageId(user.getGENDER_SCOPE_ID()));
-
-            doUpdateLoggedInUser = true;
         }
         else{
             profile_view_profile_gender_tv.setText("Not Set");
@@ -458,8 +467,17 @@ public class ProfileViewFragment extends DialogFragment {
         }
     }
 
+    public void updateGender(UserMO user){
+        setupGender(user);
+
+        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
+                AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "GENDER");
+    }
+
     private void updatePhoto(Uri photoPath){
         loggedInUser.setIMG(photoPath.getPath());
+        Utility.loadImageFromPath(mContext, photoPath.getPath(), profile_view_profile_image_iv);
 
         new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
                 AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
@@ -517,9 +535,5 @@ public class ProfileViewFragment extends DialogFragment {
                 setFont((ViewGroup) v);
             }
         }
-    }
-
-    public void updateUserImage(){
-        Utility.loadImageFromPath(mContext, loggedInUser.getIMG(), profile_view_profile_image_iv);
     }
 }

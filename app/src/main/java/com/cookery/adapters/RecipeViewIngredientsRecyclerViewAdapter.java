@@ -71,8 +71,8 @@ public class RecipeViewIngredientsRecyclerViewAdapter extends RecyclerView.Adapt
 
         holder.recipe_view_ingredients_item_tv.setText(ingredient.getING_AKA_NAME().toUpperCase());
         holder.recipe_view_ingredients_category_item_tv.setText(ingredient.getIngredientCategoryName());
-        holder.recipe_view_ingredients_item_qty_tv.setText(String.valueOf(ingredient.getING_QTY()));
-        holder.recipe_view_ingredients_item_qty_type_tv.setText(ingredient.getQTY_NAME().toUpperCase());
+        holder.recipe_view_ingredients_item_qty_tv.setText(String.valueOf(ingredient.getING_UOM_VALUE()));
+        holder.recipe_view_ingredients_item_qty_type_tv.setText(ingredient.getING_UOM_NAME().toUpperCase());
 
         /*divider*/
         if(position == ingredients.size()-1){

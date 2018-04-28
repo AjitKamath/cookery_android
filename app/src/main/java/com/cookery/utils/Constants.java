@@ -140,8 +140,6 @@ public final class Constants {
     public static final String FRAGMENT_RECIPE_REVIEW = "FRAGMENT_RECIPE_REVIEW";
     public static final String FRAGMENT_RECIPE_REVIEWS = "FRAGMENT_RECIPE_REVIEWS";
     public static final String FRAGMENT_RECIPE_IMAGES = "FRAGMENT_RECIPE_IMAGES";
-    public static final String FRAGMENT_LIKED_USERS = "FRAGMENT_LIKED_USERS";
-    public static final String FRAGMENT_RECIPE_VIEWED_USERS = "FRAGMENT_RECIPE_VIEWED_USERS";
     public static final String FRAGMENT_RECIPE_STEPS = "FRAGMENT_RECIPE_STEPS";
     public static final String FRAGMENT_COMMON_SELECTION = "FRAGMENT_COMMON_SELECTION";
     public static final String FRAGMENT_COMMON_WAIT = "FRAGMENT_COMMON_WAIT";
@@ -167,6 +165,7 @@ public final class Constants {
     public static final String FRAGMENT_SOMETHING_WRONG = "FRAGMENT_SOMETHING_WRONG";
     public static final String FRAGMENT_COOKERY_ERROR = "FRAGMENT_COOKERY_ERROR";
     public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
+    public static final String FRAGMENT_SHARE_SOCIAL_MEDIA = "FRAGMENT_SHARE_SOCIAL_MEDIA";
 
 
     //FRAGMENT OBJECT KEYS
@@ -206,7 +205,7 @@ public final class Constants {
     public final static String DEFAULT_SOCIAL_KEY = "DEFAULT_SOCIAL_KEY";
 
     //security keys
-    public final static String UNIQUE_IDENTIFIER = "UNIQUE_IDENTIFIER";
+    public final static String APP_UNIQUE_ID = "x-app-unique-id";
     public final static String API_KEY_IDENTIFIER = "x-api-key";
     public final static String API_KEY_ANDROID = "AIzaSyAxI2I8Wvt784ExlS_BBHY8uWPakM7XRBo";
 

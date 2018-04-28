@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -39,6 +39,7 @@ import com.cookery.fragments.RecipeViewFragment;
 import com.cookery.fragments.RecipeViewImagesFragment;
 import com.cookery.fragments.RecipeViewReviewsFragment;
 import com.cookery.fragments.RecipeViewStepsFragment;
+import com.cookery.fragments.ShareSocialMediaFragment;
 import com.cookery.fragments.SomethingWrongFragment;
 import com.cookery.fragments.TimelineDeleteFragment;
 import com.cookery.fragments.TimelineHideFragment;
@@ -50,11 +51,11 @@ import com.cookery.models.CuisineMO;
 import com.cookery.models.FavouritesMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientAkaMO;
+import com.cookery.models.IngredientUOMMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.MyListMO;
-import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeImageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
@@ -72,12 +73,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.cookery.utils.Constants.DEFAULT_CROP_RATIO;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_WAIT;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
@@ -286,8 +287,8 @@ public class Utility extends Activity {
             else if(mappingClass.equals(IngredientAkaMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<IngredientAkaMO>>(){}.getType());
             }
-            else if(mappingClass.equals(QuantityMO.class)){
-                return gson.fromJson(jsonStr, new TypeToken<List<QuantityMO>>(){}.getType());
+            else if(mappingClass.equals(IngredientUOMMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<List<IngredientUOMMO>>(){}.getType());
             }
             else if(mappingClass.equals(TasteMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<TasteMO>>(){}.getType());
@@ -449,26 +450,6 @@ public class Utility extends Activity {
         return fragment;
     }
 
-    public static Fragment showRecipeImagesFragment(FragmentManager fragManager, List<Uri> images) {
-        String fragmentNameStr = FRAGMENT_RECIPE_IMAGES;
-
-        Fragment frag = fragManager.findFragmentByTag(fragmentNameStr);
-
-        if (frag != null) {
-            fragManager.beginTransaction().remove(frag).commit();
-        }
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(GENERIC_OBJECT, (Serializable) images);
-
-        RecipeImagesFragment fragment = new RecipeImagesFragment();
-        fragment.setArguments(bundle);
-
-        fragment.show(fragManager, fragmentNameStr);
-
-        return fragment;
-    }
-
     public static void showFragment(FragmentManager fragmentManager, String parentFragKey, String fragKey, Object fragment, Map<String, Object> params){
         Fragment frag = fragmentManager.findFragmentByTag(fragKey);
 
@@ -492,6 +473,22 @@ public class Utility extends Activity {
 
         if(fragment instanceof RecipeAddFragment){
             RecipeAddFragment currentFrag = (RecipeAddFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof ShareSocialMediaFragment){
+            ShareSocialMediaFragment currentFrag = (ShareSocialMediaFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof MessageFragment){
+            MessageFragment currentFrag = (MessageFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);
@@ -706,6 +703,14 @@ public class Utility extends Activity {
             }
             currentFrag.show(fragmentManager, fragKey);
         }
+        else if(fragment instanceof RecipeImagesFragment){
+            RecipeImagesFragment currentFrag = (RecipeImagesFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
         else{
             Log.e(CLASS_NAME, "Error ! "+fragment+" fragment hasn't been configured in "+CLASS_NAME+" showFragment method yet.");
         }
@@ -738,5 +743,21 @@ public class Utility extends Activity {
     public static void hideSoftKeyboard (Activity activity, View view){
         InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
+    }
+
+    public static String getUniquePhoneId() {
+        String m_szDevIDShort = "35" + (Build.BOARD.length() % 10) + (Build.BRAND.length() % 10) + (Build.SUPPORTED_ABIS.length % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
+
+        String serial = null;
+        try {
+            serial = android.os.Build.class.getField("SERIAL").get(null).toString();
+
+            // Go ahead and return the serial for api => 9
+            return "android-" + new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
+        } catch (Exception exception) {
+            // String needs to be initialized
+            serial = "serial"; // some value
+        }
+        return "android-" + new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
     }
 }

@@ -4,7 +4,7 @@ import com.cookery.models.CommentMO;
 import com.cookery.models.CuisineMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientAkaMO;
-import com.cookery.models.QuantityMO;
+import com.cookery.models.IngredientUOMMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.TasteMO;
@@ -21,7 +21,7 @@ public class TestData {
     private static List<FoodTypeMO> foodTypes;
     private static List<IngredientAkaMO> ingredients;
     private static List<CuisineMO> cuisines;
-    private static List<QuantityMO> quantities;
+    private static List<IngredientUOMMO> quantities;
     private static List<TasteMO> tastes;
     private static List<CommentMO> comments;
     private static UserMO user;
@@ -78,34 +78,34 @@ public class TestData {
         return recipes;
     }
 
-    public static List<QuantityMO> getQuantitiesTestDate() {
+    public static List<IngredientUOMMO> getQuantitiesTestDate() {
         quantities = new ArrayList<>();
-        QuantityMO quantity = null;
+        IngredientUOMMO quantity = null;
 
-        quantity = new QuantityMO();
-        quantity.setQTY_ID(1);
+        quantity = new IngredientUOMMO();
+        quantity.setING_UOM_ID(1);
         quantity.setIS_DEF("Y");
-        quantity.setQTY_NAME("SPOON");
+        quantity.setING_UOM_NAME("SPOON");
         quantities.add(quantity);
 
-        quantity = new QuantityMO();
-        quantity.setQTY_ID(2);
-        quantity.setQTY_NAME("CUP");
+        quantity = new IngredientUOMMO();
+        quantity.setING_UOM_ID(2);
+        quantity.setING_UOM_NAME("CUP");
         quantities.add(quantity);
 
-        quantity = new QuantityMO();
-        quantity.setQTY_ID(3);
-        quantity.setQTY_NAME("GLASS");
+        quantity = new IngredientUOMMO();
+        quantity.setING_UOM_ID(3);
+        quantity.setING_UOM_NAME("GLASS");
         quantities.add(quantity);
 
-        quantity = new QuantityMO();
-        quantity.setQTY_ID(4);
-        quantity.setQTY_NAME("TEA SPOON");
+        quantity = new IngredientUOMMO();
+        quantity.setING_UOM_ID(4);
+        quantity.setING_UOM_NAME("TEA SPOON");
         quantities.add(quantity);
 
-        quantity = new QuantityMO();
-        quantity.setQTY_ID(5);
-        quantity.setQTY_NAME("PINCH");
+        quantity = new IngredientUOMMO();
+        quantity.setING_UOM_ID(5);
+        quantity.setING_UOM_NAME("PINCH");
         quantities.add(quantity);
 
         return quantities;
@@ -150,36 +150,36 @@ public class TestData {
         ingredient = new IngredientAkaMO();
         ingredient.setING_AKA_NAME("MILK");
         ingredient.setING_AKA_ID(1);
-        ingredient.setQTY(1);
-        ingredient.setQTY_NAME("SPOON");
+        ingredient.setING_UOM_VALUE(1);
+        ingredient.setING_UOM_NAME("SPOON");
         ingredients.add(ingredient);
 
         ingredient = new IngredientAkaMO();
         ingredient.setING_AKA_NAME("SALT");
         ingredient.setING_AKA_ID(2);
-        ingredient.setQTY(3);
-        ingredient.setQTY_NAME("TABLE SPOON");
+        ingredient.setING_UOM_VALUE(3);
+        ingredient.setING_UOM_NAME("TABLE SPOON");
         ingredients.add(ingredient);
 
         ingredient = new IngredientAkaMO();
         ingredient.setING_AKA_NAME("PEPPER");
         ingredient.setING_AKA_ID(3);
-        ingredient.setQTY(5);
-        ingredient.setQTY_NAME("CUP");
+        ingredient.setING_UOM_VALUE(5);
+        ingredient.setING_UOM_NAME("CUP");
         ingredients.add(ingredient);
 
         ingredient = new IngredientAkaMO();
         ingredient.setING_AKA_NAME("CHILLY");
         ingredient.setING_AKA_ID(4);
-        ingredient.setQTY(5);
-        ingredient.setQTY_NAME("BOWL");
+        ingredient.setING_UOM_VALUE(5);
+        ingredient.setING_UOM_NAME("BOWL");
         ingredients.add(ingredient);
 
         ingredient = new IngredientAkaMO();
         ingredient.setING_AKA_NAME("WATER");
         ingredient.setING_AKA_ID(5);
-        ingredient.setQTY(3);
-        ingredient.setQTY_NAME("PINCH");
+        ingredient.setING_UOM_VALUE(3);
+        ingredient.setING_UOM_NAME("PINCH");
         ingredients.add(ingredient);
 
         return ingredients;

@@ -4,11 +4,9 @@ package com.cookery.adapters;
  * Created by ajit on 25/8/17.
  */
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -24,10 +22,15 @@ import com.cookery.R;
 import com.cookery.interfaces.ItemClickListener;
 import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.UserMO;
-import com.cookery.utils.InternetUtility;
-import com.cookery.utils.Utility;
+import com.cookery.utils.AsyncTaskUtility;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import static com.cookery.utils.Constants.SIMPLE_KEY_FOLLOWERS;
 import static com.cookery.utils.Constants.SIMPLE_KEY_FOLLOWING;
@@ -40,19 +43,31 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
 
     private Object people;
     private List<Integer> layouts;
-    private ItemClickListener itemClickListener;
     public UserMO loggedInUser;
     private FragmentManager fragManager;
 
+    private ItemClickListener itemClickListener;
+    private SwipeRefreshLayout.OnRefreshListener onRefreshListener;
+    private OnBottomReachedListener onBottomReachedListener;
+
     private RecyclerView people_view_followers_following_rv;
 
-    public PeopleViewViewPagerAdapter(Context context, FragmentManager fragManager, List<Integer> layouts, UserMO loggedInUser, Object people, ItemClickListener itemClickListener) {
+    @Getter
+    private Map<Integer, AsyncTaskUtility.Purpose> viewPurposeMap = new HashMap<>();
+
+    @Getter
+    private List<ViewObject> viewObjectList = new ArrayList<>();
+
+    public PeopleViewViewPagerAdapter(Context context, FragmentManager fragManager, List<Integer> layouts, UserMO loggedInUser, Object people, ItemClickListener itemClickListener,
+                                      SwipeRefreshLayout.OnRefreshListener onRefreshListener, OnBottomReachedListener onBottomReachedListener) {
         this.mContext = context;
         this.layouts = layouts;
         this.loggedInUser = loggedInUser;
         this.people = people;
         this.fragManager = fragManager;
         this.itemClickListener = itemClickListener;
+        this.onRefreshListener = onRefreshListener;
+        this.onBottomReachedListener = onBottomReachedListener;
     }
 
     @Override
@@ -61,8 +76,12 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
         ViewGroup layout = (ViewGroup) inflater.inflate(layouts.get(position), collection, false);
 
         switch(position){
-            case 0: setupFollowing(layout); break;
-            case 1: setupFollowers(layout); break;
+            case 0: setupFollowing(layout);
+                viewPurposeMap.put(position, AsyncTaskUtility.Purpose.FETCH_FOLLOWING);
+                break;
+            case 1: setupFollowers(layout);
+                viewPurposeMap.put(position, AsyncTaskUtility.Purpose.FETCH_FOLLOWERS);
+                break;
 
             default:
                 Log.e(CLASS_NAME, UN_IDENTIFIED_VIEW);
@@ -119,12 +138,7 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
 
     private void setupUsers(final ViewGroup layout, List<UserMO> users, final String purpose){
         final UsersRecyclerViewAdapter adapter = new UsersRecyclerViewAdapter(mContext, users, purpose, itemClickListener);
-        adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
-            @Override
-            public void onBottomReached(int position) {
-                new AsyncTaskerFetchPeople(purpose, adapter.getItemCount()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            }
-        });
+        adapter.setOnBottomReachedListener(onBottomReachedListener);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
 
@@ -135,12 +149,9 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
 
         final SwipeRefreshLayout people_view_followers_following_srl = layout.findViewById(R.id.people_view_followers_following_srl);
         people_view_followers_following_srl.setTag(purpose);
-        people_view_followers_following_srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new AsyncTaskerFetchPeople(purpose, 0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            }
-        });
+        people_view_followers_following_srl.setOnRefreshListener(onRefreshListener);
+
+        viewObjectList.add(new ViewObject(people_view_followers_following_rv, people_view_followers_following_srl));
     }
 
     @Override
@@ -187,75 +198,28 @@ public class PeopleViewViewPagerAdapter extends PagerAdapter {
         }
     }
 
-    class AsyncTaskerFetchPeople extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-        private ViewGroup layout;
-        private String purpose;
-        private int index;
-        private SwipeRefreshLayout people_view_followers_following_srl;
+    public void updateData(String who, List<UserMO> users, int index) {
+        if("FOLLOWINGS".equalsIgnoreCase(who)){
+            ((UsersRecyclerViewAdapter)viewObjectList.get(0).people_view_followers_following_rv.getAdapter()).updateUsers(index, users);
+            viewObjectList.get(0).people_view_followers_following_srl.setRefreshing(false);
 
-        public AsyncTaskerFetchPeople(String purpose, int index){
-            this.purpose = purpose;
-            this.index = index;
+            notifyDataSetChanged();
         }
+        else if("FOLLOWERS".equalsIgnoreCase(who)){
+            ((UsersRecyclerViewAdapter)viewObjectList.get(1).people_view_followers_following_rv.getAdapter()).updateUsers(index, users);
+            viewObjectList.get(1).people_view_followers_following_srl.setRefreshing(false);
 
-        @Override
-        protected Object doInBackground(Object... objects) {
-            layout = (ViewGroup) objects[0];
-            people_view_followers_following_srl = (SwipeRefreshLayout) objects[1];
-
-            if(SIMPLE_KEY_FOLLOWERS.equalsIgnoreCase(purpose)){
-                return InternetUtility.fetchUserFollowers(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), index);
-            }
-            else if(SIMPLE_KEY_FOLLOWING.equalsIgnoreCase(purpose)){
-                return InternetUtility.fetchUserFollowings(loggedInUser.getUSER_ID(), loggedInUser.getUSER_ID(), index);
-            }
-            else{
-                Log.e(CLASS_NAME, "Error ! Could not identify the purpose !");
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            if(SIMPLE_KEY_FOLLOWERS.equalsIgnoreCase(purpose)){
-                fragment = Utility.showWaitDialog(fragManager, "fetching people who follow you..");
-            }
-            else if(SIMPLE_KEY_FOLLOWING.equalsIgnoreCase(purpose)){
-                fragment = Utility.showWaitDialog(fragManager, "fetching people whom you follow..");
-            }
-            else{
-                Log.e(CLASS_NAME, "Error ! Could not identify the purpose !");
-            }
-
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            List<UserMO> fetchedUsers = (List<UserMO>) object;
-
-            if(fetchedUsers != null) {
-                Utility.closeWaitDialog(fragManager, fragment);
-
-                Object[] users = (Object[])people;
-                if(SIMPLE_KEY_FOLLOWERS.equalsIgnoreCase(purpose)){
-                    users[0] = fetchedUsers;
-                    setupFollowers(layout);
-                    people_view_followers_following_srl.setRefreshing(false);
-                }
-                else if(SIMPLE_KEY_FOLLOWING.equalsIgnoreCase(purpose)){
-                    users[1] = fetchedUsers;
-                    setupFollowing(layout);
-                    people_view_followers_following_srl.setRefreshing(false);
-                }
-                else{
-                    Log.e(CLASS_NAME, "Error ! Could not identify the purpose !");
-                }
-            }
-            else{
-                ((UsersRecyclerViewAdapter)people_view_followers_following_rv.getAdapter()).setOnBottomReachedListener(null);
-            }
+            notifyDataSetChanged();
         }
     }
+
+    @AllArgsConstructor
+    public class ViewObject{
+        @Getter
+        private RecyclerView people_view_followers_following_rv;
+
+        @Getter
+        private SwipeRefreshLayout people_view_followers_following_srl;
+    }
 }
+

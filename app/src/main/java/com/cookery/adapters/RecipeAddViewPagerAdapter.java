@@ -487,7 +487,7 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(SELECTED_ITEM, ingredient);
-        bundle.putSerializable(LIST_DATA, (Serializable) masterData.getQuantities());
+        bundle.putSerializable(LIST_DATA, (Serializable) masterData.getIngredientUOMs());
         fragment.setArguments(bundle);
 
         fragment.show(fragmentManager, fragmentNameStr);

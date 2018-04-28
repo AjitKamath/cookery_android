@@ -136,7 +136,7 @@ public class RecipeAddFragment extends DialogFragment {
         masterData = (MasterDataMO) getArguments().get(MASTER);
         if(masterData == null || masterData.getFoodCuisines() == null || masterData.getFoodCuisines().isEmpty()
                 || masterData.getFoodTypes() == null || masterData.getFoodTypes().isEmpty()
-                || masterData.getQuantities() == null || masterData.getQuantities().isEmpty()
+                || masterData.getIngredientUOMs() == null || masterData.getIngredientUOMs().isEmpty()
                 || masterData.getTastes() == null || masterData.getTastes().isEmpty()){
 
             Log.e(CLASS_NAME, "Error ! Master data is null or required data in master data is not found !");

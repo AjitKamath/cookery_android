@@ -388,3 +388,15 @@
 24 april 2018
 1. #399 Recipe Add/Profile View - Image Upload is Failing !
 2. #293 Fetch Master Data in Single Shot
+
+-- git checkin on 24 April 2018 --
+
+26 april 2018
+1. #208 Recipe Add - Searchable Cuisines & Food Type
+2. #391 Database - Remove Obsolete Tables
+3. #416 PHP - Set Server Time to GMT
+4. #227 Security - Pass Unique Identifier as par of each request
+
+27 april 2018
+1. Fixed redundant service calls in Home screen.
+2. Instant name/email/password/image/gender/phone update in Profile View.

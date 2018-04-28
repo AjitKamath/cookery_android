@@ -98,6 +98,8 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         timelineViewMap.put(TIMELINE_LIKE_COMMENT_REMOVE, R.layout.home_timeline_like_item);
         timelineViewMap.put(TIMELINE_LIKE_REVIEW_ADD, R.layout.home_timeline_like_item);
         timelineViewMap.put(TIMELINE_LIKE_REVIEW_REMOVE, R.layout.home_timeline_like_item);
+        timelineViewMap.put(TIMELINE_LIKE_USER_ADD, R.layout.home_timeline_like_item);
+        timelineViewMap.put(TIMELINE_LIKE_USER_REMOVE, R.layout.home_timeline_like_item);
 
         timelineViewMap.put(TIMELINE_COMMENT_RECIPE_ADD, R.layout.home_timeline_comment_item);
         timelineViewMap.put(TIMELINE_COMMENT_RECIPE_REMOVE, R.layout.home_timeline_comment_item);
@@ -461,7 +463,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         holder.common_component_image_options_mini_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showPopupMenu(v, timeline);
+                showPopupMenu(v);
             }
         });
         //commons
@@ -476,7 +478,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
     }
 
     private void setupUserCommonView(ViewHolder holder, TimelineMO timeline){
-        setupRecipeOnClickListener(holder.home_timeline_user_card_cv, timeline.getWhoseUserId());
+        setupUserOnClickListener(holder.home_timeline_user_card_cv, timeline.getWhoseUserId());
 
         holder.home_timeline_user_card_username_tv.setText(timeline.getWhoseName());
         Utility.loadImageFromURL(mContext, timeline.getWhoseUserImage(), holder.home_timeline_user_card_iv);
@@ -541,9 +543,10 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
     /**
      * Showing popup menu when tapping on 3 dots
      */
-    private void showPopupMenu(View view, TimelineMO timeline) {
+    private void showPopupMenu(View view) {
         // inflate menu
-        PopupMenu popupMenu = new PopupMenu(mContext, view);
+        PopupMenu popupMenu = new PopupMenu(mContext, view);        //do not pass context as 1st param if this method
+                                                                    //is called from a fragment
         popupMenu.inflate(R.menu.timeline_options);
 
         // Force icons to show
