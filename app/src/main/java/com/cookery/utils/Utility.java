@@ -19,6 +19,7 @@ import com.cookery.exceptions.CookeryException;
 import com.cookery.fragments.CommentsFragment;
 import com.cookery.fragments.CookeryErrorFragment;
 import com.cookery.fragments.DeleteCommentFragment;
+import com.cookery.fragments.IngredientViewFragment;
 import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MessageFragment;
 import com.cookery.fragments.MyRecipesFragment;
@@ -51,6 +52,7 @@ import com.cookery.models.CuisineMO;
 import com.cookery.models.FavouritesMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientAkaMO;
+import com.cookery.models.IngredientMO;
 import com.cookery.models.IngredientUOMMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MasterDataMO;
@@ -328,6 +330,9 @@ public class Utility extends Activity {
             }
             else if(mappingClass.equals(MasterDataMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<MasterDataMO>(){}.getType());
+            }
+            else if(mappingClass.equals(IngredientMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<List<IngredientMO>>(){}.getType());
             }
             else{
                 Log.e(CLASS_NAME, mappingClass+" is not identified for parsing JSON");
@@ -705,6 +710,14 @@ public class Utility extends Activity {
         }
         else if(fragment instanceof RecipeImagesFragment){
             RecipeImagesFragment currentFrag = (RecipeImagesFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof IngredientViewFragment){
+            IngredientViewFragment currentFrag = (IngredientViewFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);

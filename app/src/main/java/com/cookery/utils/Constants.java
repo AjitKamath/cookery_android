@@ -28,8 +28,6 @@ public final class Constants {
 
     /*PHP function keys*/
     public static final String PHP_FUNCTION_KEY = "function_key";
-    public static final String PHP_FUNCTION_KEY_FOOD_TYPE_FETCH_ALL = "FOOD_TYPE_FETCH_ALL";
-    public static final String PHP_FUNCTION_KEY_TASTE_FETCH_ALL = "TASTE_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_RECIPE_FETCH = "RECIPE_FETCH";
     public static final String PHP_FUNCTION_KEY_RECIPE_FAVORITE_FETCH = "RECIPE_FAVORITE_FETCH";
     public static final String PHP_FUNCTION_KEY_RECIPE_USER_VIEWED_FETCH = "RECIPE_USER_VIEWED_FETCH";
@@ -48,8 +46,6 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_COMMENT_FETCH_ALL = "COMMENT_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_LIKE_FETCH_USERS = "LIKE_FETCH_USERS";
     public static final String PHP_FUNCTION_KEY_VIEW_FETCH_USERS = "VIEW_FETCH_USERS";
-    public static final String PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL = "QUANTITY_FETCH_ALL";
-    public static final String PHP_FUNCTION_KEY_FOOD_CUISINE_FETCH_ALL = "FOOD_CUISINE_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_RECIPE_USER_FETCH = "RECIPE_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_REVIEW_USER_FETCH = "REVIEW_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_REVIEW_USER_FETCH_ALL = "REVIEW_USER_FETCH_ALL";
@@ -75,6 +71,7 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_TREND_FETCH = "TREND_FETCH";
     public static final String PHP_FUNCTION_KEY_FETCH_RECIPE_IMAGES = "RECIPE_IMAGES_FETCH";
     public static final String PHP_FUNCTION_KEY_FETCH_MASTER_DATA = "MASTER_DATA_FETCH_ALL";
+    public static final String PHP_FUNCTION_KEY_INGREDIENT_NUTRITION_FETCH = "INGREDIENT_NUTRITION_FETCH";
     /*PHP function keys*/
 
     /*Timeline keys*/
@@ -166,6 +163,7 @@ public final class Constants {
     public static final String FRAGMENT_COOKERY_ERROR = "FRAGMENT_COOKERY_ERROR";
     public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
     public static final String FRAGMENT_SHARE_SOCIAL_MEDIA = "FRAGMENT_SHARE_SOCIAL_MEDIA";
+    public static final String FRAGMENT_INGREDIENT_NUTRIENTS = "FRAGMENT_INGREDIENT_NUTRIENTS";
 
 
     //FRAGMENT OBJECT KEYS

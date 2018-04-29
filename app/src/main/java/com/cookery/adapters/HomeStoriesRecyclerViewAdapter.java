@@ -598,6 +598,19 @@ public class HomeStoriesRecyclerViewAdapter extends RecyclerView.Adapter<HomeSto
         return timelines.size();
     }
 
+    public void updateStories(int index, List<TimelineMO> stories){
+        if(this.timelines == null){
+            this.timelines = new ArrayList<>();
+        }
+
+        if(index == 0){
+            this.timelines.clear();
+        }
+
+        this.timelines.addAll(stories);
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         /*common*/
         public CircleImageView common_component_round_image_mini_iv;

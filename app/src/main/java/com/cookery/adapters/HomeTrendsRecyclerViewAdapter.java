@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.cookery.R;
 import com.cookery.models.TrendMO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.cookery.utils.Constants.TRENDS_RECIPES_OF_THE_MONTH;
@@ -28,10 +29,10 @@ public class HomeTrendsRecyclerViewAdapter extends RecyclerView.Adapter<HomeTren
     private Context mContext;
 
 
-    private List<? extends Object> trends;
+    private List<TrendMO> trends;
     private View.OnClickListener clickListener;
 
-    public HomeTrendsRecyclerViewAdapter(Context mContext, List<? extends Object> trends, View.OnClickListener clickListener) {
+    public HomeTrendsRecyclerViewAdapter(Context mContext, List<TrendMO> trends, View.OnClickListener clickListener) {
         this.mContext = mContext;
         this.trends = trends;
         this.clickListener = clickListener;
@@ -46,7 +47,7 @@ public class HomeTrendsRecyclerViewAdapter extends RecyclerView.Adapter<HomeTren
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        TrendMO trend = (TrendMO) trends.get(position);
+        TrendMO trend = trends.get(position);
 
         holder.home_trends_item_title_tv.setText(trend.getTRND_MSG());
 
@@ -63,6 +64,16 @@ public class HomeTrendsRecyclerViewAdapter extends RecyclerView.Adapter<HomeTren
         }
 
         holder.home_trends_item_vp.setAdapter(new HomeTrendsViewPagerAdapter(mContext, items, clickListener));
+    }
+
+    public void updateTrends(List<TrendMO> trends){
+        if(this.trends == null){
+            this.trends = new ArrayList<>();
+        }
+
+        this.trends.clear();
+        this.trends.addAll(trends);
+        notifyDataSetChanged();
     }
 
     @Override

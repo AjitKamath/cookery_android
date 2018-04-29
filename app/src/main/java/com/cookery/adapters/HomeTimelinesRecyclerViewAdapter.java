@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import lombok.Getter;
 
 import static com.cookery.utils.Constants.DB_DATE_TIME;
 import static com.cookery.utils.Constants.TIMELINE_COMMENT_RECIPE_ADD;
@@ -68,6 +69,7 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
     private static final String CLASS_NAME = HomeTimelinesRecyclerViewAdapter.class.getName();
     private Context mContext;
 
+    @Getter
     private List<TimelineMO> timelines;
     private View.OnClickListener listener;
     private PopupMenu.OnMenuItemClickListener menuItemClickListener;
@@ -149,17 +151,13 @@ public class HomeTimelinesRecyclerViewAdapter extends RecyclerView.Adapter<HomeT
         this.onBottomReachedListener = onBottomReachedListener;
     }
 
-    public void updateTopTimelines(List<TimelineMO> timelines){
-        List<TimelineMO> temp = new ArrayList<>(timelines);
-        temp.addAll(this.timelines);
-        this.timelines = temp;
-
-        notifyDataSetChanged();
-    }
-
-    public void updateBottomTimelines(List<TimelineMO> timelines){
+    public void updateTimelines(int index, List<TimelineMO> timelines){
         if(this.timelines == null){
             this.timelines = new ArrayList<>();
+        }
+
+        if(index == 0){
+            this.timelines.clear();
         }
 
         this.timelines.addAll(timelines);

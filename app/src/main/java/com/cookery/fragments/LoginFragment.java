@@ -371,7 +371,7 @@ public class LoginFragment extends DialogFragment {
 
                 Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, userList.get(0));
                 ((HomeActivity)getActivity()).loggedInUser = userList.get(0);
-                ((HomeActivity)getActivity()).updateContent();
+                //((HomeActivity)getActivity()).updateContent();
             }
             else{
                 et_password.setText("");

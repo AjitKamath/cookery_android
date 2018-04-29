@@ -11,6 +11,7 @@ import com.cookery.exceptions.CookeryException;
 import com.cookery.fragments.CommentsFragment;
 import com.cookery.fragments.CookeryErrorFragment;
 import com.cookery.fragments.DeleteCommentFragment;
+import com.cookery.fragments.IngredientViewFragment;
 import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MessageFragment;
 import com.cookery.fragments.MyRecipesFragment;
@@ -27,40 +28,26 @@ import com.cookery.fragments.SomethingWrongFragment;
 import com.cookery.fragments.UserViewFragment;
 import com.cookery.fragments.UsersFragment;
 import com.cookery.models.CommentMO;
+import com.cookery.models.IngredientAkaMO;
+import com.cookery.models.IngredientMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
+import com.cookery.models.TimelineMO;
+import com.cookery.models.TrendMO;
 import com.cookery.models.UserMO;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.cookery.utils.AsyncTaskUtility.Purpose.CHECK_INTERNET;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.DELETE_COMMENT;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_COMMENTS;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_FOLLOWERS;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_FOLLOWING;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_MASTER_DATA;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_MY_RECIPES;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_MY_REVIEWS;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_PEOPLE;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_RECIPE;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_RECIPE_IMAGES;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_REVIEWS;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_USERS;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_USER_PUBLIC_DETAILS;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.FETCH_USER_SELF;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.SUBMIT_COMMENT;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.SUBMIT_LIKE;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.SUBMIT_RECIPE;
-import static com.cookery.utils.AsyncTaskUtility.Purpose.UPDATE_USER;
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
 import static com.cookery.utils.Constants.FRAGMENT_COOKERY_ERROR;
+import static com.cookery.utils.Constants.FRAGMENT_INGREDIENT_NUTRIENTS;
 import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_NO_INTERNET;
@@ -98,7 +85,8 @@ public class AsyncTaskUtility extends AsyncTask {
     public enum Purpose {
         FETCH_USER_PUBLIC_DETAILS, FETCH_USER_SELF, FETCH_USERS, FETCH_RECIPE, FETCH_RECIPE_IMAGES,
         FETCH_COMMENTS, FETCH_REVIEWS, FETCH_MY_RECIPES, FETCH_MY_REVIEWS, FETCH_MASTER_DATA,
-        FETCH_PEOPLE, FETCH_FOLLOWERS, FETCH_FOLLOWING,
+        FETCH_PEOPLE, FETCH_FOLLOWERS, FETCH_FOLLOWING, FETCH_INGREDIENT_NUTRIENTS,
+        FETCH_TIMELINE_SELF, FETCH_STORIES_SELF, FETCH_TRENDS_SELF,
         SUBMIT_LIKE, SUBMIT_COMMENT, SUBMIT_RECIPE,
         DELETE_COMMENT,
         CHECK_INTERNET,
@@ -115,55 +103,36 @@ public class AsyncTaskUtility extends AsyncTask {
         try{
             if (purpose == null) {
                 Log.e(CLASS_NAME, "Error ! Purpose is null ! ");
+                return null;
             }
-            else if (purpose == CHECK_INTERNET) {
-                return checkInternet();
-            }
-            else if (purpose == FETCH_USER_SELF) {
-                return fetchUserSelf();
-            }else if (purpose == FETCH_USER_PUBLIC_DETAILS) {
-                return fetchUsersPublicDetails(objects);
-            } else if (purpose == FETCH_USERS) {
-                return fetchUsers(objects);
-            } else if (purpose == FETCH_RECIPE) {
-                return fetchRecipe(objects);
-            }else if (purpose == FETCH_RECIPE_IMAGES) {
-                return fetchRecipeImages(objects);
-            } else if (purpose == FETCH_COMMENTS) {
-                return fetchComments(objects);
-            } else if (purpose == FETCH_REVIEWS) {
-                return fetchReviews(objects);
-            } else if (purpose == SUBMIT_LIKE) {
-                return submitLike(objects);
-            }else if (purpose == SUBMIT_COMMENT) {
-                return submitComment(objects);
-            } else if (purpose == FETCH_MY_RECIPES) {
-                return fetchMyRecipes();
-            } else if (purpose == FETCH_MY_REVIEWS) {
-                return fetchMyReviews();
-            } else if (purpose == UPDATE_USER) {
-                return updateUser(objects);
-            }
-            else if (purpose == FETCH_PEOPLE) {
-                return fetchPeople();
-            }
-            else if (purpose == FETCH_FOLLOWERS) {
-                return fetchFollowers();
-            }
-            else if (purpose == FETCH_FOLLOWING) {
-                return fetchFollowings();
-            }
-            else if (purpose == FETCH_MASTER_DATA) {
-                return fetchMasterData();
-            }
-            else if (purpose == SUBMIT_RECIPE) {
-                return submitRecipe(objects);
-            }
-            else if(purpose == DELETE_COMMENT){
-                return deleteComment(objects);
-            }
-            else {
-                Log.e(CLASS_NAME, "Could not understand the purpose : " + purpose);
+
+            switch (purpose){
+                case FETCH_USER_SELF            : return fetchUserSelf();
+                case FETCH_USERS                : return fetchUsers(objects);
+                case FETCH_USER_PUBLIC_DETAILS  : return fetchUsersPublicDetails(objects);
+                case FETCH_RECIPE               : return fetchRecipe(objects);
+                case FETCH_RECIPE_IMAGES        : return fetchRecipeImages(objects);
+                case FETCH_COMMENTS             : return fetchComments(objects);
+                case FETCH_REVIEWS              : return fetchReviews(objects);
+                case FETCH_MY_RECIPES           : return fetchMyRecipes();
+                case FETCH_MY_REVIEWS           : return fetchMyReviews();
+                case FETCH_PEOPLE               : return fetchPeople();
+                case FETCH_FOLLOWERS            : return fetchFollowers();
+                case FETCH_FOLLOWING            : return fetchFollowings();
+                case FETCH_MASTER_DATA          : return fetchMasterData();
+                case FETCH_INGREDIENT_NUTRIENTS : return fetchIngredientNutrients(objects);
+                case FETCH_TIMELINE_SELF        : return fetchTimelineSelf();
+                case FETCH_STORIES_SELF         : return fetchStoriesSelf();
+                case FETCH_TRENDS_SELF          : return fetchTrendsSelf();
+                case SUBMIT_LIKE                : return submitLike(objects);
+                case SUBMIT_COMMENT             : return submitComment(objects);
+                case SUBMIT_RECIPE              : return submitRecipe(objects);
+                case UPDATE_USER                : return updateUser(objects);
+                case DELETE_COMMENT             : return deleteComment(objects);
+                case CHECK_INTERNET             : return checkInternet();
+
+                default: Log.e(CLASS_NAME, "Error ! Purpose("+purpose+") is not handled in "+CLASS_NAME+".doInBackground() ! ");
+                throw new CookeryException(CookeryException.ErrorCode.SOMETHING_WRONG);
             }
         }
         catch (CookeryException ce){
@@ -200,56 +169,128 @@ public class AsyncTaskUtility extends AsyncTask {
         closeWaitFragment();
 
         if (object == null) {
+            Log.e(CLASS_NAME, "Error ! PHP service returned null");
             return;
         }
 
-        if (purpose == FETCH_USER_PUBLIC_DETAILS) {
-            postFetchUsersPublicDetails(object);
+
+        if (purpose == null) {
+            Log.e(CLASS_NAME, "Error ! Purpose is null ! ");
         }
-        else if(purpose == CHECK_INTERNET){
-            postCheckInternet(object);
+
+        switch (purpose){
+            case FETCH_USER_SELF            : postFetchUserSelf(object); break;
+            case FETCH_USERS                : postFetchUsers(object); break;
+            case FETCH_USER_PUBLIC_DETAILS  : postFetchUsersPublicDetails(object); break;
+            case FETCH_RECIPE               : postFetchRecipe(object); break;
+            case FETCH_RECIPE_IMAGES        : postFetchRecipeImages(object); break;
+            case FETCH_COMMENTS             : postFetchComments(object); break;
+            case FETCH_REVIEWS              : postFetchReviews(object); break;
+            case FETCH_MY_RECIPES           : postFetchMyRecipes(object); break;
+            case FETCH_MY_REVIEWS           : postFetchMyReviews(object); break;
+            case FETCH_PEOPLE               : postFetchPeople(object); break;
+            case FETCH_FOLLOWERS            : postFetchFollowers(object); break;
+            case FETCH_FOLLOWING            : postFetchFollowings(object); break;
+            case FETCH_MASTER_DATA          : postFetchMasterData(object); break;
+            case FETCH_TIMELINE_SELF        : postFetchTimelineSelf(object); break;
+            case FETCH_STORIES_SELF         : postFetchStoriesSelf(object); break;
+            case FETCH_TRENDS_SELF          : postFetchTrendsSelf(object); break;
+            case FETCH_INGREDIENT_NUTRIENTS : postFetchIngredientNutrients(object); break;
+            case SUBMIT_LIKE                : postSubmitLike(object); break;
+            case SUBMIT_RECIPE              : postSubmitRecipe(object); break;
+            case UPDATE_USER                : postUpdateUser(object); break;
+            case DELETE_COMMENT             : postDeleteComment(object); break;
+            case CHECK_INTERNET             : postCheckInternet(object); break;
+
+            default: Log.e(CLASS_NAME, "Error ! Purpose("+purpose+") is not handled in "+CLASS_NAME+".onPostExecute() ! ");
+            break;
         }
-        else if(purpose == FETCH_USER_SELF){
-            postFetchUserSelf(object);
+    }
+
+    private void postFetchTrendsSelf(Object object) {
+        List<TrendMO> trends = (List<TrendMO>) object;
+
+        if(trends == null || trends.isEmpty()){
+            Log.e(CLASS_NAME, "Error ! Trends are null/empty");
+            return;
         }
-        else if (purpose == FETCH_USERS) {
-            postFetchUsers(object);
-        } else if (purpose == FETCH_RECIPE) {
-            postFetchRecipe(object);
+
+        if(activity != null){
+            if(activity instanceof HomeActivity){
+                ((HomeActivity) activity).updateTrends(trends);
+            }
         }
-        else if (purpose == FETCH_RECIPE_IMAGES) {
-            postFetchRecipeImages(object);
-        }else if (purpose == FETCH_COMMENTS) {
-            postFetchComments(object);
-        } else if (purpose == FETCH_REVIEWS) {
-            postFetchReviews(object);
-        } else if (purpose == SUBMIT_LIKE) {
-            postSubmitLike(object);
+    }
+
+    private Object fetchTrendsSelf() {
+        return InternetUtility.fetchTrends(loggedInUser.getUSER_ID());
+    }
+
+    private void postFetchStoriesSelf(Object object) {
+        List<TimelineMO> stories = (List<TimelineMO>) object;
+
+        if(stories == null || stories.isEmpty()){
+            Log.e(CLASS_NAME, "Error ! Stories are null/empty");
+            return;
         }
-        else if (purpose == SUBMIT_COMMENT) {
-            postSubmitComment(object);
-        }else if (purpose == FETCH_MY_RECIPES) {
-            postFetchMyRecipes(object);
-        } else if (purpose == FETCH_MY_REVIEWS) {
-            postFetchMyReviews(object);
-        } else if (purpose == UPDATE_USER) {
-            postUpdateUser(object);
-        }else if (purpose == DELETE_COMMENT) {
-            postDeleteComment(object);
-        }else if (purpose == SUBMIT_RECIPE) {
-            postSubmitRecipe(object);
-        }else if (purpose == FETCH_PEOPLE) {
-            postFetchPeople(object);
+
+        if(activity != null){
+            if(activity instanceof HomeActivity){
+                ((HomeActivity) activity).updateStories(index, stories);
+            }
         }
-        else if (purpose == FETCH_FOLLOWERS) {
-            postFetchFollowers(object);
+    }
+
+    private Object fetchStoriesSelf() {
+        return InternetUtility.fetchUserStories(loggedInUser.getUSER_ID(), index);
+    }
+
+    private void postFetchTimelineSelf(Object object) {
+        List<TimelineMO> timelines = (List<TimelineMO>) object;
+
+        if(timelines == null || timelines.isEmpty()){
+            Log.e(CLASS_NAME, "Error ! Timelines are null/empty");
+            return;
         }
-        else if (purpose == FETCH_FOLLOWING) {
-            postFetchFollowings(object);
-        }else if (purpose == FETCH_MASTER_DATA) {
-            postFetchMasterData(object);
-        } else {
-            Log.e(CLASS_NAME, "Could not understand the purpose : " + purpose);
+
+        if(activity != null){
+            if(activity instanceof HomeActivity){
+                ((HomeActivity) activity).updateTimelines(index, timelines);
+            }
+        }
+    }
+
+    private Object fetchTimelineSelf() {
+        return InternetUtility.fetchUserTimeline(loggedInUser.getUSER_ID(), index);
+    }
+
+    private Object fetchIngredientNutrients(Object[] objects){
+        waitFragment = Utility.showWaitDialog(fragmentManager, "loading ..");
+        return InternetUtility.fetchIngredientNutrients((IngredientAkaMO) objects[0]);
+    }
+
+    private void postFetchIngredientNutrients(Object object){
+        List<IngredientMO> ingredients = (List<IngredientMO>) object;
+
+        if(ingredients == null || ingredients.isEmpty()){
+            Log.e(CLASS_NAME, "Error ! ingredients are null/empty");
+            return;
+        }
+
+        IngredientMO ingredient = ingredients.get(0);
+
+        if(ingredient == null){
+            Log.e(CLASS_NAME, "Error ! ingredient is null/empty");
+            return;
+        }
+
+        if(getFragment(fragmentKey) instanceof RecipeViewFragment){
+            Map<String, Object> params = new HashMap<>();
+            params.put(GENERIC_OBJECT, ingredient);
+            Utility.showFragment(fragmentManager, fragmentKey, FRAGMENT_INGREDIENT_NUTRIENTS, new IngredientViewFragment(), params);
+        }
+        else{
+            Log.e(CLASS_NAME, UN_IDENTIFIED_PARENT_FRAGMENT+getFragment(fragmentKey));
         }
     }
 

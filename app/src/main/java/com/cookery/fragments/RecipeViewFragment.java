@@ -29,6 +29,7 @@ import com.cookery.adapters.ImagesFullscreenViewPagerAdapter;
 import com.cookery.adapters.RecipeViewViewPagerAdapter;
 import com.cookery.models.CommentMO;
 import com.cookery.models.FavouritesMO;
+import com.cookery.models.IngredientAkaMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.RecipeImageMO;
@@ -55,6 +56,7 @@ import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_VIEW;
 
 /**
@@ -200,6 +202,19 @@ public class RecipeViewFragment extends DialogFragment {
                     bundleMap.put(GENERIC_OBJECT, recipe.getSteps());
 
                     Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE, FRAGMENT_RECIPE_STEPS, new RecipeViewStepsFragment(), bundleMap);
+                }
+                else if(view.getId() == R.id.recipe_view_ingredients_item_ll){
+                    if(view.getTag() instanceof IngredientAkaMO){
+                        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE,
+                                AsyncTaskUtility.Purpose.FETCH_INGREDIENT_NUTRIENTS, loggedInUser, 0)
+                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, view.getTag());
+                    }
+                    else{
+                        Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+view.getTag());
+                    }
+                }
+                else{
+                    Log.e(CLASS_NAME, UN_IDENTIFIED_VIEW);
                 }
             }
         }));

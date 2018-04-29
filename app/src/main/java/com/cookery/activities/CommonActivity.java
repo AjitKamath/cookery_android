@@ -33,20 +33,14 @@ import android.widget.TextView;
 import com.cookery.R;
 import com.cookery.adapters.HomeSearchAutoCompleteAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
-import com.cookery.exceptions.CookeryException;
 import com.cookery.fragments.AboutUsFragment;
 import com.cookery.fragments.AddMyListFragment;
 import com.cookery.fragments.FavoriteRecipesFragment;
 import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MyReviewsFragment;
-import com.cookery.fragments.ProfileViewFragment;
-import com.cookery.fragments.RecipeAddFragment;
-import com.cookery.models.MasterDataMO;
 import com.cookery.models.MyListMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
-import com.cookery.models.TimelineMO;
-import com.cookery.models.TrendMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.InternetUtility;
@@ -59,16 +53,13 @@ import java.util.Map;
 
 import static com.cookery.utils.Constants.DAYS_UNTIL_PROMPT;
 import static com.cookery.utils.Constants.FRAGMENT_ABOUT_US;
-import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.FRAGMENT_MY_FAVORITES;
 import static com.cookery.utils.Constants.FRAGMENT_MY_LIST;
 import static com.cookery.utils.Constants.FRAGMENT_MY_REVIEWS;
-import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LAUNCHES_UNTIL_PROMPT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
-import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.MY_LISTS_EXISTS;
 import static com.cookery.utils.Constants.OK;
 
@@ -87,11 +78,6 @@ public abstract class CommonActivity extends AppCompatActivity implements Naviga
     @Override
     protected void onResume() {
         super.onResume();
-    }
-
-    public void updateContent(){
-        fetchHomeContent();
-        fetchMasterContent();
     }
 
     protected boolean initialLoggedInUserCheck(){
@@ -309,14 +295,6 @@ public abstract class CommonActivity extends AppCompatActivity implements Naviga
         startActivity(Intent.createChooser(i, "choose one"));
     }
 
-    private void showAddRecipeFragment(MasterDataMO masterData) {
-        Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put(MASTER, masterData);
-        paramsMap.put(GENERIC_OBJECT, new RecipeMO());
-
-        Utility.showFragment(getFragmentManager(), null, FRAGMENT_ADD_RECIPE, new RecipeAddFragment(), paramsMap);
-    }
-
     private void showFavRecipesFragment(Map<String, List<RecipeMO>> favRecipes) {
         String fragmentNameStr = FRAGMENT_MY_FAVORITES;
 
@@ -368,18 +346,6 @@ public abstract class CommonActivity extends AppCompatActivity implements Naviga
         fragment.show(manager, fragmentNameStr);
     }
 
-    public void fetchHomeContent(){
-        new AsyncTaskerHomeContent().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    public void fetchTimelineContent(){
-        new AsyncTaskerTimelineContent().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    public void fetchMasterContent(){
-        //new AsyncTaskerFetchMasterData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "JUST_FETCH");
-    }
-
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         if(R.id.activity_home_drawer_my_favorites == item.getItemId()){
@@ -429,38 +395,6 @@ public abstract class CommonActivity extends AppCompatActivity implements Naviga
     protected abstract DelayAutoCompleteTextView getCommon_header_search_av();
 
     protected abstract ImageView getCommon_header_search_iv();
-
-    protected abstract void setUpTabs(Object array[]);
-
-    private List<TimelineMO> fetchTimelines(){
-        if(loggedInUser != null && loggedInUser.getUSER_ID() != 0){
-            return InternetUtility.getFetchUserTimeline(loggedInUser.getUSER_ID(), 0);
-        }
-
-        return null;
-    }
-
-    private List<TimelineMO> fetchStories(){
-        if(loggedInUser != null && loggedInUser.getUSER_ID() != 0){
-            try{
-                return InternetUtility.getFetchUserStories(loggedInUser.getUSER_ID(), 0);
-            }
-            catch (CookeryException ce){
-                Log.e(CLASS_NAME, "");
-            }
-
-        }
-
-        return null;
-    }
-
-    private List<TrendMO> fetchTrends(){
-        if(loggedInUser != null && loggedInUser.getUSER_ID() != 0){
-            return InternetUtility.getFetchTrends(loggedInUser.getUSER_ID());
-        }
-
-        return null;
-    }
 
     class AsyncTaskerFetchMyLists extends AsyncTask<Void, Void, List<MyListMO>> {
         private Fragment fragment;
@@ -575,89 +509,6 @@ public abstract class CommonActivity extends AppCompatActivity implements Naviga
                 paramsMap.put(LOGGED_IN_USER, loggedInUser);
 
                 Utility.showFragment(getFragmentManager(), null, FRAGMENT_MY_REVIEWS, new MyReviewsFragment(), paramsMap);
-            }
-        }
-    }
-
-    class AsyncTaskerHomeContent extends AsyncTask<Object, Void, Object> {
-        //private Fragment fragment;
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            //fetch stories
-            homeContent[0] = fetchStories();
-
-            //fetch trends
-            homeContent[1] = fetchTrends();
-
-            //fetch timelines
-            homeContent[2] = fetchTimelines();
-
-            return homeContent;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            //fragment = Utility.showWaitDialog(getFragmentManager(), "loading recipes ..");
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            if(homeContent != null){
-                setUpTabs(homeContent);
-            }
-        }
-    }
-
-    class AsyncTaskerTimelineContent extends AsyncTask<Object, Void, Object> {
-        //private Fragment fragment;
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            //fetch timelines
-            return fetchTimelines();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            //fragment = Utility.showWaitDialog(getFragmentManager(), "loading recipes ..");
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            List<TimelineMO> timelines = (List<TimelineMO>) object;
-
-            if(timelines != null){
-                homeContent[2] = timelines;
-                setUpTabs(homeContent);
-            }
-        }
-    }
-
-    class AsyncTaskerFetchUserDetails extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.fetchUser(loggedInUser.getUSER_ID());
-        }
-
-        @Override
-        protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching profile..");
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            List<UserMO> user = (List<UserMO>) object;
-
-            if(user != null && !user.isEmpty()) {
-                loggedInUser = user.get(0);
-                Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-                Map<String, Object> params = new HashMap<>();
-                params.put(GENERIC_OBJECT, loggedInUser);
-                Utility.showFragment(getFragmentManager(), null, FRAGMENT_PROFILE_VIEW, new ProfileViewFragment(), params);
             }
         }
     }

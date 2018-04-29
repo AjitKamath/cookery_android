@@ -6,6 +6,7 @@ import com.cookery.exceptions.CookeryException;
 import com.cookery.models.CommentMO;
 import com.cookery.models.FavouritesMO;
 import com.cookery.models.IngredientAkaMO;
+import com.cookery.models.IngredientMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.MessageMO;
@@ -36,6 +37,7 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FAV_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FETCH_MASTER_DATA;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FETCH_RECIPE_IMAGES;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_INGREDIENT_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_INGREDIENT_NUTRITION_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_FETCH_USERS;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_FETCH;
@@ -370,11 +372,11 @@ public class InternetUtility {
         Date end = new Date();
 
         Log.i(CLASS_NAME, "*");
-        Log.i(CLASS_NAME, "*** POST (" + (double) (end.getTime() - start.getTime()) / 1000 + " seconds)***");
+        Log.i(CLASS_NAME, "*** POST ***");
         Log.i(CLASS_NAME, "URL : " + PHP_SERVICE_URL);
         Log.i(CLASS_NAME, "PARAMS : " + paramMap);
         Log.i(CLASS_NAME, "RESPONSE : " + response);
-        Log.i(CLASS_NAME, "*** POST ***");
+        Log.i(CLASS_NAME, "RESPONSE TIME : " + (double) (end.getTime() - start.getTime()) / 1000 + " seconds");
         Log.i(CLASS_NAME, "*");
 
         return response;
@@ -411,8 +413,6 @@ public class InternetUtility {
 
     }
 
-
-    //public static List<MyListMO> fetchUserList(int userId, int index) {
     public static List<MyListMO> fetchUserList(int userId) {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_FETCH);
@@ -424,7 +424,7 @@ public class InternetUtility {
 
     }
 
-    public static List<TimelineMO> getFetchUserTimeline(int userId, int index) {
+    public static List<TimelineMO> fetchUserTimeline(int userId, int index) {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_TIMELINE_USER_FETCH);
         paramMap.put("user_id", String.valueOf(userId));
@@ -435,7 +435,7 @@ public class InternetUtility {
 
     }
 
-    public static List<TimelineMO> getFetchUserStories(int userId, int index) throws CookeryException {
+    public static List<TimelineMO> fetchUserStories(int userId, int index) throws CookeryException {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_STORY_USER_FETCH);
         paramMap.put("user_id", String.valueOf(userId));
@@ -445,7 +445,7 @@ public class InternetUtility {
         return (List<TimelineMO>) Utility.jsonToObject(jsonStr, TimelineMO.class);
     }
 
-    public static List<TrendMO> getFetchTrends(int user_id) {
+    public static List<TrendMO> fetchTrends(int user_id) {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_TREND_FETCH);
         paramMap.put("user_id", String.valueOf(user_id));
@@ -662,5 +662,14 @@ public class InternetUtility {
 
         String jsonStr = getResponseFromCookery(paramMap);
         return Utility.jsonToObject(jsonStr, MasterDataMO.class);
+    }
+
+    public static Object fetchIngredientNutrients(IngredientAkaMO ingredient) {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_INGREDIENT_NUTRITION_FETCH);
+        paramMap.put("ing_id", String.valueOf(ingredient.getING_ID()));
+
+        String jsonStr = getResponseFromCookery(paramMap);
+        return Utility.jsonToObject(jsonStr, IngredientMO.class);
     }
 }

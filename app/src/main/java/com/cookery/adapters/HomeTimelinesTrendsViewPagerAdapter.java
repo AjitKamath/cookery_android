@@ -6,13 +6,11 @@ package com.cookery.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +19,13 @@ import android.widget.TextView;
 import com.cookery.R;
 import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.TimelineMO;
+import com.cookery.models.TrendMO;
 import com.cookery.models.UserMO;
-import com.cookery.utils.InternetUtility;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
 
 import static com.cookery.utils.Constants.UI_FONT;
 
@@ -34,20 +35,31 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
 
     private List<Integer> layouts;
     private UserMO loggedInUser;
-    private Object array[];
+
     private View.OnClickListener listener;
     private android.support.v7.widget.PopupMenu.OnMenuItemClickListener menuItemListener;
     private SwipeRefreshLayout.OnRefreshListener refreshListener;
-    private RecyclerView home_timelines_rv;
-    private RecyclerView home_stories_rv;
+    private OnBottomReachedListener bottomReachedListener;
 
-    public HomeTimelinesTrendsViewPagerAdapter(Context context, List<Integer> layouts, UserMO loggedInUser, Object array[], View.OnClickListener listener, SwipeRefreshLayout.OnRefreshListener refreshListener, android.support.v7.widget.PopupMenu.OnMenuItemClickListener menuItemListener) {
+    @Getter
+    private RecyclerView home_timelines_rv;
+    private SwipeRefreshLayout home_timelines_srl;
+
+    @Getter
+    private RecyclerView home_stories_rv;
+    private SwipeRefreshLayout home_stories_srl;
+
+    @Getter
+    private RecyclerView home_trends_rv;
+
+    public HomeTimelinesTrendsViewPagerAdapter(Context context, List<Integer> layouts, UserMO loggedInUser, View.OnClickListener listener, SwipeRefreshLayout.OnRefreshListener refreshListener, OnBottomReachedListener bottomReachedListener, android.support.v7.widget.PopupMenu.OnMenuItemClickListener menuItemListener) {
         this.mContext = context;
         this.layouts = layouts;
         this.loggedInUser = loggedInUser;
-        this.array = array;
+
         this.listener = listener;
         this.refreshListener = refreshListener;
+        this.bottomReachedListener = bottomReachedListener;
         this.menuItemListener = menuItemListener;
     }
 
@@ -58,85 +70,68 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
 
         switch(position){
             case 0: setupStories(layout); break;
-            case 1: setupTrend(layout); break;
+            case 1: setupTrends(layout); break;
             case 2: setupTimeline(layout); break;
             default: break;
         }
 
         setFont(layout);
         collection.addView(layout);
+
         return layout;
     }
 
     private void setupStories(ViewGroup layout) {
-        List<TimelineMO> stories = (List<TimelineMO>) array[0];
-
-        if(stories == null || stories.isEmpty()){
-            return;
-        }
-
-        SwipeRefreshLayout home_stories_srl = layout.findViewById(R.id.home_stories_srl);
+        home_stories_srl = layout.findViewById(R.id.home_stories_srl);
         home_stories_rv = layout.findViewById(R.id.home_stories_rv);
 
-        final HomeStoriesRecyclerViewAdapter adapter = new HomeStoriesRecyclerViewAdapter(mContext, loggedInUser, stories, listener, menuItemListener);
-        adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
-            @Override
-            public void onBottomReached(int position) {
-                new AsyncTaskerStories(adapter).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            }
-        });
-
+        HomeStoriesRecyclerViewAdapter adapter = new HomeStoriesRecyclerViewAdapter(mContext, loggedInUser, new ArrayList<TimelineMO>(), listener, menuItemListener);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         home_stories_rv.setLayoutManager(mLayoutManager);
         home_stories_rv.setItemAnimator(new DefaultItemAnimator());
         home_stories_rv.setAdapter(adapter);
 
+        adapter.setOnBottomReachedListener(bottomReachedListener);
         home_stories_srl.setOnRefreshListener(refreshListener);
     }
 
     private void setupTimeline(ViewGroup layout) {
-        List<TimelineMO> timelines = (List<TimelineMO>) array[2];
-
-        if(timelines == null || timelines.isEmpty()){
-            return;
-        }
-
-        SwipeRefreshLayout home_timelines_srl = layout.findViewById(R.id.home_timelines_srl);
+        home_timelines_srl = layout.findViewById(R.id.home_timelines_srl);
         home_timelines_rv = layout.findViewById(R.id.home_timelines_rv);
 
-        final HomeTimelinesRecyclerViewAdapter adapter = new HomeTimelinesRecyclerViewAdapter(mContext, loggedInUser, timelines, listener, menuItemListener);
-        adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
-            @Override
-            public void onBottomReached(int position) {
-                new AsyncTaskerTimelines(adapter).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            }
-        });
-
+        HomeTimelinesRecyclerViewAdapter adapter = new HomeTimelinesRecyclerViewAdapter(mContext, loggedInUser, new ArrayList<TimelineMO>(), listener, menuItemListener);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-
         home_timelines_rv.setLayoutManager(mLayoutManager);
         home_timelines_rv.setItemAnimator(new DefaultItemAnimator());
         home_timelines_rv.setAdapter(adapter);
 
+        adapter.setOnBottomReachedListener(bottomReachedListener);
         home_timelines_srl.setOnRefreshListener(refreshListener);
     }
 
-    private void setupTrend(ViewGroup layout) {
-        List<? extends Object> trends = (List<? extends Object>)array[1];
+    private void setupTrends(ViewGroup layout) {
+        home_trends_rv = layout.findViewById(R.id.home_trends_rv);
 
-        if(trends == null || trends.isEmpty()){
-            Log.e(CLASS_NAME, "Error ! No Trends found !");
-            return;
-        }
-
-        RecyclerView home_trends_rv = layout.findViewById(R.id.home_trends_rv);
-
-        HomeTrendsRecyclerViewAdapter adapter = new HomeTrendsRecyclerViewAdapter(mContext, trends, listener);
+        HomeTrendsRecyclerViewAdapter adapter = new HomeTrendsRecyclerViewAdapter(mContext, new ArrayList<TrendMO>(), listener);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
 
         home_trends_rv.setLayoutManager(mLayoutManager);
         home_trends_rv.setItemAnimator(new DefaultItemAnimator());
         home_trends_rv.setAdapter(adapter);
+    }
+
+    public void updateTimelines(int index, List<TimelineMO> timelines){
+        ((HomeTimelinesRecyclerViewAdapter)home_timelines_rv.getAdapter()).updateTimelines(index, timelines);
+        home_timelines_srl.setRefreshing(false);
+    }
+
+    public void updateTrends(List<TrendMO> trends){
+        ((HomeTrendsRecyclerViewAdapter)home_trends_rv.getAdapter()).updateTrends(trends);
+    }
+
+    public void updateStories(int index, List<TimelineMO> stories){
+        ((HomeStoriesRecyclerViewAdapter)home_stories_rv.getAdapter()).updateStories(index, stories);
+        home_stories_srl.setRefreshing(false);
     }
 
     @Override
@@ -190,63 +185,5 @@ public class HomeTimelinesTrendsViewPagerAdapter extends PagerAdapter {
 
     public void deleteTimeline(TimelineMO timeline) {
         ((HomeTimelinesRecyclerViewAdapter)home_timelines_rv.getAdapter()).deleteTimeline(timeline);
-    }
-
-    class AsyncTaskerTimelines extends AsyncTask<Object, Void, Object> {
-        private HomeTimelinesRecyclerViewAdapter adapter;
-
-        public AsyncTaskerTimelines(HomeTimelinesRecyclerViewAdapter adapter){
-            this.adapter = adapter;
-        }
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.getFetchUserTimeline(loggedInUser.getUSER_ID(), adapter.getItemCount());
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            List<TimelineMO> timelines = (List<TimelineMO>) object;
-
-            if(timelines != null && !timelines.isEmpty()){
-                adapter.updateBottomTimelines(timelines);
-            }
-            else{
-                adapter.setOnBottomReachedListener(null);
-            }
-        }
-    }
-
-    class AsyncTaskerStories extends AsyncTask<Object, Void, Object> {
-        private HomeStoriesRecyclerViewAdapter adapter;
-
-        public AsyncTaskerStories(HomeStoriesRecyclerViewAdapter adapter){
-            this.adapter = adapter;
-        }
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.getFetchUserStories(loggedInUser.getUSER_ID(), adapter.getItemCount());
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            List<TimelineMO> stories = (List<TimelineMO>) object;
-
-            if(stories != null && !stories.isEmpty()){
-                adapter.updateBottomStories(stories);
-            }
-            else{
-                adapter.setOnBottomReachedListener(null);
-            }
-        }
     }
 }
