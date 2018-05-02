@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 
 import com.cookery.activities.HomeActivity;
@@ -11,6 +12,7 @@ import com.cookery.exceptions.CookeryException;
 import com.cookery.fragments.CommentsFragment;
 import com.cookery.fragments.CookeryErrorFragment;
 import com.cookery.fragments.DeleteCommentFragment;
+import com.cookery.fragments.ImagesFragment;
 import com.cookery.fragments.IngredientViewFragment;
 import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MessageFragment;
@@ -22,7 +24,6 @@ import com.cookery.fragments.ProfileViewFragment;
 import com.cookery.fragments.ProfileViewImageFragment;
 import com.cookery.fragments.RecipeAddFragment;
 import com.cookery.fragments.RecipeViewFragment;
-import com.cookery.fragments.RecipeViewImagesFragment;
 import com.cookery.fragments.RecipeViewReviewsFragment;
 import com.cookery.fragments.SomethingWrongFragment;
 import com.cookery.fragments.UserViewFragment;
@@ -33,12 +34,19 @@ import com.cookery.models.IngredientMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.MessageMO;
+import com.cookery.models.RecipeImageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.TimelineMO;
 import com.cookery.models.TrendMO;
 import com.cookery.models.UserMO;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +55,7 @@ import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
 import static com.cookery.utils.Constants.FRAGMENT_COOKERY_ERROR;
+import static com.cookery.utils.Constants.FRAGMENT_IMAGES;
 import static com.cookery.utils.Constants.FRAGMENT_INGREDIENT_NUTRIENTS;
 import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
 import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
@@ -55,16 +64,17 @@ import static com.cookery.utils.Constants.FRAGMENT_PEOPLE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEWS;
 import static com.cookery.utils.Constants.FRAGMENT_SOMETHING_WRONG;
 import static com.cookery.utils.Constants.FRAGMENT_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
+import static com.cookery.utils.Constants.GALLERY_DIR;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.GENERIC_OBJECT2;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
+import static com.cookery.utils.Constants.SERVER_ADDRESS;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_PARENT_FRAGMENT;
 
@@ -90,7 +100,8 @@ public class AsyncTaskUtility extends AsyncTask {
         SUBMIT_LIKE, SUBMIT_COMMENT, SUBMIT_RECIPE,
         DELETE_COMMENT,
         CHECK_INTERNET,
-        UPDATE_USER
+        UPDATE_USER,
+        DOWNLOAD_IMAGES
     }
 
     private Purpose purpose;
@@ -130,6 +141,7 @@ public class AsyncTaskUtility extends AsyncTask {
                 case UPDATE_USER                : return updateUser(objects);
                 case DELETE_COMMENT             : return deleteComment(objects);
                 case CHECK_INTERNET             : return checkInternet();
+                case DOWNLOAD_IMAGES            : return downloadImages(objects);
 
                 default: Log.e(CLASS_NAME, "Error ! Purpose("+purpose+") is not handled in "+CLASS_NAME+".doInBackground() ! ");
                 throw new CookeryException(CookeryException.ErrorCode.SOMETHING_WRONG);
@@ -201,9 +213,102 @@ public class AsyncTaskUtility extends AsyncTask {
             case UPDATE_USER                : postUpdateUser(object); break;
             case DELETE_COMMENT             : postDeleteComment(object); break;
             case CHECK_INTERNET             : postCheckInternet(object); break;
+            case DOWNLOAD_IMAGES            : postDownloadImages(object); break;
 
             default: Log.e(CLASS_NAME, "Error ! Purpose("+purpose+") is not handled in "+CLASS_NAME+".onPostExecute() ! ");
             break;
+        }
+    }
+
+    private Object downloadImages(Object[] objects){
+        List<? extends Object> images = (List<? extends Object>) objects[0];
+
+        URL url;
+        String storeDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + GALLERY_DIR;
+
+        InputStream is = null;
+        FileOutputStream fos=null;
+
+        boolean failed = false;
+        for (int i = 0; i < images.size(); i++) {
+            try {
+                String image = SERVER_ADDRESS;
+
+                if(images.get(i) instanceof RecipeImageMO){
+                    image += ((RecipeImageMO) images.get(i)).getRCP_IMG();
+                }
+                else if(images.get(i) instanceof UserMO){
+                    image += ((UserMO) images.get(i)).getIMG();
+                }
+                else{
+                    Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+images.get(0));
+                }
+
+                url = new URL(image);
+                String pathl = "";
+                int count;
+
+                File f = new File(storeDir);
+                if (!f.exists()) {
+                    f.mkdirs();
+                }
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                is = con.getInputStream();
+                String pathr = url.getPath();
+                String filename = pathr.substring(pathr.lastIndexOf('/') + 1);
+                pathl = storeDir + "/" + filename;
+                fos = new FileOutputStream(pathl);
+
+                byte data[] = new byte[1024];
+
+                if(objects[i] instanceof RecipeImageMO){
+                    publishProgress(((RecipeImageMO) images.get(i)).getRCP_IMG());
+                }
+                else if(objects[i] instanceof UserMO){
+                    publishProgress(((UserMO) images.get(i)).getIMG());
+                }
+
+                while ((count = is.read(data)) != -1) {
+                    fos.write(data, 0, count);
+                }
+
+                fos.close();
+                is.close();
+                fos.flush();
+            } catch (IOException e) {
+                failed = true;
+                throw new CookeryException(CookeryException.ErrorCode.NO_INTERNET, fragmentManager, "No Internet Connection", e);
+            }
+            finally {
+                try {
+                    if (fos != null) {
+                        fos.close();
+                        fos.flush();
+                    }
+                    if (is != null) {
+                        is.close();
+                    }
+                }
+                catch (Exception e){
+                    failed = true;
+                    throw new CookeryException(CookeryException.ErrorCode.SOMETHING_WRONG, fragmentManager, "Something is wrong", e);
+                }
+            }
+        }
+
+        return failed;
+    }
+
+    private void postDownloadImages(Object object){
+        boolean failed = (boolean) object;
+
+        if(!failed){
+            if(getFragment(fragmentKey) instanceof ImagesFragment){
+                ((ImagesFragment)getFragment(fragmentKey)).showDownloadComplete();
+            }
+            else{
+                Log.e(CLASS_NAME, UN_IDENTIFIED_PARENT_FRAGMENT+fragmentKey);
+            }
         }
     }
 
@@ -445,6 +550,8 @@ public class AsyncTaskUtility extends AsyncTask {
     }
 
     private Object fetchRecipeImages(Object object){
+        waitFragment = Utility.showWaitDialog(fragmentManager, "loading ..");
+
         Object[] objects = (Object[]) object;
 
         return new Object[]{InternetUtility.fetchRecipeImages(loggedInUser, (RecipeMO)objects[0]), objects[1]};
@@ -460,7 +567,7 @@ public class AsyncTaskUtility extends AsyncTask {
             bundleMap.put(GENERIC_OBJECT, array);
             bundleMap.put(LOGGED_IN_USER, loggedInUser);
 
-            Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_RECIPE_IMAGES, new RecipeViewImagesFragment(), bundleMap);
+            Utility.showFragment(fragmentManager, FRAGMENT_RECIPE, FRAGMENT_IMAGES, new ImagesFragment(), bundleMap);
         }
     }
 

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -19,6 +21,7 @@ import com.cookery.exceptions.CookeryException;
 import com.cookery.fragments.CommentsFragment;
 import com.cookery.fragments.CookeryErrorFragment;
 import com.cookery.fragments.DeleteCommentFragment;
+import com.cookery.fragments.ImagesFragment;
 import com.cookery.fragments.IngredientViewFragment;
 import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MessageFragment;
@@ -37,7 +40,6 @@ import com.cookery.fragments.ProfileViewPhoneFragment;
 import com.cookery.fragments.RecipeAddFragment;
 import com.cookery.fragments.RecipeImagesFragment;
 import com.cookery.fragments.RecipeViewFragment;
-import com.cookery.fragments.RecipeViewImagesFragment;
 import com.cookery.fragments.RecipeViewReviewsFragment;
 import com.cookery.fragments.RecipeViewStepsFragment;
 import com.cookery.fragments.ShareSocialMediaFragment;
@@ -71,7 +73,11 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -500,8 +506,8 @@ public class Utility extends Activity {
             }
             currentFrag.show(fragmentManager, fragKey);
         }
-        else if(fragment instanceof RecipeViewImagesFragment){
-            RecipeViewImagesFragment currentFrag = (RecipeViewImagesFragment) fragment;
+        else if(fragment instanceof ImagesFragment){
+            ImagesFragment currentFrag = (ImagesFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);
@@ -772,5 +778,20 @@ public class Utility extends Activity {
             serial = "serial"; // some value
         }
         return "android-" + new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
+    }
+
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(SERVER_ADDRESS+src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            Log.e(CLASS_NAME, "Error ! "+e);
+            return null;
+        }
     }
 }

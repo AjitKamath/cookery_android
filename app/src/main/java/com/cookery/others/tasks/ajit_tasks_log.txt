@@ -411,3 +411,9 @@
 29 april 2018
 1. #122 Non Obstructive Background Tasks
 2. tuned up the home page to use the AsyncTaskUtility & faster load time.
+
+-- git checkin on 29 April 2018 --
+
+3 may 2018
+1. #372 Everywhere - Image Zoom
+

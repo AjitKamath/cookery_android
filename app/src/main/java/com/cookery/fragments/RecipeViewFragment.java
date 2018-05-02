@@ -25,7 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.adapters.ImagesFullscreenViewPagerAdapter;
+import com.cookery.adapters.RecipeViewImagesViewPagerAdapter;
 import com.cookery.adapters.RecipeViewViewPagerAdapter;
 import com.cookery.models.CommentMO;
 import com.cookery.models.FavouritesMO;
@@ -291,7 +291,7 @@ public class RecipeViewFragment extends DialogFragment {
     }
 
     private void setupImages() {
-        common_fragment_recipe_vp.setAdapter(new ImagesFullscreenViewPagerAdapter(mContext, recipe.getImages(), new View.OnClickListener() {
+        common_fragment_recipe_vp.setAdapter(new RecipeViewImagesViewPagerAdapter(mContext, recipe.getImages(), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(R.id.common_images_fullscreen_item_image_rl == view.getId()){

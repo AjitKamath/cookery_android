@@ -22,7 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.activities.CommonActivity;
+import com.cookery.activities.HomeActivity;
 import com.cookery.models.CommentMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.Milestone;
@@ -32,7 +32,9 @@ import com.cookery.utils.DateTimeUtility;
 import com.cookery.utils.Utility;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -41,6 +43,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
+import static com.cookery.utils.Constants.FRAGMENT_IMAGES;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_EMAIL;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_GENDER;
@@ -186,7 +189,7 @@ public class ProfileViewFragment extends DialogFragment {
     public void onDismiss(final DialogInterface dialog) {
         super.onDismiss(dialog);
 
-        ((CommonActivity)getActivity()).setupNavigator();
+        ((HomeActivity)getActivity()).setupNavigator();
     }
 
     private void setupPage() {
@@ -197,7 +200,18 @@ public class ProfileViewFragment extends DialogFragment {
 
             profile_view_profile_image_iv.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {}
+                public void onClick(View v) {
+                    List<UserMO> images = new ArrayList<>();
+                    images.add(loggedInUser);
+
+                    Object[] objects = new Object[]{0, images};
+
+                    Map<String, Object> params = new HashMap<>();
+                    params.put(GENERIC_OBJECT, objects);
+                    params.put(LOGGED_IN_USER, loggedInUser);
+
+                    Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_IMAGES, new ImagesFragment(), params);
+                }
             });
         }
 

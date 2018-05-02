@@ -69,4 +69,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.16.20'
 
     compile 'com.github.andremion:louvre:v1.2.3'
+
+    compile 'com.commit451:PhotoView:1.2.4'
 }

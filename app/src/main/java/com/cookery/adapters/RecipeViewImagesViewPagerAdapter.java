@@ -17,24 +17,21 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.models.RecipeImageMO;
-import com.cookery.models.UserMO;
 import com.cookery.utils.Utility;
 
 import java.util.List;
 
-import uk.co.senab.photoview.PhotoViewAttacher;
-
 import static com.cookery.utils.Constants.UI_FONT;
 
-public class ImagesFullscreenViewPagerAdapter extends PagerAdapter {
+public class RecipeViewImagesViewPagerAdapter extends PagerAdapter {
     private Context mContext;
-    private static final String CLASS_NAME = ImagesFullscreenViewPagerAdapter.class.getName();
+    private static final String CLASS_NAME = RecipeViewImagesViewPagerAdapter.class.getName();
 
-    public List<? extends Object> images;
+    public List<RecipeImageMO> images;
     private View.OnClickListener listener;
     private View.OnLongClickListener longClickListener;
 
-    public ImagesFullscreenViewPagerAdapter(Context context, List<? extends Object> images, View.OnClickListener listener, View.OnLongClickListener longClickListener) {
+    public RecipeViewImagesViewPagerAdapter(Context context, List<RecipeImageMO> images, View.OnClickListener listener, View.OnLongClickListener longClickListener) {
         this.mContext = context;
         this.images = images;
         this.listener = listener;
@@ -60,34 +57,18 @@ public class ImagesFullscreenViewPagerAdapter extends PagerAdapter {
             return;
         }
 
-        Object object = images.get(position);
-
         RelativeLayout recipe_view_images_fullscreen_item_image_rl = layout.findViewById(R.id.common_images_fullscreen_item_image_rl);
         ImageView recipe_view_images_fullscreen_item_image_iv = layout.findViewById(R.id.common_images_fullscreen_item_image_iv);
         LinearLayout common_like_view_ll = layout.findViewById(R.id.common_like_view_ll);
         LinearLayout recipe_view_images_fullscreen_item_comments_ll = layout.findViewById(R.id.common_images_fullscreen_item_comments_ll);
         TextView recipe_view_images_fullscreen_item_comments_tv = layout.findViewById(R.id.common_images_fullscreen_item_comments_tv);
 
-        if(object instanceof RecipeImageMO){
-            RecipeImageMO recipeImage = (RecipeImageMO) object;
-
-            if(images != null && !images.isEmpty()){
-                Utility.loadImageFromURL(mContext, recipeImage.getRCP_IMG(), recipe_view_images_fullscreen_item_image_iv);
-            }
-
-            Utility.setupLikeView(common_like_view_ll, recipeImage.isUserLiked(), recipeImage.getLikesCount());
-            recipe_view_images_fullscreen_item_comments_tv.setText(Utility.getSmartNumber(recipeImage.getCommentsCount()));
+        if(images != null && !images.isEmpty()){
+            Utility.loadImageFromURL(mContext, images.get(position).getRCP_IMG(), recipe_view_images_fullscreen_item_image_iv);
         }
-        else if(object instanceof UserMO){
-            UserMO user = (UserMO) object;
 
-            if(images != null && !images.isEmpty()){
-                Utility.loadImageFromURL(mContext, user.getIMG(), recipe_view_images_fullscreen_item_image_iv);
-            }
-
-            Utility.setupLikeView(common_like_view_ll, user.isUserLiked(), user.getLikesCount());
-            recipe_view_images_fullscreen_item_comments_tv.setText(Utility.getSmartNumber(user.getCommentsCount()));
-        }
+        Utility.setupLikeView(common_like_view_ll, images.get(position).isUserLiked(), images.get(position).getLikesCount());
+        recipe_view_images_fullscreen_item_comments_tv.setText(Utility.getSmartNumber(images.get(position).getCommentsCount()));
 
         recipe_view_images_fullscreen_item_image_rl.setOnClickListener(listener);
         common_like_view_ll.setOnClickListener(listener);
@@ -97,9 +78,6 @@ public class ImagesFullscreenViewPagerAdapter extends PagerAdapter {
         common_like_view_ll.setTag(images.get(position));
         recipe_view_images_fullscreen_item_comments_ll.setTag(images.get(position));
         recipe_view_images_fullscreen_item_image_rl.setTag(images.get(position));
-
-        PhotoViewAttacher pAttacher = new PhotoViewAttacher(recipe_view_images_fullscreen_item_image_iv);
-        pAttacher.update();
     }
 
     @Override
@@ -109,7 +87,7 @@ public class ImagesFullscreenViewPagerAdapter extends PagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return images.get(position).toString();
+        return images.get(position).getRCP_IMG();
     }
 
 
