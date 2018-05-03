@@ -175,10 +175,6 @@ public class UserViewFragment extends DialogFragment {
                         params.put(LOGGED_IN_USER, loggedInUser);
 
                         Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_IMAGES, new ImagesFragment(), params);
-
-                        /*new AsyncTaskUtility(getFragmentManager(), FRAGMENT_USER_VIEW,
-                                AsyncTaskUtility.Purpose.FETCH_USER_PUBLIC_DETAILS, loggedInUser, 0)
-                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO)user).getUSER_ID());*/
                     }
                 });
             }

@@ -2,21 +2,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/profile_view_rl"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:gravity="center_vertical"
     android:background="@color/white"
     android:padding="5dp">
 
     <TextView
+        android:layout_alignParentTop="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_height="15dp"
+        android:layout_centerHorizontal="true"
         android:textSize="@dimen/quaternary_text_size"
+        android:background="@drawable/edit_text_border_white_bg"
         android:textColor="@color/app_color"
         android:text="JOINED ON 2 APR 2017"
         android:id="@+id/profile_view_profile_join_tv"/>
 
     <RelativeLayout
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="20dp"
         android:layout_below="@+id/profile_view_profile_join_tv"
         android:id="@+id/profile_view_profile_rl"
         android:layout_width="match_parent"
@@ -28,12 +32,13 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:layout_marginLeft="15dp">
 
             <TextView
                 android:id="@+id/profile_view_profile_image_change_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:text="CHANGE"
                 android:textColor="@color/app_color"
@@ -41,8 +46,8 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_view_profile_image_iv"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:src="@drawable/placeholder"
                 app:border_color="@color/tertiaryDarkText"
                 app:border_width="1dp" />
@@ -88,7 +93,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="20dp"
             android:layout_toRightOf="@+id/profile_view_profile_image_ll"
             android:gravity="center_horizontal"
             android:orientation="vertical"
@@ -133,7 +138,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="25dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -189,7 +194,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="25dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -232,8 +237,8 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_below="@+id/profile_view_profile_rl"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
         android:background="@color/divider" />
 
     <RelativeLayout
@@ -252,6 +257,7 @@
             android:weightSum="2">
 
             <LinearLayout
+                android:layout_marginRight="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -309,7 +315,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -361,8 +366,8 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_below="@+id/profile_view_others_rl"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
         android:background="@color/divider" />
 
     <RelativeLayout

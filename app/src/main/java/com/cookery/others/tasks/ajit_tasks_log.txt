@@ -417,3 +417,9 @@
 3 may 2018
 1. #372 Everywhere - Image Zoom
 
+-- git checkin on 3 may 2018 --
+
+3 may 2018
+1. #323 Android - Try different Typeface.
+
+

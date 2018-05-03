@@ -125,7 +125,7 @@ public final class Constants {
     public static final String SUCCESS = "SUCCESS";
     public static final String FAIL = "FAIL";
 
-    public static final String UI_FONT = "Roboto-Light.ttf";
+    public static final String UI_FONT = "Quicksand-Regular.otf";
 
     //Bundle Keys, Shared Prefs, Intent, fragment names
     //FRAGMENT NAMES

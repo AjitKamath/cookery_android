@@ -39,7 +39,6 @@ import com.cookery.models.RecipeImageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.AsyncTaskUtility;
-import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -455,7 +454,7 @@ public class RecipeAddFragment extends DialogFragment {
     //method iterates over each component in the activity and when it finds a text view..sets its font
     private void setFont(ViewGroup group) {
         //set font for all the text view
-        final Typeface robotoCondensedLightFont = Typeface.createFromAsset(mContext.getAssets(), UI_FONT);
+        final Typeface font = Typeface.createFromAsset(mContext.getAssets(), UI_FONT);
 
         int count = group.getChildCount();
         View v;
@@ -463,42 +462,9 @@ public class RecipeAddFragment extends DialogFragment {
         for (int i = 0; i < count; i++) {
             v = group.getChildAt(i);
             if (v instanceof TextView) {
-                ((TextView) v).setTypeface(robotoCondensedLightFont);
+                ((TextView) v).setTypeface(font);
             } else if (v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
-            }
-        }
-    }
-
-    class AsyncTasker extends AsyncTask<Object, Void, Object> {
-        Fragment frag = null;
-
-        @Override
-        protected void onPreExecute(){
-            frag = Utility.showWaitDialog(getFragmentManager(), "Submitting your Recipe ..");
-        }
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.submitRecipe((RecipeMO) objects[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            MessageMO message = (MessageMO) object;
-            message.setPurpose("ADD_RECIPE");
-
-            Utility.closeWaitDialog(getFragmentManager(), frag);
-
-            Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_ADD_RECIPE);
-            Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
-
-            if(message.isError()){
-                Log.e(CLASS_NAME, "Error : "+message.getErr_message());
-            }
-            else{
-                Log.i(CLASS_NAME, message.getErr_message());
-                dismiss();
             }
         }
     }
