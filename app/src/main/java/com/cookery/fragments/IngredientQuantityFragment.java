@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.cookery.R;
 import com.cookery.adapters.AddRecipeQuantitySpinnerAdapter;
 import com.cookery.models.IngredientAkaMO;
-import com.cookery.models.QuantityMO;
+import com.cookery.models.IngredientUOMMO;
 import com.cookery.utils.Utility;
 
 import java.util.List;
@@ -65,7 +65,7 @@ public class IngredientQuantityFragment extends DialogFragment {
     //end of components
 
     private IngredientAkaMO ingredient;
-    private List<QuantityMO> quantities;
+    private List<IngredientUOMMO> quantities;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -84,7 +84,7 @@ public class IngredientQuantityFragment extends DialogFragment {
 
     private void getDataFromBundle() {
         ingredient = (IngredientAkaMO) getArguments().get(SELECTED_ITEM);
-        quantities = (List<QuantityMO>) getArguments().get(LIST_DATA);
+        quantities = (List<IngredientUOMMO>) getArguments().get(LIST_DATA);
     }
 
     private void setupPage() {
@@ -115,8 +115,8 @@ public class IngredientQuantityFragment extends DialogFragment {
 
                 dismiss();
 
-                ingredient.setQuantity((QuantityMO) fragment_ingredient_quantity_quantity_spinner.getSelectedView().getTag());
-                ingredient.setQTY(quantity);
+                ingredient.setQuantity((IngredientUOMMO) fragment_ingredient_quantity_quantity_spinner.getSelectedView().getTag());
+                ingredient.setING_UOM_VALUE(quantity);
 
                 ((RecipeAddFragment)getTargetFragment()).addIngredient(ingredient);
             }

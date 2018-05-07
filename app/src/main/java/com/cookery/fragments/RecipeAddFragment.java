@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -24,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.andremion.louvre.home.GalleryActivity;
 import com.cookery.R;
 import com.cookery.adapters.RecipeAddImagesViewPagerAdapter;
 import com.cookery.adapters.RecipeAddViewPagerAdapter;
@@ -36,7 +38,7 @@ import com.cookery.models.MessageMO;
 import com.cookery.models.RecipeImageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.UserMO;
-import com.cookery.utils.InternetUtility;
+import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.Utility;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -47,9 +49,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static android.app.Activity.RESULT_OK;
-import static com.cookery.utils.Constants.DEFAULT_CROP_RATIO;
 import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_PICK_IMAGE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.LOUVRE_REQUEST_CODE;
 import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.UI_FONT;
@@ -104,6 +107,8 @@ public class RecipeAddFragment extends DialogFragment {
     private MasterDataMO masterData;
     private static final int ANIMATION_SPEED = 250;
 
+    public List<Uri> selectedImages = new ArrayList<>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recipe_add, container);
@@ -128,9 +133,9 @@ public class RecipeAddFragment extends DialogFragment {
 
     private void getDataFromBundle() {
         masterData = (MasterDataMO) getArguments().get(MASTER);
-        if(masterData == null || masterData.getCuisines() == null || masterData.getCuisines().isEmpty()
+        if(masterData == null || masterData.getFoodCuisines() == null || masterData.getFoodCuisines().isEmpty()
                 || masterData.getFoodTypes() == null || masterData.getFoodTypes().isEmpty()
-                || masterData.getQuantities() == null || masterData.getQuantities().isEmpty()
+                || masterData.getIngredientUOMs() == null || masterData.getIngredientUOMs().isEmpty()
                 || masterData.getTastes() == null || masterData.getTastes().isEmpty()){
 
             Log.e(CLASS_NAME, "Error ! Master data is null or required data in master data is not found !");
@@ -173,7 +178,7 @@ public class RecipeAddFragment extends DialogFragment {
     }
 
     private void setupPage() {
-        setupImages(new ArrayList<RecipeImageMO>());
+        setupImages(new ArrayList<Uri>());
         setupTabs();
         collapseContent();
 
@@ -195,11 +200,14 @@ public class RecipeAddFragment extends DialogFragment {
             public void onClick(View view) {
                 RecipeAddViewPagerAdapter adapter = (RecipeAddViewPagerAdapter)recipe_add_tabs_vp.getAdapter();
                 adapter.setRecipeName();
-
                 updateRecipeObject(adapter.recipe);
 
                 if(validate()){
-                    new AsyncTasker().execute(recipe);
+                    new AsyncTaskUtility(getFragmentManager(), FRAGMENT_ADD_RECIPE,
+                            AsyncTaskUtility.Purpose.SUBMIT_RECIPE, loggerInUser, 0)
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, recipe);
+
+                    //new AsyncTasker().execute(recipe);
                 }
             }
         });
@@ -287,22 +295,22 @@ public class RecipeAddFragment extends DialogFragment {
         recipe_add_header_ll.startAnimation(new HeightWidthAnimator(recipe_add_header_ll, ViewGroup.LayoutParams.WRAP_CONTENT, HeightWidthAnimator.Type.HEIGHT, ANIMATION_SPEED));
     }
 
-    private void setupImages(List<RecipeImageMO> images) {
-        recipe_add_images_vp.setAdapter(new RecipeAddImagesViewPagerAdapter(mContext, images, false, new View.OnClickListener() {
+    private void setupImages(List<Uri> images) {
+        selectedImages.addAll(images);
+
+        recipe_add_images_vp.setAdapter(new RecipeAddImagesViewPagerAdapter(mContext, selectedImages, false, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(view.getId() == R.id.recipe_add_images_item_close_iv){
-                    String imageStr = String.valueOf(view.getTag());
-                    List<RecipeImageMO> images = ((RecipeAddImagesViewPagerAdapter)recipe_add_images_vp.getAdapter()).images;
-
-                    for(RecipeImageMO image : images){
-                        if(image.getRCP_IMG().equalsIgnoreCase(imageStr)){
-                            images.remove(image);
+                    Uri recipeImage = (Uri) view.getTag();
+                    for(Uri image : selectedImages){
+                        if(image.getPath().equalsIgnoreCase(recipeImage.getPath())){
+                            selectedImages.remove(image);
                             break;
                         }
                     }
 
-                    setupImages(images);
+                    setupImages(new ArrayList<Uri>());
                 }
             }
         }));
@@ -326,12 +334,15 @@ public class RecipeAddFragment extends DialogFragment {
         recipe_add_images_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment fragment = getFragmentManager().findFragmentByTag(FRAGMENT_ADD_RECIPE);
-                CropImage.activity().setInitialCropWindowPaddingRatio(DEFAULT_CROP_RATIO).start(mContext, fragment);
+                Utility.showFragment(getFragmentManager(), FRAGMENT_ADD_RECIPE, FRAGMENT_PICK_IMAGE, new PickPhotoFragment(), null);
             }
         });
 
-        recipe.setImages(((RecipeAddImagesViewPagerAdapter)recipe_add_images_vp.getAdapter()).images);
+        if(recipe_add_images_vp.getAdapter().getCount() != 0){
+            recipe_add_images_vp.setCurrentItem(recipe_add_images_vp.getAdapter().getCount()-1);
+        }
+
+        recipe.setImages(convertUriToRecipeImages());
         updateImagesCount();
     }
 
@@ -343,10 +354,11 @@ public class RecipeAddFragment extends DialogFragment {
         ((RecipeAddViewPagerAdapter) recipe_add_tabs_vp.getAdapter()).setCuisine(cuisine);
     }
 
-    private void setPhoto(String photoPath){
-        ((RecipeAddImagesViewPagerAdapter) recipe_add_images_vp.getAdapter()).updateData(photoPath);
-        recipe_add_images_vp.setCurrentItem(recipe_add_images_vp.getChildCount()-1);
-        updateImagesCount();
+    private void setPhoto(Uri photoPath){
+        List<Uri> image = new ArrayList<>();
+        image.add(photoPath);
+
+        setupImages(image);
     }
 
     public void addIngredient(IngredientAkaMO ingredient){
@@ -360,9 +372,14 @@ public class RecipeAddFragment extends DialogFragment {
         if(recipe_add_images_vp.getAdapter() != null){
             imagesCount = recipe_add_images_vp.getAdapter().getCount();
 
-            if(recipe_add_images_vp.getAdapter().getCount() > 0){
+            if(imagesCount != 0){
                 currentImage = recipe_add_images_vp.getCurrentItem()+1;
             }
+        }
+
+        if(currentImage > imagesCount){
+            currentImage = imagesCount;
+            recipe_add_images_vp.setCurrentItem(currentImage-1);
         }
 
         recipe_add_images_count_tv.setText(currentImage+"/"+imagesCount);
@@ -401,10 +418,20 @@ public class RecipeAddFragment extends DialogFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+        PickPhotoFragment pickPhotoFragment = (PickPhotoFragment) getFragmentManager().findFragmentByTag(FRAGMENT_PICK_IMAGE);
+
+        if (requestCode == LOUVRE_REQUEST_CODE && resultCode == GalleryActivity.RESULT_OK) {
+            List<Uri> tempImages = GalleryActivity.getSelection(data);
+            selectedImages.clear();
+            setupImages(tempImages);
+
+            pickPhotoFragment.dismiss();
+        }
+        else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                setPhoto(result.getUri().getPath());
+                setPhoto(result.getUri());
+                pickPhotoFragment.dismiss();
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 Log.e(CLASS_NAME, "Error ! Something went wrong ! : "+error.getMessage());
@@ -412,10 +439,22 @@ public class RecipeAddFragment extends DialogFragment {
         }
     }
 
+    private List<RecipeImageMO> convertUriToRecipeImages(){
+        RecipeImageMO recipeImage = null;
+        List<RecipeImageMO> recipeImages = new ArrayList<>();
+        for(Uri image : selectedImages){
+            recipeImage = new RecipeImageMO();
+            recipeImage.setRCP_IMG(image.getPath());
+            recipeImages.add(recipeImage);
+        }
+
+        return recipeImages;
+    }
+
     //method iterates over each component in the activity and when it finds a text view..sets its font
     private void setFont(ViewGroup group) {
         //set font for all the text view
-        final Typeface robotoCondensedLightFont = Typeface.createFromAsset(mContext.getAssets(), UI_FONT);
+        final Typeface font = Typeface.createFromAsset(mContext.getAssets(), UI_FONT);
 
         int count = group.getChildCount();
         View v;
@@ -423,42 +462,9 @@ public class RecipeAddFragment extends DialogFragment {
         for (int i = 0; i < count; i++) {
             v = group.getChildAt(i);
             if (v instanceof TextView) {
-                ((TextView) v).setTypeface(robotoCondensedLightFont);
+                ((TextView) v).setTypeface(font);
             } else if (v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
-            }
-        }
-    }
-
-    class AsyncTasker extends AsyncTask<Object, Void, Object> {
-        Fragment frag = null;
-
-        @Override
-        protected void onPreExecute(){
-            frag = Utility.showWaitDialog(getFragmentManager(), "Submitting your Recipe ..");
-        }
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.submitRecipe((RecipeMO) objects[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            MessageMO message = (MessageMO) object;
-            message.setPurpose("ADD_RECIPE");
-
-            Utility.closeWaitDialog(getFragmentManager(), frag);
-
-            Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_ADD_RECIPE);
-            Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
-
-            if(message.isError()){
-                Log.e(CLASS_NAME, "Error : "+message.getErr_message());
-            }
-            else{
-                Log.i(CLASS_NAME, message.getErr_message());
-                dismiss();
             }
         }
     }

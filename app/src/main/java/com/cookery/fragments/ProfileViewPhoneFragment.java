@@ -2,10 +2,8 @@ package com.cookery.fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -20,9 +18,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.models.MessageMO;
 import com.cookery.models.UserMO;
-import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import butterknife.ButterKnife;
@@ -56,7 +52,7 @@ public class ProfileViewPhoneFragment extends DialogFragment {
     TextView profile_view_phone_ok_tv;
     /*components*/
 
-    private UserMO user;
+    private UserMO loggedInUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -76,11 +72,11 @@ public class ProfileViewPhoneFragment extends DialogFragment {
     }
 
     private void getDataFromBundle() {
-        user = (UserMO) getArguments().get(GENERIC_OBJECT);
+        loggedInUser = (UserMO) getArguments().get(GENERIC_OBJECT);
     }
 
     private void setupPage() {
-        profile_view_phone_et.setText(user.getMOBILE());
+        profile_view_phone_et.setText(loggedInUser.getMOBILE());
 
         profile_view_phone_ok_tv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,28 +86,28 @@ public class ProfileViewPhoneFragment extends DialogFragment {
                 if(String.valueOf(profile_view_phone_et.getText()).trim().isEmpty()){
                     Utility.showSnacks(profile_view_phone_ll, "Phone number cannot be empty !", OK, Snackbar.LENGTH_LONG);
                 }
-                else if(user.getMOBILE().trim().equals(String.valueOf(profile_view_phone_et.getText()).trim()) && newScopeId == user.getMOBILE_SCOPE_ID()){
+                else if(loggedInUser.getMOBILE().trim().equals(String.valueOf(profile_view_phone_et.getText()).trim()) && newScopeId == loggedInUser.getMOBILE_SCOPE_ID()){
                     dismiss();
                 }
                 else{
-                    user.setMOBILE(String.valueOf(profile_view_phone_et.getText()).trim());
-                    user.setMOBILE_SCOPE_ID(newScopeId);
-                    new AsyncTaskerUpdateUserPhone().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    loggedInUser.setMOBILE(String.valueOf(profile_view_phone_et.getText()).trim());
+                    loggedInUser.setMOBILE_SCOPE_ID(newScopeId);
+                    updatePhone();
                 }
             }
         });
 
-        if(SCOPE_PUBLIC == user.getMOBILE_SCOPE_ID()){
+        if(SCOPE_PUBLIC == loggedInUser.getMOBILE_SCOPE_ID()){
             ((RadioButton)profile_view_scope_radio_buttons_rg.findViewById(R.id.profile_view_scope_radio_buttons_public_rb)).setChecked(true);
         }
-        else if(SCOPE_FOLLOWERS == user.getMOBILE_SCOPE_ID()){
+        else if(SCOPE_FOLLOWERS == loggedInUser.getMOBILE_SCOPE_ID()){
             ((RadioButton)profile_view_scope_radio_buttons_rg.findViewById(R.id.profile_view_scope_radio_buttons_followers_rb)).setChecked(true);
         }
-        else if(SCOPE_SELF == user.getMOBILE_SCOPE_ID()){
+        else if(SCOPE_SELF == loggedInUser.getMOBILE_SCOPE_ID()){
             ((RadioButton)profile_view_scope_radio_buttons_rg.findViewById(R.id.profile_view_scope_radio_buttons_myself_rb)).setChecked(true);
         }
         else{
-            Log.e(CLASS_NAME, "Error ! Could not identify the scope name : "+user.getMobileScopeName());
+            Log.e(CLASS_NAME, "Error ! Could not identify the scope name : "+loggedInUser.getMobileScopeName());
         }
 
     }
@@ -156,48 +152,8 @@ public class ProfileViewPhoneFragment extends DialogFragment {
         }
     }
 
-    class AsyncTaskerUpdateUserPhone extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.updateUserPhone(user);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "updating your phone number..");
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            MessageMO message = (MessageMO) object;
-
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-            if(message != null && !message.isError()){
-                if(getTargetFragment() instanceof ProfileViewFragment){
-                    ((ProfileViewFragment)getTargetFragment()).updatePhone(user);
-                    dismiss();
-
-                    message.setPurpose("USER_UPDATE_PHONE_SUCCESS");
-                }
-                else{
-                    Log.e(CLASS_NAME, "Fragment("+getTargetFragment()+") could not be understood");
-                    return;
-                }
-            }
-            else{
-                if(message == null){
-                    message = new MessageMO();
-                    message.setError(true);
-                    message.setErr_message("Something went wrong !");
-                }
-
-                message.setPurpose("USER_UPDATE_PHONE_FAILED");
-            }
-
-            Utility.showMessageDialog(getFragmentManager(), null, message);
-        }
+    private void updatePhone(){
+        ((ProfileViewFragment)getTargetFragment()).updatePhone(loggedInUser);
+        dismiss();
     }
 }

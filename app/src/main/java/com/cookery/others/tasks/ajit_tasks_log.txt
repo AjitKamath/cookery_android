@@ -370,3 +370,56 @@
 20 april 2018
 1. #240 - Timeline - handle new timelines & stories (like/unlike recipe/user photos)
 2. #284 - Recipe Add & Profile View - Full image as default crop
+
+-- git checkin on 22 April 2018 --
+
+22 april 2018
+1. #283 - Recipe Add - pick multiple images
+
+24 april 2018
+1. #268 Profile View - Profile Photo Likes & Comments
+2. #243 Service Request Authorisation - Handle API Key failure in Android
+3. #324 Likes - Change Image, then Call Service
+4. #340 Ingredient & Ingredient AKA relationships
+5. #373 Fix Connection & Transaction Counter
+
+-- git checkin on 22 April 2018 --
+
+24 april 2018
+1. #399 Recipe Add/Profile View - Image Upload is Failing !
+2. #293 Fetch Master Data in Single Shot
+
+-- git checkin on 24 April 2018 --
+
+26 april 2018
+1. #208 Recipe Add - Searchable Cuisines & Food Type
+2. #391 Database - Remove Obsolete Tables
+3. #416 PHP - Set Server Time to GMT
+4. #227 Security - Pass Unique Identifier as par of each request
+
+27 april 2018
+1. Fixed redundant service calls in Home screen.
+2. Instant name/email/password/image/gender/phone update in Profile View.
+
+-- git checkin on 28 April 2018 --
+
+28 april 2018
+1. #279 Ingredient View
+2. #341 Ingredient View - Multiple Images
+3. #280 Ingredient View - Multiple Ingredient Images
+
+29 april 2018
+1. #122 Non Obstructive Background Tasks
+2. tuned up the home page to use the AsyncTaskUtility & faster load time.
+
+-- git checkin on 29 April 2018 --
+
+3 may 2018
+1. #372 Everywhere - Image Zoom
+
+-- git checkin on 3 may 2018 --
+
+3 may 2018
+1. #323 Android - Try different Typeface.
+
+

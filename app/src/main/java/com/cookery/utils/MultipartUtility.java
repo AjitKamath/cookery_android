@@ -18,6 +18,7 @@ import java.net.URLConnection;
 
 import static com.cookery.utils.Constants.API_KEY_ANDROID;
 import static com.cookery.utils.Constants.API_KEY_IDENTIFIER;
+import static com.cookery.utils.Constants.APP_UNIQUE_ID;
 import static com.cookery.utils.Constants.SERVER_TIMEOUT;
 
 /**
@@ -58,8 +59,9 @@ public class MultipartUtility {
             httpConn.setDoOutput(true); // indicates POST method
             httpConn.setDoInput(true);
             httpConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-            httpConn.setRequestProperty("User-Agent", "CodeJava Agent");
+            //httpConn.setRequestProperty("User-Agent", "CodeJava Agent");
             httpConn.setRequestProperty(API_KEY_IDENTIFIER, API_KEY_ANDROID);
+            httpConn.setRequestProperty(APP_UNIQUE_ID, Utility. getUniquePhoneId());
             outputStream = httpConn.getOutputStream();
             writer = new PrintWriter(new OutputStreamWriter(outputStream, charset), true);
         }
@@ -110,11 +112,11 @@ public class MultipartUtility {
                 outputStream.write(buffer, 0, bytesRead);
             }
 
-            writer.append(LINE_FEED);
-
-            writer.flush();
+            outputStream.flush();
             inputStream.close();
-            outputStream.close();
+
+            writer.append(LINE_FEED);
+            writer.flush();
         }
         catch (IOException ioe){
             throw new CookeryException(CookeryException.ErrorCode.NO_INTERNET, ioe);

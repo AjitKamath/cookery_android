@@ -462,7 +462,7 @@ public class HomeStoriesRecyclerViewAdapter extends RecyclerView.Adapter<HomeSto
         holder.common_component_image_options_mini_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showPopupMenu(v, story);
+                showPopupMenu(v);
             }
         });
         //commons
@@ -542,9 +542,10 @@ public class HomeStoriesRecyclerViewAdapter extends RecyclerView.Adapter<HomeSto
     /**
      * Showing popup menu when tapping on 3 dots
      */
-    private void showPopupMenu(View view, TimelineMO timeline) {
+    private void showPopupMenu(View view) {
         // inflate menu
-        PopupMenu popupMenu = new PopupMenu(mContext, view);
+        PopupMenu popupMenu = new PopupMenu(mContext, view);        //do not pass context as 1st param if this method
+                                                                    //is called from a fragment
         popupMenu.inflate(R.menu.story_options);
 
         // Force icons to show
@@ -595,6 +596,19 @@ public class HomeStoriesRecyclerViewAdapter extends RecyclerView.Adapter<HomeSto
     @Override
     public int getItemCount() {
         return timelines.size();
+    }
+
+    public void updateStories(int index, List<TimelineMO> stories){
+        if(this.timelines == null){
+            this.timelines = new ArrayList<>();
+        }
+
+        if(index == 0){
+            this.timelines.clear();
+        }
+
+        this.timelines.addAll(stories);
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

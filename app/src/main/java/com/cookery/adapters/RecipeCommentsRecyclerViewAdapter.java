@@ -129,13 +129,6 @@ public class RecipeCommentsRecyclerViewAdapter extends RecyclerView.Adapter<Reci
         }
     }
 
-    public void deleteComment(CommentMO comment){
-        if(comments != null){
-            comments.remove(comment);
-            notifyDataSetChanged();
-        }
-    }
-
     public void updateComments(List<CommentMO> newComments, int index) {
         if(comments == null){
             comments = new ArrayList<>();

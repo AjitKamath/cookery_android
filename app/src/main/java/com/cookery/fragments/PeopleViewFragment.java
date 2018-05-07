@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,6 +31,7 @@ import com.cookery.adapters.PeopleViewSearchAutoCompleteAdapter;
 import com.cookery.adapters.PeopleViewViewPagerAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
 import com.cookery.interfaces.ItemClickListener;
+import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.UserMO;
 import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.Utility;
@@ -39,7 +41,9 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import lombok.Getter;
 
+import static com.cookery.utils.Constants.FRAGMENT_PEOPLE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.UI_FONT;
@@ -66,6 +70,7 @@ public class PeopleViewFragment extends DialogFragment {
     @InjectView(R.id.people_view_tl)
     TabLayout people_view_tl;
 
+    @Getter
     @InjectView(R.id.people_view_tab_vp)
     ViewPager people_view_tab_vp;
     /*components*/
@@ -117,14 +122,35 @@ public class PeopleViewFragment extends DialogFragment {
         people_view_tab_vp.setAdapter(new PeopleViewViewPagerAdapter(mContext, getFragmentManager(), viewPagerTabsList, loggedInUser, people, new ItemClickListener() {
             @Override
             public void onItemClick(Object item) {
-                if(item == null){
+                if (item == null) {
                     Log.e(CLASS_NAME, "Error ! User object is null");
                     return;
                 }
 
-                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE,
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PEOPLE_VIEW,
                         AsyncTaskUtility.Purpose.FETCH_USER_PUBLIC_DETAILS, loggedInUser, 0)
-                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO)item).getUSER_ID());
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO) item).getUSER_ID());
+            }
+        }, new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PEOPLE_VIEW,
+                        ((PeopleViewViewPagerAdapter)people_view_tab_vp.getAdapter()).getViewPurposeMap().get(people_view_tab_vp.getCurrentItem()),
+                        loggedInUser, 0)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        }, new OnBottomReachedListener() {
+            @Override
+            public void onBottomReached(int position) {
+                int count = ((PeopleViewViewPagerAdapter)people_view_tab_vp.getAdapter()).getViewObjectList()
+                        .get(people_view_tab_vp.getCurrentItem()).getPeople_view_followers_following_rv()
+                        .getAdapter().getItemCount();
+
+
+                new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PEOPLE_VIEW,
+                        ((PeopleViewViewPagerAdapter)people_view_tab_vp.getAdapter()).getViewPurposeMap().get(people_view_tab_vp.getCurrentItem()),
+                        loggedInUser, count)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }));
         people_view_tab_vp.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(people_view_tl));
@@ -146,6 +172,10 @@ public class PeopleViewFragment extends DialogFragment {
 
             }
         });
+    }
+
+    public void updateUsers(String who, List<UserMO> users, int index){
+        ((PeopleViewViewPagerAdapter)people_view_tab_vp.getAdapter()).updateData(who, users, index);
     }
 
     private void setupSearch() {

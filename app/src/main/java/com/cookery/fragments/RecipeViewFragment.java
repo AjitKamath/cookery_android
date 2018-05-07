@@ -5,7 +5,6 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -13,8 +12,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -24,10 +25,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.adapters.ImagesFullscreenViewPagerAdapter;
+import com.cookery.adapters.RecipeViewImagesViewPagerAdapter;
 import com.cookery.adapters.RecipeViewViewPagerAdapter;
 import com.cookery.models.CommentMO;
 import com.cookery.models.FavouritesMO;
+import com.cookery.models.IngredientAkaMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.RecipeImageMO;
@@ -36,11 +38,8 @@ import com.cookery.models.UserMO;
 import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
-import com.facebook.CallbackManager;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareButton;
-import com.facebook.share.widget.ShareDialog;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,10 +51,13 @@ import lombok.Setter;
 
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE_STEPS;
+import static com.cookery.utils.Constants.FRAGMENT_SHARE_SOCIAL_MEDIA;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
 import static com.cookery.utils.Constants.UI_FONT;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_VIEW;
 
 /**
  * Created by ajit on 21/3/16.
@@ -69,26 +71,23 @@ public class RecipeViewFragment extends DialogFragment {
     @InjectView(R.id.common_fragment_recipe_rl)
     RelativeLayout common_fragment_recipe_rl;
 
+    @InjectView(R.id.recipe_view_options_iv)
+    ImageView recipe_view_options_iv;
+
     @InjectView(R.id.common_fragment_recipe_vp)
     ViewPager common_fragment_recipe_vp;
 
     @InjectView(R.id.recipe_view_images_count_tv)
     TextView recipe_view_images_count_tv;
 
-    @InjectView(R.id.common_fragment_recipe_like_iv)
-    ImageView common_fragment_recipe_like_iv;
-
     @InjectView(R.id.common_fragment_recipe_favourite_iv)
     ImageView common_fragment_recipe_favourite_iv;
-
-    @InjectView(R.id.common_fragment_recipe_like_ll)
-    LinearLayout common_fragment_recipe_like_ll;
 
     @InjectView(R.id.common_fragment_recipe_views_tv)
     TextView common_fragment_recipe_views_tv;
 
-    @InjectView(R.id.common_fragment_recipe_like_tv)
-    TextView common_fragment_recipe_like_tv;
+    @InjectView(R.id.common_like_view_ll)
+    LinearLayout common_like_view_ll;
 
     @InjectView(R.id.common_fragment_recipe_rating_ll)
     LinearLayout common_fragment_recipe_rating_ll;
@@ -134,17 +133,11 @@ public class RecipeViewFragment extends DialogFragment {
 
     @InjectView(R.id.common_fragment_recipe_rating_iv)
     ImageView common_fragment_recipe_rating_iv;
-
-    @InjectView(R.id.fb_share_button)
-    ShareButton fbShareButton;
-
     //end of components
 
     @Setter
     private RecipeMO recipe;
     private UserMO loggedInUser;
-    CallbackManager callbackManager;
-    ShareDialog shareDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -173,6 +166,13 @@ public class RecipeViewFragment extends DialogFragment {
     }
 
     public void setupPage() {
+        recipe_view_options_iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupMenu(v);
+            }
+        });
+
         setupImages();
 
         Utility.loadImageFromURL(mContext, recipe.getUserImage().trim(), recipe_view_user_iv);
@@ -203,6 +203,19 @@ public class RecipeViewFragment extends DialogFragment {
 
                     Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE, FRAGMENT_RECIPE_STEPS, new RecipeViewStepsFragment(), bundleMap);
                 }
+                else if(view.getId() == R.id.recipe_view_ingredients_item_ll){
+                    if(view.getTag() instanceof IngredientAkaMO){
+                        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_RECIPE,
+                                AsyncTaskUtility.Purpose.FETCH_INGREDIENT_NUTRIENTS, loggedInUser, 0)
+                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, view.getTag());
+                    }
+                    else{
+                        Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+view.getTag());
+                    }
+                }
+                else{
+                    Log.e(CLASS_NAME, UN_IDENTIFIED_VIEW);
+                }
             }
         }));
         common_fragment_recipe_tab_vp.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(common_fragment_recipe_tl));
@@ -225,11 +238,11 @@ public class RecipeViewFragment extends DialogFragment {
             }
         });
 
-        setReviewView();
-        setLikeView();
-        setViewView();
-        setCommentView();
-        setfavouriteView();
+        setupReviewView();
+        setupLikeView();
+        setupViewView();
+        setupCommentView();
+        setupfavouriteView();
 
         common_fragment_recipe_user_details_ll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,15 +252,9 @@ public class RecipeViewFragment extends DialogFragment {
                         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, recipe.getUSER_ID());
             }
         });
-
-        ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.cookery"))
-                .setQuote(recipe.getRCP_NAME()) // Name of Dish
-                .build();
-        fbShareButton.setShareContent(linkContent);
     }
 
-    private void setViewView() {
+    private void setupViewView() {
         common_fragment_recipe_views_tv.setText(String.valueOf(recipe.getViewsCount()));
 
         common_fragment_recipe_view_ll.setOnLongClickListener(new View.OnLongClickListener() {
@@ -261,7 +268,7 @@ public class RecipeViewFragment extends DialogFragment {
         });
     }
 
-    private void setCommentView() {
+    private void setupCommentView() {
         if (recipe.getCommentsCount() == 0) {
             common_fragment_recipe_comment_iv.setImageResource(R.drawable.comment_disabled);
         } else {
@@ -284,7 +291,7 @@ public class RecipeViewFragment extends DialogFragment {
     }
 
     private void setupImages() {
-        common_fragment_recipe_vp.setAdapter(new ImagesFullscreenViewPagerAdapter(mContext, recipe.getImages(), new View.OnClickListener() {
+        common_fragment_recipe_vp.setAdapter(new RecipeViewImagesViewPagerAdapter(mContext, recipe.getImages(), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(R.id.common_images_fullscreen_item_image_rl == view.getId()){
@@ -370,14 +377,64 @@ public class RecipeViewFragment extends DialogFragment {
         updateImageCounter(1, recipe.getImages().size());
     }
 
-    private void updateImageCounter(int index, int maxCount) {
-        recipe_view_images_count_tv.setText(index + "/" + maxCount);
+    /**
+     * Showing popup menu when tapping on 3 dots
+     */
+    private void showPopupMenu(View view) {
+        // inflate menu
+        PopupMenu popupMenu = new PopupMenu(getActivity(), view);            //do not pass context as 1st param if this method
+                                                                        //is called from a fragment
+        popupMenu.inflate(R.menu.recipe_view_options);
+
+        // Force icons to show
+        Object menuHelper;
+        Class[] argTypes;
+        try {
+            Field fMenuHelper = PopupMenu.class.getDeclaredField("mPopup");
+            fMenuHelper.setAccessible(true);
+            menuHelper = fMenuHelper.get(popupMenu);
+            argTypes = new Class[] { boolean.class };
+            menuHelper.getClass().getDeclaredMethod("setForceShowIcon", argTypes).invoke(menuHelper, true);
+        } catch (Exception e) {
+            // Possible exceptions are NoSuchMethodError and NoSuchFieldError
+            //
+            // In either case, an exception indicates something is wrong with the reflection code, or the
+            // structure of the PopupMenu class or its dependencies has changed.
+            //
+            // These exceptions should never happen since we're shipping the AppCompat library in our own apk,
+            // but in the case that they do, we simply can't force icons to display, so log the error and
+            // show the menu normally.
+
+            Log.w(CLASS_NAME, "error forcing menu icons to show", e);
+            popupMenu.show();
+            return;
+        }
+
+        for(int i=0; i<popupMenu.getMenu().size(); i++){
+            popupMenu.getMenu().getItem(i).setActionView(view);
+        }
+
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(R.id.recipe_view_options_share == item.getItemId()) {
+                    Map<String, Object> params = new HashMap<>();
+                    params.put(GENERIC_OBJECT, recipe);
+
+                    Utility.showFragment(getFragmentManager(), FRAGMENT_RECIPE, FRAGMENT_SHARE_SOCIAL_MEDIA, new ShareSocialMediaFragment(), params);
+                }
+                else{
+                    Log.e(CLASS_NAME, UN_IDENTIFIED_VIEW);
+                }
+
+                return false;
+            }
+        });
     }
 
-    @Deprecated
-    public void updateRecipeLikeView(LikesMO like) {
-        common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(like.getLikesCount()));
-        common_fragment_recipe_like_iv.setImageResource(Utility.getLikeImageId(recipe.isUserLiked()));
+    private void updateImageCounter(int index, int maxCount) {
+        recipe_view_images_count_tv.setText(index + "/" + maxCount);
     }
 
     public void updateFavoriteView(ArrayList<FavouritesMO> fav) {
@@ -390,14 +447,14 @@ public class RecipeViewFragment extends DialogFragment {
         }
     }
 
-    public void setLikeView() {
-        common_fragment_recipe_like_tv.setText(Utility.getSmartNumber(recipe.getLikesCount()));
+    public void setupLikeView() {
+        Utility.setupLikeView(common_like_view_ll, recipe.isUserLiked(), recipe.getLikesCount());
 
-        common_fragment_recipe_like_iv.setImageResource(Utility.getLikeImageId(recipe.isUserLiked()));
-
-        common_fragment_recipe_like_ll.setOnClickListener(new View.OnClickListener() {
+        common_like_view_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Utility.addRemoveLike(view);
+
                 LikesMO like = new LikesMO();
                 like.setUSER_ID(loggedInUser.getUSER_ID());
                 like.setTYPE("RECIPE");
@@ -409,7 +466,7 @@ public class RecipeViewFragment extends DialogFragment {
             }
         });
 
-        common_fragment_recipe_like_ll.setOnLongClickListener(new View.OnLongClickListener() {
+        common_like_view_ll.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 LikesMO like = new LikesMO();
@@ -425,7 +482,7 @@ public class RecipeViewFragment extends DialogFragment {
         });
     }
 
-    public void setfavouriteView() {
+    public void setupfavouriteView() {
         if (recipe.isUserFavorite()) {
             common_fragment_recipe_favourite_iv.setImageResource(R.drawable.favstar36);
         } else {
@@ -444,7 +501,7 @@ public class RecipeViewFragment extends DialogFragment {
         });
     }
 
-    public void setReviewView() {
+    public void setupReviewView() {
         if (recipe.getAvgRating() != null && !recipe.getAvgRating().trim().isEmpty()) {
             common_fragment_recipe_rating_tv.setText(String.valueOf(recipe.getAvgRating()));
         }
@@ -476,17 +533,6 @@ public class RecipeViewFragment extends DialogFragment {
         message.setError(false);
         message.setPurpose("RECIPE_VIEW_REVIEW_ADD");
         message.setErr_message("Thank You for the review !");
-
-        Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_RECIPE);
-        Utility.showMessageDialog(getFragmentManager(), currentFrag, message);
-    }
-
-    public void showCommentDeletedMessage() {
-        MessageMO message = new MessageMO();
-        message.setError(false);
-
-        message.setPurpose("RECIPE_VIEW_COMMENT_DELETED");
-        message.setErr_message("Your comment has been deleted !");
 
         Fragment currentFrag = getFragmentManager().findFragmentByTag(FRAGMENT_RECIPE);
         Utility.showMessageDialog(getFragmentManager(), currentFrag, message);

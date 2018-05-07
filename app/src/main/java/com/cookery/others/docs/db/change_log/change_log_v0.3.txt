@@ -1,2 +1,0 @@
-27 aug 2017
-1. added is_def column to FOOD_TYPE & FOOD_CUISINE tables

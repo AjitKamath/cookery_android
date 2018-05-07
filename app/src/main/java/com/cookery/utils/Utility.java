@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -14,15 +17,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.exceptions.CookeryException;
 import com.cookery.fragments.CommentsFragment;
 import com.cookery.fragments.CookeryErrorFragment;
 import com.cookery.fragments.DeleteCommentFragment;
+import com.cookery.fragments.ImagesFragment;
+import com.cookery.fragments.IngredientViewFragment;
 import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MessageFragment;
 import com.cookery.fragments.MyRecipesFragment;
 import com.cookery.fragments.MyReviewsFragment;
 import com.cookery.fragments.NoInternetFragment;
 import com.cookery.fragments.PeopleViewFragment;
+import com.cookery.fragments.PickPhotoFragment;
 import com.cookery.fragments.ProfileViewEmailFragment;
 import com.cookery.fragments.ProfileViewFragment;
 import com.cookery.fragments.ProfileViewGenderFragment;
@@ -33,9 +40,9 @@ import com.cookery.fragments.ProfileViewPhoneFragment;
 import com.cookery.fragments.RecipeAddFragment;
 import com.cookery.fragments.RecipeImagesFragment;
 import com.cookery.fragments.RecipeViewFragment;
-import com.cookery.fragments.RecipeViewImagesFragment;
 import com.cookery.fragments.RecipeViewReviewsFragment;
 import com.cookery.fragments.RecipeViewStepsFragment;
+import com.cookery.fragments.ShareSocialMediaFragment;
 import com.cookery.fragments.SomethingWrongFragment;
 import com.cookery.fragments.TimelineDeleteFragment;
 import com.cookery.fragments.TimelineHideFragment;
@@ -47,10 +54,12 @@ import com.cookery.models.CuisineMO;
 import com.cookery.models.FavouritesMO;
 import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientAkaMO;
+import com.cookery.models.IngredientMO;
+import com.cookery.models.IngredientUOMMO;
 import com.cookery.models.LikesMO;
+import com.cookery.models.MasterDataMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.MyListMO;
-import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeImageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
@@ -61,19 +70,23 @@ import com.cookery.models.UserMO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
+import static com.cookery.utils.Constants.DEFAULT_CROP_RATIO;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
 import static com.cookery.utils.Constants.FRAGMENT_COMMON_WAIT;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE_IMAGES;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.OK;
@@ -86,10 +99,6 @@ import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
 public class Utility extends Activity {
     private static final String CLASS_NAME = Utility.class.getName();
-
-    public static String getFollowingText(String username){
-        return "you follow "+username;
-    }
 
     public static String getUserNameOrYou(String username, int userId, int loggedInUserId){
         if(userId != 0 && userId == loggedInUserId){
@@ -265,7 +274,7 @@ public class Utility extends Activity {
         return null;
     }
 
-    public static Object jsonToObject(String jsonStr, Class mappingClass){
+    public static Object jsonToObject(String jsonStr, Class mappingClass) throws CookeryException{
         if(jsonStr == null || jsonStr.isEmpty()){
             Log.e(CLASS_NAME, "JSON is null");
             return null;
@@ -286,8 +295,8 @@ public class Utility extends Activity {
             else if(mappingClass.equals(IngredientAkaMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<IngredientAkaMO>>(){}.getType());
             }
-            else if(mappingClass.equals(QuantityMO.class)){
-                return gson.fromJson(jsonStr, new TypeToken<List<QuantityMO>>(){}.getType());
+            else if(mappingClass.equals(IngredientUOMMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<List<IngredientUOMMO>>(){}.getType());
             }
             else if(mappingClass.equals(TasteMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<TasteMO>>(){}.getType());
@@ -325,17 +334,23 @@ public class Utility extends Activity {
             else if(mappingClass.equals(RecipeImageMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<RecipeImageMO>>(){}.getType());
             }
+            else if(mappingClass.equals(MasterDataMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<MasterDataMO>(){}.getType());
+            }
+            else if(mappingClass.equals(IngredientMO.class)){
+                return gson.fromJson(jsonStr, new TypeToken<List<IngredientMO>>(){}.getType());
+            }
             else{
                 Log.e(CLASS_NAME, mappingClass+" is not identified for parsing JSON");
-                throw new Exception();
+                throw new CookeryException(CookeryException.ErrorCode.NO_JSON_MAPPING_CLASS);
             }
         }
         catch (Exception e){
             Log.e(CLASS_NAME, "Error in parsing the json("+jsonStr+") into the mapping class("+mappingClass+")");
             Log.e(CLASS_NAME, e.getMessage());
-        }
 
-        return null;
+            throw new CookeryException(CookeryException.ErrorCode.JSON_TO_OBJECT_MAPPING_ERROR, e);
+        }
     }
 
     public static void loadImageFromURL(Context context, String imageAddress, ImageView imageView){
@@ -401,72 +416,6 @@ public class Utility extends Activity {
         fragment.show(fragmentManager, fragmentNameStr);
     }
 
-    public static void showRecipeReviewFragment(FragmentManager fragmentManager, String parentFragmentNameStr, RecipeMO recipe){
-        if(recipe == null){
-            Log.e(CLASS_NAME, "Recipe is null");
-            return;
-        }
-
-        String fragmentNameStr = FRAGMENT_RECIPE_REVIEW;
-
-        Fragment frag = fragmentManager.findFragmentByTag(fragmentNameStr);
-
-        if (frag != null) {
-            fragmentManager.beginTransaction().remove(frag).commit();
-        }
-
-        Fragment parentFragment = null;
-        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
-            parentFragment = fragmentManager.findFragmentByTag(parentFragmentNameStr);
-        }
-
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(GENERIC_OBJECT, recipe);
-
-        RecipeViewReviewsFragment fragment = new RecipeViewReviewsFragment();
-        fragment.setArguments(bundle);
-
-        if (parentFragment != null) {
-            fragment.setTargetFragment(parentFragment, 0);
-        }
-
-        fragment.show(fragmentManager, fragmentNameStr);
-    }
-
-    public static void showRecipeCommentsFragment(FragmentManager fragmentManager, String parentFragmentNameStr, RecipeMO recipe){
-        if(recipe == null){
-            Log.e(CLASS_NAME, "Recipe is null");
-            return;
-        }
-
-        String fragmentNameStr = FRAGMENT_COMMENTS;
-
-        Fragment frag = fragmentManager.findFragmentByTag(fragmentNameStr);
-
-        if (frag != null) {
-            fragmentManager.beginTransaction().remove(frag).commit();
-        }
-
-        Fragment parentFragment = null;
-        if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
-            parentFragment = fragmentManager.findFragmentByTag(parentFragmentNameStr);
-        }
-
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(SELECTED_ITEM, recipe);
-
-        CommentsFragment fragment = new CommentsFragment();
-        fragment.setArguments(bundle);
-
-        if (parentFragment != null) {
-            fragment.setTargetFragment(parentFragment, 0);
-        }
-
-        fragment.show(fragmentManager, fragmentNameStr);
-    }
-
     public static void closeWaitDialog(FragmentManager fragManager, Fragment fragment){
         fragManager.beginTransaction().remove(fragment).commit();
     }
@@ -512,48 +461,6 @@ public class Utility extends Activity {
         return fragment;
     }
 
-    public static Fragment showRecipeImagesFragment(FragmentManager fragManager, RecipeMO recipe) {
-        String fragmentNameStr = FRAGMENT_RECIPE_IMAGES;
-
-        Fragment frag = fragManager.findFragmentByTag(fragmentNameStr);
-
-        if (frag != null) {
-            fragManager.beginTransaction().remove(frag).commit();
-        }
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(GENERIC_OBJECT, recipe);
-
-        RecipeImagesFragment fragment = new RecipeImagesFragment();
-        fragment.setArguments(bundle);
-
-        fragment.show(fragManager, fragmentNameStr);
-
-        return fragment;
-    }
-
-    /*public static List<Bitmap> getTestImages(Context context){
-        List<Bitmap> images = new ArrayList<>();
-        Bitmap bitmap = null;
-
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.food_sample);
-        images.add(bitmap);
-
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.food_sample);
-        images.add(bitmap);
-
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.food_sample);
-        images.add(bitmap);
-
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.food_sample);
-        images.add(bitmap);
-
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.food_sample);
-        images.add(bitmap);
-
-        return images;
-    }*/
-
     public static void showFragment(FragmentManager fragmentManager, String parentFragKey, String fragKey, Object fragment, Map<String, Object> params){
         Fragment frag = fragmentManager.findFragmentByTag(fragKey);
 
@@ -583,8 +490,24 @@ public class Utility extends Activity {
             }
             currentFrag.show(fragmentManager, fragKey);
         }
-        else if(fragment instanceof RecipeViewImagesFragment){
-            RecipeViewImagesFragment currentFrag = (RecipeViewImagesFragment) fragment;
+        else if(fragment instanceof ShareSocialMediaFragment){
+            ShareSocialMediaFragment currentFrag = (ShareSocialMediaFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof MessageFragment){
+            MessageFragment currentFrag = (MessageFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof ImagesFragment){
+            ImagesFragment currentFrag = (ImagesFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);
@@ -783,13 +706,92 @@ public class Utility extends Activity {
             }
             currentFrag.show(fragmentManager, fragKey);
         }
+        else if(fragment instanceof PickPhotoFragment){
+            PickPhotoFragment currentFrag = (PickPhotoFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof RecipeImagesFragment){
+            RecipeImagesFragment currentFrag = (RecipeImagesFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof IngredientViewFragment){
+            IngredientViewFragment currentFrag = (IngredientViewFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
         else{
             Log.e(CLASS_NAME, "Error ! "+fragment+" fragment hasn't been configured in "+CLASS_NAME+" showFragment method yet.");
+        }
+    }
+
+    public static void startCropImageActivity(Context mContext, Object fragmentOrActivity){
+        if(fragmentOrActivity instanceof Fragment){
+            CropImage
+                    .activity()
+                    .setAllowRotation(true)
+                    .setAutoZoomEnabled(true)
+                    .setFixAspectRatio(true)
+                    .setInitialCropWindowPaddingRatio(DEFAULT_CROP_RATIO)
+                    .start(mContext, (Fragment) fragmentOrActivity);
+        }
+        else if(fragmentOrActivity instanceof Activity){
+            CropImage
+                    .activity()
+                    .setAllowRotation(true)
+                    .setAutoZoomEnabled(true)
+                    .setFixAspectRatio(true)
+                    .setInitialCropWindowPaddingRatio(DEFAULT_CROP_RATIO)
+                    .start((Activity) fragmentOrActivity);
+        }
+        else{
+            Log.e(CLASS_NAME, "Something went wrong");
         }
     }
 
     public static void hideSoftKeyboard (Activity activity, View view){
         InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
+    }
+
+    public static String getUniquePhoneId() {
+        String m_szDevIDShort = "35" + (Build.BOARD.length() % 10) + (Build.BRAND.length() % 10) + (Build.SUPPORTED_ABIS.length % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
+
+        String serial = null;
+        try {
+            serial = android.os.Build.class.getField("SERIAL").get(null).toString();
+
+            // Go ahead and return the serial for api => 9
+            return "android-" + new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
+        } catch (Exception exception) {
+            // String needs to be initialized
+            serial = "serial"; // some value
+        }
+        return "android-" + new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
+    }
+
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(SERVER_ADDRESS+src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            Log.e(CLASS_NAME, "Error ! "+e);
+            return null;
+        }
     }
 }

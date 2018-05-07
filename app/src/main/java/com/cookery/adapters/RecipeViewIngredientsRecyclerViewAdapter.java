@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
@@ -27,7 +28,6 @@ import com.cookery.models.MyListMO;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -35,21 +35,20 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
 
 public class RecipeViewIngredientsRecyclerViewAdapter extends RecyclerView.Adapter<RecipeViewIngredientsRecyclerViewAdapter.ViewHolder> {
-
     private static final String CLASS_NAME = RecipeViewIngredientsRecyclerViewAdapter.class.getName();
     private Context mContext;
 
     public List<IngredientAkaMO> ingredients;
-    private View.OnClickListener listener;
+    private View.OnClickListener onClickListener;
     private String ing_aka_name;
     private int ing_aka_id;
     public List<MyListMO> mylists;
     private FragmentManager manager;
 
-    public RecipeViewIngredientsRecyclerViewAdapter(Context mContext, FragmentManager manager, List<IngredientAkaMO> ingredients, List<MyListMO> mylists, View.OnClickListener listener) {
+    public RecipeViewIngredientsRecyclerViewAdapter(Context mContext, FragmentManager manager, List<IngredientAkaMO> ingredients, List<MyListMO> mylists, View.OnClickListener onClickListener) {
         this.mContext = mContext;
         this.ingredients = ingredients;
-        this.listener = listener;
+        this.onClickListener = onClickListener;
         this.manager = manager;
         this.mylists = mylists;
     }
@@ -57,7 +56,6 @@ public class RecipeViewIngredientsRecyclerViewAdapter extends RecyclerView.Adapt
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_view_ingredients_item, parent, false);
-
         return new ViewHolder(itemView);
     }
 
@@ -71,8 +69,8 @@ public class RecipeViewIngredientsRecyclerViewAdapter extends RecyclerView.Adapt
 
         holder.recipe_view_ingredients_item_tv.setText(ingredient.getING_AKA_NAME().toUpperCase());
         holder.recipe_view_ingredients_category_item_tv.setText(ingredient.getIngredientCategoryName());
-        holder.recipe_view_ingredients_item_qty_tv.setText(String.valueOf(ingredient.getING_QTY()));
-        holder.recipe_view_ingredients_item_qty_type_tv.setText(ingredient.getQTY_NAME().toUpperCase());
+        holder.recipe_view_ingredients_item_qty_tv.setText(String.valueOf(ingredient.getING_UOM_VALUE()));
+        holder.recipe_view_ingredients_item_qty_type_tv.setText(ingredient.getING_UOM_NAME().toUpperCase());
 
         /*divider*/
         if(position == ingredients.size()-1){
@@ -90,6 +88,9 @@ public class RecipeViewIngredientsRecyclerViewAdapter extends RecyclerView.Adapt
                 ing_aka_id = ingredients.get(pos).getING_AKA_ID();
             }
         });
+
+        holder.recipe_view_ingredients_item_ll.setOnClickListener(onClickListener);
+        holder.recipe_view_ingredients_item_ll.setTag(ingredient);
     }
 
     @Override
@@ -97,37 +98,9 @@ public class RecipeViewIngredientsRecyclerViewAdapter extends RecyclerView.Adapt
         return ingredients.size();
     }
 
-
-    public void addData(IngredientAkaMO ingredient) {
-        if(ingredients == null){
-            ingredients = new ArrayList<>();
-        }
-
-        if(!ingredients.isEmpty()){
-            //check if the ingredien is already added, if yes, bring it on top
-            for(IngredientAkaMO thisIngredient: ingredients){
-                if(thisIngredient.getING_AKA_NAME().equalsIgnoreCase(ingredient.getING_AKA_NAME())){
-                    ingredients.remove(thisIngredient);
-                    break;
-                }
-            }
-        }
-
-        ingredients.add(0, ingredient);
-        notifyDataSetChanged();
-    }
-
-    public void removeData(IngredientAkaMO ingredient) {
-        if(ingredients == null){
-            ingredients = new ArrayList<>();
-        }
-
-        ingredients.remove(ingredient);
-        notifyDataSetChanged();
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder implements
             View.OnCreateContextMenuListener, View.OnLongClickListener  {
+        private LinearLayout recipe_view_ingredients_item_ll;
         public CircleImageView recipe_view_ingredients_item_iv;
         public TextView recipe_view_ingredients_item_tv;
         public TextView recipe_view_ingredients_category_item_tv;
@@ -139,6 +112,7 @@ public class RecipeViewIngredientsRecyclerViewAdapter extends RecyclerView.Adapt
 
         public ViewHolder(View view) {
             super(view);
+            recipe_view_ingredients_item_ll = view.findViewById(R.id.recipe_view_ingredients_item_ll);
             recipe_view_ingredients_item_iv = view.findViewById(R.id.recipe_view_ingredients_item_iv);
             recipe_view_ingredients_item_tv = view.findViewById(R.id.recipe_view_ingredients_item_tv);
             recipe_view_ingredients_category_item_tv = view.findViewById(R.id.recipe_view_ingredients_category_item_tv);
@@ -241,6 +215,4 @@ public class RecipeViewIngredientsRecyclerViewAdapter extends RecyclerView.Adapt
         }
 
     }
-
-
 }

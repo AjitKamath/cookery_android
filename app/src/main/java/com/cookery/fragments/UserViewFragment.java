@@ -29,6 +29,7 @@ import com.cookery.utils.DateTimeUtility;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,8 @@ import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import lombok.Setter;
 
+import static com.cookery.utils.Constants.FRAGMENT_IMAGES;
+import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_USERS;
 import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
@@ -162,9 +165,16 @@ public class UserViewFragment extends DialogFragment {
                 profile_view_public_profile_image_iv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_USER_VIEW,
-                                AsyncTaskUtility.Purpose.FETCH_USER_PUBLIC_DETAILS, loggedInUser, 0)
-                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO)user).getUSER_ID());
+                        List<UserMO> images = new ArrayList<>();
+                        images.add(user);
+
+                        Object[] objects = new Object[]{0, images};
+
+                        Map<String, Object> params = new HashMap<>();
+                        params.put(GENERIC_OBJECT, objects);
+                        params.put(LOGGED_IN_USER, loggedInUser);
+
+                        Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_IMAGES, new ImagesFragment(), params);
                     }
                 });
             }

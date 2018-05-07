@@ -24,11 +24,10 @@ public final class Constants {
 
     //PHP
     public static final String PHP_CONTROLLER = "Controller.php";
+    public static final String PHP_SERVICE_URL = SERVER_ADDRESS_PUBLIC + PHP_CONTROLLER;
 
     /*PHP function keys*/
     public static final String PHP_FUNCTION_KEY = "function_key";
-    public static final String PHP_FUNCTION_KEY_FOOD_TYPE_FETCH_ALL = "FOOD_TYPE_FETCH_ALL";
-    public static final String PHP_FUNCTION_KEY_TASTE_FETCH_ALL = "TASTE_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_RECIPE_FETCH = "RECIPE_FETCH";
     public static final String PHP_FUNCTION_KEY_RECIPE_FAVORITE_FETCH = "RECIPE_FAVORITE_FETCH";
     public static final String PHP_FUNCTION_KEY_RECIPE_USER_VIEWED_FETCH = "RECIPE_USER_VIEWED_FETCH";
@@ -41,17 +40,12 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_REVIEW_DELETE = "REVIEW_DELETE";
     public static final String PHP_FUNCTION_KEY_COMMENT_DELETE = "COMMENT_DELETE";
     public static final String PHP_FUNCTION_KEY_REVIEW_RECIPE = "REVIEW_RECIPE_FETCH";
-    public static final String PHP_FUNCTION_KEY_MYLIST_SUBMIT = "PHP_FUNCTION_KEY_MYLIST_SUBMIT";
-    public static final String PHP_FUNCTION_KEY_MYLIST_SUBMIT_FROM_RECIPE = "PHP_FUNCTION_KEY_MYLIST_SUBMIT_FROM_RECIPE";
     public static final String PHP_FUNCTION_KEY_MYLIST_VIEW = "PHP_FUNCTION_KEY_MYLIST_VIEW";
-    public static final String PHP_FUNCTION_KEY_MYLIST_UPDATE = "PHP_FUNCTION_KEY_MYLIST_UPDATE";
     public static final String PHP_FUNCTION_KEY_LIKE_SUBMIT = "LIKE_SUBMIT";
     public static final String PHP_FUNCTION_KEY_FAV_SUBMIT = "FAV_SUBMIT";
     public static final String PHP_FUNCTION_KEY_COMMENT_FETCH_ALL = "COMMENT_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_LIKE_FETCH_USERS = "LIKE_FETCH_USERS";
     public static final String PHP_FUNCTION_KEY_VIEW_FETCH_USERS = "VIEW_FETCH_USERS";
-    public static final String PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL = "QUANTITY_FETCH_ALL";
-    public static final String PHP_FUNCTION_KEY_FOOD_CUISINE_FETCH_ALL = "FOOD_CUISINE_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_RECIPE_USER_FETCH = "RECIPE_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_REVIEW_USER_FETCH = "REVIEW_USER_FETCH";
     public static final String PHP_FUNCTION_KEY_REVIEW_USER_FETCH_ALL = "REVIEW_USER_FETCH_ALL";
@@ -76,6 +70,8 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_USER_SEARCH = "USER_SEARCH";
     public static final String PHP_FUNCTION_KEY_TREND_FETCH = "TREND_FETCH";
     public static final String PHP_FUNCTION_KEY_FETCH_RECIPE_IMAGES = "RECIPE_IMAGES_FETCH";
+    public static final String PHP_FUNCTION_KEY_FETCH_MASTER_DATA = "MASTER_DATA_FETCH_ALL";
+    public static final String PHP_FUNCTION_KEY_INGREDIENT_NUTRITION_FETCH = "INGREDIENT_NUTRITION_FETCH";
     /*PHP function keys*/
 
     /*Timeline keys*/
@@ -129,7 +125,7 @@ public final class Constants {
     public static final String SUCCESS = "SUCCESS";
     public static final String FAIL = "FAIL";
 
-    public static final String UI_FONT = "Roboto-Light.ttf";
+    public static final String UI_FONT = "Quicksand-Regular.otf";
 
     //Bundle Keys, Shared Prefs, Intent, fragment names
     //FRAGMENT NAMES
@@ -140,9 +136,7 @@ public final class Constants {
     public static final String FRAGMENT_COMMENT_DELETE = "FRAGMENT_COMMENT_DELETE";
     public static final String FRAGMENT_RECIPE_REVIEW = "FRAGMENT_RECIPE_REVIEW";
     public static final String FRAGMENT_RECIPE_REVIEWS = "FRAGMENT_RECIPE_REVIEWS";
-    public static final String FRAGMENT_RECIPE_IMAGES = "FRAGMENT_RECIPE_IMAGES";
-    public static final String FRAGMENT_LIKED_USERS = "FRAGMENT_LIKED_USERS";
-    public static final String FRAGMENT_RECIPE_VIEWED_USERS = "FRAGMENT_RECIPE_VIEWED_USERS";
+    public static final String FRAGMENT_IMAGES = "FRAGMENT_IMAGES";
     public static final String FRAGMENT_RECIPE_STEPS = "FRAGMENT_RECIPE_STEPS";
     public static final String FRAGMENT_COMMON_SELECTION = "FRAGMENT_COMMON_SELECTION";
     public static final String FRAGMENT_COMMON_WAIT = "FRAGMENT_COMMON_WAIT";
@@ -167,6 +161,9 @@ public final class Constants {
     public static final String FRAGMENT_NO_INTERNET = "FRAGMENT_NO_INTERNET";
     public static final String FRAGMENT_SOMETHING_WRONG = "FRAGMENT_SOMETHING_WRONG";
     public static final String FRAGMENT_COOKERY_ERROR = "FRAGMENT_COOKERY_ERROR";
+    public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
+    public static final String FRAGMENT_SHARE_SOCIAL_MEDIA = "FRAGMENT_SHARE_SOCIAL_MEDIA";
+    public static final String FRAGMENT_INGREDIENT_NUTRIENTS = "FRAGMENT_INGREDIENT_NUTRIENTS";
 
 
     //FRAGMENT OBJECT KEYS
@@ -206,7 +203,7 @@ public final class Constants {
     public final static String DEFAULT_SOCIAL_KEY = "DEFAULT_SOCIAL_KEY";
 
     //security keys
-    public final static String UNIQUE_IDENTIFIER = "UNIQUE_IDENTIFIER";
+    public final static String APP_UNIQUE_ID = "x-app-unique-id";
     public final static String API_KEY_IDENTIFIER = "x-api-key";
     public final static String API_KEY_ANDROID = "AIzaSyAxI2I8Wvt784ExlS_BBHY8uWPakM7XRBo";
 
@@ -224,4 +221,6 @@ public final class Constants {
     public final static String SIMPLE_KEY_UNIMPLEMENTED = "UNIMPL";
 
     public final static float DEFAULT_CROP_RATIO = 0.05f;   //must be between 0 to less than 0.5
+    public final static int LOUVRE_REQUEST_CODE = 1111;
+    public final static int LOUVRE_MAX_IMAGES = 10;
 }

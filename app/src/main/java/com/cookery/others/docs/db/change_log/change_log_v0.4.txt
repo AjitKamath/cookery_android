@@ -1,5 +1,0 @@
-27 aug 2017
-1. added is_def column to FOOD_TYPE & FOOD_CUISINE tables.
-
-28 aug 2017
-1. modified ING_AKA_ID FK column to ING_OR_AKA_ID in DISH table.

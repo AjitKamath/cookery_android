@@ -2,13 +2,10 @@ package com.cookery.fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.models.MessageMO;
 import com.cookery.models.UserMO;
-import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import butterknife.ButterKnife;
@@ -54,7 +49,7 @@ public class ProfileViewPasswordFragment extends DialogFragment {
     TextView profile_view_password_ok_tv;
     /*components*/
 
-    private UserMO user;
+    private UserMO loggedInUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,7 +69,7 @@ public class ProfileViewPasswordFragment extends DialogFragment {
     }
 
     private void getDataFromBundle() {
-        user = (UserMO) getArguments().get(GENERIC_OBJECT);
+        loggedInUser = (UserMO) getArguments().get(GENERIC_OBJECT);
     }
 
     private void setupPage() {
@@ -95,12 +90,17 @@ public class ProfileViewPasswordFragment extends DialogFragment {
                     Utility.showSnacks(profile_view_password_ll, "New Passwords do not match", OK, Snackbar.LENGTH_LONG);
                 }
                 else if(newPassword.equals(repeatPassword)){
-                    user.setPASSWORD(currentPassword);
-                    user.setNewPassword(newPassword);
-                    new AsyncTaskerUpdateUserPassword().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    loggedInUser.setPASSWORD(currentPassword);
+                    loggedInUser.setNewPassword(newPassword);
+                    updatePassword();
                 }
             }
         });
+    }
+
+    private void updatePassword(){
+        ((ProfileViewFragment)getTargetFragment()).updatePassword(loggedInUser);
+        dismiss();
     }
 
     // Empty constructor required for DialogFragment
@@ -140,50 +140,6 @@ public class ProfileViewPasswordFragment extends DialogFragment {
             else if(v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
             }
-        }
-    }
-
-    class AsyncTaskerUpdateUserPassword extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.updateUserPassword(user);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "updating your password..");
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            MessageMO message = (MessageMO) object;
-
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-            if(message != null && !message.isError()){
-                if(getTargetFragment() instanceof ProfileViewFragment){
-                    dismiss();
-
-                    message.setPurpose("USER_UPDATE_PASSWORD_SUCCESS");
-                }
-                else{
-                    Log.e(CLASS_NAME, "Fragment("+getTargetFragment()+") could not be understood");
-                    return;
-                }
-            }
-            else{
-                if(message == null){
-                    message = new MessageMO();
-                    message.setError(true);
-                    message.setErr_message("Something went wrong !");
-                }
-
-                message.setPurpose("USER_UPDATE_PASSWORD_FAILED");
-            }
-
-            Utility.showMessageDialog(getFragmentManager(), null, message);
         }
     }
 }

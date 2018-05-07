@@ -4,90 +4,82 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cookery.R;
-import com.cookery.models.UserMO;
-import com.cookery.utils.Utility;
+import com.cookery.models.RecipeMO;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareButton;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
-import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.UI_FONT;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
 /**
  * Created by ajit on 21/3/16.
  */
-public class ProfileViewNameFragment extends DialogFragment {
+public class ShareSocialMediaFragment extends DialogFragment {
     private final String CLASS_NAME = this.getClass().getName();
     private Context mContext;
 
-    /*components*/
-    @InjectView(R.id.profile_view_name_ll)
-    LinearLayout profile_view_name_ll;
+    @InjectView(R.id.common_share_social_media_fb)
+    ShareButton common_share_social_media_fb;
 
-    @InjectView(R.id.profile_view_name_et)
-    EditText profile_view_name_et;
-
-    @InjectView(R.id.profile_view_name_ok_tv)
-    TextView profile_view_name_ok_tv;
-    /*components*/
-
-    private UserMO loggedInUser;
+    private Object objectOfInterest;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.profile_view_name, container);
+        View view = inflater.inflate(R.layout.common_share_social_media, container);
         ButterKnife.inject(this, view);
 
         Dialog d = getDialog();
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         getDataFromBundle();
-
         setupPage();
-
-        setFont(profile_view_name_ll);
 
         return view;
     }
 
     private void getDataFromBundle() {
-        loggedInUser = (UserMO) getArguments().get(GENERIC_OBJECT);
+        objectOfInterest = getArguments().get(GENERIC_OBJECT);
     }
 
     private void setupPage() {
-        profile_view_name_et.setText(loggedInUser.getNAME());
+        if(objectOfInterest instanceof RecipeMO){
+            RecipeMO recipe = (RecipeMO) objectOfInterest;
 
-        profile_view_name_ok_tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(String.valueOf(profile_view_name_et.getText()).trim().isEmpty()){
-                    Utility.showSnacks(profile_view_name_ll, "Name cannot be empty !", OK, Snackbar.LENGTH_LONG);
-                }
-                else if(loggedInUser.getNAME().trim().equals(String.valueOf(profile_view_name_et.getText()).trim())){
+            ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                    .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.cookery"))
+                    .setQuote(recipe.getRCP_NAME()) // Name of Dish
+                    .build();
+            common_share_social_media_fb.setShareContent(linkContent);
+
+            common_share_social_media_fb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     dismiss();
                 }
-                else{
-                    loggedInUser.setNAME(String.valueOf(profile_view_name_et.getText()).trim());
-                    updateUserName();
-                }
-            }
-        });
+            });
+        }
+        else{
+            Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+objectOfInterest);
+        }
     }
 
     // Empty constructor required for DialogFragment
-    public ProfileViewNameFragment() {}
+    public ShareSocialMediaFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,7 +92,7 @@ public class ProfileViewNameFragment extends DialogFragment {
         super.onStart();
 
         Dialog d = getDialog();
-        if (d!=null) {
+        if (d != null) {
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.WRAP_CONTENT;
             d.getWindow().setLayout(width, height);
@@ -115,19 +107,13 @@ public class ProfileViewNameFragment extends DialogFragment {
         int count = group.getChildCount();
         View v;
 
-        for(int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             v = group.getChildAt(i);
-            if(v instanceof TextView) {
+            if (v instanceof TextView) {
                 ((TextView) v).setTypeface(robotoCondensedLightFont);
-            }
-            else if(v instanceof ViewGroup) {
+            } else if (v instanceof ViewGroup) {
                 setFont((ViewGroup) v);
             }
         }
-    }
-
-    private void updateUserName() {
-        ((ProfileViewFragment)getTargetFragment()).updateName(loggedInUser.getNAME());
-        dismiss();
     }
 }

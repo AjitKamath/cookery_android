@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,12 +17,10 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.models.UserMO;
-import com.cookery.utils.AsyncTaskUtility;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_GENDER;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.SCOPE_FOLLOWERS;
 import static com.cookery.utils.Constants.SCOPE_PUBLIC;
@@ -123,16 +120,13 @@ public class ProfileViewGenderFragment extends DialogFragment {
                     return;
                 }
 
-
                 if(gender.equalsIgnoreCase(loggedInUser.getGENDER().trim()) && newScopeId == loggedInUser.getGENDER_SCOPE_ID()){
                     dismiss();
                 }
                 else{
                     loggedInUser.setGENDER(gender);
                     loggedInUser.setGENDER_SCOPE_ID(newScopeId);
-                    new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW_GENDER,
-                            AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
-                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "GENDER");
+                    updateGender();
                 }
             }
         });
@@ -191,7 +185,7 @@ public class ProfileViewGenderFragment extends DialogFragment {
         }
     }
 
-    public void updateGender(){
+    private void updateGender(){
         ((ProfileViewFragment)getTargetFragment()).updateGender(loggedInUser);
         dismiss();
     }

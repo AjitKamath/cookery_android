@@ -366,30 +366,20 @@ public class LoginFragment extends DialogFragment {
         protected void onPostExecute(Object object) {
             List<UserMO> userList = (List<UserMO>)object;
 
-            if(userList != null && !userList.isEmpty() && userList.get(0) != null)
-            {
+            if(userList != null && !userList.isEmpty() && userList.get(0) != null){
                 dismiss();
+
                 Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, userList.get(0));
-
-                ((HomeActivity)getActivity()).updateLoggedInUser();
-                ((HomeActivity) getActivity()).fetchMasterContent();
-                ((HomeActivity) getActivity()).fetchHomeContent();
+                ((HomeActivity)getActivity()).loggedInUser = userList.get(0);
+                //((HomeActivity)getActivity()).updateContent();
             }
-            else
-            {
-                et_email.setText("");
+            else{
                 et_password.setText("");
-
                 Utility.showSnacks(fragment_my_recipe_header_rl, "Login failed !", OK, Snackbar.LENGTH_LONG);
             }
 
             Utility.closeWaitDialog(getFragmentManager(), fragment);
-
         }
-    }
-
-    private void dismissFragment(){
-        dismiss();
     }
 
     class AsyncTaskerCheckFirstTimeSocialLogin extends AsyncTask<UserMO, Void, Object> {

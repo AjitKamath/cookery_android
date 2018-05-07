@@ -2,7 +2,6 @@ package com.cookery.fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -25,25 +24,23 @@ import com.cookery.adapters.UsersRecyclerViewAdapter;
 import com.cookery.interfaces.ItemClickListener;
 import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.CommentMO;
+import com.cookery.models.LikesMO;
 import com.cookery.models.RecipeImageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.UserMO;
+import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.DateTimeUtility;
-import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.cookery.utils.Constants.FRAGMENT_USERS;
-import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
@@ -274,7 +271,8 @@ public class UsersFragment extends DialogFragment {
                 @Override
                 public void onItemClick(Object item) {
                     if(item instanceof UserMO){
-                        new AsyncFetchUser().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO)item).getUSER_ID());
+                        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_USERS, AsyncTaskUtility.Purpose.FETCH_USER_PUBLIC_DETAILS, loggedInUser, 0)
+                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO)item).getUSER_ID());
                     }
                     else{
                         Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+item);
@@ -284,7 +282,7 @@ public class UsersFragment extends DialogFragment {
             adapter.setOnBottomReachedListener(new OnBottomReachedListener() {
                 @Override
                 public void onBottomReached(int position) {
-                    new AsyncFetchUsers(adapter.getItemCount()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    fetchUsers(adapter.getItemCount());
                 }
             });
 
@@ -296,9 +294,55 @@ public class UsersFragment extends DialogFragment {
             users_srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    new AsyncFetchUsers(0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    fetchUsers(0);
                 }
             });
+        }
+    }
+
+    private void fetchUsers(int index){
+        if ("LIKE".equalsIgnoreCase(purpose)) {
+            LikesMO like = new LikesMO();
+            like.setUSER_ID(loggedInUser.getUSER_ID());
+
+            if(objectOfInterest instanceof RecipeMO){
+                like.setTYPE("RECIPE");
+                like.setTYPE_ID(((RecipeMO) objectOfInterest).getRCP_ID());
+            }
+            else if(objectOfInterest instanceof CommentMO){
+                like.setTYPE("COMMENT");
+                like.setTYPE_ID(((CommentMO) objectOfInterest).getCOM_ID());
+            }
+            else if (objectOfInterest instanceof ReviewMO){
+                like.setTYPE("REVIEW");
+                like.setTYPE_ID(((ReviewMO) objectOfInterest).getREV_ID());
+            }
+            else{
+                Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+objectOfInterest);
+                return;
+            }
+
+            new AsyncTaskUtility(getFragmentManager(), FRAGMENT_USERS,
+                    AsyncTaskUtility.Purpose.FETCH_USERS, loggedInUser, index)
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "LIKE", like, objectOfInterest);
+
+        } else if ("VIEW".equalsIgnoreCase(purpose)) {
+            new AsyncTaskUtility(getFragmentManager(), FRAGMENT_USERS,
+                    AsyncTaskUtility.Purpose.FETCH_USERS, loggedInUser, index)
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "VIEW", objectOfInterest);
+        }
+        else if ("FOLLOWERS".equalsIgnoreCase(purpose)) {
+            new AsyncTaskUtility(getFragmentManager(), FRAGMENT_USERS,
+                    AsyncTaskUtility.Purpose.FETCH_USERS, loggedInUser, index)
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "FOLLOWERS", objectOfInterest);
+        }
+        else if ("FOLLOWINGS".equalsIgnoreCase(purpose)) {
+            new AsyncTaskUtility(getFragmentManager(), FRAGMENT_USERS,
+                    AsyncTaskUtility.Purpose.FETCH_USERS, loggedInUser, index)
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "FOLLOWINGS", objectOfInterest);
+        }
+        else {
+            Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE + purpose);
         }
     }
 
@@ -413,97 +457,7 @@ public class UsersFragment extends DialogFragment {
         }
     }
 
-    class AsyncFetchUsers extends AsyncTask<Void, Void, Object> {
-        private int index;
-
-        public AsyncFetchUsers(int index){
-            this.index = index;
-        }
-
-        @Override
-        protected void onPreExecute() {}
-
-        @Override
-        protected Object doInBackground(Void... objects) {
-            if ("LIKE".equalsIgnoreCase(purpose)) {
-                if(objectOfInterest instanceof RecipeMO){
-                    return InternetUtility.fetchLikedUsers(loggedInUser.getUSER_ID(), "RECIPE", ((RecipeMO)objectOfInterest).getRCP_ID(), index);
-                }
-                else if(objectOfInterest instanceof CommentMO){
-                    return InternetUtility.fetchLikedUsers(loggedInUser.getUSER_ID(), "COMMENT", ((CommentMO)objectOfInterest).getCOM_ID(), index);
-                }
-                else if (objectOfInterest instanceof ReviewMO){
-                    return InternetUtility.fetchLikedUsers(loggedInUser.getUSER_ID(), "REVIEW", ((ReviewMO)objectOfInterest).getREV_ID(), index);
-                }
-                else{
-                    Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+objectOfInterest);
-                }
-            } else if ("VIEW".equalsIgnoreCase(purpose)) {
-                return InternetUtility.fetchViewedUsers(loggedInUser.getUSER_ID(), (RecipeMO)objectOfInterest, index);
-            }
-            else if ("FOLLOWERS".equalsIgnoreCase(purpose)) {
-                return InternetUtility.fetchUserFollowers(((UserMO)objectOfInterest).getUSER_ID(), loggedInUser.getUSER_ID(), index);
-            }
-            else if ("FOLLOWINGS".equalsIgnoreCase(purpose)) {
-                return InternetUtility.fetchUserFollowings(((UserMO)objectOfInterest).getUSER_ID(), loggedInUser.getUSER_ID(), index);
-            }
-            else {
-                Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE + purpose);
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            if (object == null) {
-                return;
-            }
-
-            List<UserMO> users = (List<UserMO>) object;
-
-            if (users != null && !users.isEmpty()) {
-                updateUsers(index, users);
-            }
-            else{
-                ((UsersRecyclerViewAdapter)users_rv.getAdapter()).setOnBottomReachedListener(null);
-            }
-        }
-    }
-
-    class AsyncFetchUser extends AsyncTask<Object, Void, Object> {
-        private Fragment fragment;
-
-        @Override
-        protected void onPreExecute() {
-            fragment = Utility.showWaitDialog(getFragmentManager(), "fetching user details ..");
-        }
-
-        @Override
-        protected Object doInBackground(Object... objects) {
-            return InternetUtility.fetchUsersPublicDetails(Integer.parseInt(String.valueOf(objects[0])), loggedInUser.getUSER_ID());
-        }
-
-        @Override
-        protected void onPostExecute(Object object) {
-            Utility.closeWaitDialog(getFragmentManager(), fragment);
-
-            if (object == null) {
-                return;
-            }
-
-            List<UserMO> users = (List<UserMO>) object;
-
-            if (users != null && !users.isEmpty()) {
-                Map<String, Object> bundleMap = new HashMap<String, Object>();
-                bundleMap.put(GENERIC_OBJECT, users.get(0));
-
-                Utility.showFragment(getFragmentManager(), FRAGMENT_USERS, FRAGMENT_USER_VIEW, new UserViewFragment(), bundleMap);
-
-            }
-            else{
-                Log.e(CLASS_NAME, "Failed to fetch users details");
-            }
-        }
+    public void updateUsers(List<UserMO> users, Integer index) {
+        ((UsersRecyclerViewAdapter)users_rv.getAdapter()).updateUsers(index, users);
     }
 }

@@ -60,6 +60,7 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/recipe_view_options_iv"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_alignParentRight="true"
@@ -116,14 +117,6 @@
             android:text="RECIPE NAME"
             android:textColor="@color/primaryDarkText"
             android:textSize="@dimen/secondary_text_size" />
-
-        <com.facebook.share.widget.ShareButton
-            android:id="@+id/fb_share_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_marginLeft="120dp"
-            android:text="share"/>
 
         </LinearLayout>
 
@@ -202,28 +195,14 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/common_fragment_recipe_like_ll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/common_fragment_recipe_like_iv"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:src="@drawable/heart_unselected"
-                    android:tag="UNSELECTED" />
+                <include layout="@layout/common_like_view" />
 
-                <TextView
-                    android:id="@+id/common_fragment_recipe_like_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="0"
-                    android:textColor="@color/primaryDarkText"
-                    android:textSize="@dimen/tertiary_text_size" />
             </LinearLayout>
 
             <LinearLayout

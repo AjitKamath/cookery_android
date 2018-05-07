@@ -1,7 +1,9 @@
 package com.cookery.activities;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -11,7 +13,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.MenuItem;
@@ -23,11 +24,14 @@ import com.cookery.adapters.HomeTimelinesTrendsViewPagerAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
 import com.cookery.fragments.TimelineDeleteFragment;
 import com.cookery.fragments.TimelineHideFragment;
+import com.cookery.interfaces.OnBottomReachedListener;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.TimelineMO;
+import com.cookery.models.TrendMO;
 import com.cookery.models.UserMO;
 import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.Utility;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,9 +41,11 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
 import static com.cookery.utils.Constants.FRAGMENT_TIMELINE_DELETE;
 import static com.cookery.utils.Constants.FRAGMENT_TIMELINE_HIDE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.LOUVRE_REQUEST_CODE;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
 public class HomeActivity extends CommonActivity{
@@ -81,9 +87,47 @@ public class HomeActivity extends CommonActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.inject(this);
+
+        if(initialLoggedInUserCheck()){
+            setupPage();
+
+            setupSearch();
+            setupFab();
+            setupRateUs();
+            setupNavigator();
+        }
     }
 
-    private void prepareTabs(Object array[]) {
+    private void loadHomeContent() {
+        new AsyncTaskUtility(getFragmentManager(), this,
+                AsyncTaskUtility.Purpose.FETCH_STORIES_SELF, loggedInUser, 0)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        new AsyncTaskUtility(getFragmentManager(), this,
+                AsyncTaskUtility.Purpose.FETCH_TRENDS_SELF, loggedInUser, 0)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        new AsyncTaskUtility(getFragmentManager(), this,
+                AsyncTaskUtility.Purpose.FETCH_TIMELINE_SELF, loggedInUser, 0)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public void updateTimelines(int index, List<TimelineMO> timelines){
+        ((HomeTimelinesTrendsViewPagerAdapter)content_home_timelines_trends_vp.getAdapter())
+                .updateTimelines(index, timelines);
+    }
+
+    public void updateStories(int index, List<TimelineMO> stories){
+        ((HomeTimelinesTrendsViewPagerAdapter)content_home_timelines_trends_vp.getAdapter())
+                .updateStories(index, stories);
+    }
+
+    public void updateTrends(List<TrendMO> trends){
+        ((HomeTimelinesTrendsViewPagerAdapter)content_home_timelines_trends_vp.getAdapter())
+                .updateTrends(trends);
+    }
+
+    private void setupPage(){
         final List<Integer> viewPagerTabsList = new ArrayList<>();
         viewPagerTabsList.add(R.layout.home_stories);
         viewPagerTabsList.add(R.layout.home_trends);
@@ -94,44 +138,72 @@ public class HomeActivity extends CommonActivity{
         }
 
         final Activity activity = this;
-        HomeTimelinesTrendsViewPagerAdapter adapter = new HomeTimelinesTrendsViewPagerAdapter(mContext, viewPagerTabsList, loggedInUser, array, new View.OnClickListener() {
+        content_home_timelines_trends_vp.setAdapter(new HomeTimelinesTrendsViewPagerAdapter(mContext, viewPagerTabsList, loggedInUser, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(view.getTag() != null){
-                    if(view.getId() == R.id.home_timeline_user_follow_unfollow_item_photo_iv) {
+                if (view.getTag() != null) {
+                    if (view.getId() == R.id.home_timeline_user_follow_unfollow_item_photo_iv) {
                         new AsyncTaskUtility(getFragmentManager(), activity, AsyncTaskUtility.Purpose.FETCH_USER_PUBLIC_DETAILS, loggedInUser, 0)
                                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Integer) view.getTag());
-                    }
-                    else if (view.getTag() instanceof RecipeMO) {
+                    } else if (view.getTag() instanceof RecipeMO) {
                         new AsyncTaskUtility(getFragmentManager(), activity, AsyncTaskUtility.Purpose.FETCH_RECIPE, loggedInUser, 0)
                                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (RecipeMO) view.getTag());
-                    }
-                    else if (view.getTag() instanceof UserMO) {
+                    } else if (view.getTag() instanceof UserMO) {
                         new AsyncTaskUtility(getFragmentManager(), activity, AsyncTaskUtility.Purpose.FETCH_USER_PUBLIC_DETAILS, loggedInUser, 0)
-                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO)view.getTag()).getUSER_ID());
+                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ((UserMO) view.getTag()).getUSER_ID());
+                    } else {
+                        Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE + view.getTag());
                     }
-                    else{
-                        Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+view.getTag());
-                    }
-                }
-                else{
+                } else {
                     Log.e(CLASS_NAME, "View Tag is null !");
                 }
             }
         }, new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                fetchTimelineContent();
+                switch(content_home_timelines_trends_vp.getCurrentItem()){
+                    case 0 : new AsyncTaskUtility(getFragmentManager(), activity,
+                                AsyncTaskUtility.Purpose.FETCH_STORIES_SELF, loggedInUser, 0)
+                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); break;
+
+                    case 2 : new AsyncTaskUtility(getFragmentManager(), activity,
+                                AsyncTaskUtility.Purpose.FETCH_TIMELINE_SELF, loggedInUser, 0)
+                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); break;
+
+                    default: Log.e(CLASS_NAME, "Error ! onRefresh is not yet handled in this tab. New kind of tab?");
+                }
+            }
+        }, new OnBottomReachedListener() {
+            @Override
+            public void onBottomReached(int position) {
+                int itemsCount = 0;
+
+                switch(content_home_timelines_trends_vp.getCurrentItem()){
+                    case 0 :
+                            itemsCount = ((HomeTimelinesTrendsViewPagerAdapter)content_home_timelines_trends_vp.getAdapter()).getHome_stories_rv().getAdapter().getItemCount();
+
+                            new AsyncTaskUtility(getFragmentManager(), activity,
+                                AsyncTaskUtility.Purpose.FETCH_STORIES_SELF, loggedInUser, itemsCount)
+                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); break;
+
+                    case 2 :
+                            itemsCount = ((HomeTimelinesTrendsViewPagerAdapter)content_home_timelines_trends_vp.getAdapter()).getHome_timelines_rv().getAdapter().getItemCount();
+
+                            new AsyncTaskUtility(getFragmentManager(), activity,
+                                AsyncTaskUtility.Purpose.FETCH_TIMELINE_SELF, loggedInUser, itemsCount)
+                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); break;
+
+                    default: Log.e(CLASS_NAME, "Error ! OnBottomReached is not yet handled in this tab. New kind of tab?");
+                }
             }
         }, new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if(R.id.timeline_options_hide == item.getItemId()){
-                    if(item.getActionView() == null){
+                if (R.id.timeline_options_hide == item.getItemId()) {
+                    if (item.getActionView() == null) {
                         Log.e(CLASS_NAME, "Error ! View associated with menu item is null.");
                         return false;
-                    }
-                    else if(item.getActionView().getTag() == null ){
+                    } else if (item.getActionView().getTag() == null) {
                         Log.e(CLASS_NAME, "Error ! Object in view tag is null.");
                         return false;
                     }
@@ -140,13 +212,11 @@ public class HomeActivity extends CommonActivity{
                     paramsMap.put(GENERIC_OBJECT, item.getActionView().getTag());
 
                     Utility.showFragment(getFragmentManager(), null, FRAGMENT_TIMELINE_HIDE, new TimelineHideFragment(), paramsMap);
-                }
-                else if(R.id.timeline_options_delete == item.getItemId()){
-                    if(item.getActionView() == null){
+                } else if (R.id.timeline_options_delete == item.getItemId()) {
+                    if (item.getActionView() == null) {
                         Log.e(CLASS_NAME, "Error ! View associated with menu item is null.");
                         return false;
-                    }
-                    else if(item.getActionView().getTag() == null ){
+                    } else if (item.getActionView().getTag() == null) {
                         Log.e(CLASS_NAME, "Error ! Object in view tag is null.");
                         return false;
                     }
@@ -155,19 +225,15 @@ public class HomeActivity extends CommonActivity{
                     paramsMap.put(GENERIC_OBJECT, item.getActionView().getTag());
 
                     Utility.showFragment(getFragmentManager(), null, FRAGMENT_TIMELINE_DELETE, new TimelineDeleteFragment(), paramsMap);
-                }
-                else{
+                } else {
                     Log.e(CLASS_NAME, "Error ! Unimplemented menu item !");
                     return true;
                 }
 
                 return false;
             }
-        });
+        }));
 
-        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        content_home_timelines_trends_vp.setAdapter(adapter);
         content_home_timelines_trends_vp.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(content_home_timelines_trends_tl));
 
         content_home_timelines_trends_tl.setupWithViewPager(content_home_timelines_trends_vp);
@@ -187,6 +253,8 @@ public class HomeActivity extends CommonActivity{
 
             }
         });
+
+        loadHomeContent();
     }
 
     public void updateTimelinePrivacy(TimelineMO timeline){
@@ -195,6 +263,14 @@ public class HomeActivity extends CommonActivity{
 
     public void deleteTimeline(TimelineMO timeline){
         ((HomeTimelinesTrendsViewPagerAdapter)content_home_timelines_trends_vp.getAdapter()).deleteTimeline(timeline);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE || requestCode == LOUVRE_REQUEST_CODE){
+            Fragment recipeAddFragment = getFragmentManager().findFragmentByTag(FRAGMENT_ADD_RECIPE);
+            recipeAddFragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -225,10 +301,5 @@ public class HomeActivity extends CommonActivity{
     @Override
     protected ImageView getCommon_header_search_iv(){
         return common_header_search_iv;
-    }
-
-    @Override
-    protected void setUpTabs(Object array[]) {
-        this.prepareTabs(array);
     }
 }

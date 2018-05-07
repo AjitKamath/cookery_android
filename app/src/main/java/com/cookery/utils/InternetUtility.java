@@ -4,18 +4,16 @@ import android.util.Log;
 
 import com.cookery.exceptions.CookeryException;
 import com.cookery.models.CommentMO;
-import com.cookery.models.CuisineMO;
 import com.cookery.models.FavouritesMO;
-import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientAkaMO;
+import com.cookery.models.IngredientMO;
 import com.cookery.models.LikesMO;
+import com.cookery.models.MasterDataMO;
 import com.cookery.models.MessageMO;
 import com.cookery.models.MyListMO;
-import com.cookery.models.QuantityMO;
 import com.cookery.models.RecipeImageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
-import com.cookery.models.TasteMO;
 import com.cookery.models.TimelineMO;
 import com.cookery.models.TrendMO;
 import com.cookery.models.UserMO;
@@ -31,24 +29,19 @@ import java.util.Map;
 
 import static com.cookery.utils.Constants.API_KEY_ANDROID;
 import static com.cookery.utils.Constants.API_KEY_IDENTIFIER;
-import static com.cookery.utils.Constants.PHP_CONTROLLER;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_DELETE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_COMMENT_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FAV_SUBMIT;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FETCH_MASTER_DATA;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FETCH_RECIPE_IMAGES;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FOOD_CUISINE_FETCH_ALL;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_FOOD_TYPE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_INGREDIENT_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_INGREDIENT_NUTRITION_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_FETCH_USERS;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_LIKE_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_FETCH;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_SUBMIT;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_SUBMIT_FROM_RECIPE;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_UPDATE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_MYLIST_VIEW;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_FAVORITE_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_RECIPE_REVIEW_FETCH;
@@ -62,7 +55,6 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_USER_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_REVIEW_USER_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_STORY_USER_FETCH;
-import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TASTE_FETCH_ALL;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_DELETE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_SCOPE_MODIFY;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_USER_FETCH;
@@ -83,7 +75,7 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_NAME;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_PASSWORD;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_PHONE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_VIEW_FETCH_USERS;
-import static com.cookery.utils.Constants.SERVER_ADDRESS_PUBLIC;
+import static com.cookery.utils.Constants.PHP_SERVICE_URL;
 import static com.cookery.utils.Constants.SERVER_CHARSET;
 
 /**
@@ -140,14 +132,6 @@ public class InternetUtility {
         return Utility.jsonToObject(jsonStr, RecipeMO.class);
     }
 
-    public static Object fetchAllFoodTypes() {
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_FOOD_TYPE_FETCH_ALL);
-
-        String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, FoodTypeMO.class);
-    }
-
     public static Object fetchIngredients(String query) {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_INGREDIENT_FETCH);
@@ -167,14 +151,6 @@ public class InternetUtility {
         return Utility.jsonToObject(jsonStr, RecipeMO.class);
     }
 
-    public static Object fetchAllTastes() {
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_TASTE_FETCH_ALL);
-
-        String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, TasteMO.class);
-    }
-
     public static Object fetchUsersRecipeReview(UserMO loggedInUser, RecipeMO recipe) {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_REVIEW_USER_FETCH);
@@ -186,7 +162,7 @@ public class InternetUtility {
     }
 
     public static Object submitRecipe(RecipeMO recipe) {
-        MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS_PUBLIC + PHP_CONTROLLER, SERVER_CHARSET);
+        MultipartUtility multipart = getMultipartUtility();
 
         //images
         //Note: image upload doesnt work if you do not add form field to multipart.
@@ -206,8 +182,8 @@ public class InternetUtility {
         for (int i = 0; i < recipe.getIngredients().size(); i++) {
             multipart.addFormField("ing_aka_id[" + i + "]", String.valueOf(recipe.getIngredients().get(i).getING_AKA_ID()));
             multipart.addFormField("ing_aka_name[" + i + "]", String.valueOf(recipe.getIngredients().get(i).getING_AKA_NAME()));
-            multipart.addFormField("ing_qty[" + i + "]", String.valueOf(recipe.getIngredients().get(i).getQTY()));
-            multipart.addFormField("qty_id[" + i + "]", String.valueOf(recipe.getIngredients().get(i).getQuantity().getQTY_ID()));
+            multipart.addFormField("ing_uom_value[" + i + "]", String.valueOf(recipe.getIngredients().get(i).getING_UOM_VALUE()));
+            multipart.addFormField("ing_uom_id[" + i + "]", String.valueOf(recipe.getIngredients().get(i).getQuantity().getING_UOM_ID()));
         }
 
         /*steps*/
@@ -235,8 +211,7 @@ public class InternetUtility {
     }
 
     public static MessageMO saveList(MyListMO mylistObj) {
-        MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS_PUBLIC + PHP_CONTROLLER, SERVER_CHARSET);
-        multipart.addFormField(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_SUBMIT);
+        MultipartUtility multipart = getMultipartUtility();
 
         multipart.addFormField("list_name", String.valueOf(mylistObj.getLIST_NAME()));
         multipart.addFormField("user_id", String.valueOf(mylistObj.getUSER_ID()));
@@ -252,8 +227,7 @@ public class InternetUtility {
     }
 
     public static MessageMO saveListFromRecipe(MyListMO mylistObj) {
-        MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS_PUBLIC + PHP_CONTROLLER, SERVER_CHARSET);
-        multipart.addFormField(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_SUBMIT_FROM_RECIPE);
+        MultipartUtility multipart = getMultipartUtility();
 
         multipart.addFormField("list_id", String.valueOf(mylistObj.getLIST_ID()));
         multipart.addFormField("ing_aka_id", String.valueOf(mylistObj.getING_AKA_ID()));
@@ -263,8 +237,7 @@ public class InternetUtility {
 
 
     public static MessageMO updateList(MyListMO mylistObj) {
-        MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS_PUBLIC + PHP_CONTROLLER, SERVER_CHARSET);
-        multipart.addFormField(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_UPDATE);
+        MultipartUtility multipart = getMultipartUtility();
 
         multipart.addFormField("list_id", String.valueOf(mylistObj.getLIST_ID()));
         multipart.addFormField("list_name", String.valueOf(mylistObj.getLIST_NAME()));
@@ -385,30 +358,8 @@ public class InternetUtility {
         return (List<ReviewMO>) Utility.jsonToObject(jsonStr, ReviewMO.class);
     }
 
-    public static Object fetchAllQuantities() {
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_QUANTITY_FETCH_ALL);
-
-        String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, QuantityMO.class);
-    }
-
-    public static Object fetchAllCuisines() {
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_FOOD_CUISINE_FETCH_ALL);
-
-        String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, CuisineMO.class);
-
-    }
-
     public static String getResponseFromCookery(Map<String, String> paramMap) throws CookeryException {
-        final String url = SERVER_ADDRESS_PUBLIC + PHP_CONTROLLER;
-
-        MultipartUtility multipart = new MultipartUtility(url, SERVER_CHARSET);
-
-        //keep security related stuff in header only
-        multipart.addHeaderField(API_KEY_IDENTIFIER, API_KEY_ANDROID + 1);
+        MultipartUtility multipart = getMultipartUtility();
 
         if (paramMap != null && !paramMap.isEmpty()) {
             for (Map.Entry<String, String> iter : paramMap.entrySet()) {
@@ -421,14 +372,23 @@ public class InternetUtility {
         Date end = new Date();
 
         Log.i(CLASS_NAME, "*");
-        Log.i(CLASS_NAME, "*** POST (" + (double) (end.getTime() - start.getTime()) / 1000 + " seconds)***");
-        Log.i(CLASS_NAME, "URL : " + url);
+        Log.i(CLASS_NAME, "*** POST ***");
+        Log.i(CLASS_NAME, "URL : " + PHP_SERVICE_URL);
         Log.i(CLASS_NAME, "PARAMS : " + paramMap);
         Log.i(CLASS_NAME, "RESPONSE : " + response);
-        Log.i(CLASS_NAME, "*** POST ***");
+        Log.i(CLASS_NAME, "RESPONSE TIME : " + (double) (end.getTime() - start.getTime()) / 1000 + " seconds");
         Log.i(CLASS_NAME, "*");
 
         return response;
+    }
+
+    private static MultipartUtility getMultipartUtility(){
+        MultipartUtility multipart = new MultipartUtility(PHP_SERVICE_URL, SERVER_CHARSET);
+
+        //keep security related stuff in header only
+        multipart.addHeaderField(API_KEY_IDENTIFIER, API_KEY_ANDROID + 1);
+
+        return multipart;
     }
 
     public static List<RecipeMO> fetchMyRecipes(int user_id, int index) {
@@ -453,8 +413,6 @@ public class InternetUtility {
 
     }
 
-
-    //public static List<MyListMO> fetchUserList(int userId, int index) {
     public static List<MyListMO> fetchUserList(int userId) {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_MYLIST_FETCH);
@@ -466,7 +424,7 @@ public class InternetUtility {
 
     }
 
-    public static List<TimelineMO> getFetchUserTimeline(int userId, int index) {
+    public static List<TimelineMO> fetchUserTimeline(int userId, int index) {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_TIMELINE_USER_FETCH);
         paramMap.put("user_id", String.valueOf(userId));
@@ -477,7 +435,7 @@ public class InternetUtility {
 
     }
 
-    public static List<TimelineMO> getFetchUserStories(int userId, int index) throws CookeryException {
+    public static List<TimelineMO> fetchUserStories(int userId, int index) throws CookeryException {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_STORY_USER_FETCH);
         paramMap.put("user_id", String.valueOf(userId));
@@ -487,7 +445,7 @@ public class InternetUtility {
         return (List<TimelineMO>) Utility.jsonToObject(jsonStr, TimelineMO.class);
     }
 
-    public static List<TrendMO> getFetchTrends(int user_id) {
+    public static List<TrendMO> fetchTrends(int user_id) {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_TREND_FETCH);
         paramMap.put("user_id", String.valueOf(user_id));
@@ -555,7 +513,7 @@ public class InternetUtility {
         paramMap.put("name", String.valueOf(user.getNAME()));
 
         String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, MessageMO.class);
+        return Utility.jsonToObject(jsonStr, UserMO.class);
     }
 
     public static Object updateUserEmail(UserMO user) {
@@ -566,7 +524,7 @@ public class InternetUtility {
         paramMap.put("scope_id", String.valueOf(user.getEMAIL_SCOPE_ID()));
 
         String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, MessageMO.class);
+        return Utility.jsonToObject(jsonStr, UserMO.class);
     }
 
     public static Object updateUserPassword(UserMO user) {
@@ -577,7 +535,7 @@ public class InternetUtility {
         paramMap.put("new_password", String.valueOf(user.getNewPassword()));
 
         String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, MessageMO.class);
+        return Utility.jsonToObject(jsonStr, UserMO.class);
     }
 
     public static Object updateUserPhone(UserMO user) {
@@ -588,7 +546,7 @@ public class InternetUtility {
         paramMap.put("scope_id", String.valueOf(user.getMOBILE_SCOPE_ID()));
 
         String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, MessageMO.class);
+        return Utility.jsonToObject(jsonStr, UserMO.class);
     }
 
     public static Object updateUserGender(UserMO user) {
@@ -599,11 +557,11 @@ public class InternetUtility {
         paramMap.put("scope_id", String.valueOf(user.getGENDER_SCOPE_ID()));
 
         String jsonStr = getResponseFromCookery(paramMap);
-        return Utility.jsonToObject(jsonStr, MessageMO.class);
+        return Utility.jsonToObject(jsonStr, UserMO.class);
     }
 
     public static Object updateUserImage(UserMO user) {
-        MultipartUtility multipart = new MultipartUtility(SERVER_ADDRESS_PUBLIC + PHP_CONTROLLER, SERVER_CHARSET);
+        MultipartUtility multipart = getMultipartUtility();
 
         //images
         //Note: image upload doesnt work if you do not add form field to multipart.
@@ -613,7 +571,7 @@ public class InternetUtility {
         multipart.addFormField("user_id", String.valueOf(user.getUSER_ID()));
 
         String jsonStr = multipart.finish();
-        return Utility.jsonToObject(jsonStr, MessageMO.class);
+        return Utility.jsonToObject(jsonStr, UserMO.class);
     }
 
     public static List<UserMO> fetchUsersPublicDetails(int userId, int loggedInUserId) {
@@ -696,5 +654,22 @@ public class InternetUtility {
 
         String jsonStr = getResponseFromCookery(paramMap);
         return Utility.jsonToObject(jsonStr, RecipeImageMO.class);
+    }
+
+    public static Object fetchMasterData() {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_FETCH_MASTER_DATA);
+
+        String jsonStr = getResponseFromCookery(paramMap);
+        return Utility.jsonToObject(jsonStr, MasterDataMO.class);
+    }
+
+    public static Object fetchIngredientNutrients(IngredientAkaMO ingredient) {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_INGREDIENT_NUTRITION_FETCH);
+        paramMap.put("ing_id", String.valueOf(ingredient.getING_ID()));
+
+        String jsonStr = getResponseFromCookery(paramMap);
+        return Utility.jsonToObject(jsonStr, IngredientMO.class);
     }
 }

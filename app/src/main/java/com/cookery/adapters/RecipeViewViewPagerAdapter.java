@@ -30,16 +30,15 @@ public class RecipeViewViewPagerAdapter extends PagerAdapter {
 
     private List<Integer> layouts;
     public RecipeMO recipe;
-    private View.OnClickListener listener;
+    private View.OnClickListener onClickListener;
     private FragmentManager manager;
 
-    public RecipeViewViewPagerAdapter(Context context,FragmentManager manager, List<Integer> layouts, RecipeMO recipe, View.OnClickListener listener) {
+    public RecipeViewViewPagerAdapter(Context context,FragmentManager manager, List<Integer> layouts, RecipeMO recipe, View.OnClickListener onClickListener) {
         this.mContext = context;
         this.layouts = layouts;
         this.recipe = recipe;
         this.manager = manager;
-        this.listener = listener;
-
+        this.onClickListener = onClickListener;
     }
 
     @Override
@@ -59,20 +58,13 @@ public class RecipeViewViewPagerAdapter extends PagerAdapter {
     }
 
     private void setupRecipeIngredients(ViewGroup layout) {
-        final RecipeViewIngredientsRecyclerViewAdapter adapter = new RecipeViewIngredientsRecyclerViewAdapter(mContext,manager,recipe.getIngredients(), recipe.getMylists() ,new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-
         RecyclerView view_pager_recipe_ingredients_rv = layout.findViewById(R.id.recipe_view_ingredients_rv);
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         view_pager_recipe_ingredients_rv.setLayoutManager(mLayoutManager);
         view_pager_recipe_ingredients_rv.setItemAnimator(new DefaultItemAnimator());
-        view_pager_recipe_ingredients_rv.setAdapter(adapter);
+        view_pager_recipe_ingredients_rv.setAdapter(new RecipeViewIngredientsRecyclerViewAdapter(mContext,manager,recipe.getIngredients(), recipe.getMylists(), onClickListener));
     }
-
 
     private void setupRecipeSteps(ViewGroup layout) {
         ImageView recipe_view_recipe_steps_fullscreen_iv = layout.findViewById(R.id.recipe_view_recipe_steps_fullscreen_iv);
@@ -88,7 +80,7 @@ public class RecipeViewViewPagerAdapter extends PagerAdapter {
             }
         }));
 
-        recipe_view_recipe_steps_fullscreen_iv.setOnClickListener(listener);
+        recipe_view_recipe_steps_fullscreen_iv.setOnClickListener(onClickListener);
     }
 
     @Override
