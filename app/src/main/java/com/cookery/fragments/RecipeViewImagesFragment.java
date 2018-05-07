@@ -33,7 +33,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -210,6 +209,7 @@ public class RecipeViewImagesFragment extends DialogFragment {
                 url = new URL(image);
                 String pathl = "";
                 int count;
+                FileOutputStream fos = null;
                 try {
                     File f = new File(storeDir);
                     if (!f.exists()) {
@@ -220,25 +220,15 @@ public class RecipeViewImagesFragment extends DialogFragment {
                     String pathr = url.getPath();
                     String filename = pathr.substring(pathr.lastIndexOf('/') + 1);
                     pathl = storeDir + "/" + filename;
-                    FileOutputStream fos = null;
-                    try {
-                        fos = new FileOutputStream(pathl);
 
-                        byte data[] = new byte[1024];
-                        long total = 0;
-                        while ((count = is.read(data)) != -1) {
-                            total += count;
-                            // writing data to output file
-                            fos.write(data, 0, count);
+                    fos = new FileOutputStream(pathl);
 
-                        }
-                    }
-                    catch (IOException exp)
-                    {
-                        exp.printStackTrace();
-                    }
-                    finally {
-                        fos.close();
+                    byte data[] = new byte[1024];
+                    long total = 0;
+                    while ((count = is.read(data)) != -1) {
+                        total += count;
+                        // writing data to output file
+                        fos.write(data, 0, count);
                     }
 
                     is.close();
@@ -249,12 +239,14 @@ public class RecipeViewImagesFragment extends DialogFragment {
                     Toast.makeText(mContext, "Download failed", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
 
+                }finally {
+                    fos.close();
                 }
-
-            } catch (MalformedURLException e) {
+            } catch (Exception e) {
                 Toast.makeText(mContext, "Download failed", Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
+
             return null;
         }
 
@@ -274,9 +266,10 @@ public class RecipeViewImagesFragment extends DialogFragment {
         protected Void doInBackground(List<RecipeImageMO>... objects) {
             URL url;
             String storeDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + GALLERY_DIR;
-
+            FileOutputStream fos=null;
+            try {
             for (int i = 0; i < objects[0].size(); i++) {
-                try {
+
                     String image = SERVER_ADDRESS + objects[0].get(i).getRCP_IMG();
                     url = new URL(image);
                     String pathl = "";
@@ -291,32 +284,28 @@ public class RecipeViewImagesFragment extends DialogFragment {
                     String pathr = url.getPath();
                     String filename = pathr.substring(pathr.lastIndexOf('/') + 1);
                     pathl = storeDir + "/" + filename;
-                    FileOutputStream fos=null;
-                    try {
-                        fos = new FileOutputStream(pathl);
+                    fos = new FileOutputStream(pathl);
 
-                        byte data[] = new byte[1024];
-                        long total = 0;
-                        publishProgress(objects[0].get(i).getRCP_IMG());
-                        while ((count = is.read(data)) != -1) {
-                            total += count;
-                            // writing data to output file
-                            fos.write(data, 0, count);
-                        }
-                    }
-                    catch (IOException exp)
-                    {
-                     exp.printStackTrace();
-                    }
-                    finally {
-                        fos.close();
+                    byte data[] = new byte[1024];
+                    long total = 0;
+                    publishProgress(objects[0].get(i).getRCP_IMG());
+                    while ((count = is.read(data)) != -1) {
+                        total += count;
+                        // writing data to output file
+                        fos.write(data, 0, count);
                     }
                     is.close();
                     fos.flush();
+            }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            finally {
+                try {
+                    fos.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
             return null;
         }
