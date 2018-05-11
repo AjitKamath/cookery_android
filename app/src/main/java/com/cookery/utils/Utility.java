@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -63,7 +61,6 @@ import com.cookery.models.MyListMO;
 import com.cookery.models.RecipeImageMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
-import com.cookery.models.TasteMO;
 import com.cookery.models.TimelineMO;
 import com.cookery.models.TrendMO;
 import com.cookery.models.UserMO;
@@ -73,11 +70,7 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -298,9 +291,6 @@ public class Utility extends Activity {
             else if(mappingClass.equals(IngredientUOMMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<IngredientUOMMO>>(){}.getType());
             }
-            else if(mappingClass.equals(TasteMO.class)){
-                return gson.fromJson(jsonStr, new TypeToken<List<TasteMO>>(){}.getType());
-            }
             else if(mappingClass.equals(RecipeMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<RecipeMO>>(){}.getType());
             }
@@ -401,7 +391,6 @@ public class Utility extends Activity {
         if(parentFragmentNameStr != null && !parentFragmentNameStr.trim().isEmpty()){
             parentFragment = fragmentManager.findFragmentByTag(parentFragmentNameStr);
         }
-
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(SELECTED_ITEM, recipe);
@@ -778,20 +767,5 @@ public class Utility extends Activity {
             serial = "serial"; // some value
         }
         return "android-" + new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
-    }
-
-    public static Bitmap getBitmapFromURL(String src) {
-        try {
-            URL url = new URL(SERVER_ADDRESS+src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            Log.e(CLASS_NAME, "Error ! "+e);
-            return null;
-        }
     }
 }

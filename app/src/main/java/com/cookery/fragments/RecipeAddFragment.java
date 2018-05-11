@@ -135,8 +135,7 @@ public class RecipeAddFragment extends DialogFragment {
         masterData = (MasterDataMO) getArguments().get(MASTER);
         if(masterData == null || masterData.getFoodCuisines() == null || masterData.getFoodCuisines().isEmpty()
                 || masterData.getFoodTypes() == null || masterData.getFoodTypes().isEmpty()
-                || masterData.getIngredientUOMs() == null || masterData.getIngredientUOMs().isEmpty()
-                || masterData.getTastes() == null || masterData.getTastes().isEmpty()){
+                || masterData.getIngredientUOMs() == null || masterData.getIngredientUOMs().isEmpty()){
 
             Log.e(CLASS_NAME, "Error ! Master data is null or required data in master data is not found !");
             dismiss();
@@ -220,7 +219,7 @@ public class RecipeAddFragment extends DialogFragment {
         this.recipe.setFOOD_CSN_ID(recipe.getFOOD_CSN_ID());
         this.recipe.setIngredients(recipe.getIngredients());
         this.recipe.setSteps(recipe.getSteps());
-        this.recipe.setTastes(recipe.getTastes());
+        //this.recipe.setTastes(recipe.getTastes());
     }
 
     private void setupTabs() {
@@ -228,7 +227,6 @@ public class RecipeAddFragment extends DialogFragment {
         viewPagerTabsList.add(R.layout.recipe_add_recipe_main);
         viewPagerTabsList.add(R.layout.recipe_add_ingredients);
         viewPagerTabsList.add(R.layout.recipe_add_recipe_steps);
-        viewPagerTabsList.add(R.layout.recipe_add_tastes);
 
         for(Integer iter : viewPagerTabsList){
             recipe_add_tl.addTab(recipe_add_tl.newTab());

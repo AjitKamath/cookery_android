@@ -5,9 +5,9 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +19,12 @@ import android.widget.TextView;
 
 import com.cookery.R;
 import com.cookery.adapters.IngredientViewImagesGridViewAdapter;
-import com.cookery.adapters.IngredientViewNutritionCategoriesRecyclerViewAdapter;
+import com.cookery.adapters.IngredientViewViewPagerAdapter;
 import com.cookery.models.IngredientMO;
 import com.cookery.utils.Utility;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -53,11 +56,11 @@ public class IngredientViewFragment extends DialogFragment {
     @InjectView(R.id.ingredient_view_ingredient_images_gv)
     GridView ingredient_view_ingredient_images_gv;
 
-    @InjectView(R.id.ingredient_view_ingredient_no_nutrition_tv)
-    TextView ingredient_view_ingredient_no_nutrition_tv;
+    @InjectView(R.id.ingredient_view_tl)
+    TabLayout ingredient_view_tl;
 
-    @InjectView(R.id.ingredient_view_ingredient_nutrition_category_rv)
-    RecyclerView ingredient_view_ingredient_nutrition_category_rv;
+    @InjectView(R.id.ingredient_view_vp)
+    ViewPager ingredient_view_vp;
     /*components*/
 
 
@@ -95,29 +98,41 @@ public class IngredientViewFragment extends DialogFragment {
         ingredient_view_ingredient_category_tv.setText(ingredient.getIngredientCategoryName().toUpperCase());
 
         setupImages();
-        setupNutritions();
+        setupNutritionsAndHealth();
     }
 
-    private void setupNutritions() {
-        if(ingredient.getIngredientNutritionCategories() == null || ingredient.getIngredientNutritionCategories().isEmpty()){
-            ingredient_view_ingredient_no_nutrition_tv.setVisibility(View.VISIBLE);
-            return;
-        }
-        else{
-            ingredient_view_ingredient_no_nutrition_tv.setVisibility(View.GONE);
+    private void setupNutritionsAndHealth() {
+        final List<Integer> viewPagerTabsList = new ArrayList<>();
+        viewPagerTabsList.add(R.layout.ingredient_view_nutritions);
+        viewPagerTabsList.add(R.layout.ingredient_view_healths);
+
+        for (Integer iter : viewPagerTabsList) {
+            ingredient_view_tl.addTab(ingredient_view_tl.newTab());
         }
 
-        ingredient_view_ingredient_nutrition_category_rv.setAdapter(
-                new IngredientViewNutritionCategoriesRecyclerViewAdapter(mContext, ingredient.getIngredientNutritionCategories(),
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-                            }
-                        }));
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-        ingredient_view_ingredient_nutrition_category_rv.setLayoutManager(mLayoutManager);
-        ingredient_view_ingredient_nutrition_category_rv.setItemAnimator(new DefaultItemAnimator());
+        ingredient_view_vp.setAdapter(new IngredientViewViewPagerAdapter(mContext, viewPagerTabsList, ingredient));
+        ingredient_view_vp.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(ingredient_view_tl));
+
+        ingredient_view_tl.setupWithViewPager(ingredient_view_vp);
+        ingredient_view_tl.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                ingredient_view_vp.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     private void setupImages() {

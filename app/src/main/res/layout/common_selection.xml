@@ -1,26 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/common_selection_rl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:padding="@dimen/padding">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/common_selection_close_iv"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/ic_close_grey600_36dp"/>
+        <RelativeLayout
+            android:id="@+id/common_selection_search_rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/common_selection_search_et"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center_vertical"
+                android:hint="search .."
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:textColor="@color/secondaryDarkText"
+                android:textSize="@dimen/secondary_text_size" />
+
+            <ImageView
+                android:id="@+id/common_selection_search_iv"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginRight="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/com_facebook_tooltip_black_xout"/>
+
+        </RelativeLayout>
 
     <GridView
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/common_selection_close_iv"
         android:id="@+id/common_selection_food_type_gv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="2"
-        tools:listitem="@layout/cuisine_gv_item">
-    </GridView>
+        android:layout_below="@+id/common_selection_search_rl"
+        android:layout_marginTop="20dp"
+        android:numColumns="3"
+        tools:listitem="@layout/cuisine_gv_item"></GridView>
 
 </RelativeLayout>

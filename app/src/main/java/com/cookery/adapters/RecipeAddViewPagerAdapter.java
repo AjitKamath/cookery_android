@@ -34,7 +34,6 @@ import com.cookery.models.FoodTypeMO;
 import com.cookery.models.IngredientAkaMO;
 import com.cookery.models.MasterDataMO;
 import com.cookery.models.RecipeMO;
-import com.cookery.models.TasteMO;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -117,7 +116,6 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
             case 0: setupAddRecipeMain(layout); break;
             case 1: setupAddRecipeIngredients(layout); break;
             case 2: setupAddRecipeSteps(layout); break;
-            case 3: setupAddRecipeTastes(layout); break;
             default: break;
         }
 
@@ -403,52 +401,6 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
         }
     }
 
-    private void setupAddRecipeTastes(ViewGroup layout) {
-        /*spice ratings*/
-        final List<ImageView> spicyIVList = new ArrayList<>();
-        spicyIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_spice_1_iv));
-        spicyIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_spice_2_iv));
-        spicyIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_spice_3_iv));
-        spicyIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_spice_4_iv));
-        spicyIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_spice_5_iv));
-
-        common_component_add_recipe_heading_tv.setText("DEFINE HOW YOUR RECIPE TASTES LIKE");
-
-        //by default set spice rating as 3
-        setSpiceRating(3, spicyIVList);
-
-        for(ImageView iter : spicyIVList){
-            iter.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    setSpiceRating(Integer.parseInt(String.valueOf(view.getTag())), spicyIVList);
-                }
-            });
-        }
-        /*spice ratings*/
-
-        /*sweet ratings*/
-        final List<ImageView> sweetIVList = new ArrayList<>();
-        sweetIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_sweet_1_iv));
-        sweetIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_sweet_2_iv));
-        sweetIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_sweet_3_iv));
-        sweetIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_sweet_4_iv));
-        sweetIVList.add((ImageView) layout.findViewById(R.id.view_pager_ad_recipe_7_sweet_5_iv));
-
-        //by default set sweet rating as 2
-        setSweetRating(2, sweetIVList);
-
-        for(ImageView iter : sweetIVList){
-            iter.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    setSweetRating(Integer.parseInt(String.valueOf(view.getTag())), sweetIVList);
-                }
-            });
-        }
-        /*sweet ratings*/
-    }
-
     public void addIngredient(IngredientAkaMO ingredient){
         RecipeAddIngredientsRecyclerViewAdapter adapter = (RecipeAddIngredientsRecyclerViewAdapter)recipe_add_ingredients_ingredients_rv.getAdapter();
         adapter.addData(ingredient);
@@ -565,50 +517,6 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
         recipe.setFOOD_TYP_ID(foodType.getFOOD_TYP_ID());
     }
 
-    private void setSpiceRating(int rating, List<ImageView> spiceIVList){
-        for(int i=0; i<spiceIVList.size(); i++){
-            if(i+1 <= rating){
-                spiceIVList.get(i).setImageResource(R.drawable.spice_enabled);
-            }
-            else{
-                spiceIVList.get(i).setImageResource(R.drawable.spice_disabled);
-            }
-        }
-
-        for(TasteMO iter : masterData.getTastes()){
-            if("SPICY".equalsIgnoreCase(iter.getTST_NAME())){
-                iter.setQuantity(rating);
-                break;
-            }
-        }
-
-        setTaste();
-    }
-
-    private void setSweetRating(int rating, List<ImageView> sweetIVList){
-        for(int i=0; i<sweetIVList.size(); i++){
-            if(i+1 <= rating){
-                sweetIVList.get(i).setImageResource(R.drawable.sweet_enabled);
-            }
-            else{
-                sweetIVList.get(i).setImageResource(R.drawable.sweet_disabled);
-            }
-        }
-
-        for(TasteMO iter : masterData.getTastes()){
-            if("SWEET".equalsIgnoreCase(iter.getTST_NAME())){
-                iter.setQuantity(rating);
-                break;
-            }
-        }
-
-        setTaste();
-    }
-
-    private void setTaste(){
-        recipe.setTastes(masterData.getTastes());
-    }
-
     public void setRecipeName(){
         recipe.setRCP_NAME(String.valueOf(recipe_add_recipe_main_recipe_name_et.getText()).trim());
     }
@@ -622,7 +530,6 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
 
         return null;
     }
-
 
     private FoodTypeMO getDefaultFoodType(List<FoodTypeMO> foodTypes){
         for(FoodTypeMO foodType : foodTypes){
@@ -645,7 +552,6 @@ public class RecipeAddViewPagerAdapter extends PagerAdapter {
             case 0: return "RECIPE";
             case 1: return "ING.";
             case 2: return "STEPS";
-            case 3: return "TASTES";
             default: return "UNIMPL";
         }
     }

@@ -422,4 +422,12 @@
 3 may 2018
 1. #323 Android - Try different Typeface.
 
+10 may 2018
+1. #429 Recipe Add & View - Deprecate Tastes
+2. #389 Everywhere - Fix Smart Time
+3. #428 Ingredient View - Health Benefits
+
+11 may 2018
+1. #414 Recipe View - Total Nutrition
+
 

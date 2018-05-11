@@ -481,8 +481,7 @@ public class AsyncTaskUtility extends AsyncTask {
 
         if(masterData != null && masterData.getFoodCuisines() != null && !masterData.getFoodCuisines().isEmpty()
                 && masterData.getFoodTypes() != null && !masterData.getFoodTypes().isEmpty()
-                && masterData.getIngredientUOMs() != null && !masterData.getIngredientUOMs().isEmpty()
-                && masterData.getTastes() != null && !masterData.getTastes().isEmpty()){
+                && masterData.getIngredientUOMs() != null && !masterData.getIngredientUOMs().isEmpty()){
 
             if(activity != null && activity instanceof HomeActivity){
                 Map<String, Object> paramsMap = new HashMap<>();

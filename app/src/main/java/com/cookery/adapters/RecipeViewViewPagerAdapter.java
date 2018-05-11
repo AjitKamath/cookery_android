@@ -18,9 +18,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cookery.R;
+import com.cookery.models.IngredientAkaMO;
+import com.cookery.models.IngredientNutritionMO;
+import com.cookery.models.NutritionCategoryMO;
 import com.cookery.models.RecipeMO;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.cookery.utils.Constants.UI_FONT;
 
@@ -49,12 +55,73 @@ public class RecipeViewViewPagerAdapter extends PagerAdapter {
         switch(position){
             case 0: setupRecipeSteps(layout); break;
             case 1: setupRecipeIngredients(layout); break;
+            case 2: setupRecipeNutritions(layout); break;
             default: break;
         }
 
         setFont(layout);
         collection.addView(layout);
         return layout;
+    }
+
+    private void setupRecipeNutritions(ViewGroup layout) {
+        List<NutritionCategoryMO> ingredientNutritionCategories = buildList();
+
+        RecyclerView recipe_view_nutrition_rv = layout.findViewById(R.id.recipe_view_nutrition_rv);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        recipe_view_nutrition_rv.setLayoutManager(mLayoutManager);
+        recipe_view_nutrition_rv.setItemAnimator(new DefaultItemAnimator());
+        recipe_view_nutrition_rv.setAdapter(new IngredientViewNutritionCategoriesRecyclerViewAdapter(mContext, ingredientNutritionCategories, onClickListener));
+    }
+
+    private List<NutritionCategoryMO> buildList(){
+        Map<String, Map<String, IngredientNutritionMO>> nutritionMap = new HashMap<>();
+
+        for(IngredientAkaMO ingredient : recipe.getIngredients()){
+            List<NutritionCategoryMO> ingredientNutritionCategories = ingredient.getIngredientNutritionCategories();
+
+            for(NutritionCategoryMO ingredientNutritionCategory : ingredientNutritionCategories){
+                Map<String, IngredientNutritionMO> tempMap = null;
+                if(nutritionMap.containsKey(ingredientNutritionCategory.getNUT_CAT_NAME())){
+                    tempMap = nutritionMap.get(ingredientNutritionCategory.getNUT_CAT_NAME());
+                }
+                else{
+                    tempMap = new HashMap<>();
+                }
+
+                for(IngredientNutritionMO ingredientNutrition : ingredientNutritionCategory.getIngredientNutritions()){
+                    IngredientNutritionMO tempNutrition = ingredientNutrition;
+
+                    if(tempMap.containsKey(ingredientNutrition.getIngredientNutritionName())){
+                        tempNutrition = tempMap.get(ingredientNutrition.getIngredientNutritionName());
+                        Double tempVal = Double.parseDouble(tempNutrition.getING_NUT_VAL());
+                        tempVal += Double.parseDouble(ingredientNutrition.getING_NUT_VAL());
+
+                        tempNutrition.setING_NUT_VAL(String.format("%.2f", tempVal));
+                    }
+
+                    tempMap.put(ingredientNutrition.getIngredientNutritionName(), tempNutrition);
+                }
+
+                nutritionMap.put(ingredientNutritionCategory.getNUT_CAT_NAME(), tempMap);
+            }
+        }
+
+        List<NutritionCategoryMO> ingredientNutritionCategories = new ArrayList<>();
+        for(Map.Entry<String, Map<String, IngredientNutritionMO>> item : nutritionMap.entrySet()){
+            List<IngredientNutritionMO> ingredientNutritions = new ArrayList<>();
+            for(Map.Entry<String, IngredientNutritionMO> item1 : item.getValue().entrySet()){
+                ingredientNutritions.add(item1.getValue());
+            }
+
+            NutritionCategoryMO ingCategory = new NutritionCategoryMO();
+            ingCategory.setNUT_CAT_NAME(item.getKey());
+            ingCategory.setIngredientNutritions(ingredientNutritions);
+
+            ingredientNutritionCategories.add(ingCategory);
+        }
+
+        return ingredientNutritionCategories;
     }
 
     private void setupRecipeIngredients(ViewGroup layout) {
@@ -93,7 +160,8 @@ public class RecipeViewViewPagerAdapter extends PagerAdapter {
         switch(position){
             case 0: return "RECIPE";
             case 1: return "INGREDIENTS";
-            default: return "UNIMPL";
+            case 2: return "NUTRITION";
+            default: return "ERROR";
         }
     }
 

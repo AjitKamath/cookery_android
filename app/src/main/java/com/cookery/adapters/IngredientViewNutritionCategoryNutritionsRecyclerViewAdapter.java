@@ -32,7 +32,7 @@ public class IngredientViewNutritionCategoryNutritionsRecyclerViewAdapter extend
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.ingredient_view_nutrition_category_nutrition_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.common_ingredient_nutrition_category_nutrition_item, parent, false);
         return new ViewHolder(itemView);
     }
 
@@ -57,9 +57,9 @@ public class IngredientViewNutritionCategoryNutritionsRecyclerViewAdapter extend
 
         public ViewHolder(View view) {
             super(view);
-            ingredient_view_nutrition_category_nutrition_item_nutrition_name_tv = view.findViewById(R.id.ingredient_view_nutrition_category_nutrition_item_nutrition_name_tv);
-            ingredient_view_nutrition_category_nutrition_item_nutrition_value_tv = view.findViewById(R.id.ingredient_view_nutrition_category_nutrition_item_nutrition_value_tv);
-            ingredient_view_nutrition_category_nutrition_item_nutrition_uom_tv = view.findViewById(R.id.ingredient_view_nutrition_category_nutrition_item_nutrition_uom_tv);
+            ingredient_view_nutrition_category_nutrition_item_nutrition_name_tv = view.findViewById(R.id.common_ingredient_nutrition_category_nutrition_item_nutrition_name_tv);
+            ingredient_view_nutrition_category_nutrition_item_nutrition_value_tv = view.findViewById(R.id.common_ingredient_nutrition_category_nutrition_item_nutrition_value_tv);
+            ingredient_view_nutrition_category_nutrition_item_nutrition_uom_tv = view.findViewById(R.id.common_ingredient_nutrition_category_nutrition_item_nutrition_uom_tv);
         }
     }
 }

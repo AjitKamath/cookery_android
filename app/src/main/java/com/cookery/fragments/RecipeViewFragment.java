@@ -186,6 +186,7 @@ public class RecipeViewFragment extends DialogFragment {
         final List<Integer> viewPagerTabsList = new ArrayList<>();
         viewPagerTabsList.add(R.layout.recipe_view_recipe);
         viewPagerTabsList.add(R.layout.recipe_view_ingredients);
+        viewPagerTabsList.add(R.layout.recipe_view_nutritions);
 
         for (Integer iter : viewPagerTabsList) {
             common_fragment_recipe_tl.addTab(common_fragment_recipe_tl.newTab());

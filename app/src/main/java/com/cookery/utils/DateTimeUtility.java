@@ -4,7 +4,6 @@ import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import static com.cookery.utils.Constants.DB_DATE_TIME;
@@ -40,7 +39,47 @@ public class DateTimeUtility {
         return "ERROR";
     }
 
-    public static String getSmartDateTime(Date dateTime) {
+    public static String getSmartDateTime(Date databaseDate) {
+        if(databaseDate == null) {
+            Log.e(CLASS_NAME, "Error ! date is empty/null");
+            return "ERROR";
+        }
+
+        Date now = new Date();
+        long milliseconds = now.getTime() - databaseDate.getTime();
+        float minutes = milliseconds/1000/60;
+
+        if(minutes < 5) {
+            return "just now";
+        }
+        else if(minutes < 60) {
+            return (int)minutes+" minutes ago";
+        }
+        else if(minutes < 24*60) {
+            int hours = (int)minutes/60;
+            if(hours == 1) {
+                return hours+" hour ago";
+            }
+            else {
+                return hours+" hours ago";
+            }
+        }
+        else if(minutes < 24*60*7) {
+            int days = (int)minutes/60/24;
+            if(days == 1) {
+                return days+" day ago";
+            }
+            else {
+                return days+" days ago";
+            }
+        }
+        else {
+            SimpleDateFormat sdf1 = new SimpleDateFormat("'on' d MMM yyyy 'at' h:mm a");
+            return sdf1.format(databaseDate);
+        }
+    }
+
+    /*public static String getSmartDateTime(Date dateTime) {
         SimpleDateFormat sdf = null;
 
         Calendar now = Calendar.getInstance();
@@ -76,7 +115,7 @@ public class DateTimeUtility {
         }
 
         return sdf.format(dateTime);
-    }
+    }*/
 
     public static String getCreateOrModifiedTime(String createDtm, String modifiedDtm){
         if(modifiedDtm != null && !modifiedDtm.trim().isEmpty()){

@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class IngredientMO implements Serializable{
-
     private int ING_ID;
 
     private String ingredientAkaName;
@@ -17,4 +16,5 @@ public class IngredientMO implements Serializable{
     private List<IngredientImageMO> ingredientPrimaryImage;
     private List<IngredientImageMO> images;
     private List<NutritionCategoryMO> ingredientNutritionCategories;
+    private List<HealthMO> ingredientHealths;
 }

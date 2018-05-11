@@ -19,14 +19,14 @@ import com.cookery.models.NutritionCategoryMO;
 
 import java.util.List;
 
-public class IngredientViewNutritionCategoriesRecyclerViewAdapter extends RecyclerView.Adapter<IngredientViewNutritionCategoriesRecyclerViewAdapter.ViewHolder> {
-    private static final String CLASS_NAME = IngredientViewNutritionCategoriesRecyclerViewAdapter.class.getName();
+public class RecipeViewNutritionCategoriesRecyclerViewAdapter extends RecyclerView.Adapter<RecipeViewNutritionCategoriesRecyclerViewAdapter.ViewHolder> {
+    private static final String CLASS_NAME = RecipeViewNutritionCategoriesRecyclerViewAdapter.class.getName();
     private Context mContext;
 
     private View.OnClickListener onClickListener;
     List<NutritionCategoryMO> ingredientNutritionCategories;
 
-    public IngredientViewNutritionCategoriesRecyclerViewAdapter(Context mContext, List<NutritionCategoryMO> ingredientNutritionCategories, View.OnClickListener onClickListener) {
+    public RecipeViewNutritionCategoriesRecyclerViewAdapter(Context mContext, List<NutritionCategoryMO> ingredientNutritionCategories, View.OnClickListener onClickListener) {
         this.mContext = mContext;
         this.ingredientNutritionCategories = ingredientNutritionCategories;
         this.onClickListener = onClickListener;

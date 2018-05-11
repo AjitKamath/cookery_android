@@ -22,4 +22,5 @@ public class IngredientAkaMO implements Serializable {
     private IngredientUOMMO quantity;
     private String ingredientCategoryName;
     private List<IngredientImageMO> images;
+    private List<NutritionCategoryMO> ingredientNutritionCategories;
 }

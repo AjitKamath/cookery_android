@@ -16,5 +16,4 @@ public class MasterDataMO implements Serializable {
     private List<CuisineMO> foodCuisines;
     private List<FoodTypeMO> foodTypes;
     private List<IngredientUOMMO> ingredientUOMs;
-    private List<TasteMO> tastes;
 }

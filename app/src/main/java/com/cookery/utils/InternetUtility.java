@@ -192,12 +192,6 @@ public class InternetUtility {
         }
         /*steps*/
 
-        //tastes
-        for (int i = 0; i < recipe.getTastes().size(); i++) {
-            multipart.addFormField("tst_id[" + i + "]", String.valueOf(recipe.getTastes().get(i).getTST_ID()));
-            multipart.addFormField("tst_qty[" + i + "]", String.valueOf(recipe.getTastes().get(i).getQuantity()));
-        }
-
         return Utility.jsonToObject(multipart.finish(), MessageMO.class);
     }
 
