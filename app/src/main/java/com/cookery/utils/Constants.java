@@ -72,6 +72,8 @@ public final class Constants {
     public static final String PHP_FUNCTION_KEY_FETCH_RECIPE_IMAGES = "RECIPE_IMAGES_FETCH";
     public static final String PHP_FUNCTION_KEY_FETCH_MASTER_DATA = "MASTER_DATA_FETCH_ALL";
     public static final String PHP_FUNCTION_KEY_INGREDIENT_NUTRITION_FETCH = "INGREDIENT_NUTRITION_FETCH";
+    public static final String PHP_FUNCTION_KEY_USER_BIO_SUBMIT = "USER_BIO_SUBMIT";
+    public static final String PHP_FUNCTION_KEY_USER_BIO_DELETE = "USER_BIO_DELETE";
     /*PHP function keys*/
 
     /*Timeline keys*/
@@ -164,6 +166,7 @@ public final class Constants {
     public static final String FRAGMENT_PICK_IMAGE = "FRAGMENT_PICK_IMAGE";
     public static final String FRAGMENT_SHARE_SOCIAL_MEDIA = "FRAGMENT_SHARE_SOCIAL_MEDIA";
     public static final String FRAGMENT_INGREDIENT_NUTRIENTS = "FRAGMENT_INGREDIENT_NUTRIENTS";
+    public static final String FRAGMENT_BIOS_VIEW = "FRAGMENT_BIOS_VIEW";
 
 
     //FRAGMENT OBJECT KEYS

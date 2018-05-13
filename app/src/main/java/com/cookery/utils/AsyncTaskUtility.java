@@ -1,12 +1,38 @@
 package com.cookery.utils;
 
+import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
+import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
+import static com.cookery.utils.Constants.FRAGMENT_COOKERY_ERROR;
+import static com.cookery.utils.Constants.FRAGMENT_IMAGES;
+import static com.cookery.utils.Constants.FRAGMENT_INGREDIENT_NUTRIENTS;
+import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
+import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_NO_INTERNET;
+import static com.cookery.utils.Constants.FRAGMENT_PEOPLE_VIEW;
+import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
+import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEWS;
+import static com.cookery.utils.Constants.FRAGMENT_SOMETHING_WRONG;
+import static com.cookery.utils.Constants.FRAGMENT_USERS;
+import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
+import static com.cookery.utils.Constants.GALLERY_DIR;
+import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.GENERIC_OBJECT2;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
+import static com.cookery.utils.Constants.MASTER;
+import static com.cookery.utils.Constants.SELECTED_ITEM;
+import static com.cookery.utils.Constants.SERVER_ADDRESS;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_PARENT_FRAGMENT;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
-
 import com.cookery.activities.HomeActivity;
 import com.cookery.exceptions.CookeryException;
 import com.cookery.fragments.CommentsFragment;
@@ -39,8 +65,8 @@ import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.TimelineMO;
 import com.cookery.models.TrendMO;
+import com.cookery.models.UserBio;
 import com.cookery.models.UserMO;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -50,33 +76,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.cookery.utils.Constants.FRAGMENT_ADD_RECIPE;
-import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
-import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
-import static com.cookery.utils.Constants.FRAGMENT_COOKERY_ERROR;
-import static com.cookery.utils.Constants.FRAGMENT_IMAGES;
-import static com.cookery.utils.Constants.FRAGMENT_INGREDIENT_NUTRIENTS;
-import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
-import static com.cookery.utils.Constants.FRAGMENT_MY_RECIPE;
-import static com.cookery.utils.Constants.FRAGMENT_NO_INTERNET;
-import static com.cookery.utils.Constants.FRAGMENT_PEOPLE_VIEW;
-import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
-import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_IMAGE;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE_REVIEWS;
-import static com.cookery.utils.Constants.FRAGMENT_SOMETHING_WRONG;
-import static com.cookery.utils.Constants.FRAGMENT_USERS;
-import static com.cookery.utils.Constants.FRAGMENT_USER_VIEW;
-import static com.cookery.utils.Constants.GALLERY_DIR;
-import static com.cookery.utils.Constants.GENERIC_OBJECT;
-import static com.cookery.utils.Constants.GENERIC_OBJECT2;
-import static com.cookery.utils.Constants.LOGGED_IN_USER;
-import static com.cookery.utils.Constants.MASTER;
-import static com.cookery.utils.Constants.SELECTED_ITEM;
-import static com.cookery.utils.Constants.SERVER_ADDRESS;
-import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
-import static com.cookery.utils.Constants.UN_IDENTIFIED_PARENT_FRAGMENT;
 
 /**
  * Created by ajit on 19/3/18.
@@ -98,7 +97,7 @@ public class AsyncTaskUtility extends AsyncTask {
         FETCH_PEOPLE, FETCH_FOLLOWERS, FETCH_FOLLOWING, FETCH_INGREDIENT_NUTRIENTS,
         FETCH_TIMELINE_SELF, FETCH_STORIES_SELF, FETCH_TRENDS_SELF,
         SUBMIT_LIKE, SUBMIT_COMMENT, SUBMIT_RECIPE,
-        DELETE_COMMENT,
+        DELETE_COMMENT, DELETE_USER_BIO,
         CHECK_INTERNET,
         UPDATE_USER,
         DOWNLOAD_IMAGES
@@ -140,6 +139,7 @@ public class AsyncTaskUtility extends AsyncTask {
                 case SUBMIT_RECIPE              : return submitRecipe(objects);
                 case UPDATE_USER                : return updateUser(objects);
                 case DELETE_COMMENT             : return deleteComment(objects);
+                case DELETE_USER_BIO            : return deleteUserBio(objects);
                 case CHECK_INTERNET             : return checkInternet();
                 case DOWNLOAD_IMAGES            : return downloadImages(objects);
 
@@ -212,12 +212,17 @@ public class AsyncTaskUtility extends AsyncTask {
             case SUBMIT_RECIPE              : postSubmitRecipe(object); break;
             case UPDATE_USER                : postUpdateUser(object); break;
             case DELETE_COMMENT             : postDeleteComment(object); break;
+            case DELETE_USER_BIO            : postUpdateUser(object); break;
             case CHECK_INTERNET             : postCheckInternet(object); break;
             case DOWNLOAD_IMAGES            : postDownloadImages(object); break;
 
             default: Log.e(CLASS_NAME, "Error ! Purpose("+purpose+") is not handled in "+CLASS_NAME+".onPostExecute() ! ");
             break;
         }
+    }
+
+    private Object deleteUserBio(Object[] objects){
+        return new Object[]{purpose.toString(), InternetUtility.deleteUserBio(loggedInUser, (UserBio)objects[0])};
     }
 
     private Object downloadImages(Object[] objects){
@@ -647,6 +652,9 @@ public class AsyncTaskUtility extends AsyncTask {
             else if("PASSWORD".equalsIgnoreCase(String.valueOf(objects[0]))){
                 return new Object[]{objects[0], InternetUtility.updateUserPassword(loggedInUser)};
             }
+            else if("BIO".equalsIgnoreCase(String.valueOf(objects[0]))){
+                return new Object[]{objects[0], InternetUtility.updateUserBio(loggedInUser)};
+            }
             else{
                 Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+objects);
             }
@@ -669,8 +677,12 @@ public class AsyncTaskUtility extends AsyncTask {
         if(users != null && !users.isEmpty() && users.get(0) != null && users.get(0).getUSER_ID() != 0){
             UserMO user = users.get(0);
 
-            Fragment fragment = getFragment(fragmentKey);
-            ((HomeActivity)fragment.getActivity()).updateUserSecurity(user);
+            ProfileViewFragment fragment = (ProfileViewFragment) getFragment(fragmentKey);
+
+            if(fragment != null){
+                fragment.updateUser(user);
+                ((HomeActivity)fragment.getActivity()).updateUserSecurity(user);
+            }
         }
         else{
             Log.e(CLASS_NAME, "Error ! Could not update user's : "+what);

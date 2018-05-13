@@ -2,7 +2,6 @@ package com.cookery.models;
 
 import java.io.Serializable;
 import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,6 +44,9 @@ public class UserMO extends CommonMO implements Serializable {
     private int commentsCount;
 
     private int veri_code;
+
+    private UserBio bio;
+    private List<UserBio> bios;
 
     public String getFollowMessage() {
         if(following && followed){

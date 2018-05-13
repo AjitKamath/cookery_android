@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/profile_view_bios_ll"
+    android:padding="5dp"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_margin="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardPreventCornerOverlap="true">
+
+        <RelativeLayout
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/profile_view_bios_bio_heading_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="YOUR CURRENT BIO"
+                android:textColor="@color/tertiaryDarkText"
+                android:textSize="@dimen/quaternary_text_size" />
+
+            <ImageView
+                android:id="@+id/profile_view_bios_bio_iv"
+                android:layout_alignParentTop="true"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_done_grey600_36dp" />
+
+            <EditText
+                android:layout_below="@+id/profile_view_bios_bio_heading_tv"
+                android:id="@+id/profile_view_bios_bio_et"
+                android:layout_width="match_parent"
+                android:minHeight="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:maxLength="@integer/user_bio_text_limit"
+                android:textColor="@color/primaryDarkText"
+                android:textSize="@dimen/secondary_text_size" />
+
+            <TextView
+                android:id="@+id/profile_view_bios_bio_timestamp_tv"
+                android:layout_marginTop="2dp"
+                android:layout_below="@+id/profile_view_bios_bio_et"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="on 12 May 2018 at 11:34 PM"
+                android:textColor="@color/tertiaryDarkText"
+                android:textSize="@dimen/quaternary_text_size" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="YOUR PREVIOUS BIO'S"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/tertiaryDarkText"
+        android:textSize="@dimen/quaternary_text_size" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/profile_view_bios_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
+
+</LinearLayout>

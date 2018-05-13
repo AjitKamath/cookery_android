@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item
+            android:id="@+id/user_bio_options_menu_set_item"
+            android:icon="@drawable/ic_list_grey600_48dp"
+            android:title="Set as Bio" />
+        <item
+            android:id="@+id/user_bio_options_menu_delete_item"
+            android:icon="@drawable/ic_delete_grey600_48dp"
+            android:title="Delete" />
+    </group>
+</menu>

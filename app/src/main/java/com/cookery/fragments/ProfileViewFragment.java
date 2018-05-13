@@ -1,47 +1,7 @@
 package com.cookery.fragments;
 
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import com.cookery.R;
-import com.cookery.activities.HomeActivity;
-import com.cookery.models.CommentMO;
-import com.cookery.models.LikesMO;
-import com.cookery.models.Milestone;
-import com.cookery.models.UserMO;
-import com.cookery.utils.AsyncTaskUtility;
-import com.cookery.utils.DateTimeUtility;
-import com.cookery.utils.Utility;
-import com.theartofdev.edmodo.cropper.CropImage;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import de.hdodenhof.circleimageview.CircleImageView;
-
 import static android.app.Activity.RESULT_OK;
+import static com.cookery.utils.Constants.FRAGMENT_BIOS_VIEW;
 import static com.cookery.utils.Constants.FRAGMENT_COMMENTS;
 import static com.cookery.utils.Constants.FRAGMENT_IMAGES;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
@@ -52,7 +12,48 @@ import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_PASSWORD;
 import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW_PHONE;
 import static com.cookery.utils.Constants.GENERIC_OBJECT;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
+import static com.cookery.utils.Constants.OK;
 import static com.cookery.utils.Constants.UI_FONT;
+
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import com.cookery.R;
+import com.cookery.activities.HomeActivity;
+import com.cookery.models.CommentMO;
+import com.cookery.models.LikesMO;
+import com.cookery.models.Milestone;
+import com.cookery.models.UserMO;
+import com.cookery.utils.AsyncTaskUtility;
+import com.cookery.utils.DateTimeUtility;
+import com.cookery.utils.Utility;
+import com.theartofdev.edmodo.cropper.CropImage;
+import de.hdodenhof.circleimageview.CircleImageView;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ajit on 21/3/16.
@@ -62,8 +63,8 @@ public class ProfileViewFragment extends DialogFragment {
     private Context mContext;
 
     /*components*/
-    @InjectView(R.id.profile_view_rl)
-    RelativeLayout profile_view_rl;
+    @InjectView(R.id.profile_view_sv)
+    ScrollView profile_view_sv;
 
     @InjectView(R.id.profile_view_profile_join_tv)
     TextView profile_view_profile_join_tv;
@@ -125,6 +126,12 @@ public class ProfileViewFragment extends DialogFragment {
     @InjectView(R.id.profile_view_profile_gender_change_iv)
     ImageView profile_view_profile_gender_change_iv;
 
+    @InjectView(R.id.profile_view_profile_bio_change_iv)
+    ImageView profile_view_profile_bio_change_iv;
+
+    @InjectView(R.id.profile_view_bio_tv)
+    TextView profile_view_bio_tv;
+
     @InjectView(R.id.profile_view_follow_followers_ll)
     LinearLayout profile_view_follow_followers_ll;
 
@@ -176,9 +183,14 @@ public class ProfileViewFragment extends DialogFragment {
 
         setupPage();
 
-        setFont(profile_view_rl);
+        setFont(profile_view_sv);
 
         return view;
+    }
+
+    public void updateUser(final UserMO user) {
+        loggedInUser = user;
+        setupPage();
     }
 
     private void getDataFromBundle() {
@@ -189,7 +201,12 @@ public class ProfileViewFragment extends DialogFragment {
     public void onDismiss(final DialogInterface dialog) {
         super.onDismiss(dialog);
 
-        ((HomeActivity)getActivity()).setupNavigator();
+        if(getActivity() != null){
+            ((HomeActivity)getActivity()).setupNavigator();
+        }
+        else{
+            Log.e(CLASS_NAME, "Error ! Activity is null");
+        }
     }
 
     private void setupPage() {
@@ -300,7 +317,27 @@ public class ProfileViewFragment extends DialogFragment {
             }
         });
 
+        setupBio(loggedInUser);
         setupRanksAndMilestones();
+    }
+
+    private void setupBio(UserMO user) {
+        profile_view_profile_bio_change_iv.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                Map<String, Object> paramsMap = new HashMap<>();
+                paramsMap.put(LOGGED_IN_USER, loggedInUser);
+
+                Utility.showFragment(getFragmentManager(), FRAGMENT_PROFILE_VIEW, FRAGMENT_BIOS_VIEW, new ProfileViewBiosFragment(), paramsMap);
+            }
+        });
+
+        if(user.getBio() != null){
+            profile_view_bio_tv.setText(user.getBio().getUSER_BIO());
+        }
+        else{
+            profile_view_bio_tv.setText("No bio has been set");
+        }
     }
 
     private void setupCommenView() {
@@ -419,6 +456,8 @@ public class ProfileViewFragment extends DialogFragment {
     public void updateName(String userName){
         profile_view_profile_name_tv.setText(userName);
 
+        Utility.showSnacks(profile_view_sv, "Your name has been changed !", OK, Snackbar.LENGTH_LONG);
+
         new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW, AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "NAME");
     }
@@ -438,12 +477,34 @@ public class ProfileViewFragment extends DialogFragment {
     public void updateEmail(UserMO user){
         setupEmail(user);
 
+        Utility.showSnacks(profile_view_sv, "Your email has been changed !", OK, Snackbar.LENGTH_LONG);
+
         new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
                 AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "EMAIL");
     }
 
+    public void updateBio(final UserMO user) {
+        setupBio(user);
+
+        Utility.showSnacks(profile_view_sv, "Your bio has been changed !", OK, Snackbar.LENGTH_LONG);
+
+        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
+                AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "BIO");
+    }
+
+    public void deleteBio(final UserMO user) {
+        Utility.showSnacks(profile_view_sv, "Your bio has been deleted !", OK, Snackbar.LENGTH_LONG);
+
+        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
+                AsyncTaskUtility.Purpose.DELETE_USER_BIO, loggedInUser, 0)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, user.getBio());
+    }
+
     public void updatePassword(UserMO user){
+        Utility.showSnacks(profile_view_sv, "Your password has been changed !", OK, Snackbar.LENGTH_LONG);
+
         new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
                 AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "PASSWORD");
@@ -465,6 +526,8 @@ public class ProfileViewFragment extends DialogFragment {
     public void updatePhone(UserMO user){
         setupPhone(user);
 
+        Utility.showSnacks(profile_view_sv, "Your phone has been changed !", OK, Snackbar.LENGTH_LONG);
+
         new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
                 AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "PHONE");
@@ -484,6 +547,8 @@ public class ProfileViewFragment extends DialogFragment {
     public void updateGender(UserMO user){
         setupGender(user);
 
+        Utility.showSnacks(profile_view_sv, "Your gender has been changed !", OK, Snackbar.LENGTH_LONG);
+
         new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
                 AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "GENDER");
@@ -492,6 +557,8 @@ public class ProfileViewFragment extends DialogFragment {
     private void updatePhoto(Uri photoPath){
         loggedInUser.setIMG(photoPath.getPath());
         Utility.loadImageFromPath(mContext, photoPath.getPath(), profile_view_profile_image_iv);
+
+        Utility.showSnacks(profile_view_sv, "Your photo has been changed !", OK, Snackbar.LENGTH_LONG);
 
         new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
                 AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)

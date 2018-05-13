@@ -1,5 +1,19 @@
 package com.cookery.utils;
 
+import static com.cookery.utils.Constants.DEFAULT_CROP_RATIO;
+import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
+import static com.cookery.utils.Constants.FRAGMENT_COMMON_WAIT;
+import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
+import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
+import static com.cookery.utils.Constants.OK;
+import static com.cookery.utils.Constants.SCOPE_FOLLOWERS;
+import static com.cookery.utils.Constants.SCOPE_PUBLIC;
+import static com.cookery.utils.Constants.SCOPE_SELF;
+import static com.cookery.utils.Constants.SELECTED_ITEM;
+import static com.cookery.utils.Constants.SERVER_ADDRESS;
+import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -13,7 +27,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.cookery.R;
 import com.cookery.exceptions.CookeryException;
 import com.cookery.fragments.CommentsFragment;
@@ -28,6 +41,7 @@ import com.cookery.fragments.MyReviewsFragment;
 import com.cookery.fragments.NoInternetFragment;
 import com.cookery.fragments.PeopleViewFragment;
 import com.cookery.fragments.PickPhotoFragment;
+import com.cookery.fragments.ProfileViewBiosFragment;
 import com.cookery.fragments.ProfileViewEmailFragment;
 import com.cookery.fragments.ProfileViewFragment;
 import com.cookery.fragments.ProfileViewGenderFragment;
@@ -63,32 +77,18 @@ import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
 import com.cookery.models.TimelineMO;
 import com.cookery.models.TrendMO;
+import com.cookery.models.UserBio;
 import com.cookery.models.UserMO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
-
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import static com.cookery.utils.Constants.DEFAULT_CROP_RATIO;
-import static com.cookery.utils.Constants.FRAGMENT_COMMON_MESSAGE;
-import static com.cookery.utils.Constants.FRAGMENT_COMMON_WAIT;
-import static com.cookery.utils.Constants.FRAGMENT_RECIPE;
-import static com.cookery.utils.Constants.GENERIC_OBJECT;
-import static com.cookery.utils.Constants.LOGGED_IN_USER;
-import static com.cookery.utils.Constants.OK;
-import static com.cookery.utils.Constants.SCOPE_FOLLOWERS;
-import static com.cookery.utils.Constants.SCOPE_PUBLIC;
-import static com.cookery.utils.Constants.SCOPE_SELF;
-import static com.cookery.utils.Constants.SELECTED_ITEM;
-import static com.cookery.utils.Constants.SERVER_ADDRESS;
-import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
 public class Utility extends Activity {
     private static final String CLASS_NAME = Utility.class.getName();
@@ -329,6 +329,9 @@ public class Utility extends Activity {
             }
             else if(mappingClass.equals(IngredientMO.class)){
                 return gson.fromJson(jsonStr, new TypeToken<List<IngredientMO>>(){}.getType());
+            }
+            else if(mappingClass.equals(UserBio.class)){
+                return gson.fromJson(jsonStr, new TypeToken<List<UserBio>>(){}.getType());
             }
             else{
                 Log.e(CLASS_NAME, mappingClass+" is not identified for parsing JSON");
@@ -713,6 +716,14 @@ public class Utility extends Activity {
         }
         else if(fragment instanceof IngredientViewFragment){
             IngredientViewFragment currentFrag = (IngredientViewFragment) fragment;
+            currentFrag.setArguments(bundle);
+            if (parentFragment != null) {
+                currentFrag.setTargetFragment(parentFragment, 0);
+            }
+            currentFrag.show(fragmentManager, fragKey);
+        }
+        else if(fragment instanceof ProfileViewBiosFragment){
+            ProfileViewBiosFragment currentFrag = (ProfileViewBiosFragment) fragment;
             currentFrag.setArguments(bundle);
             if (parentFragment != null) {
                 currentFrag.setTargetFragment(parentFragment, 0);

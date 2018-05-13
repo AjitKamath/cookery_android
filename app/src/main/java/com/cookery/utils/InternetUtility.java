@@ -1,32 +1,5 @@
 package com.cookery.utils;
 
-import android.util.Log;
-
-import com.cookery.exceptions.CookeryException;
-import com.cookery.models.CommentMO;
-import com.cookery.models.FavouritesMO;
-import com.cookery.models.IngredientAkaMO;
-import com.cookery.models.IngredientMO;
-import com.cookery.models.LikesMO;
-import com.cookery.models.MasterDataMO;
-import com.cookery.models.MessageMO;
-import com.cookery.models.MyListMO;
-import com.cookery.models.RecipeImageMO;
-import com.cookery.models.RecipeMO;
-import com.cookery.models.ReviewMO;
-import com.cookery.models.TimelineMO;
-import com.cookery.models.TrendMO;
-import com.cookery.models.UserMO;
-
-import java.io.File;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static com.cookery.utils.Constants.API_KEY_ANDROID;
 import static com.cookery.utils.Constants.API_KEY_IDENTIFIER;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY;
@@ -59,6 +32,8 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_DELETE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_SCOPE_MODIFY;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TIMELINE_USER_FETCH;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_TREND_FETCH;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_BIO_DELETE;
+import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_BIO_SUBMIT;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FETCH_PUBLIC;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FETCH_SELF;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_FOLLOWERS_FETCH;
@@ -77,6 +52,32 @@ import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_USER_UPDATE_PHONE;
 import static com.cookery.utils.Constants.PHP_FUNCTION_KEY_VIEW_FETCH_USERS;
 import static com.cookery.utils.Constants.PHP_SERVICE_URL;
 import static com.cookery.utils.Constants.SERVER_CHARSET;
+
+import android.util.Log;
+import com.cookery.exceptions.CookeryException;
+import com.cookery.models.CommentMO;
+import com.cookery.models.FavouritesMO;
+import com.cookery.models.IngredientAkaMO;
+import com.cookery.models.IngredientMO;
+import com.cookery.models.LikesMO;
+import com.cookery.models.MasterDataMO;
+import com.cookery.models.MessageMO;
+import com.cookery.models.MyListMO;
+import com.cookery.models.RecipeImageMO;
+import com.cookery.models.RecipeMO;
+import com.cookery.models.ReviewMO;
+import com.cookery.models.TimelineMO;
+import com.cookery.models.TrendMO;
+import com.cookery.models.UserBio;
+import com.cookery.models.UserMO;
+import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ajit on 13/9/17.
@@ -376,6 +377,30 @@ public class InternetUtility {
         return response;
     }
 
+    public static Object updateUserBio(final UserMO loggedInUser) {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_BIO_SUBMIT);
+        paramMap.put("user_id", String.valueOf(loggedInUser.getUSER_ID()));
+        paramMap.put("user_bio", String.valueOf(loggedInUser.getBio().getUSER_BIO()));
+
+        if(loggedInUser.getBio().getUSER_BIO_ID() != 0){
+            paramMap.put("user_bio_id", String.valueOf(loggedInUser.getBio().getUSER_BIO_ID()));
+        }
+
+        String jsonStr = getResponseFromCookery(paramMap);
+        return Utility.jsonToObject(jsonStr, UserMO.class);
+    }
+
+    public static Object deleteUserBio(final UserMO loggedInUser, final UserBio bio) {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put(PHP_FUNCTION_KEY, PHP_FUNCTION_KEY_USER_BIO_DELETE);
+        paramMap.put("user_id", String.valueOf(loggedInUser.getUSER_ID()));
+        paramMap.put("user_bio_id", String.valueOf(loggedInUser.getBio().getUSER_BIO_ID()));
+
+        String jsonStr = getResponseFromCookery(paramMap);
+        return Utility.jsonToObject(jsonStr, UserMO.class);
+    }
+
     private static MultipartUtility getMultipartUtility(){
         MultipartUtility multipart = new MultipartUtility(PHP_SERVICE_URL, SERVER_CHARSET);
 
@@ -393,7 +418,6 @@ public class InternetUtility {
 
         String jsonStr = getResponseFromCookery(paramMap);
         return (List<RecipeMO>) Utility.jsonToObject(jsonStr, RecipeMO.class);
-
     }
 
     public static Object fetchMyReviews(int user_id, int index) {
