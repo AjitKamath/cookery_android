@@ -435,4 +435,9 @@
 13 may 2018
 1. #187 Profile View - User Bio
 
+-- git checkin on 13 may 2018 --
+
+14 may 2018
+1. #425 Profile View - Feasibility check on no wait Profile View
+
 

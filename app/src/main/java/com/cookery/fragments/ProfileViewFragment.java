@@ -19,7 +19,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -40,7 +39,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.cookery.R;
-import com.cookery.activities.HomeActivity;
 import com.cookery.models.CommentMO;
 import com.cookery.models.LikesMO;
 import com.cookery.models.Milestone;
@@ -194,19 +192,7 @@ public class ProfileViewFragment extends DialogFragment {
     }
 
     private void getDataFromBundle() {
-        loggedInUser = (UserMO) getArguments().get(GENERIC_OBJECT);
-    }
-
-    @Override
-    public void onDismiss(final DialogInterface dialog) {
-        super.onDismiss(dialog);
-
-        if(getActivity() != null){
-            ((HomeActivity)getActivity()).setupNavigator();
-        }
-        else{
-            Log.e(CLASS_NAME, "Error ! Activity is null");
-        }
+        loggedInUser = (UserMO) getArguments().get(LOGGED_IN_USER);
     }
 
     private void setupPage() {
@@ -458,8 +444,9 @@ public class ProfileViewFragment extends DialogFragment {
 
         Utility.showSnacks(profile_view_sv, "Your name has been changed !", OK, Snackbar.LENGTH_LONG);
 
-        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW, AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "NAME");
+        new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW, AsyncTaskUtility.Purpose.UPDATE_USER,
+                loggedInUser, 0)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "NAME", getActivity());
     }
 
     private void setupEmail(UserMO user){
@@ -481,7 +468,7 @@ public class ProfileViewFragment extends DialogFragment {
 
         new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
                 AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "EMAIL");
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "EMAIL", getActivity());
     }
 
     public void updateBio(final UserMO user) {
@@ -491,7 +478,7 @@ public class ProfileViewFragment extends DialogFragment {
 
         new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
                 AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "BIO");
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "BIO", getActivity());
     }
 
     public void deleteBio(final UserMO user) {
@@ -507,7 +494,7 @@ public class ProfileViewFragment extends DialogFragment {
 
         new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
                 AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "PASSWORD");
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "PASSWORD", getActivity());
     }
 
     private void setupPhone(UserMO user){
@@ -530,7 +517,7 @@ public class ProfileViewFragment extends DialogFragment {
 
         new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
                 AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "PHONE");
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "PHONE", getActivity());
     }
 
     private void setupGender(UserMO user){
@@ -551,7 +538,7 @@ public class ProfileViewFragment extends DialogFragment {
 
         new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
                 AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "GENDER");
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "GENDER", getActivity());
     }
 
     private void updatePhoto(Uri photoPath){
@@ -562,7 +549,7 @@ public class ProfileViewFragment extends DialogFragment {
 
         new AsyncTaskUtility(getFragmentManager(), FRAGMENT_PROFILE_VIEW,
                 AsyncTaskUtility.Purpose.UPDATE_USER, loggedInUser, 0)
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "IMAGE");
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "IMAGE", getActivity());
     }
 
     @Override

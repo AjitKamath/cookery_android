@@ -635,25 +635,25 @@ public class AsyncTaskUtility extends AsyncTask {
     private Object updateUser(Object[] objects) {
         if(objects != null && objects.length > 0){
             if("EMAIL".equalsIgnoreCase(String.valueOf(objects[0]))){
-                return new Object[]{objects[0], InternetUtility.updateUserEmail(loggedInUser)};
+                return new Object[]{objects[0], InternetUtility.updateUserEmail(loggedInUser), objects[1]};
             }
             else if("IMAGE".equalsIgnoreCase(String.valueOf(objects[0]))){
-                return new Object[]{objects[0], InternetUtility.updateUserImage(loggedInUser)};
+                return new Object[]{objects[0], InternetUtility.updateUserImage(loggedInUser), objects[1]};
             }
             else if("GENDER".equalsIgnoreCase(String.valueOf(objects[0]))){
-                return new Object[]{objects[0], InternetUtility.updateUserGender(loggedInUser)};
+                return new Object[]{objects[0], InternetUtility.updateUserGender(loggedInUser), objects[1]};
             }
             else if("NAME".equalsIgnoreCase(String.valueOf(objects[0]))){
-                return new Object[]{objects[0], InternetUtility.updateUserName(loggedInUser)};
+                return new Object[]{objects[0], InternetUtility.updateUserName(loggedInUser), objects[1]};
             }
             else if("PHONE".equalsIgnoreCase(String.valueOf(objects[0]))){
-                return new Object[]{objects[0], InternetUtility.updateUserPhone(loggedInUser)};
+                return new Object[]{objects[0], InternetUtility.updateUserPhone(loggedInUser), objects[1]};
             }
             else if("PASSWORD".equalsIgnoreCase(String.valueOf(objects[0]))){
-                return new Object[]{objects[0], InternetUtility.updateUserPassword(loggedInUser)};
+                return new Object[]{objects[0], InternetUtility.updateUserPassword(loggedInUser), objects[1]};
             }
             else if("BIO".equalsIgnoreCase(String.valueOf(objects[0]))){
-                return new Object[]{objects[0], InternetUtility.updateUserBio(loggedInUser)};
+                return new Object[]{objects[0], InternetUtility.updateUserBio(loggedInUser), objects[1]};
             }
             else{
                 Log.e(CLASS_NAME, UN_IDENTIFIED_OBJECT_TYPE+objects);
@@ -681,8 +681,9 @@ public class AsyncTaskUtility extends AsyncTask {
 
             if(fragment != null){
                 fragment.updateUser(user);
-                ((HomeActivity)fragment.getActivity()).updateUserSecurity(user);
             }
+
+            ((HomeActivity)objects[2]).updateUserSecurity(user);
         }
         else{
             Log.e(CLASS_NAME, "Error ! Could not update user's : "+what);

@@ -1,5 +1,18 @@
 package com.cookery.activities;
 
+import static com.cookery.utils.Constants.DAYS_UNTIL_PROMPT;
+import static com.cookery.utils.Constants.FRAGMENT_ABOUT_US;
+import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
+import static com.cookery.utils.Constants.FRAGMENT_MY_FAVORITES;
+import static com.cookery.utils.Constants.FRAGMENT_MY_LIST;
+import static com.cookery.utils.Constants.FRAGMENT_MY_REVIEWS;
+import static com.cookery.utils.Constants.FRAGMENT_PROFILE_VIEW;
+import static com.cookery.utils.Constants.GENERIC_OBJECT;
+import static com.cookery.utils.Constants.LAUNCHES_UNTIL_PROMPT;
+import static com.cookery.utils.Constants.LOGGED_IN_USER;
+import static com.cookery.utils.Constants.MY_LISTS_EXISTS;
+import static com.cookery.utils.Constants.OK;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -29,7 +42,6 @@ import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.cookery.R;
 import com.cookery.adapters.HomeSearchAutoCompleteAdapter;
 import com.cookery.component.DelayAutoCompleteTextView;
@@ -38,6 +50,7 @@ import com.cookery.fragments.AddMyListFragment;
 import com.cookery.fragments.FavoriteRecipesFragment;
 import com.cookery.fragments.LoginFragment;
 import com.cookery.fragments.MyReviewsFragment;
+import com.cookery.fragments.ProfileViewFragment;
 import com.cookery.models.MyListMO;
 import com.cookery.models.RecipeMO;
 import com.cookery.models.ReviewMO;
@@ -45,23 +58,10 @@ import com.cookery.models.UserMO;
 import com.cookery.utils.AsyncTaskUtility;
 import com.cookery.utils.InternetUtility;
 import com.cookery.utils.Utility;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.cookery.utils.Constants.DAYS_UNTIL_PROMPT;
-import static com.cookery.utils.Constants.FRAGMENT_ABOUT_US;
-import static com.cookery.utils.Constants.FRAGMENT_LOGIN;
-import static com.cookery.utils.Constants.FRAGMENT_MY_FAVORITES;
-import static com.cookery.utils.Constants.FRAGMENT_MY_LIST;
-import static com.cookery.utils.Constants.FRAGMENT_MY_REVIEWS;
-import static com.cookery.utils.Constants.GENERIC_OBJECT;
-import static com.cookery.utils.Constants.LAUNCHES_UNTIL_PROMPT;
-import static com.cookery.utils.Constants.LOGGED_IN_USER;
-import static com.cookery.utils.Constants.MY_LISTS_EXISTS;
-import static com.cookery.utils.Constants.OK;
 
 
 public abstract class CommonActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -93,6 +93,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Naviga
     public void updateUserSecurity(UserMO user){
         loggedInUser = user;
         Utility.writeIntoUserSecurity(mContext, LOGGED_IN_USER, user);
+        setupNavigator();
     }
 
     public void setupRateUs() {
@@ -232,10 +233,9 @@ public abstract class CommonActivity extends AppCompatActivity implements Naviga
         getNav_view().getHeaderView(0).findViewById(R.id.navigation_header_user_details_ll).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AsyncTaskUtility(getFragmentManager(), getActivity(), AsyncTaskUtility.Purpose.FETCH_USER_SELF, loggedInUser, 0)
-                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-                //new AsyncTaskerFetchUserDetails().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                Map<String, Object> params = new HashMap<>();
+                params.put(LOGGED_IN_USER, loggedInUser);
+                Utility.showFragment(getActivity().getFragmentManager(), null, FRAGMENT_PROFILE_VIEW, new ProfileViewFragment(), params);
             }
         });
 
