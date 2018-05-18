@@ -11,7 +11,6 @@ import static com.cookery.utils.Constants.SCOPE_FOLLOWERS;
 import static com.cookery.utils.Constants.SCOPE_PUBLIC;
 import static com.cookery.utils.Constants.SCOPE_SELF;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
-import static com.cookery.utils.Constants.SERVER_ADDRESS;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 
 import android.app.Activity;
@@ -358,7 +357,7 @@ public class Utility extends Activity {
             return;
         }
 
-        Picasso.with(context).load(SERVER_ADDRESS+imageAddress).placeholder(R.drawable.placeholder).into(imageView);
+        Picasso.with(context).load(imageAddress).placeholder(R.drawable.placeholder).into(imageView);
     }
 
     public static void loadImageFromPath(Context context, String imageAddress, ImageView imageView){

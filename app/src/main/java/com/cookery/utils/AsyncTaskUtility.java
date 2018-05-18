@@ -23,7 +23,6 @@ import static com.cookery.utils.Constants.GENERIC_OBJECT2;
 import static com.cookery.utils.Constants.LOGGED_IN_USER;
 import static com.cookery.utils.Constants.MASTER;
 import static com.cookery.utils.Constants.SELECTED_ITEM;
-import static com.cookery.utils.Constants.SERVER_ADDRESS;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_OBJECT_TYPE;
 import static com.cookery.utils.Constants.UN_IDENTIFIED_PARENT_FRAGMENT;
 
@@ -237,7 +236,7 @@ public class AsyncTaskUtility extends AsyncTask {
         boolean failed = false;
         for (int i = 0; i < images.size(); i++) {
             try {
-                String image = SERVER_ADDRESS;
+                String image = "";
 
                 if(images.get(i) instanceof RecipeImageMO){
                     image += ((RecipeImageMO) images.get(i)).getRCP_IMG();
